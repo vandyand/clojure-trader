@@ -1,4 +1,4 @@
-(ns index
+(ns sine-waves
   (:require
    [oz.core :as oz]
    [clojure.spec.alpha :as s]
@@ -8,7 +8,7 @@
 
 (do
   (println "calculating")
-  (def num-waves 40)
+  (def num-waves 20)
   (def num-data-points 500)
   (def freq-scale-factor 2)
   (defn min-max [min max]
