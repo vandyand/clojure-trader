@@ -16,6 +16,8 @@
   (def params {:amp (min-max 1 10) :h-shift (min-max -10000 10000) :v-shift (min-max 0 10)})
   (defn scale-inv [val factor]
     (-> val (* factor) (Math/pow -1)))
+  (defn scaled-rand [min max]
+    (-> (- max min) (rand) (+ min)))
   (def p (assoc params :freq
                 {:min (scale-inv (get-in params [:amp :max]) freq-scale-factor)
                  :max (scale-inv (get-in params [:amp :min]) freq-scale-factor)}))
@@ -49,22 +51,19 @@
     :args :sine/args
     :ret number?)
 
-;; (s/exercise-fn `sine)
+  (defn get-sine-fn-name [args]
+    (format "y=%.3f*sin(%.4fx-%.0f)+%.2f" (args :amp) (args :freq) (args :h-shift) (args :v-shift)))
 
-  (defn scaled-rand [min max]
-    (-> (- max min) (rand) (+ min)))
+  (defn get-sine-fn [args]
+    (fn [i] (apply (partial sine i) [args])))
 
   (defn get-rand-sine-datas [num]
     (repeatedly num (fn [] (into {} (for [k (keys p)] {k (scaled-rand (get-in p [k :min]) (get-in p [k :max]))})))))
 
-  (defn get-sine-fn-name [args]
-    (format "y=%.3f*sin(%.4fx-%.0f)+%.2f" (args :amp) (args :freq) (args :h-shift) (args :v-shift)))
-
-  (defn make-sine-fn [args]
-    (fn [i] (apply (partial sine i) [args])))
-
-  (defn get-rand-sine-fns [num]
-    (for [data (get-rand-sine-datas num)] {:name (get-sine-fn-name data) :fn (make-sine-fn data)}))
+  (defn get-rand-sine-fns 
+    ([] (get-rand-sine-fns 1))
+    ([num]
+    (for [data (get-rand-sine-datas num)] {:name (get-sine-fn-name data) :fn (get-sine-fn data)})))
 
   (defn generate-plot-values []
     (for [d (get-rand-sine-fns num-waves)
