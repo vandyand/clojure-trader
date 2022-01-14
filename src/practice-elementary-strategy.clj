@@ -1,4 +1,4 @@
-(ns practice-strategy
+(ns practice-elementary-strategy
   (:require [oz.core :as oz]))
 
 (oz/start-server! 10667)
