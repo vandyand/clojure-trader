@@ -3,7 +3,8 @@
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]))
 
-
+(comment 
+  "This file contains a manually-created practice tree with a solver")
 
 (s/def :sine/amp (s/double-in :min (-> p :amp :min) :max (-> p :amp :max) :NaN? false :infinite? false))
 (s/def :sine/freq (s/double-in :min (-> p :freq :min) :max (-> p :freq :max) :NaN? false :infinite? false))

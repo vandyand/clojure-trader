@@ -1,68 +1,14 @@
 (ns strategy
   (:require
-   [clojure.spec.alpha :as s]
-   [clojure.spec.gen.alpha :as sgen]
-   [clojure.test.check.generators :as gen]
-   [clojure.string :as cs]))
-
-
-(s/def ::cond ifn?)
-(s/def ::branch ::node)
-
-(s/def ::node
-  (s/or :bool boolean?
-        :node (s/keys :req [::cond ::branch])))
-
-
-(s/def ::with-h
-  (s/with-gen
-    #(cs/includes? % "h")
-    #(gen/fmap
-      (fn [[s1 s2]] (str s1 "h" s2))
-      (gen/tuple (gen/string-alphanumeric) (gen/string-alphanumeric)))))
-(gen/sample (s/gen ::with-h) 5)
-
-
-
-(s/def ::branchA #{:branchA})
-(s/def ::branchB #{:branchB})
-(s/def ::map-tree (s/map-of ::branchA (s/or :tree ::map-tree :leaf boolean?) :gen-max 3))
-
-
-(s/def ::boo number?)
-(s/def ::baz string?)
-(s/def ::bez boolean?)
-(s/def ::xed (s/keys :req [(or ::boo ::bez)]))
-(s/def ::wut (s/keys :req [(or ::boo ::baz)]))
-(s/def ::wiz (s/map-of keyword? int?))
-(gen/sample (s/gen ::wiz) 5)
-(s/def ::xor (s/or :k1 ::wut :k2 boolean?))
-(gen/sample (s/gen ::xor) 5)
-
-; node is either a map of 
-; {:condition (which is a function taking two number inputs and outputting a boolean)
-;  :branches (which is a vector of two branches which are other nodes)} implying a branch is either a map or a bool
-; OR 
-; a boolean value
-
-(defn condition [i1 i2] (> i1 i2))
-(s/fdef condition
-  :args (s/cat :i1 number? :i2 number?)
-  :ret boolean?)
-
-(s/exercise-fn `condition)
-
-
-(s/def ::hello
-  (s/with-gen #(cs/includes? % "hello")
-    #(sgen/fmap (fn [[s1 s2]] (str s1 "hello" s2))
-                (sgen/tuple (sgen/string-alphanumeric) (sgen/string-alphanumeric)))))
-
-(s/def ::map-nodes (s/map-of ::hello (s/or :node ::map-nodes :exit boolean?) :gen-max 3))
-
-
+  ;;  [clojure.spec.alpha :as s]
+  ;;  [clojure.spec.gen.alpha :as sgen]
+  ;;  [clojure.test.check.generators :as gen]
+  ;;  [clojure.string :as cs]
+   [clojure.walk :as w]))
 
 (comment
+  "In this file we randomly generate a strategy (tree) and then solve it recursively"
+
  ; just make the function that returns the tree?
 ;; (def tree {:cond #(> (nth inputs 1) (nth inputs 2)) 
 ;;            :branchA {:cond #(> (nth inputs 0) (nth inputs 1))
@@ -102,35 +48,115 @@
 ;;                                :branchB false}}}})
   )
 
+;; GET (MAKE, TRIM AND PRINT) TREE
+(def max-tree-depth 4)
+(def num-inputs 4)
+(def num-data-points 10)
 (def index-pairs
   (filter
    #(not= (first %) (last %))
-   (for [x (range 5) y (range 5)] [x y])))
+   (for [x (range num-inputs) y (range num-inputs)] [x y])))
 
 (defn make-tree
-  ([] (make-tree {}))
-  ([tree]
-   (if (> (rand) 0.35)
+  ([] (make-tree {} 0))
+  ([tree] tree)
+  ([tree depth]
+   (if (or (> (rand) 0.5) (= depth max-tree-depth))
      (rand-nth [true false])
      {:input-indxs (rand-nth index-pairs)
-      :branchA (make-tree tree)
-      :branchB (make-tree tree)})))
+      :branchA (make-tree tree (inc depth))
+      :branchB (make-tree tree (inc depth))})))
 
-(def inputs [10 20 30 40 50])
-
-(defn solve-cond [input-indxs]
-  (> (inputs (first input-indxs)) (inputs (last input-indxs))))
-
-(defn solve-tree [tree]
-  (if (= (type tree) java.lang.Boolean)
-    tree
-    (solve-tree
-     (if (solve-cond (tree :input-indxs))
-       (tree :branchA)
-       (tree :branchB)))))
+(defn trim-tree [tree]
+  (w/postwalk
+   #(if
+     (and
+      (= (type %) clojure.lang.PersistentArrayMap)
+      (= (% :branchA) (% :branchB)))
+      (% :branchA)
+      %)
+   tree))
 
 (defn print-tree [tree]
   (println tree)
   tree)
 
-(time (solve-tree (print-tree (make-tree))))
+(def tree (print-tree (trim-tree (make-tree))))
+
+;; SOLVE TREE WITH RANDOM INPUT DATA
+(def rand-inputs (mapv vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
+
+(defn solve-cond [inputs input-indxs]
+  (> (inputs (first input-indxs)) (inputs (last input-indxs))))
+
+(defn solve-tree [tree inputs]
+  (println inputs)
+  (if (= (type tree) java.lang.Boolean)
+    tree
+    (solve-tree
+     (if (solve-cond inputs (tree :input-indxs))
+       (tree :branchA)
+       (tree :branchB)) inputs)))
+
+(println rand-inputs)
+
+(for [inputss rand-inputs]
+  (solve-tree tree inputss))
+
+;; CODIFY INPUT DATA
+
+(defn get-random-input-stream
+  ([] (get-random-input-stream nil))
+  ([name]
+   (with-meta
+     (vec (map (rand-nth [#(Math/sin %) #(Math/cos %) #(Math/tan %) #(/ % 10) #(/ % -10)]) (range num-data-points)))
+     {:name name})))
+
+(defn zip-input-streams [& streams]
+  (loop [i 0 v (transient [])]
+    (if (< i num-data-points)
+      (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
+      (persistent! v))))
+
+(def inputs)
+
+(for 
+ [inputs 
+  (apply 
+   zip-input-streams 
+   (repeatedly 
+    num-inputs 
+    #(get-random-input-stream)))]
+  (println inputs))
+  ;; (solve-tree tree inputs))
+
+
+(defn format-stream-for-view [stream]
+  (let [item  ((meta stream) :name)]
+    (loop [i 0 v (transient [])]
+      (if (< i num-data-points)
+        (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
+        (persistent! v)))))
+
+
+
+(def view-data
+  (into [] (concat
+            (format-stream-for-view input-stream-1)
+            (format-stream-for-view input-stream-2)
+            (format-stream-for-view sieve-stream)
+            (format-stream-for-view return-stream))))
+
+(def line-plot
+  {:data {:values view-data}
+   :encoding {:x {:field "x" :type "quantitative"}
+              :y {:field "y" :type "quantitative"}
+              :color {:field "item" :type "nominal"}}
+   :mark {:type "line"}})
+
+(def viz
+  [:div [:vega-lite line-plot {:width 500}]])
+
+(oz/view! viz)
+
+

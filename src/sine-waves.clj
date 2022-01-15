@@ -4,6 +4,10 @@
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]))
 
+(comment 
+  "This file creates a bunch of sine waves and plots them. 
+   It also plots the plot of the running sums of all the sine waves (the reduced wave? well it uses a reducer...)")
+
 (oz/start-server! 10667)
 
 (do

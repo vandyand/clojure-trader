@@ -1,6 +1,16 @@
 (ns practice-elementary-strategy
   (:require [oz.core :as oz]))
 
+(comment 
+  "This file lays out a very basic strategy.
+   First we create two input streams (from sin and cos)
+   We then create a simple strategy
+   We then plug the inputs into the strategy to produce a 'sieve-stream' (cause it's like a strainer/filter)
+   We then pick a target stream (in this case one of the input streams - the sine wave)
+   We then calculate the target stream diff - that is current price minus previous price for each time t 
+   We then apply the sieve stream to the target stream diff to produce a results stream.
+   We then plot the inputs, sieve, target and results streams ")
+
 (oz/start-server! 10667)
 
 (do 
@@ -44,8 +54,6 @@
       (if (< i 10)
         (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
         (persistent! v))) {:name "return stream"}))
-
-
 
 (defn format-stream-for-view [stream]
   (let [item  ((meta stream) :name)]
