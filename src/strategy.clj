@@ -4,7 +4,8 @@
   ;;  [clojure.spec.gen.alpha :as sgen]
   ;;  [clojure.test.check.generators :as gen]
   ;;  [clojure.string :as cs]
-   [clojure.walk :as w]))
+   [clojure.walk :as w]
+   [oz.core :as oz]))
 
 (comment
   "In this file we randomly generate a strategy (tree) and then solve it recursively"
@@ -49,7 +50,7 @@
   )
 
 ;; GET (MAKE, TRIM AND PRINT) TREE
-(def max-tree-depth 4)
+(def max-tree-depth 3)
 (def num-inputs 4)
 (def num-data-points 10)
 (def index-pairs
@@ -62,7 +63,7 @@
   ([tree] tree)
   ([tree depth]
    (if (or (> (rand) 0.5) (= depth max-tree-depth))
-     (rand-nth [true false])
+     (rand-nth [1 0])
      {:input-indxs (rand-nth index-pairs)
       :branchA (make-tree tree (inc depth))
       :branchB (make-tree tree (inc depth))})))
@@ -84,32 +85,36 @@
 (def tree (print-tree (trim-tree (make-tree))))
 
 ;; SOLVE TREE WITH RANDOM INPUT DATA
-(def rand-inputs (mapv vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
 
 (defn solve-cond [inputs input-indxs]
   (> (inputs (first input-indxs)) (inputs (last input-indxs))))
 
-(defn solve-tree [tree inputs]
-  (println inputs)
-  (if (= (type tree) java.lang.Boolean)
+(defn solve-tree 
+  "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
+  [tree inst-inputs]
+  (if (= (type tree) java.lang.Long)
     tree
     (solve-tree
-     (if (solve-cond inputs (tree :input-indxs))
+     (if (solve-cond inst-inputs (tree :input-indxs))
        (tree :branchA)
-       (tree :branchB)) inputs)))
+       (tree :branchB)) inst-inputs)))
 
-(println rand-inputs)
+(def rand-inputs 
+  "Creates (is) zipped input streams (inputs cols instead of rows as it were if each input-stream were a row)"
+  (map vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
 
-(for [inputss rand-inputs]
-  (solve-tree tree inputss))
+(for [inst-inputs rand-inputs]
+  (solve-tree tree inst-inputs))
 
 ;; CODIFY INPUT DATA
+(defn rand-caps-str [len]
+  (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))
 
 (defn get-random-input-stream
-  ([] (get-random-input-stream nil))
+  ([] (get-random-input-stream (str "input stream " (rand-caps-str 5))))
   ([name]
    (with-meta
-     (vec (map (rand-nth [#(Math/sin %) #(Math/cos %) #(Math/tan %) #(/ % 10) #(/ % -10)]) (range num-data-points)))
+     (mapv (rand-nth [#(Math/sin %) #(* 1.1 (Math/sin %)) #(* 0.9 (Math/sin %)) #(* 1.1 (Math/cos %)) #(* 0.9 (Math/cos %)) #(Math/cos %) #(Math/tan %) #(/ % 10) #(/ % -10)]) (range num-data-points))
      {:name name})))
 
 (defn zip-input-streams [& streams]
@@ -118,37 +123,53 @@
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
       (persistent! v))))
 
-(def inputs)
+(def input-streams (repeatedly num-inputs #(get-random-input-stream)))
 
-(for 
- [inputs 
-  (apply 
-   zip-input-streams 
-   (repeatedly 
-    num-inputs 
-    #(get-random-input-stream)))]
-  (println inputs))
-  ;; (solve-tree tree inputs))
+(def sieve-stream
+  (with-meta (vec (for [inputs (apply zip-input-streams input-streams)]
+    (solve-tree tree inputs))) {:name "sieve stream"}))
+
+(def target-stream (with-meta (rand-nth input-streams) {:name "target stream"}))
+
+(def target-stream-delta
+  (with-meta
+    (into [0.0]
+          (for [i (range (- (count target-stream) 1))]
+            (- (target-stream (+ i 1)) (target-stream i))))
+    {:name "target stream deltas"}))
+
+(def return-stream
+  (with-meta
+    (loop [i 1 v (transient [0.0])]
+      (if (< i 10)
+        (recur
+         (inc i)
+         (conj! v
+                (+
+                 (v
+                  (- i 1))
+                 (*
+                  (sieve-stream
+                   (- i 1))
+                  (target-stream-delta i)))))
+        (persistent! v))) {:name "return stream"}))
 
 
-(defn format-stream-for-view [stream]
+(defn format-stream-for-view 
+  "returns a collection of view data (maps) from the stream"
+  [stream]
   (let [item  ((meta stream) :name)]
     (loop [i 0 v (transient [])]
       (if (< i num-data-points)
         (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
         (persistent! v)))))
 
+(def streams (conj input-streams sieve-stream return-stream))
 
-
-(def view-data
-  (into [] (concat
-            (format-stream-for-view input-stream-1)
-            (format-stream-for-view input-stream-2)
-            (format-stream-for-view sieve-stream)
-            (format-stream-for-view return-stream))))
+(def view-data (mapv format-stream-for-view streams))
 
 (def line-plot
-  {:data {:values view-data}
+  {:data {:values (flatten view-data)}
    :encoding {:x {:field "x" :type "quantitative"}
               :y {:field "y" :type "quantitative"}
               :color {:field "item" :type "nominal"}}
@@ -156,6 +177,9 @@
 
 (def viz
   [:div [:vega-lite line-plot {:width 500}]])
+
+
+(oz/start-server! 10667)
 
 (oz/view! viz)
 
