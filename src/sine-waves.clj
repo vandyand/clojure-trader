@@ -17,14 +17,14 @@
   (def freq-scale-factor 2)
   (defn min-max [min max]
     {:min min :max max})
-  (def params {:amp (min-max 1 10) :h-shift (min-max -10000 10000) :v-shift (min-max 0 10)})
+  (def params-range {:amp (min-max 1 10) :h-shift (min-max -10000 10000) :v-shift (min-max 0 10)})
   (defn scale-inv [val factor]
     (-> val (* factor) (Math/pow -1)))
   (defn scaled-rand [min max]
     (-> (- max min) (rand) (+ min)))
-  (def p (assoc params :freq
-                {:min (scale-inv (get-in params [:amp :max]) freq-scale-factor)
-                 :max (scale-inv (get-in params [:amp :min]) freq-scale-factor)}))
+  (def p (assoc params-range :freq
+                {:min (scale-inv (get-in params-range [:amp :max]) freq-scale-factor)
+                 :max (scale-inv (get-in params-range [:amp :min]) freq-scale-factor)}))
 
 
   (s/def :sine/amp (s/double-in :min (-> p :amp :min) :max (-> p :amp :max) :NaN? false :infinite? false))
@@ -61,16 +61,23 @@
   (defn get-sine-fn-name [args]
     (format "y=%.3f*sin(%.4fx-%.0f)+%.2f" (args :amp) (args :freq) (args :h-shift) (args :v-shift)))
 
-  (defn get-sine-fn [args]
+  (defn get-sine-fn 
+    "takes in a map with keys {:amp :freq :h-shift :v-shift}
+     returns composed sine function which only takes (and then solves) one input (angle)"
+    [args]
     (fn [i] (apply (partial sine i) [args])))
 
-  (defn get-rand-sine-datas [num]
+  (defn get-rand-sine-fn-params
+    "returns num number of maps of form {:amp <amplitude> :freq <frequency> :h-shift <horizontal shift> :v-shift <vertical shift>}
+     (keys not necessarily in that order)"
+    [num]
     (repeatedly num (fn [] (into {} (for [k (keys p)] {k (scaled-rand (get-in p [k :min]) (get-in p [k :max]))})))))
 
   (defn get-rand-sine-fns 
+    "returns num number of maps of form {:name <sine func name> :fn <actual function>}"
     ([] (get-rand-sine-fns 1))
     ([num]
-    (for [data (get-rand-sine-datas num)] {:name (get-sine-fn-name data) :fn (get-sine-fn data)})))
+    (for [data (get-rand-sine-fn-params num)] {:name (get-sine-fn-name data) :fn (get-sine-fn data)})))
 
   (defn generate-plot-values []
     (for [d (get-rand-sine-fns num-waves)
