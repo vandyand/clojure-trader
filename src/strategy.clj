@@ -145,8 +145,8 @@
   )
 
 (defn get-random-sine-stream
-  ([] (get-random-sine-stream (str "stream " (rand-caps-str 5))))
-  ([name]
+  ([num-data-points] (get-random-sine-stream (str "stream " (rand-caps-str 5)) num-data-points))
+  ([name num-data-points]
    (with-meta
      (mapv
       (get-stream-gen-fn)
@@ -155,7 +155,7 @@
 
 (defn zip-input-streams [& streams]
   (loop [i 0 v (transient [])]
-    (if (< i num-data-points)
+    (if (< i (count (first streams)))
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
       (persistent! v))))
 
@@ -167,28 +167,12 @@
   [stream]
   (let [item  ((meta stream) :name)]
     (loop [i 0 v (transient [])]
-      (if (< i num-data-points)
+      (if (< i (count stream))
         (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
         (persistent! v)))))
 
 
-;; GET RANDOM SINE WAVES AS INPUT STEAMS AND TARGET STREAM
-
-(time
- (do
-   (def input-streams (repeatedly num-inputs #(get-random-sine-stream)))
-
-   (def target-stream (get-random-sine-stream))
-
-   (def target-stream-delta
-     (with-meta
-       (into [0.0]
-             (for [i (range (- (count target-stream) 1))]
-               (- (target-stream (+ i 1)) (target-stream i))))
-       {:name "target stream deltas"}))))
-
-
-;; GET STRATEGY FUNCTIONS
+;; GET (AND POPULATE) STRATEGY FUNCTIONS
 
 (defn get-strat-tree [] (ameliorate-tree (make-tree)))
 
@@ -200,38 +184,83 @@
 (defn get-return-stream [name sieve-stream target-stream-delta]
   (with-meta
     (loop [i 1 v (transient [0.0])]
-      (if (< i num-data-points)
+      (if (< i (count sieve-stream))
         (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
         (persistent! v))) {:name name}))
 
-(defn get-populated-strat [name]
-  (let [tree (get-strat-tree)]
-    (let [sieve-stream (get-sieve-stream (str name " sieve stream") input-streams tree)]
-      (let [return-stream (get-return-stream (str name " return stream") sieve-stream target-stream-delta)]
-        {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))))
+(defn get-populated-strat
+  ([input-and-target-data] (get-populated-strat (str "strat-" (rand-caps-str 10)) (input-and-target-data :input-streams) (input-and-target-data :target-stream-delta)))
+  ([name input-and-target-data] (get-populated-strat name (input-and-target-data :input-streams) (input-and-target-data :target-stream-delta)))
+  ([name input-streams target-stream-delta]
+   (let [tree (get-strat-tree)]
+     (let [sieve-stream (get-sieve-stream (str name " sieve stream") input-streams tree)]
+       (let [return-stream (get-return-stream (str name " return stream") sieve-stream target-stream-delta)]
+         {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))))
 
 
-;; CREATE MULTIPLE STRATEGIES EACH YEILDING A RETURN STREAM
+;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
 
-(def strat (get-populated-strat "strat 1"))
+(defn get-input-streams [num-streams num-data-points]
+  (repeatedly num-streams #(get-random-sine-stream num-data-points)))
 
-(def streams (conj input-streams target-stream (strat :sieve-stream) (strat :return-stream)))
+(defn get-target-stream-delta [target-stream]
+  (with-meta
+    (into [0.0]
+          (for [i (range (- (count target-stream) 1))]
+            (- (target-stream (+ i 1)) (target-stream i))))
+    {:name "target stream deltas"}))
 
-(def view-data (flatten (map format-stream-for-view streams)))
+(defn get-input-and-target-streams [num-inputs num-data-points]
+  (let [target-stream (get-random-sine-stream "target stream" num-data-points)]
+    {:input-streams (get-input-streams num-inputs num-data-points) :target-stream target-stream :target-stream-delta (get-target-stream-delta target-stream)}))
 
-(def line-plot
-  {:data {:values view-data}
-   :encoding {:x {:field "x" :type "quantitative"}
-              :y {:field "y" :type "quantitative"}
-              :color {:field "item" :type "nominal"}}
-   :mark {:type "line"}})
+;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
-(def viz
-  [:div [:vega-lite line-plot {:width 500}]])
+(def input-and-target-data (get-input-and-target-streams num-inputs num-data-points))
 
-(oz/view! viz)
+;; (do
+;;   (def strat (get-populated-strat "strat 1" input-and-target-data))
 
-;; Maybe start a new file?
-;; Generate a batch of return streams from a batch of strategy trees
-;; Start going on GA
+;;   (def streams (conj (input-and-target-data :input-streams) (input-and-target-data :target-stream) (strat :sieve-stream) (strat :return-stream)))
+
+;;   (def view-data (flatten (map format-stream-for-view streams)))
+
+;;   (def line-plot
+;;     {:data {:values view-data}
+;;      :encoding {:x {:field "x" :type "quantitative"}
+;;                 :y {:field "y" :type "quantitative"}
+;;                 :color {:field "item" :type "nominal"}}
+;;      :mark {:type "line"}})
+
+;;   (def viz
+;;     [:div [:vega-lite line-plot {:width 500}]])
+
+;;   (oz/view! viz))
+
+(defn plot-strat [input-and-target-data strat]
+  (let [viz
+        [:div
+         [:vega-lite
+          {:data
+           {:values
+            (flatten
+             (map
+              format-stream-for-view
+              (conj (input-and-target-data :input-streams)
+                    (input-and-target-data :target-stream)
+                    (strat :sieve-stream)
+                    (strat :return-stream))))}
+           :encoding {:x {:field "x" :type "quantitative"}
+                      :y {:field "y" :type "quantitative"}
+                      :color {:field "item" :type "nominal"}}
+           :mark {:type "line"}} {:width 500}]]]
+
+    (oz/view! viz)))
+
+(do
+  (def strat (get-populated-strat "strat 1" input-and-target-data))
+  (plot-strat input-and-target-data strat))
+
+;; TODO
+;; Build plot-strats function
 ;; When GA is working good, start building the "arena" *queue dramatic music*
