@@ -3,7 +3,7 @@
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
   ;;  [clojure.test.check.generators :as gen]
-  ;;  [clojure.string :as cs]
+   [clojure.string :as cs]
    [clojure.walk :as w]
    [oz.core :as oz]
    [clojure.set :as set]))
@@ -56,25 +56,28 @@
 
 
 ;; CONFIG SETTINGS
-(def min-tree-depth 1)
-(def max-tree-depth 4)
+;; (def min-tree-depth 1)
+;; (def max-tree-depth 4)
 (def num-inputs 4)
 (def num-data-points 100)
-(def index-pairs
+(defn index-pairs [num-inputs]
   (set (filter
         #(not= (first %) (last %))
         (for [x (range num-inputs) y (range num-inputs)] [x y]))))
 
 
 ;; MAKE TREE
+(defn isArrayMap? [testee] (= (type testee) clojure.lang.PersistentArrayMap))
+(defn isLong? [testee] (= (type testee) java.lang.Long))
 
-(defn make-tree
-  ([] (make-tree {} 0 #{}))
-  ([tree depth index-pairs-used]
-   (if (and (>= depth min-tree-depth) (or (> (rand) 0.5) (= depth max-tree-depth)))
+(defn make-raw-tree
+  ([] (make-raw-tree {} 0 1 4 (index-pairs 4) #{}))
+  ([tree depth min-depth max-depth index-pairs index-pairs-used]
+   (println depth index-pairs index-pairs-used)
+   (if (and (>= depth min-depth) (or (> (rand) 0.5) (= depth max-depth)))
      (rand-nth [1 0])
      (let [index-pair (rand-nth (vec (set/difference index-pairs index-pairs-used)))]
-       (let [new-branch #(make-tree tree (inc depth) (set/union #{index-pair} index-pairs-used))]
+       (let [new-branch #(make-raw-tree tree (inc depth) min-depth max-depth index-pairs (set/union #{index-pair} index-pairs-used))]
          {:input-indxs index-pair
           :branchA (new-branch)
           :branchB (new-branch)})))))
@@ -84,19 +87,22 @@
   [tree]
   (w/postwalk
    #(if (and
-         (= (type %) clojure.lang.PersistentArrayMap)
-         (= (type (% :branchA)) java.lang.Long)
+         (isArrayMap? %)
+         (isLong? (% :branchA))
          (= (% :branchA) (% :branchB)))
       (assoc % :branchB (mod (+ 1 (% :branchB)) 2))
       %)
    tree))
 
-(defn print-tree [tree]
-  (println tree)
-  tree)
+(defn make-tree 
+  ([] (ameliorate-tree (make-raw-tree)))
+  ([& args] (ameliorate-tree (apply make-raw-tree args))))
 
-(def tree (print-tree (make-tree)))
-(ameliorate-tree (make-tree))
+(defn print-tree [tree]
+  (print (cs/replace (str tree) ":b" "\n:b")))
+
+;; (def tree (print-tree (make-tree)))
+;; (ameliorate-tree (make-tree))
 
 ;; SOLVE TREE FUNCTIONS
 
@@ -111,7 +117,8 @@
     (solve-tree
      (if (solve-cond inst-inputs (tree :input-indxs))
        (tree :branchA)
-       (tree :branchB)) inst-inputs)))
+       (tree :branchB)) 
+     inst-inputs)))
 
 
 ;; SOLVE TREE WITH RANDOM INPUTS
@@ -120,8 +127,8 @@
   "Creates (is) zipped input streams (inputs cols instead of rows as it were if each input-stream were a row)"
   (map vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
 
-(for [inst-inputs rand-inputs]
-  (solve-tree (ameliorate-tree (make-tree)) inst-inputs))
+;; (for [inst-inputs rand-inputs]
+;;   (solve-tree (ameliorate-tree (make-tree)) inst-inputs))
 
 
 ;; CODIFY INPUT DATA FUNCTIONS
@@ -174,8 +181,6 @@
 
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
 
-(defn get-strat-tree [] (ameliorate-tree (make-tree)))
-
 (defn get-sieve-stream
   [name input-streams strat-tree]
   (with-meta (vec (for [inputs (apply zip-input-streams input-streams)]
@@ -189,10 +194,10 @@
         (persistent! v))) {:name name}))
 
 (defn get-populated-strat
-  ([input-and-target-data] (get-populated-strat (str "strat-" (rand-caps-str 10)) (input-and-target-data :input-streams) (input-and-target-data :target-stream-delta)))
-  ([name input-and-target-data] (get-populated-strat name (input-and-target-data :input-streams) (input-and-target-data :target-stream-delta)))
+  ([input-and-target-streams] (get-populated-strat (str "strat-" (rand-caps-str 10)) (input-and-target-streams :input-streams) (input-and-target-streams :target-stream-delta)))
+  ([name input-and-target-streams] (get-populated-strat name (input-and-target-streams :input-streams) (input-and-target-streams :target-stream-delta)))
   ([name input-streams target-stream-delta]
-   (let [tree (get-strat-tree)]
+   (let [tree (make-tree)]
      (let [sieve-stream (get-sieve-stream (str name " sieve stream") input-streams tree)]
        (let [return-stream (get-return-stream (str name " return stream") sieve-stream target-stream-delta)]
          {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))))
@@ -211,45 +216,32 @@
     {:name "target stream deltas"}))
 
 (defn get-input-and-target-streams [num-inputs num-data-points]
-  (let [target-stream (get-random-sine-stream "target stream" num-data-points)]
-    {:input-streams (get-input-streams num-inputs num-data-points) :target-stream target-stream :target-stream-delta (get-target-stream-delta target-stream)}))
+  (let [input-streams (get-input-streams num-inputs num-data-points)]
+    (let [target-stream (with-meta (rand-nth input-streams) {:name "target stream"})]
+      {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-target-stream-delta target-stream)})))
+
 
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
-(def input-and-target-data (get-input-and-target-streams num-inputs num-data-points))
+(defn get-plot-streams [input-and-target-streams & strats]
+  (let [plot-streams (transient (vec (conj (input-and-target-streams :input-streams) (input-and-target-streams :target-stream))))]
+    (loop [i 0 v plot-streams]
+      (if (< i (count strats))
+        (recur (inc i) (conj! v ((nth strats i) :return-stream)))
+        (persistent! v)))))
 
-;; (do
-;;   (def strat (get-populated-strat "strat 1" input-and-target-data))
+(defn get-plot-values [plot-streams]
+  (flatten
+   (map
+    format-stream-for-view
+    plot-streams)))
 
-;;   (def streams (conj (input-and-target-data :input-streams) (input-and-target-data :target-stream) (strat :sieve-stream) (strat :return-stream)))
-
-;;   (def view-data (flatten (map format-stream-for-view streams)))
-
-;;   (def line-plot
-;;     {:data {:values view-data}
-;;      :encoding {:x {:field "x" :type "quantitative"}
-;;                 :y {:field "y" :type "quantitative"}
-;;                 :color {:field "item" :type "nominal"}}
-;;      :mark {:type "line"}})
-
-;;   (def viz
-;;     [:div [:vega-lite line-plot {:width 500}]])
-
-;;   (oz/view! viz))
-
-(defn plot-strat [input-and-target-data strat]
+(defn generate-plot [values]
   (let [viz
         [:div
          [:vega-lite
           {:data
-           {:values
-            (flatten
-             (map
-              format-stream-for-view
-              (conj (input-and-target-data :input-streams)
-                    (input-and-target-data :target-stream)
-                    (strat :sieve-stream)
-                    (strat :return-stream))))}
+           {:values values}
            :encoding {:x {:field "x" :type "quantitative"}
                       :y {:field "y" :type "quantitative"}
                       :color {:field "item" :type "nominal"}}
@@ -257,10 +249,19 @@
 
     (oz/view! viz)))
 
-(do
-  (def strat (get-populated-strat "strat 1" input-and-target-data))
-  (plot-strat input-and-target-data strat))
+(defn plot-strats [input-and-target-streams & strats]
+  (generate-plot
+   (get-plot-values
+    (apply get-plot-streams input-and-target-streams strats))))
+
+(def input-and-target-streams (get-input-and-target-streams num-inputs num-data-points))
+
+(def strat1 (get-populated-strat "strat 1" input-and-target-streams))
+(def strat2 (get-populated-strat "strat 2" input-and-target-streams))
+(def strat3 (get-populated-strat "strat 3" input-and-target-streams))
+(def strat4 (get-populated-strat "strat 4" input-and-target-streams))
+(plot-strats input-and-target-streams strat1 strat2 strat3 strat4)
+
 
 ;; TODO
-;; Build plot-strats function
 ;; When GA is working good, start building the "arena" *queue dramatic music*
