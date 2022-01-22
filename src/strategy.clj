@@ -9,19 +9,9 @@
    [clojure.set :as set]))
 
 (comment
-  "In this file we randomly generate a strategy (tree) and then solve it recursively"
-
- ; just make the function that returns the tree?
-;; (def tree {:cond #(> (nth inputs 1) (nth inputs 2)) 
-;;            :branchA {:cond #(> (nth inputs 0) (nth inputs 1))
-;;                      :branchA {:cond #(> (nth inputs 0) (nth inputs 3)) :branchA true :branchB false} 
-;;                      :branchB {:cond #(> (nth inputs 3) (nth inputs 1)) :branchA false :branchB true}} 
-;;            :branchB {:cond #(> (nth inputs 3) (nth inputs 2)) 
-;;                      :branchA false 
-;;                      :branchB {:cond #(> (nth inputs 0) (nth inputs 2)) :branchA true :branchB false}}})
-
-; Another example tree
-;;   (def tree {:input-indxs [4 0], 
+  "In this file we randomly generate a recursive strategy tree (each node being a map of {:input-indxs :branchA :branchB}) and then solve it recursively"
+;; Example tree:
+;;  {:input-indxs [4 0], 
 ;;  :branchA {:input-indxs [3 4], 
 ;;            :branchA {:input-indxs [2 3], 
 ;;                      :branchA {:input-indxs [2 0], 
@@ -47,7 +37,7 @@
 ;;                                :branchB false}, 
 ;;                      :branchB {:input-indxs [1 0], 
 ;;                                :branchA true, 
-;;                                :branchB false}}}})
+;;                                :branchB false}}}}
   )
 
 ;; START SERVER FOR VISUALIZATION
@@ -71,9 +61,8 @@
 (defn isLong? [testee] (= (type testee) java.lang.Long))
 
 (defn make-raw-tree
-  ([] (make-raw-tree {} 0 1 4 (index-pairs 4) #{}))
+  ([] (make-raw-tree {} 0 2 6 (index-pairs num-inputs) #{}))
   ([tree depth min-depth max-depth index-pairs index-pairs-used]
-   (println depth index-pairs index-pairs-used)
    (if (and (>= depth min-depth) (or (> (rand) 0.5) (= depth max-depth)))
      (rand-nth [1 0])
      (let [index-pair (rand-nth (vec (set/difference index-pairs index-pairs-used)))]
@@ -136,6 +125,9 @@
 (defn rand-caps-str [len]
   (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))
 
+(defn rand-suffix [input-str]
+  (str input-str "-" (rand-caps-str 10)))
+
 (defn scaled-rand-dbl
   "returns random double between min (inclusive) and max (exclusive)"
   [min max]
@@ -152,7 +144,7 @@
   )
 
 (defn get-random-sine-stream
-  ([num-data-points] (get-random-sine-stream (str "stream " (rand-caps-str 5)) num-data-points))
+  ([num-data-points] (get-random-sine-stream (rand-suffix "stream") num-data-points))
   ([name num-data-points]
    (with-meta
      (mapv
@@ -182,9 +174,9 @@
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
 
 (defn get-sieve-stream
-  [name input-streams strat-tree]
+  [name input-streams strat-tree solve-tree-fn]
   (with-meta (vec (for [inputs (apply zip-input-streams input-streams)]
-                    (solve-tree strat-tree inputs))) {:name name}))
+                    (solve-tree-fn strat-tree inputs))) {:name name}))
 
 (defn get-return-stream [name sieve-stream target-stream-delta]
   (with-meta
@@ -193,14 +185,17 @@
         (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
         (persistent! v))) {:name name}))
 
+(defn get-populated-strat-from-tree [tree input-and-target-streams solve-tree-fn]
+  (let [name (rand-suffix "strat")]
+   (let [sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)]
+       (let [return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
+           {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))))
+
 (defn get-populated-strat
-  ([input-and-target-streams] (get-populated-strat (str "strat-" (rand-caps-str 10)) (input-and-target-streams :input-streams) (input-and-target-streams :target-stream-delta)))
-  ([name input-and-target-streams] (get-populated-strat name (input-and-target-streams :input-streams) (input-and-target-streams :target-stream-delta)))
-  ([name input-streams target-stream-delta]
-   (let [tree (make-tree)]
-     (let [sieve-stream (get-sieve-stream (str name " sieve stream") input-streams tree)]
-       (let [return-stream (get-return-stream (str name " return stream") sieve-stream target-stream-delta)]
-         {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))))
+  ([input-and-target-streams] (get-populated-strat input-and-target-streams make-tree solve-tree))
+  ([input-and-target-streams make-tree-fn solve-tree-fn]
+   (let [tree (make-tree-fn)]
+     (get-populated-strat-from-tree tree input-and-target-streams solve-tree-fn))))
 
 
 ;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
@@ -256,12 +251,11 @@
 
 (def input-and-target-streams (get-input-and-target-streams num-inputs num-data-points))
 
-(def strat1 (get-populated-strat "strat 1" input-and-target-streams))
-(def strat2 (get-populated-strat "strat 2" input-and-target-streams))
-(def strat3 (get-populated-strat "strat 3" input-and-target-streams))
-(def strat4 (get-populated-strat "strat 4" input-and-target-streams))
-(plot-strats input-and-target-streams strat1 strat2 strat3 strat4)
+(time
+ (do
+   (def strat1 (get-populated-strat input-and-target-streams))
+   (def strat2 (get-populated-strat input-and-target-streams))
+   (def strat3 (get-populated-strat input-and-target-streams))
+   (def strat4 (get-populated-strat input-and-target-streams))
+(plot-strats input-and-target-streams strat1 strat2 strat3 strat4)))
 
-
-;; TODO
-;; When GA is working good, start building the "arena" *queue dramatic music*

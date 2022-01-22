@@ -1,45 +1,102 @@
 (ns vec-strategy
   (:require
-   [clojure.set :as set]))
+   [strategy :as strat]
+   [clojure.string :as cs]
+   [clojure.zip :as z]
+   [clojure.set :as set]
+   [clojure.walk :as w]))
 
 (def num-inputs 4)
-(defn get-input-indxs [num-inputs]
+(defn get-input-indxs
+  "returns set of sets"
+  [num-inputs]
   (set
    (filter
     #(not (nil? %))
     (for [x (range num-inputs) y (range num-inputs)]
-      (if (not= x y)  #{x y})))))
+      (when (not= x y)  #{x y})))))
 
-;; (defn children [] 
-;;   (rand-nth [[true false] [(node) (rand-nth [true false]) [(node) (node)]]]))
+(comment
+  "
+   1. Start at empty loc (root)
+   2. Populate the empty loc with either
+      a. boolean (different than sibling bool if applicable)
+      b. index set (different than parent index sets)
+   3. If cell is popoulated with index set, create two empty children
+   4. If cell has an unpopulated child -> move to child
+   5. Repeat step 2
+   ")
 
-(defn node
-  ([] (node 0 4 (get-input-indxs num-inputs) #{}))
-  ([depth max-depth input-indxs used-indxs] 
-   (let [indx-pair (rand-nth (seq (set/difference input-indxs used-indxs)))]
-    (let [new-node (fn [indx-pair] (node (inc depth) max-depth input-indxs (set/union used-indxs #{indx-pair})))]
-     (let [children (if (>= depth max-depth)
-                      (rand-nth [[true false] [false true]])
-                      (let [n (rand-int 4)]
-                        (cond (= n 0) [true false]
-                              (= n 1) [false true]
-                              (= n 2) [(new-node indx-pair) (rand-nth [true false])]
-                              (= n 3) (let [indx-pair2 (rand-nth (seq (set/difference input-indxs used-indxs #{indx-pair})))]
-                                        (println "index pairs: " indx-pair indx-pair2)
-                                        [(new-node indx-pair) (new-node indx-pair2)]))))]
-       (println "used indexes: " used-indxs)
-       (println "node: " [indx-pair children])
-       (println "-------------")
-       [indx-pair children])))))
+(defn make-vec-tree
+  "available-ind-sets is the set of total index sets minus (difference) node parent index sets
+   depth-vec is a vector of [current-depth min-tree-depth max-tree-depth]. "
+  [available-ind-sets depth-vec]
+  (let [ind-set (rand-nth (seq available-ind-sets))
+        new-available-ind-sets (set/difference available-ind-sets #{ind-set})]
+    (let [make-child
+          #(if
+            (and
+             (>= (first depth-vec) (nth depth-vec 1))
+             (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= (first depth-vec) (last depth-vec))))
+             (rand-nth [true false])
+             (make-vec-tree new-available-ind-sets (assoc depth-vec 0 (inc (first depth-vec)))))]
+      (as-> [] $
+        (z/vector-zip $)
+        (z/append-child $ ind-set)
+        (z/append-child $ (make-child))
+        (z/append-child $ (make-child))
+        (z/node $)))))
 
-(node)
+(defn print-tree [tree]
+  (print (cs/replace (str tree) "[#{" "\n[#{"))
+  tree)
 
-(def used-indxs #{#{1 3} #{3 2}})
-(def input-indxs (get-input-indxs 4))
+(defn ameliorate-tree
+  "Walk the tree. If two branches are identical, replace the node with the first branch"
+  [tree]
+  (w/postwalk
+   #(if (and
+         (= (type %) clojure.lang.PersistentVector)
+         (= (nth % 1) (nth % 2)))
+      (nth % 1)
+      %)
+   tree))
 
-(do
-  (def input-indx1 (rand-nth (seq (set/difference input-indxs used-indxs))))
-  (def input-indx2 (rand-nth (seq (set/difference input-indxs used-indxs #{input-indx1}))))
-  (println input-indx1 input-indx2))
+(defn make-tree
+  ([] (make-tree num-inputs 2 4))
+  ([num-inputs min-depth max-depth]
+   (-> num-inputs
+       (get-input-indxs)
+       (make-vec-tree [0 min-depth max-depth])
+       (ameliorate-tree))))
 
-(set/union #{#{1 3} #{3 2}} #{input-indx2})
+(defn solve-cond [inputs input-indxs]
+  (> (inputs (first input-indxs)) (inputs (last input-indxs))))
+
+(defn solve-tree
+  "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
+  [tree inst-inputs]
+  (if (= (type tree) java.lang.Boolean)
+    (if tree 1 0)
+    (solve-tree
+     (if (solve-cond inst-inputs (first tree))
+       (nth tree 1)
+       (nth tree 2))
+     inst-inputs)))
+
+(def input-and-target-streams (strat/get-input-and-target-streams num-inputs 100))
+
+(defn get-populated-strat-from-tree
+  [tree input-and-target-streams]
+  (strat/get-populated-strat-from-tree tree input-and-target-streams solve-tree))
+
+(defn get-populated-strat
+  ([input-and-target-streams] (strat/get-populated-strat input-and-target-streams make-tree solve-tree)))
+
+(time
+ (do
+   (def strat1 (get-populated-strat input-and-target-streams))
+   (def strat2 (get-populated-strat input-and-target-streams))
+   (def strat3 (get-populated-strat input-and-target-streams))
+   (def strat4 (get-populated-strat input-and-target-streams))))
+(strat/plot-strats input-and-target-streams strat1 strat2 strat3 strat4)
