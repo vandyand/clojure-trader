@@ -63,7 +63,7 @@
    tree))
 
 (defn make-tree
-  ([] (make-tree num-inputs 2 4))
+  ([] (make-tree num-inputs 4 6))
   ([num-inputs min-depth max-depth]
    (-> num-inputs
        (get-input-indxs)

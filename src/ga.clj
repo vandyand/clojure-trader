@@ -72,8 +72,8 @@
   (if (z/branch? loc) (-> loc (rand-branch) (z/replace (rand-bool)) (z/up)) loc))
 
 
-(defn make-new-tree-branch [num-inputs]
-  (vat/make-vec-tree (vat/get-input-indxs num-inputs) [0 0 1]))
+(defn make-tree [num-inputs depth-vec]
+  (vat/make-vec-tree (vat/get-input-indxs num-inputs) depth-vec))
 
 ;; (defn expand-branchA [loc]
 ;;   (if (and (z/branch? loc) (not (z/branch? (branchA loc))))
@@ -89,11 +89,11 @@
 ;;   (when (z/branch? loc)
 ;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchB) (z/replace new-node) (z/up)))))
 (defn new-rand-branch [loc]
-  (when (z/branch? loc)
-    (let [new-node (make-new-tree-branch 4)] (-> loc (rand-branch) (z/replace new-node) (z/up)))))
+  (if (z/branch? loc)
+    (let [new-node (make-tree 4 [0 1 1])] (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
 
 (defn switch-branches [loc]
-  (when (z/branch? loc) (-> loc (z/append-child (-> loc (branchA) (z/node))) (branchA) (z/remove) (z/up))))
+  (if (z/branch? loc) (-> loc (z/append-child (-> loc (branchA) (z/node))) (branchA) (z/remove) (z/up)) loc))
 
 (defn rand-bottom-loc
   "recursively dives a tree until it finds a bool, then returns it's parent node"
@@ -104,28 +104,29 @@
    (and
     (z/branch? (z/vector-zip node1))
     (z/branch? (z/vector-zip node2)))
-    (-> node1 (z/vector-zip) (rand-branch) (z/replace (rand-branch (z/vector-zip node2))) (z/root))
+    (-> node1 (z/vector-zip) (rand-branch) (z/replace (-> node2 (z/vector-zip) (rand-branch) (z/node))) (z/root))
     node1))
-
 
 
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
 
 (defn mutate-tree [tree]
   (strat/ameliorate-tree
-   (let [n (rand-int 6)]
+   (let [n (rand-int 8)]
      (cond
-       (= n 0) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-bool) (z/root))
-       (= n 1) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root))
-       (= n 2) (-> tree (z/vector-zip) (rand-bottom-loc) (new-rand-branch) (z/root))
-       (= n 3) (-> tree (z/vector-zip) (rand-bottom-loc) (switch-branches) (z/root))
+       (= n 0) (-> tree (z/vector-zip) (replace-rand-branch-with-rand-bool) (z/root))
+       (= n 1) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-bool) (z/root))
+       (= n 2) (-> tree (z/vector-zip) (prune-rand-branch) (z/root))
+       (= n 3) (-> tree (z/vector-zip) (rand-branch) (prune-rand-branch) (z/root))
        (= n 4) (-> tree (z/vector-zip) (new-rand-branch) (z/root))
-       (= n 5) (-> tree (z/vector-zip) (switch-branches) (z/root))))))
+       (= n 5) (-> tree (z/vector-zip) (rand-branch) (new-rand-branch) (z/root))
+       (= n 6) (-> tree (z/vector-zip) (switch-branches) (z/root))
+       (= n 7) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root))))))
 
 (defn get-rand-tree-branch [tree]
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
 
-(defn crossover-trees [tree1 tree2]
+(defn crossover-tree [tree1 tree2]
   (strat/ameliorate-tree
    (let [n (rand-int 4)]
      (cond
@@ -140,13 +141,21 @@
 
 (defn get-crossover-trees [trees num]
   (for [n (range num)]
-    (crossover-trees 
-     (rand-nth trees) 
+    (crossover-tree
+     (rand-nth trees)
      (rand-nth trees))))
 
 (defn get-mutation-trees [trees num]
   (for [n (range num)]
     (mutate-tree (rand-nth trees))))
+
+(defn get-random-trees [num]
+  (for [n (range num)]
+    (make-tree 4 [0 2 6])))
+
+(defn ameliorate-trees [trees]
+  (for [tree trees]
+    (vat/ameliorate-tree tree)))
 
 (defn populate-trees [trees input-and-target-streams]
   (for [tree trees]
@@ -154,33 +163,40 @@
 
 ;; RUN THROUGH
 
-(def pop-size 10)
+(def num-data-points 100)
+(def pop-size 50)
 (def parent-pct 40)
-(def crossover-pct 30)
+(def crossover-pct 20)
+(def mutated-pct 30)
 
 (def num-parents (Math/round (double (* pop-size (/ parent-pct 100)))))
 (def num-crossovers (Math/round (double (* pop-size (/ crossover-pct 100)))))
-(def num-mutations (- pop-size num-parents num-crossovers))
+(def num-mutations (Math/round (double (* pop-size (/ mutated-pct 100)))))
+(def num-random-children (- pop-size num-parents num-crossovers num-mutations))
 
-(def input-and-target-streams (strat/get-input-and-target-streams 4 pop-size))
+(def input-and-target-streams (strat/get-input-and-target-streams 4 num-data-points))
 
-(def init-strats (get-populated-strats pop-size input-and-target-streams))
+(def init-pop (pop-size get-populated-strats input-and-target-streams))
+(apply vat/plot-strats input-and-target-streams init-pop)
 
-(def parent-strats (get-best-strats init-strats num-parents))
-(def parent-trees (get-strat-trees parent-strats))
+(do
+  (def parent-strats (get-best-strats new-pop num-parents))
+  (def parent-trees (get-strat-trees parent-strats))
 
-(def mutated-trees (get-mutation-trees parent-trees num-mutations))
+  (def mutated-trees (get-mutation-trees parent-trees num-mutations))
+  (def crossover-trees (get-crossover-trees parent-trees num-crossovers))
+  (def random-trees (get-random-trees num-random-children))
+  (def new-trees (ameliorate-trees (concat mutated-trees crossover-trees random-trees)))
 
-(def crossover-trees (get-crossover-trees parent-trees num-crossovers))
-(def crossover-strats (populate-trees crossover-trees input-and-target-streams))
 
-(def new-pop
-  (let [trees (get-strat-trees parent-strats)]
-    (conj
+  (def new-strats (populate-trees new-trees input-and-target-streams))
+
+  (def new-pop
+    (concat
      parent-strats
-     (populate-trees (get-crossover-trees trees num-crossovers) input-and-target-streams)
-     (populate-trees (get-mutation-trees trees num-mutations) input-and-target-streams))))
+     new-strats))
 
+  (apply vat/plot-strats input-and-target-streams new-pop))
 
 ;; TODO
 ;; Build GA
