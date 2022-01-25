@@ -9,7 +9,7 @@
    [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [vec-strategy :as vat]
+   [vec_strategy :as vat]
    [strategy :as strat]))
 
 
@@ -17,8 +17,9 @@
 
 ;; PLOT ALL THE STRATEGIES RETURN FUNCTIONS WITH THE INPUT DATA
 
-(defn plot-strats [input-and-target-data strats]
-  (apply strat/plot-strats input-and-target-data strats))
+(defn plot-strats [strats input-and-target-data]
+  (apply strat/plot-strats input-and-target-data strats)
+  strats)
 
 ;; MAKE A BUNCH OF POPULATED STRATEGIES
 
@@ -72,7 +73,7 @@
   (if (z/branch? loc) (-> loc (rand-branch) (z/replace (rand-bool)) (z/up)) loc))
 
 
-(defn make-tree [num-inputs depth-vec]
+(defn get-random-tree [num-inputs depth-vec]
   (vat/make-vec-tree (vat/get-input-indxs num-inputs) depth-vec))
 
 ;; (defn expand-branchA [loc]
@@ -90,7 +91,7 @@
 ;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchB) (z/replace new-node) (z/up)))))
 (defn new-rand-branch [loc]
   (if (z/branch? loc)
-    (let [new-node (make-tree 4 [0 1 1])] (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
+    (let [new-node (get-random-tree 4 [0 1 1])] (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
 
 (defn switch-branches [loc]
   (if (z/branch? loc) (-> loc (z/append-child (-> loc (branchA) (z/node))) (branchA) (z/remove) (z/up)) loc))
@@ -110,7 +111,7 @@
 
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
 
-(defn mutate-tree [tree]
+(defn get-mutated-tree [tree]
   (strat/ameliorate-tree
    (let [n (rand-int 8)]
      (cond
@@ -126,14 +127,16 @@
 (defn get-rand-tree-branch [tree]
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
 
-(defn crossover-tree [tree1 tree2]
-  (strat/ameliorate-tree
-   (let [n (rand-int 4)]
-     (cond
-       (= n 0) (combine-node-branches tree1 tree2)
-       (= n 1) (combine-node-branches (get-rand-tree-branch tree1) tree2)
-       (= n 2) (combine-node-branches (get-rand-tree-branch tree2) tree1)
-       (= n 3) (combine-node-branches (get-rand-tree-branch tree1) (get-rand-tree-branch tree2))))))
+(defn get-crossover-tree [trees]
+  (let [rand-trees (shuffle trees)]
+    (let [tree1 (first rand-trees) tree2 (last rand-trees)]
+      (strat/ameliorate-tree
+       (let [n (rand-int 4)]
+         (cond
+           (= n 0) (combine-node-branches tree1 tree2)
+           (= n 1) (combine-node-branches (get-rand-tree-branch tree1) tree2)
+           (= n 2) (combine-node-branches (get-rand-tree-branch tree2) tree1)
+           (= n 3) (combine-node-branches (get-rand-tree-branch tree1) (get-rand-tree-branch tree2))))))))
 
 (defn get-strat-trees [strats]
   (for [strat strats]
@@ -141,17 +144,15 @@
 
 (defn get-crossover-trees [trees num]
   (for [n (range num)]
-    (crossover-tree
-     (rand-nth trees)
-     (rand-nth trees))))
+    (get-crossover-tree trees)))
 
-(defn get-mutation-trees [trees num]
+(defn get-mutated-trees [trees num]
   (for [n (range num)]
-    (mutate-tree (rand-nth trees))))
+    (get-mutated-tree (rand-nth trees))))
 
 (defn get-random-trees [num]
   (for [n (range num)]
-    (make-tree 4 [0 2 6])))
+    (get-random-tree 4 [0 2 6])))
 
 (defn ameliorate-trees [trees]
   (for [tree trees]
@@ -176,27 +177,67 @@
 
 (def input-and-target-streams (strat/get-input-and-target-streams 4 num-data-points))
 
-(def init-pop (pop-size get-populated-strats input-and-target-streams))
-(apply vat/plot-strats input-and-target-streams init-pop)
+(def init-pop (get-populated-strats pop-size input-and-target-streams))
+(plot-strats input-and-target-streams init-pop)
 
-(do
-  (def parent-strats (get-best-strats new-pop num-parents))
-  (def parent-trees (get-strat-trees parent-strats))
+;; (do
+;;   (def parent-strats (get-best-strats new-pop num-parents))
+;;   (def parent-trees (get-strat-trees parent-strats))
 
-  (def mutated-trees (get-mutation-trees parent-trees num-mutations))
-  (def crossover-trees (get-crossover-trees parent-trees num-crossovers))
-  (def random-trees (get-random-trees num-random-children))
-  (def new-trees (ameliorate-trees (concat mutated-trees crossover-trees random-trees)))
+;;   (def mutated-trees (get-mutated-trees parent-trees num-mutations))
+;;   (def crossover-trees (get-crossover-trees parent-trees num-crossovers))
+;;   (def random-trees (get-random-trees num-random-children))
+;;   (def new-trees (ameliorate-trees (concat mutated-trees crossover-trees random-trees)))
 
 
-  (def new-strats (populate-trees new-trees input-and-target-streams))
+;;   (def new-strats (populate-trees new-trees input-and-target-streams))
 
-  (def new-pop
-    (concat
-     parent-strats
-     new-strats))
+;;   (def new-pop
+;;     (concat
+;;      parent-strats
+;;      new-strats))
 
-  (apply vat/plot-strats input-and-target-streams new-pop))
+;;   (plot-strats new-pop input-and-target-streams))
+
+;; FUNCTIONIZE ME CAP'N!
+(defn duplicate-tree-check
+  "returns test-tree if test-tree is different from all trees in source-trees else nil"
+  [source-trees test-tree]
+  (if (reduce #(if (= test-tree %2) (reduced true) %1) false source-trees) nil test-tree))
+
+(defn get-child-tree
+  "parent-trees must have count >= 2
+   reproduction-weight (reprod-wt) is map of keys: {:crossover :mutation :random} which holds probabilities of the respective reproduction techniques being used"
+  [parent-trees reprod-wt]
+  (let [n (rand)]
+    parent-trees
+    (cond
+      (< n (reprod-wt :crossover)) (get-crossover-tree parent-trees)
+      (< n (+ (reprod-wt :crossover) (reprod-wt :mutation))) (get-mutated-tree (rand-nth parent-trees))
+      :else (get-random-tree 4 [0 2 6]))))
+
+(defn get-children-trees [parent-trees num-children]
+  (loop [v (transient (vec parent-trees))]
+    (if (< (count v) (+ num-children (count parent-trees)))
+      (recur
+       (let [new-child (duplicate-tree-check parent-trees (get-child-tree parent-trees {:crossover 0.3 :mutation 0.5}))]
+         (if new-child (conj! v new-child) v)))
+      (persistent! v))))
+
+(defn ga-epoch
+  "config is map of keys: {:num-parents :num-children}"
+  [config population]
+  (-> population
+      (get-best-strats (config :num-parents))
+      (get-strat-trees)
+      (get-children-trees (config :num-children))
+      (populate-trees input-and-target-streams)
+      (plot-strats input-and-target-streams)))
+
+(time
+ (loop [i 0 pop init-pop]
+   (let [next-gen (ga-epoch {:num-parents num-parents :num-children (- pop-size num-parents)} pop)]
+     (if (< i 20) (recur (inc i) next-gen) next-gen))))
 
 ;; TODO
 ;; Build GA
