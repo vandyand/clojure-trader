@@ -1,4 +1,4 @@
-(ns vec-strategy
+(ns vec_strategy
   (:require
    [strategy :as strat]
    [clojure.string :as cs]
