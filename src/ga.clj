@@ -33,8 +33,12 @@
   (let [fitness (last (strat :return-stream))]
     (assoc strat :fitness fitness)))
 
+(defn get-strats-fitnesses [strats]
+  (for [strat strats]
+    (get-strat-fitness strat)))
+
 (defn get-best-strats [strats num]
-  (take num (reverse (sort-by :fitness (map get-strat-fitness strats)))))
+  (take num (reverse (sort-by :fitness strats))))
 
 
 ;; MUTATE ZIPPERS FUNCTIONS
@@ -177,8 +181,8 @@
 
 (def input-and-target-streams (strat/get-input-and-target-streams 4 num-data-points))
 
-(def init-pop (get-populated-strats pop-size input-and-target-streams))
-(plot-strats input-and-target-streams init-pop)
+(def init-pop (get-strats-fitnesses (get-populated-strats pop-size input-and-target-streams)))
+(plot-strats init-pop input-and-target-streams)
 
 ;; (do
 ;;   (def parent-strats (get-best-strats new-pop num-parents))
@@ -220,32 +224,44 @@
   (loop [v (transient (vec parent-trees))]
     (if (< (count v) (+ num-children (count parent-trees)))
       (recur
-       (let [new-child (duplicate-tree-check parent-trees (get-child-tree parent-trees {:crossover 0.3 :mutation 0.5}))]
+       (let [new-child (duplicate-tree-check parent-trees (vat/ameliorate-tree (get-child-tree parent-trees {:crossover 0.3 :mutation 0.5})))]
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 
 (defn ga-epoch
   "config is map of keys: {:num-parents :num-children}"
-  [config population]
+  [population config]
   (-> population
       (get-best-strats (config :num-parents))
       (get-strat-trees)
       (get-children-trees (config :num-children))
       (populate-trees input-and-target-streams)
+      (get-strats-fitnesses)
       (plot-strats input-and-target-streams)))
 
-(time
- (loop [i 0 pop init-pop]
-   (let [next-gen (ga-epoch {:num-parents num-parents :num-children (- pop-size num-parents)} pop)]
-     (if (< i 20) (recur (inc i) next-gen) next-gen))))
+(loop [i 0 pop init-pop]
+     (let [next-gen (ga-epoch pop {:num-parents num-parents :num-children (- pop-size num-parents)})]
+       (if (< i 10) (recur (inc i) next-gen) next-gen)))
+
+(defn run-epochs 
+  ([num-epochs] (run-epochs num-epochs init-pop))
+  ([num-epochs init-pop]
+   (loop [i 0 pop init-pop]
+     (let [next-gen (ga-epoch pop {:num-parents num-parents :num-children (- pop-size num-parents)})]
+       (if (< i num-epochs) (recur (inc i) next-gen) next-gen)))))
+
+(run-epochs 10)
+
+(def best-strats (run-epochs 20))
 
 ;; TODO
-;; Build GA
-    ;; 1. MAKE RANDOM STRATS
-    ;; 2. GET FITNESS
-    ;; 3. GET PARENTS (FITTEST N STRATEGIES)
-    ;; 4. MAKE OFFSPRING (MUTATIONS AND CROSSOVERS OF PARENTS PLUS SOME NEW RANDOM ONES)
-    ;; 5. RETURN TO STEP 2
+;; Build GA ✅
+    ;; 1. MAKE RANDOM STRATS ✅
+    ;; 2. GET FITNESS ✅
+    ;; 3. GET PARENTS (FITTEST N STRATEGIES) ✅
+    ;; 4. MAKE OFFSPRING (MUTATIONS AND CROSSOVERS OF PARENTS PLUS SOME NEW RANDOM ONES) ✅
+    ;; 5. RETURN TO STEP 2 ect ✅
+
 ;; When GA is working good, start building the "arena" *queue dramatic music*
 
 

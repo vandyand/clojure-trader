@@ -1,3 +1,4 @@
 {:paths ["src"]
- :deps {metasoarous/oz {:mvn/version "2.0.0-alpha5"}}
+ :deps {metasoarous/oz {:mvn/version "2.0.0-alpha5"}
+        incanter/incanter-core {:mvn/version "1.9.3"}}
  :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}}}}}
