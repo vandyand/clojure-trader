@@ -8,38 +8,6 @@
    [oz.core :as oz]
    [clojure.set :as set]))
 
-(comment
-  "In this file we randomly generate a recursive strategy tree (each node being a map of {:input-indxs :branchA :branchB}) and then solve it recursively"
-;; Example tree:
-;;  {:input-indxs [4 0], 
-;;  :branchA {:input-indxs [3 4], 
-;;            :branchA {:input-indxs [2 3], 
-;;                      :branchA {:input-indxs [2 0], 
-;;                                :branchA true, 
-;;                                :branchB {:input-indxs [3 1], 
-;;                                          :branchA true, 
-;;                                          :branchB {:input-indxs [3 3], 
-;;                                                    :branchA true, 
-;;                                                    :branchB false}}}, 
-;;                      :branchB false}, 
-;;            :branchB {:input-indxs [2 3], 
-;;                      :branchA {:input-indxs [4 3], 
-;;                                :branchA false, 
-;;                                :branchB true}, 
-;;                      :branchB false}}, 
-;;  :branchB {:input-indxs [3 3], 
-;;            :branchA {:input-indxs [1 0], 
-;;                      :branchA false, 
-;;                      :branchB false}, 
-;;            :branchB {:input-indxs [1 3], 
-;;                      :branchA {:input-indxs [3 2], 
-;;                                :branchA false, 
-;;                                :branchB false}, 
-;;                      :branchB {:input-indxs [1 0], 
-;;                                :branchA true, 
-;;                                :branchB false}}}}
-  )
-
 ;; START SERVER FOR VISUALIZATION
 
 (oz/start-server! 10667)
@@ -83,15 +51,12 @@
       %)
    tree))
 
-(defn make-tree 
+(defn make-tree
   ([] (ameliorate-tree (make-raw-tree)))
   ([& args] (ameliorate-tree (apply make-raw-tree args))))
 
 (defn print-tree [tree]
   (print (cs/replace (str tree) ":b" "\n:b")))
-
-;; (def tree (print-tree (make-tree)))
-;; (ameliorate-tree (make-tree))
 
 ;; SOLVE TREE FUNCTIONS
 
@@ -106,15 +71,15 @@
     (solve-tree
      (if (solve-cond inst-inputs (tree :input-indxs))
        (tree :branchA)
-       (tree :branchB)) 
+       (tree :branchB))
      inst-inputs)))
 
 
 ;; SOLVE TREE WITH RANDOM INPUTS
 
-(def rand-inputs
-  "Creates (is) zipped input streams (inputs cols instead of rows as it were if each input-stream were a row)"
-  (map vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
+;; (def rand-inputs
+;;   "Creates (is) zipped input streams (inputs cols instead of rows as it were if each input-stream were a row)"
+;;   (map vec (partition num-inputs (take (* num-inputs num-data-points) (repeatedly #(rand))))))
 
 ;; (for [inst-inputs rand-inputs]
 ;;   (solve-tree (ameliorate-tree (make-tree)) inst-inputs))
@@ -133,24 +98,23 @@
   [min max]
   (-> (- max min) (rand) (+ min)))
 
-(defn get-stream-gen-fn []
+(defn get-stream-gen-fn [config]
   (fn [x]
     (-> x
-        (* (scaled-rand-dbl 0 0.01)) ;; freq
-        (- (scaled-rand-dbl 0 100)) ;; h-shift
+        (* (scaled-rand-dbl 0 (config :freq))) ;; freq
+        (- (scaled-rand-dbl 0 (config :h-shift))) ;; h-shift
         (Math/sin)
-        (* (scaled-rand-dbl 0 10)) ;; amp
-        (+ (scaled-rand-dbl 0 0)))) ;; v-shift
+        (* (scaled-rand-dbl 0 (config :amp))) ;; amp
+        (+ (scaled-rand-dbl 0 (config :v-shift))))) ;; v-shift
   )
 
 (defn get-random-sine-stream
-  ([num-data-points] (get-random-sine-stream (rand-suffix "stream") num-data-points))
-  ([name num-data-points]
+  ([config]
    (with-meta
      (mapv
-      (get-stream-gen-fn)
-      (range num-data-points))
-     {:name name})))
+      (get-stream-gen-fn config)
+      (range (config :num-data-points)))
+     {:name (or (config :name) (str "sine stream " (rand-caps-str 5)))})))
 
 (defn zip-input-streams [& streams]
   (loop [i 0 v (transient [])]
@@ -187,9 +151,9 @@
 
 (defn get-populated-strat-from-tree [tree input-and-target-streams solve-tree-fn]
   (let [name (rand-suffix "strat")]
-   (let [sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)]
-       (let [return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
-           {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))))
+    (let [sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)]
+      (let [return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
+        {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))))
 
 (defn get-populated-strat
   ([input-and-target-streams] (get-populated-strat input-and-target-streams make-tree solve-tree))
@@ -200,21 +164,29 @@
 
 ;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
 
-(defn get-input-streams [num-streams num-data-points]
-  (repeatedly num-streams #(get-random-sine-stream num-data-points)))
+(defn get-input-config [num-data-points amp freq v-shift h-shift]
+  {:num-data-points num-data-points
+   :amp amp
+   :freq freq
+   :v-shift v-shift
+   :h-shift h-shift})
 
-(defn get-target-stream-delta [target-stream]
-  (with-meta
-    (into [0.0]
-          (for [i (range (- (count target-stream) 1))]
-            (- (target-stream (+ i 1)) (target-stream i))))
-    {:name "target stream deltas"}))
+(defn get-input-streams [num-streams input-config]
+  (repeatedly num-streams #(get-random-sine-stream input-config)))
 
-(defn get-input-and-target-streams [num-inputs num-data-points]
-  (let [input-streams (get-input-streams num-inputs num-data-points)]
+(defn get-stream-delta
+  ([stream] (get-stream-delta stream "stream delta"))
+  ([stream name]
+   (with-meta
+     (into [0.0]
+           (for [i (range (- (count stream) 1))]
+             (- (stream (+ i 1)) (stream i))))
+     {:name name})))
+
+(defn get-input-and-target-streams [num-inputs input-config]
+  (let [input-streams (get-input-streams num-inputs input-config)]
     (let [target-stream (with-meta (rand-nth input-streams) {:name "target stream"})]
-      {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-target-stream-delta target-stream)})))
-
+      {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-stream-delta target-stream "target")})))
 
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
@@ -231,7 +203,7 @@
     format-stream-for-view
     plot-streams)))
 
-(defn generate-plot [values]
+(defn generate-and-view-plot [values]
   (let [viz
         [:div
          [:vega-lite
@@ -241,15 +213,24 @@
                       :y {:field "y" :type "quantitative"}
                       :color {:field "item" :type "nominal"}}
            :mark {:type "line"}} {:width 500}]]]
-
     (oz/view! viz)))
 
-(defn plot-strats [input-and-target-streams & strats]
-  (generate-plot
+(defn plot-stream [stream]
+  (generate-and-view-plot (format-stream-for-view stream)))
+
+(defn plot-strats-with-input-target-streams [input-and-target-streams & strats]
+  (generate-and-view-plot
    (get-plot-values
     (apply get-plot-streams input-and-target-streams strats))))
 
-(def input-and-target-streams (get-input-and-target-streams num-inputs num-data-points))
+(defn plot-strats [& strats]
+  (generate-and-view-plot
+   (get-plot-values
+    (map :return-stream strats))))
+
+(def input-config (get-input-config 100 10 0.01 0 100))
+
+(def input-and-target-streams (get-input-and-target-streams num-inputs input-config))
 
 (time
  (do
@@ -257,5 +238,5 @@
    (def strat2 (get-populated-strat input-and-target-streams))
    (def strat3 (get-populated-strat input-and-target-streams))
    (def strat4 (get-populated-strat input-and-target-streams))
-(plot-strats input-and-target-streams strat1 strat2 strat3 strat4)))
+   (plot-strats-with-input-target-streams input-and-target-streams strat1 strat2 strat3 strat4)))
 
