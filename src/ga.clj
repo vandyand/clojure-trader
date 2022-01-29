@@ -228,6 +228,7 @@
   ([num-epochs population config]
    (loop [i 0 pop population]
      (let [next-gen (ga-epoch pop config)]
+       (println "gen  " i " best score: " (:fitness (first next-gen)))
        (if (< i num-epochs) (recur (inc i) next-gen) next-gen)))))
 
 (time
