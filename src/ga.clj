@@ -187,9 +187,9 @@
          :num-parents (product-int pop-size parent-pct)
          :num-children (product-int pop-size (- 1.0 parent-pct))))
 
-(def input-config (strat/get-input-config 100 10 0.01 0 100))
+(def input-config (strat/get-inputs-config 4 100 10 0.01 0 100))
 
-(def input-and-target-streams (strat/get-input-and-target-streams 4 input-config))
+(def input-and-target-streams (strat/get-input-and-target-streams input-config))
 
 (def ga-config (get-ga-config 100 50 0.4 0.3 0.5 input-and-target-streams))
 
