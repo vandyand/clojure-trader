@@ -224,12 +224,11 @@
    (get-plot-values
     (map :return-stream strats))))
 
-(def inputs-config (get-inputs-config 4 100 10 0.01 0 100))
-(def tree-config (get-tree-config 2 6 (get-index-pairs (inputs-config :num-input-streams))))
-
-(def input-and-target-streams (get-input-and-target-streams inputs-config))
 (time
  (do
+   (def inputs-config (get-inputs-config 4 100 10 0.01 0 100))
+   (def tree-config (get-tree-config 2 6 (get-index-pairs (inputs-config :num-input-streams))))
+   (def input-and-target-streams (get-input-and-target-streams inputs-config))
    (def strat1 (get-populated-strat input-and-target-streams tree-config))
    (def strat2 (get-populated-strat input-and-target-streams tree-config))
    (def strat3 (get-populated-strat input-and-target-streams tree-config))

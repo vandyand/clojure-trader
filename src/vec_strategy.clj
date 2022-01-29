@@ -6,7 +6,6 @@
    [clojure.set :as set]
    [clojure.walk :as w]))
 
-;; (def num-inputs 4)
 (defn get-index-pairs
   "returns set of sets"
   [num-inputs]
@@ -27,10 +26,9 @@
    5. Repeat step 2
    ")
 
-(defn make-vec-tree-recur
-  "available-ind-sets is the set of total index sets minus (difference) node parent index sets
-   depth-vec is a vector of [current-depth min-tree-depth max-tree-depth]. "
-  ([tree-config] (make-vec-tree-recur (tree-config :index-pairs) tree-config 0))
+(defn make-tree-recur
+  "available-ind-sets is the set of total index sets minus (difference) node parent index sets"
+  ([tree-config] (make-tree-recur (tree-config :index-pairs) tree-config 0))
   ([available-ind-sets tree-config depth]
    (let [ind-set (rand-nth (seq available-ind-sets))
          new-available-ind-sets (set/difference available-ind-sets #{ind-set})]
@@ -40,7 +38,7 @@
               (>= depth (tree-config :min-depth))
               (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= depth (tree-config :max-depth))))
               (rand-nth [true false])
-              (make-vec-tree-recur new-available-ind-sets tree-config (inc depth)))]
+              (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
        (as-> [] $
          (z/vector-zip $)
          (z/append-child $ ind-set)
@@ -53,7 +51,8 @@
   tree)
 
 (defn ameliorate-tree
-  "Walk the tree. If two branches are identical, replace the node with the first branch"
+  "This function only works on vector trees.
+   Walk the tree. If two branches are identical, replace the node with the first branch"
   [tree]
   (w/postwalk
    #(if (and
@@ -66,7 +65,7 @@
 (defn make-tree
   ([tree-config]
    (-> tree-config
-       (make-vec-tree-recur)
+       (make-tree-recur)
        (ameliorate-tree))))
 
 (defn solve-cond [inputs input-indxs]
@@ -83,11 +82,6 @@
        (nth tree 2))
      inst-inputs)))
 
-(def input-config (strat/get-inputs-config 4 100 10 0.01 0 100))
-(def tree-config (strat/get-tree-config 2 6 (get-index-pairs (input-config :num-input-streams))))
-
-(def input-and-target-streams (strat/get-input-and-target-streams input-config))
-
 (defn get-populated-strat-from-tree
   [tree input-and-target-streams]
   (strat/get-populated-strat-from-tree tree input-and-target-streams solve-tree))
@@ -97,8 +91,11 @@
 
 (time
  (do
+   (def input-config (strat/get-inputs-config 4 100 10 0.01 0 100))
+   (def tree-config (strat/get-tree-config 2 6 (get-index-pairs (input-config :num-input-streams))))
+   (def input-and-target-streams (strat/get-input-and-target-streams input-config))
    (def strat1 (get-populated-strat input-and-target-streams tree-config))
    (def strat2 (get-populated-strat input-and-target-streams tree-config))
    (def strat3 (get-populated-strat input-and-target-streams tree-config))
-   (def strat4 (get-populated-strat input-and-target-streams tree-config))))
-(strat/plot-strats-with-input-target-streams input-and-target-streams strat1 strat2 strat3 strat4)
+   (def strat4 (get-populated-strat input-and-target-streams tree-config))
+   (strat/plot-strats-with-input-target-streams input-and-target-streams strat1 strat2 strat3 strat4)))
