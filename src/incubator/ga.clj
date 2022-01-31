@@ -1,4 +1,4 @@
-(ns ga
+(ns incubator.ga
   (:require
   ;;  [clojure.pprint :as pp]
   ;;  [clojure.spec.alpha :as s]
@@ -43,6 +43,8 @@
 
 
 ;; MUTATE ZIPPERS FUNCTIONS
+
+
 (defn rand-bool []
   (> 0.5 (rand)))
 
@@ -91,6 +93,8 @@
 ;; (defn new-branchB [loc]
 ;;   (when (z/branch? loc)
 ;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchB) (z/replace new-node) (z/up)))))
+
+
 (defn new-rand-branch [loc]
   (if (z/branch? loc)
     (let [subtree-config (strat/get-tree-config 0 1 (vat/get-index-pairs 4))
@@ -114,6 +118,7 @@
 
 
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
+
 
 (defn get-mutated-tree [tree]
   (strat/ameliorate-tree

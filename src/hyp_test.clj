@@ -9,9 +9,9 @@
   ;;  [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [vec_strategy :as vat]
-   [strategy :as strat]
-   [ga :as ga]
+   [incubator.vec_strategy :as vat]
+   [incubator.strategy :as strat]
+   [incubator.ga :as ga]
    [stats :as stats]))
 
 (defn add-delta-return-stream-to-strat [strat]
@@ -25,14 +25,13 @@
 
 (ga/plot-strats [best-strat best-strat-arena] input-and-target-streams-arena)
 
-
 (stats/z-score (best-strat :return-stream-delta) (best-strat-arena :return-stream-delta))
 
 (let [arena-return-stream-delta (best-strat-arena :return-stream-delta)]
- (for [i (range  (count arena-return-stream-delta))] 
-  (let [partial-return-stream-delta (subvec arena-return-stream-delta 0 (+ 1 i))] 
-    (println
-     (stats/z-score (best-strat :return-stream-delta) partial-return-stream-delta)))))
+  (for [i (range  (count arena-return-stream-delta))]
+    (let [partial-return-stream-delta (subvec arena-return-stream-delta 0 (+ 1 i))]
+      (println
+       (stats/z-score (best-strat :return-stream-delta) partial-return-stream-delta)))))
 
 
 ;; TODO

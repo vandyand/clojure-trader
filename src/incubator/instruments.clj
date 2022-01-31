@@ -25,6 +25,6 @@
    (def input-streams (strat/get-input-streams input-config))
    (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
    (def input-and-eurusd-streams {:input-streams input-streams :target-stream eurusd :target-stream-delta eurusd-delta})
-   (def ga-config (ga/get-ga-config 50 0.4 0.1 0.9 input-and-eurusd-streams input-config tree-config))
+   (def ga-config (ga/get-ga-config 50 0.2 0.1 0.9 input-and-eurusd-streams input-config tree-config))
    (def init-pop (ga/get-init-pop ga-config))
-   (def best-strats (ga/run-epochs 40 init-pop ga-config))))
+   (def best-strats (ga/run-epochs 50 init-pop ga-config))))

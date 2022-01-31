@@ -1,4 +1,4 @@
-(ns vec_strategy
+(ns incubator.vec_strategy
   (:require
    [strategy :as strat]
    [clojure.string :as cs]

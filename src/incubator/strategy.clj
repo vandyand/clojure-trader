@@ -1,4 +1,4 @@
-(ns strategy
+(ns incubator.strategy
   (:require
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
@@ -14,6 +14,7 @@
 
 
 ;; CONFIG SETTINGS
+
 
 (defn get-inputs-config [num-input-streams num-data-points amp freq v-shift h-shift]
   {:num-input-streams num-input-streams
@@ -32,6 +33,7 @@
 ;; (def num-inputs 4)
 ;; (def num-data-points 100)
 
+
 (defn get-index-pairs [num-inputs]
   (set (filter
         #(not= (first %) (last %))
@@ -39,6 +41,8 @@
 
 
 ;; MAKE TREE
+
+
 (defn isArrayMap? [testee] (= (type testee) clojure.lang.PersistentArrayMap))
 (defn isLong? [testee] (= (type testee) java.lang.Long))
 
@@ -91,6 +95,7 @@
 
 ;; CODIFY INPUT DATA FUNCTIONS
 
+
 (defn rand-caps-str [len]
   (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))
 
@@ -128,6 +133,7 @@
 
 ;; VISUALIZATION FORMATTING FUNCTION
 
+
 (defn format-stream-for-view
   "returns a collection of view data (maps) of form {:item <stream name> :x <x input angle> :y <stream solution at x>} from the stream"
   [stream]
@@ -139,6 +145,7 @@
 
 
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
+
 
 (defn get-sieve-stream
   [name input-streams strat-tree solve-tree-fn]
@@ -166,6 +173,7 @@
 
 
 ;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
+
 
 (defn get-input-streams [config]
   (repeatedly (config :num-input-streams) #(get-random-sine-stream config)))
