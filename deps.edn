@@ -1,4 +1,6 @@
 {:paths ["src"]
  :deps {metasoarous/oz {:mvn/version "2.0.0-alpha5"}
-        org.clojure/data.csv {:mvn/version "1.0.0"}}
+        org.clojure/data.csv {:mvn/version "1.0.0"}
+        org.clojure/data.json {:mvn/version "2.4.0"}
+        clj-http/clj-http {:mvn/version "3.12.3"}}
  :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}}}}}
