@@ -1,6 +1,6 @@
 (ns arena.oanda_api
   (:require [clj-http.client :as client]
-            [clojure.pprint :as pp]
+            ;; [clojure.pprint :as pp]
             [clojure.data.json :as json]))
 
 (defn get-sensative-data [keywd]
@@ -9,19 +9,12 @@
 (defn get-env-data [keywd]
   ((json/read-str (slurp ".env.json") :key-fn keyword) keywd))
 
-(defn get-account-endpoint
-  ([end] (get-account-endpoint (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
-  ([account-id end]
-   (str "accounts/" account-id "/" end)))
-
 (defn get-headers [] {:Authorization (str "Bearer " (get-sensative-data :OANDA_API_KEY)) :Accept-Datetime-Format "UNIX"})
 
 ;; SEND REQUESTS
 
 (defn send-api-get-request
-  ([url]
-   (let [options {:headers (get-headers)}]
-     (client/get url options))))
+  ([url] (client/get url {:headers (get-headers)})))
 
 (defn send-api-put-request [url options]
   (client/put url options))
@@ -32,6 +25,11 @@
 
 ;; UTILITY FUNCTIONS 
 
+
+(defn get-account-endpoint
+  ([end] (get-account-endpoint (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
+  ([account-id end]
+   (str "accounts/" account-id "/" end)))
 
 (defn parse-response-body [response]
   (json/read-str (response :body) :key-fn keyword))
@@ -98,26 +96,31 @@
 (defn make-post-order-body [instrument units]
   {:order {:instrument instrument :units units :timeInForce "FOK" :type "MARKET" :positionFill "DEFAULT"}})
 
-(defn make-post-put-options [body]
+(defn make-request-options [body]
   {:headers (get-headers)
    :content-type :json
    :body (json/write-str body)})
 
-(defn send-post-order-request
-  ([instrument units] (send-post-order-request (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
+(defn send-order-request
+  ([instrument units] (send-order-request (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
   ([account-id instrument units]
-   (send-api-post-request (get-url (get-account-endpoint account-id "orders")) (make-post-put-options (make-post-order-body instrument units)))))
+   (send-api-post-request (get-url (get-account-endpoint account-id "orders")) (make-request-options (make-post-order-body instrument units)))))
 
 ;; (println (send-post-order-request "AUD_USD" 100))
 
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
-
-(defn close-position [instrument]
+(defn close-position [instrument long-pos?]
   (send-api-put-request
    (get-url
     (get-account-endpoint (str "positions/" instrument "/close")))
-   (make-post-put-options {:longUnits "ALL"}))) ;; If position is short you need to exclude :longUnits and include :shortUnits *eye-roll*
+   (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"}))))
 
-(println (close-position "EUR_USD"))
+(defn close-long-position [instrument]
+  (close-position instrument true))
+
+(defn close-short-position [instrument]
+  (close-position instrument false))
+
+(println (close-long-position "EUR_USD"))
