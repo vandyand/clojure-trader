@@ -1,9 +1,9 @@
-(ns incubator.instruments
+(ns incubator.csv_instrument
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
-            [strategy :as strat]
-            [vec_strategy :as vat]
-            [ga :as ga]))
+            [incubator.strategy :as strat]
+            [incubator.vec_strategy :as vat]
+            [incubator.ga :as ga]))
 
 (defn get-csv-data [file-name]
   (with-open [reader (io/reader file-name)]
@@ -23,7 +23,8 @@
    (def tree-config (strat/get-tree-config 2 6 (vat/get-index-pairs (input-config :num-input-streams))))
    (def input-streams (strat/get-input-streams input-config))
    (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
-   (def input-and-eurusd-streams {:input-streams input-streams :target-stream eurusd :target-stream-delta eurusd-delta})
-   (def ga-config (ga/get-ga-config 50 0.2 0.1 0.9 input-and-eurusd-streams input-config tree-config))
+   (def zeroed-eurusd (with-meta (vec (for [price eurusd] (- price (first eurusd)))) {:name "zeroed eurusd"}))
+   (def input-and-eurusd-streams {:input-streams input-streams :target-stream zeroed-eurusd :target-stream-delta eurusd-delta})
+   (def ga-config (ga/get-ga-config 40 0.2 0.4 0.5 input-and-eurusd-streams input-config tree-config))
    (def init-pop (ga/get-init-pop ga-config))
-   (def best-strats (ga/run-epochs 50 init-pop ga-config))))
+   (def best-strats (ga/run-epochs 10 init-pop ga-config))))

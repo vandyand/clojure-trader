@@ -1,6 +1,6 @@
 (ns incubator.vec_strategy
   (:require
-   [strategy :as strat]
+   [incubator.strategy :as strat]
    [clojure.string :as cs]
    [clojure.zip :as z]
    [clojure.set :as set]

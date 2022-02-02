@@ -9,8 +9,8 @@
    [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [vec_strategy :as vat]
-   [strategy :as strat]))
+   [incubator.vec_strategy :as vat]
+   [incubator.strategy :as strat]))
 
 ;; PLOT ALL THE STRATEGIES RETURN FUNCTIONS WITH THE INPUT DATA
 
