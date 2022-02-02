@@ -1,10 +1,9 @@
-(ns misc-spec-gen
+(ns incubator.misc_spec_gen
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as sgen]
    [clojure.test.check.generators :as gen]
    [clojure.string :as cs]))
-
 
 (s/def ::cond ifn?)
 (s/def ::branch ::node)
@@ -12,7 +11,6 @@
 (s/def ::node
   (s/or :bool boolean?
         :node (s/keys :req [::cond ::branch])))
-
 
 (s/def ::with-h
   (s/with-gen
@@ -22,12 +20,9 @@
       (gen/tuple (gen/string-alphanumeric) (gen/string-alphanumeric)))))
 (gen/sample (s/gen ::with-h) 5)
 
-
-
 (s/def ::branchA #{:branchA})
 (s/def ::branchB #{:branchB})
 (s/def ::map-tree (s/map-of ::branchA (s/or :tree ::map-tree :leaf boolean?) :gen-max 3))
-
 
 (s/def ::boo number?)
 (s/def ::baz string?)
@@ -51,7 +46,6 @@
   :ret boolean?)
 
 (s/exercise-fn `condition)
-
 
 (s/def ::hello
   (s/with-gen #(cs/includes? % "hello")

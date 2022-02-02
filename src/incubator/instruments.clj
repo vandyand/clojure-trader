@@ -1,10 +1,9 @@
-(ns instruments
+(ns incubator.instruments
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [strategy :as strat]
             [vec_strategy :as vat]
             [ga :as ga]))
-
 
 (defn get-csv-data [file-name]
   (with-open [reader (io/reader file-name)]

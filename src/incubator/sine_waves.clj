@@ -1,10 +1,11 @@
-(ns sine-waves
+(ns incubator.sine_waves
   (:require
    [oz.core :as oz]
    [clojure.spec.alpha :as s]
-   [clojure.spec.gen.alpha :as gen]))
+  ;;  [clojure.spec.gen.alpha :as gen]
+   ))
 
-(comment 
+(comment
   "This file creates a bunch of sine waves and plots them. 
    It also plots the plot of the running sums of all the sine waves (the reduced wave? well it uses a reducer...)")
 
@@ -25,7 +26,6 @@
   (def p (assoc params-range :freq
                 {:min (scale-inv (get-in params-range [:amp :max]) freq-scale-factor)
                  :max (scale-inv (get-in params-range [:amp :min]) freq-scale-factor)}))
-
 
   (s/def :sine/amp (s/double-in :min (-> p :amp :min) :max (-> p :amp :max) :NaN? false :infinite? false))
   (s/def :sine/freq (s/double-in :min (-> p :freq :min) :max (-> p :freq :max) :NaN? false :infinite? false))
@@ -55,13 +55,13 @@
     :args :sine/args
     :ret number?)
 
-  (comment 
+  (comment
     (s/exercise-fn `sine))
 
   (defn get-sine-fn-name [args]
     (format "y=%.3f*sin(%.4fx-%.0f)+%.2f" (args :amp) (args :freq) (args :h-shift) (args :v-shift)))
 
-  (defn get-sine-fn 
+  (defn get-sine-fn
     "takes in a map with keys {:amp :freq :h-shift :v-shift}
      returns composed sine function which only takes (and then solves) one input (angle)"
     [args]
@@ -73,11 +73,11 @@
     [num]
     (repeatedly num (fn [] (into {} (for [k (keys p)] {k (scaled-rand (get-in p [k :min]) (get-in p [k :max]))})))))
 
-  (defn get-rand-sine-fns 
+  (defn get-rand-sine-fns
     "returns num number of maps of form {:name <sine func name> :fn <actual function>}"
     ([] (get-rand-sine-fns 1))
     ([num]
-    (for [data (get-rand-sine-fn-params num)] {:name (get-sine-fn-name data) :fn (get-sine-fn data)})))
+     (for [data (get-rand-sine-fn-params num)] {:name (get-sine-fn-name data) :fn (get-sine-fn data)})))
 
   (defn generate-plot-values []
     (for [d (get-rand-sine-fns num-waves)

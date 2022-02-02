@@ -1,9 +1,9 @@
-(ns practice-tree-strategy
+(ns incubator.practice_tree_strategy
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]))
 
-(comment 
+(comment
   "This file contains a manually-created practice tree with a solver")
 
 (s/def :sine/amp (s/double-in :min (-> p :amp :min) :max (-> p :amp :max) :NaN? false :infinite? false))
@@ -46,12 +46,12 @@
 (s/def ::branchB ::node)
 (binding [s/*recursion-limit* 1] (gen/generate (s/gen ::node)))
 
-(def tree {:cond #(> (nth inputs 1) (nth inputs 2)) 
+(def tree {:cond #(> (nth inputs 1) (nth inputs 2))
            :branchA {:cond #(> (nth inputs 0) (nth inputs 1))
-                     :branchA {:cond #(> (nth inputs 0) (nth inputs 3)) :branchA true :branchB false} 
-                     :branchB {:cond #(> (nth inputs 3) (nth inputs 1)) :branchA false :branchB true}} 
-           :branchB {:cond #(> (nth inputs 3) (nth inputs 2)) 
-                     :branchA false 
+                     :branchA {:cond #(> (nth inputs 0) (nth inputs 3)) :branchA true :branchB false}
+                     :branchB {:cond #(> (nth inputs 3) (nth inputs 1)) :branchA false :branchB true}}
+           :branchB {:cond #(> (nth inputs 3) (nth inputs 2))
+                     :branchA false
                      :branchB {:cond #(> (nth inputs 0) (nth inputs 2)) :branchA true :branchB false}}})
 
 (defn recur-tree [tree]
