@@ -6,7 +6,8 @@
    [clojure.string :as cs]
    [clojure.walk :as w]
    [oz.core :as oz]
-   [clojure.set :as set]))
+   [clojure.set :as set]
+   [incubator.sine_waves :as sw]))
 
 ;; START SERVER FOR VISUALIZATION
 
@@ -26,13 +27,6 @@
 
 (defn get-tree-config [min-depth max-depth index-pairs]
   {:min-depth min-depth :max-depth max-depth :index-pairs index-pairs})
-
-
-;; (def min-tree-depth 1)
-;; (def max-tree-depth 4)
-;; (def num-inputs 4)
-;; (def num-data-points 100)
-
 
 (defn get-index-pairs [num-inputs]
   (set (filter
@@ -108,21 +102,30 @@
   (-> (- max min) (rand) (+ min)))
 
 (defn get-stream-gen-fn [config]
-  (fn [x]
-    (-> x
-        (* (scaled-rand-dbl 0 (config :freq))) ;; freq
-        (- (scaled-rand-dbl 0 (config :h-shift))) ;; h-shift
-        (Math/sin)
-        (* (scaled-rand-dbl 0 (config :amp))) ;; amp
-        (+ (scaled-rand-dbl 0 (config :v-shift)))))) ;; v-shift
+  (let [rand-amp (scaled-rand-dbl 0 (config :amp))
+        rand-freq (scaled-rand-dbl 0 (config :freq))
+        rand-h-shift (scaled-rand-dbl 0 (config :h-shift))
+        rand-v-shift (scaled-rand-dbl 0 (config :v-shift))
+        args {:amp rand-amp :freq rand-freq :h-shift rand-h-shift :v-shift rand-v-shift}
+        name (sw/get-sine-fn-name args)]
+    {:name name
+     :args args
+     :fn (fn [x]
+           (-> x
+               (* rand-freq)
+               (- rand-h-shift)
+               (Math/sin)
+               (* rand-amp)
+               (+ rand-v-shift)))}))
 
 (defn get-random-sine-stream
   ([config]
-   (with-meta
-     (mapv
-      (get-stream-gen-fn config)
-      (range (config :num-data-points)))
-     {:name (or (config :name) (str "sine stream " (rand-caps-str 5)))})))
+   (let [stream-generator (get-stream-gen-fn config)]
+     (with-meta
+       (mapv
+        (stream-generator :fn)
+        (range (config :num-data-points)))
+       {:name (stream-generator :name) :args (stream-generator :args)}))))
 
 (defn zip-input-streams [& streams]
   (loop [i 0 v (transient [])]
