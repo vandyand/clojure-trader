@@ -1,6 +1,6 @@
 (ns arena.oanda_api
   (:require [clj-http.client :as client]
-            ;; [clojure.pprint :as pp]
+            [clojure.pprint :as pp]
             [clojure.data.json :as json]))
 
 (defn get-sensative-data [keywd]
@@ -14,7 +14,7 @@
 ;; SEND REQUESTS
 
 (defn send-api-get-request
-  ([url] (client/get url {:headers (get-headers)})))
+  ([url] (client/get url {:headers (get-headers) :content-type :json})))
 
 (defn send-api-put-request [url options]
   (client/put url options))
@@ -68,18 +68,16 @@
   ([account-id]
    (get-api-data (get-account-endpoint account-id "instruments"))))
 
+
+;; GET CANDLES
+
+
 (defn get-candles
   ([instrument-name granularity count] (get-candles (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-name granularity count))
   ([account-id instrument-name granularity count]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"))
          query-params {:granularity granularity :count count}]
      (get-api-data endpoint query-params))))
-
-
-;; GET CANDLES EXAMPLE 
-
-;; (def eurusd-candles (get-candles "EUR_USD" "M5" 5))
-;; (print eurusd-candles)
 
 
 ;; GET OPEN POSITIONS
@@ -106,10 +104,12 @@
   ([account-id instrument units]
    (send-api-post-request (get-url (get-account-endpoint account-id "orders")) (make-request-options (make-post-order-body instrument units)))))
 
-;; (println (send-post-order-request "AUD_USD" 100))
-
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
+
+;; For our uses, we're going to rely heavily on close-trade function below and not close out entire positions.
+;; The close-position functiona are here in case they are needed at some point in the future
+
 
 (defn close-position [instrument long-pos?]
   (send-api-put-request
@@ -123,4 +123,25 @@
 (defn close-short-position [instrument]
   (close-position instrument false))
 
-(println (close-long-position "EUR_USD"))
+
+;; TRADEES FUNCTIONS
+
+
+(defn get-open-trades []
+  (get-api-data (get-account-endpoint "openTrades")))
+
+(defn get-open-trade [trade-id]
+  (get-api-data (get-account-endpoint (str "trades/" trade-id))))
+
+(defn close-trade [trade-id]
+  (send-api-put-request
+   (get-url (get-account-endpoint (str "trades/" trade-id "/close")))
+   (make-request-options {:units "ALL"})))
+
+(defn update-trade-with-id [trade-id client-id]
+  (send-api-put-request
+   (get-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
+   (make-request-options {:clientExtensions {:id client-id}})))
+
+(defn get-trade-id-from-order-response [response]
+  (-> response :body (json/read-str) :orderFillTransaction :id))
