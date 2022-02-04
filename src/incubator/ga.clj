@@ -1,6 +1,6 @@
 (ns incubator.ga
   (:require
-  ;;  [clojure.pprint :as pp]
+   [clojure.pprint :as pp]
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
   ;;  [clojure.test.check.generators :as gen]
@@ -61,39 +61,11 @@
       (branchB loc))
     loc))
 
-(defn prune-branchA [loc]
-  (if (z/branch? loc) (-> loc (z/replace (-> loc (branchB) (z/node)))) loc))
-(defn prune-branchB [loc]
-  (if (z/branch? loc) (-> loc (z/replace (-> loc (branchA) (z/node)))) loc))
 (defn prune-rand-branch [loc]
   (if (z/branch? loc) (-> loc (z/replace (-> loc (rand-branch) (z/node)))) loc))
 
-;; (defn replace-branchA-with-true [loc]
-;;   (if (z/branch? loc) (-> loc (branchA) (z/replace true) (z/up)) loc))
-;; (defn replace-branchA-with-false [loc]
-;;   (if (z/branch? loc) (-> loc (branchA) (z/replace false) (z/up)) loc))
-;; (defn replace-branchB-with-true [loc]
-;;   (if (z/branch? loc) (-> loc (branchB) (z/replace true) (z/up)) loc))
-;; (defn replace-branchB-with-false [loc]
-;;   (if (z/branch? loc) (-> loc (branchB) (z/replace false) (z/up)) loc))
 (defn replace-rand-branch-with-rand-bool [loc]
   (if (z/branch? loc) (-> loc (rand-branch) (z/replace (rand-bool)) (z/up)) loc))
-
-
-;; (defn expand-branchA [loc]
-;;   (if (and (z/branch? loc) (not (z/branch? (branchA loc))))
-;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchA) (z/replace new-node) (z/up))) loc))
-;; (defn expand-branchB [loc]
-;;   (if (and (z/branch? loc) (not (z/branch? (branchB loc))))
-;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchB) (z/replace new-node) (z/up))) loc))
-
-;; (defn new-branchA [loc]
-;;   (when (z/branch? loc)
-;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchA) (z/replace new-node) (z/up)))))
-;; (defn new-branchB [loc]
-;;   (when (z/branch? loc)
-;;     (let [new-node (make-new-tree-branch 4)] (-> loc (branchB) (z/replace new-node) (z/up)))))
-
 
 (defn new-rand-branch [loc]
   (if (z/branch? loc)
@@ -222,39 +194,28 @@
       (get-strat-trees)
       (get-children-trees config)
       (populate-trees (config :input-and-target-streams))
-      (get-strats-fitnesses)
-      (plot-strats-with-input-target-streams (config :input-and-target-streams))))
-
-;; (loop [i 0 pop init-pop]
-;;   (let [next-gen (ga-epoch pop ga-config)]
-;;     (if (< i 10) (recur (inc i) next-gen) next-gen)))
+      (get-strats-fitnesses)))
 
 (defn run-epochs
   ([num-epochs population config]
    (loop [i 0 pop population]
-     (let [next-gen (ga-epoch pop config)]
-       (println "gen  " i " best score: " (:fitness (first next-gen)))
+     (let [next-gen (ga-epoch pop config)
+           best-score (:fitness (first next-gen))
+           average (let [fitnesses (map :fitness next-gen)] (/ (reduce + fitnesses) (count fitnesses)))]
+       (println "gen  " i " best score: " best-score " avg pop score: " average)
        (if (< i num-epochs) (recur (inc i) next-gen) next-gen)))))
+
+(defn get-strats-info [stats]
+  (println (map :fitness stats))
+  (pp/pprint (map :tree stats)))
 
 (time
  (do
-   (def input-config (strat/get-inputs-config 4 100 10 0.01 0 100))
+   (def input-config (strat/get-inputs-config 4 100 10 1 0 100))
    (def tree-config (strat/get-tree-config 2 6 (vat/get-index-pairs (input-config :num-input-streams))))
    (def input-and-target-streams (strat/get-input-and-target-streams input-config))
    (def ga-config (get-ga-config 40 0.3 0.3 0.5 input-and-target-streams input-config tree-config))
    (def init-pop (get-init-pop ga-config))
-   (def best-strats (run-epochs 12 init-pop ga-config))))
-
-;; TODO
-;; Build GA ✅
-    ;; 1. MAKE RANDOM STRATS ✅
-    ;; 2. GET FITNESS ✅
-    ;; 3. GET PARENTS (FITTEST N STRATEGIES) ✅
-    ;; 4. MAKE OFFSPRING (MUTATIONS AND CROSSOVERS OF PARENTS PLUS SOME NEW RANDOM ONES) ✅
-    ;; 5. RETURN TO STEP 2 ect ✅
-
-;; When GA is working good, start building the "arena" *queue dramatic music*
-
-
-
-
+   (def best-strats (run-epochs 12 init-pop ga-config))
+   (plot-strats-with-input-target-streams (take 5 best-strats) input-and-target-streams)
+   (get-strats-info (take 5 best-strats))))
