@@ -6,6 +6,7 @@
 (comment
   "This file contains a manually-created practice tree with a solver")
 
+(def p {:amp {:min 0 :max 1} :freq {:min 0 :max 0.1}})
 (s/def :sine/amp (s/double-in :min (-> p :amp :min) :max (-> p :amp :max) :NaN? false :infinite? false))
 (s/def :sine/freq (s/double-in :min (-> p :freq :min) :max (-> p :freq :max) :NaN? false :infinite? false))
 (s/def :sine/angle (s/int-in 0 1000000))

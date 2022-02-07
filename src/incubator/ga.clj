@@ -24,10 +24,10 @@
 
 ;; MAKE A BUNCH OF POPULATED STRATEGIES
 
-(defn get-populated-strats [config]
+(defn get-populated-strats [ga-config]
   (loop [i 0 v (transient [])]
-    (if (< i (config :num-parents))
-      (recur (inc i) (conj! v (vat/get-populated-strat (config :input-and-target-streams) (config :tree-config))))
+    (if (< i (get-in ga-config [:pop-config :num-parents]))
+      (recur (inc i) (conj! v (vat/get-populated-strat (:input-and-target-streams ga-config) (:tree-config ga-config))))
       (persistent! v))))
 
 (defn get-strat-fitness [strat]
@@ -109,31 +109,26 @@
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
 
 (defn get-crossover-tree [trees]
-  (let [rand-trees (shuffle trees)]
-    (let [tree1 (first rand-trees) tree2 (last rand-trees)]
-      (strat/ameliorate-tree
-       (let [n (rand-int 4)]
-         (cond
-           (= n 0) (combine-node-branches tree1 tree2)
-           (= n 1) (combine-node-branches (get-rand-tree-branch tree1) tree2)
-           (= n 2) (combine-node-branches (get-rand-tree-branch tree2) tree1)
-           (= n 3) (combine-node-branches (get-rand-tree-branch tree1) (get-rand-tree-branch tree2))))))))
+  (let [rand-trees (shuffle trees) tree1 (first rand-trees) tree2 (last rand-trees) n (rand-int 4)]
+    (strat/ameliorate-tree
+     (cond
+       (= n 0) (combine-node-branches tree1 tree2)
+       (= n 1) (combine-node-branches (get-rand-tree-branch tree1) tree2)
+       (= n 2) (combine-node-branches (get-rand-tree-branch tree2) tree1)
+       (= n 3) (combine-node-branches (get-rand-tree-branch tree1) (get-rand-tree-branch tree2))))))
 
 (defn get-strat-trees [strats]
   (for [strat strats]
     (strat :tree)))
 
 (defn get-crossover-trees [trees num]
-  (for [n (range num)]
-    (get-crossover-tree trees)))
+  (repeatedly num (get-crossover-tree trees)))
 
 (defn get-mutated-trees [trees num]
-  (for [n (range num)]
-    (get-mutated-tree (rand-nth trees))))
+  (repeatedly num (get-mutated-tree (rand-nth trees))))
 
 (defn get-random-trees [num config]
-  (for [n (range num)]
-    (vat/make-tree-recur config)))
+  (repeatedly num (vat/make-tree-recur config)))
 
 (defn ameliorate-trees [trees]
   (for [tree trees]
@@ -147,19 +142,16 @@
 
 (defn product-int [whole pct] (Math/round (double (* whole pct))))
 
-(defn  get-ga-config [pop-size parent-pct crossover-pct mutation-pct input-and-target-streams input-config tree-config]
+(defn  get-pop-config [pop-size parent-pct crossover-pct mutation-pct]
   (assoc {:pop-size pop-size
           :parent-pct parent-pct
           :crossover-pct crossover-pct
-          :mutation-pct mutation-pct
-          :input-and-target-streams input-and-target-streams
-          :input-config input-config
-          :tree-config tree-config}
+          :mutation-pct mutation-pct}
          :num-parents (product-int pop-size parent-pct)
          :num-children (product-int pop-size (- 1.0 parent-pct))))
 
-(defn get-init-pop [config]
-  (get-strats-fitnesses (get-populated-strats config)))
+(defn get-init-pop [ga-config]
+  (get-strats-fitnesses (get-populated-strats ga-config)))
 
 ;; FUNCTIONIZE ME CAP'N!
 (defn duplicate-tree-check
@@ -170,36 +162,37 @@
 (defn get-child-tree
   "parent-trees must have count >= 2
    config (reprod-wt) is map of keys: {:crossover :mutation} which holds probabilities of the respective reproduction techniques being used"
-  [parent-trees config]
+  [parent-trees pop-config tree-config]
   (let [n (rand)]
     parent-trees
     (cond
-      (< n (config :crossover-pct)) (get-crossover-tree parent-trees)
-      (< n (+ (config :crossover-pct) (config :mutation-pct))) (get-mutated-tree (rand-nth parent-trees))
-      :else (vat/make-tree-recur (config :tree-config)))))
+      (< n (pop-config :crossover-pct)) (get-crossover-tree parent-trees)
+      (< n (+ (pop-config :crossover-pct) (pop-config :mutation-pct))) (get-mutated-tree (rand-nth parent-trees))
+      :else (vat/make-tree-recur tree-config))))
 
-(defn get-children-trees [parent-trees config]
+(defn get-children-trees [parent-trees ga-config]
   (loop [v (transient (vec parent-trees))]
-    (if (< (count v) (+ (config :num-children) (count parent-trees)))
+    (if (< (count v) (+ (get-in ga-config [:pop-config :num-children]) (count parent-trees)))
       (recur
-       (let [new-child (duplicate-tree-check parent-trees (vat/ameliorate-tree (get-child-tree parent-trees config)))]
+       (let [new-child (duplicate-tree-check parent-trees (vat/ameliorate-tree (get-child-tree parent-trees (ga-config :pop-config) (ga-config :tree-config))))]
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 
 (defn ga-epoch
   "config is map of keys: {:num-parents :num-children :crossover-pct :mutation-pct}"
-  [population config]
+  [population ga-config]
   (-> population
-      (get-best-strats (config :num-parents))
+      (get-best-strats (get-in ga-config [:pop-config :num-parents]))
       (get-strat-trees)
-      (get-children-trees config)
-      (populate-trees (config :input-and-target-streams))
+      (get-children-trees ga-config)
+      (populate-trees (ga-config :input-and-target-streams))
       (get-strats-fitnesses)))
 
 (defn run-epochs
-  ([num-epochs population config]
+  ([num-epochs ga-config] (run-epochs num-epochs (get-init-pop ga-config) ga-config))
+  ([num-epochs population ga-config]
    (loop [i 0 pop population]
-     (let [next-gen (ga-epoch pop config)
+     (let [next-gen (ga-epoch pop ga-config)
            best-score (:fitness (first next-gen))
            average (let [fitnesses (map :fitness next-gen)] (/ (reduce + fitnesses) (count fitnesses)))]
        (println "gen  " i " best score: " best-score " avg pop score: " average)
@@ -209,13 +202,21 @@
   (println (map :fitness stats))
   (pp/pprint (map :tree stats)))
 
-(time
- (do
-   (def input-config (strat/get-inputs-config 4 100 10 1 0 100))
-   (def tree-config (strat/get-tree-config 2 6 (vat/get-index-pairs (input-config :num-input-streams))))
-   (def input-and-target-streams (strat/get-input-and-target-streams input-config))
-   (def ga-config (get-ga-config 40 0.3 0.3 0.5 input-and-target-streams input-config tree-config))
-   (def init-pop (get-init-pop ga-config))
-   (def best-strats (run-epochs 12 init-pop ga-config))
-   (plot-strats-with-input-target-streams (take 5 best-strats) input-and-target-streams)
-   (get-strats-info (take 5 best-strats))))
+(defn get-ga-config [num-epochs input-config tree-config pop-config input-and-target-streams]
+  {:num-epochs num-epochs
+   :input-config input-config
+   :tree-config tree-config
+   :pop-config pop-config
+   :input-and-target-streams input-and-target-streams})
+
+(def ga-config
+  (let [num-epochs 20
+        input-config (strat/get-input-config 4 100 10 1 0.1 100)
+        tree-config (strat/get-tree-config 2 6 (vat/get-index-pairs (input-config :num-input-streams)))
+        pop-config (get-pop-config 50 0.5 0.4 0.5)
+        input-and-target-streams (strat/get-input-and-target-streams input-config)]
+    (get-ga-config num-epochs input-config tree-config pop-config input-and-target-streams)))
+
+(def best-strats (run-epochs 12 ga-config))
+(plot-strats-with-input-target-streams (take 5 best-strats) (ga-config :input-and-target-streams))
+(get-strats-info (take 5 best-strats))

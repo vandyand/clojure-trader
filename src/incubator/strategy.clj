@@ -17,7 +17,7 @@
 ;; CONFIG SETTINGS
 
 
-(defn get-inputs-config [num-input-streams num-data-points amp freq v-shift h-shift]
+(defn get-input-config [num-input-streams num-data-points amp freq v-shift h-shift]
   {:num-input-streams num-input-streams
    :num-data-points num-data-points
    :amp amp
@@ -45,11 +45,11 @@
   ([config tree depth index-pairs-used]
    (if (and (>= depth (config :min-depth)) (or (> (rand) 0.5) (= depth (config :max-depth))))
      (rand-nth [1 0])
-     (let [index-pair (rand-nth (vec (set/difference (config :index-pairs) index-pairs-used)))]
-       (let [new-branch #(make-raw-tree-recur config tree (inc depth) (set/union #{index-pair} index-pairs-used))]
-         {:input-indxs index-pair
-          :branchA (new-branch)
-          :branchB (new-branch)})))))
+     (let [index-pair (rand-nth (vec (set/difference (config :index-pairs) index-pairs-used)))
+           new-branch #(make-raw-tree-recur config tree (inc depth) (set/union #{index-pair} index-pairs-used))]
+       {:input-indxs index-pair
+        :branchA (new-branch)
+        :branchB (new-branch)}))))
 
 (defn ameliorate-tree
   "Fixes condition where both branches of a node are true or both are false (which negates the meaning of the node)"
@@ -101,11 +101,11 @@
   [min max]
   (-> (- max min) (rand) (+ min)))
 
-(defn get-stream-gen-fn [config]
-  (let [rand-amp (scaled-rand-dbl 0 (config :amp))
-        rand-freq (scaled-rand-dbl 0 (config :freq))
-        rand-h-shift (scaled-rand-dbl 0 (config :h-shift))
-        rand-v-shift (scaled-rand-dbl 0 (config :v-shift))
+(defn get-stream-config [input-config]
+  (let [rand-amp (scaled-rand-dbl 0 (input-config :amp))
+        rand-freq (scaled-rand-dbl 0 (input-config :freq))
+        rand-h-shift (scaled-rand-dbl 0 (input-config :h-shift))
+        rand-v-shift (scaled-rand-dbl 0 (input-config :v-shift))
         args {:amp rand-amp :freq rand-freq :h-shift rand-h-shift :v-shift rand-v-shift}
         name (sw/get-sine-fn-name args)]
     {:name name
@@ -120,31 +120,18 @@
 
 (defn get-random-sine-stream
   ([config]
-   (let [stream-generator (get-stream-gen-fn config)]
+   (let [stream-config (get-stream-config config)]
      (with-meta
        (mapv
-        (stream-generator :fn)
+        (stream-config :fn)
         (range (config :num-data-points)))
-       {:name (stream-generator :name) :args (stream-generator :args)}))))
+       {:name (stream-config :name) :args (stream-config :args)}))))
 
 (defn zip-input-streams [& streams]
   (loop [i 0 v (transient [])]
     (if (< i (count (first streams)))
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
       (persistent! v))))
-
-
-;; VISUALIZATION FORMATTING FUNCTION
-
-
-(defn format-stream-for-view
-  "returns a collection of view data (maps) of form {:item <stream name> :x <x input angle> :y <stream solution at x>} from the stream"
-  [stream]
-  (let [item  ((meta stream) :name)]
-    (loop [i 0 v (transient [])]
-      (if (< i (count stream))
-        (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
-        (persistent! v)))))
 
 
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
@@ -163,10 +150,10 @@
         (persistent! v))) {:name name}))
 
 (defn get-populated-strat-from-tree [tree input-and-target-streams solve-tree-fn]
-  (let [name (rand-suffix "strat")]
-    (let [sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)]
-      (let [return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
-        {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))))
+  (let [name (rand-suffix "strat")
+        sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)
+        return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
+    {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))
 
 (defn get-populated-strat
   ([input-and-target-streams tree-config] (get-populated-strat input-and-target-streams tree-config make-tree solve-tree))
@@ -178,8 +165,8 @@
 ;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
 
 
-(defn get-input-streams [config]
-  (repeatedly (config :num-input-streams) #(get-random-sine-stream config)))
+(defn get-input-streams [input-config]
+  (repeatedly (input-config :num-input-streams) #(get-random-sine-stream input-config)))
 
 (defn get-stream-delta
   ([stream] (get-stream-delta stream "stream delta"))
@@ -190,12 +177,28 @@
              (- (stream (+ i 1)) (stream i))))
      {:name name})))
 
-(defn get-input-and-target-streams [config]
-  (let [input-streams (get-input-streams config)]
-    (let [target-stream (with-meta (rand-nth input-streams) {:name "target stream"})]
-      {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-stream-delta target-stream "target")})))
+(defn get-input-and-target-streams [input-config]
+  (let [input-streams (get-input-streams input-config)
+        target-stream (with-meta (rand-nth input-streams) {:name "target stream"})]
+    {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-stream-delta target-stream "target")}))
+
+
+
+;; VISUALIZATION FORMATTING FUNCTION
+
+
+(defn format-stream-for-view
+  "returns a collection of view data (maps) of form {:item <stream name> :x <x input angle> :y <stream solution at x>} from the stream"
+  [stream]
+  (let [item  ((meta stream) :name)]
+    (loop [i 0 v (transient [])]
+      (if (< i (count stream))
+        (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
+        (persistent! v)))))
+
 
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
+
 
 (defn get-plot-streams [input-and-target-streams & strats]
   (let [plot-streams (transient (vec (conj (input-and-target-streams :input-streams) (input-and-target-streams :target-stream))))]
@@ -237,7 +240,7 @@
 
 (time
  (do
-   (def inputs-config (get-inputs-config 4 100 10 0.01 0 100))
+   (def inputs-config (get-input-config 4 100 10 0.1 0 100))
    (def tree-config (get-tree-config 2 6 (get-index-pairs (inputs-config :num-input-streams))))
    (def input-and-target-streams (get-input-and-target-streams inputs-config))
    (def strat1 (get-populated-strat input-and-target-streams tree-config))

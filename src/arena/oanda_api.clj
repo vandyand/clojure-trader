@@ -1,6 +1,6 @@
 (ns arena.oanda_api
   (:require [clj-http.client :as client]
-            [clojure.pprint :as pp]
+            ;; [clojure.pprint :as pp]
             [clojure.data.json :as json]))
 
 (defn get-sensative-data [keywd]

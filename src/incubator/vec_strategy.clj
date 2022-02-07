@@ -31,20 +31,18 @@
   ([tree-config] (make-tree-recur (tree-config :index-pairs) tree-config 0))
   ([available-ind-sets tree-config depth]
    (let [ind-set (rand-nth (seq available-ind-sets))
-         new-available-ind-sets (set/difference available-ind-sets #{ind-set})]
-     (let [make-child
-           #(if
-             (and
-              (>= depth (tree-config :min-depth))
-              (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= depth (tree-config :max-depth))))
-              (rand-nth [true false])
-              (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
-       (as-> [] $
-         (z/vector-zip $)
-         (z/append-child $ ind-set)
-         (z/append-child $ (make-child))
-         (z/append-child $ (make-child))
-         (z/node $))))))
+         new-available-ind-sets (set/difference available-ind-sets #{ind-set})
+         make-child #(if (and
+                          (>= depth (tree-config :min-depth))
+                          (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= depth (tree-config :max-depth))))
+                       (rand-nth [true false])
+                       (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
+     (as-> [] $
+       (z/vector-zip $)
+       (z/append-child $ ind-set)
+       (z/append-child $ (make-child))
+       (z/append-child $ (make-child))
+       (z/node $)))))
 
 (defn print-tree [tree]
   (print (cs/replace (str tree) "[#{" "\n[#{"))
@@ -91,7 +89,7 @@
 
 (time
  (do
-   (def input-config (strat/get-inputs-config 4 100 10 0.01 0 100))
+   (def input-config (strat/get-input-config 4 100 10 0.01 0 100))
    (def tree-config (strat/get-tree-config 2 6 (get-index-pairs (input-config :num-input-streams))))
    (def input-and-target-streams (strat/get-input-and-target-streams input-config))
    (def strat1 (get-populated-strat input-and-target-streams tree-config))

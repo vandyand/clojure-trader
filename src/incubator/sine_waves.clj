@@ -35,8 +35,7 @@
   (s/def :sine/args (s/cat :sine/angle {:a :sine/amp :b :sine/freq :c :sine/h-shift :d :sine/v-shift}))
 
   (defn sine
-    ([x fn-constants]
-     "solves a sine wave of form: y = amp * sin(freq * x - h-shift) + v-shift.
+    "solves a sine wave of form: y = amp * sin(freq * x - h-shift) + v-shift.
      where Amplitude is abs(amp), frequency is abs(freq)/(2*PI), 
      horizontal shift is h-shift, and vertical shift is v-shift
    Inputs: 
@@ -44,6 +43,7 @@
    fn-constants: map of form {:amp :freq :h-shift :v-shift} containing 
                  sine function constants 
     "
+    ([x fn-constants]
      (-> x
          (* (fn-constants :freq))
          (- (fn-constants :h-shift))

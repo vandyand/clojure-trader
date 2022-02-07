@@ -1,8 +1,8 @@
-(ns arena.strat_tester
+(ns arena.oanda_instrument
   (:require [arena.oanda_api :as oa]
             [incubator.strategy :as strat]
             [incubator.vec_strategy :as vat]
-            [clojure.pprint :as pp]
+            ;; [clojure.pprint :as pp]
             [incubator.ga :as ga]))
 
 (defn format-candles [candles]
@@ -18,7 +18,7 @@
  (do
    (def eurusd-stream (vec (for [data (get-open-prices "EUR_USD" "H1" 5000)] (data :o))))
    (def eurusd (with-meta eurusd-stream {:name "eurusd"}))
-   (def input-config (strat/get-inputs-config 10 (count eurusd) 0.005 1 0 100))
+   (def input-config (strat/get-input-config 10 (count eurusd) 0.005 1 0 100))
    (def tree-config (strat/get-tree-config 2 8 (vat/get-index-pairs (input-config :num-input-streams))))
    (def input-streams (strat/get-input-streams input-config))
    (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))

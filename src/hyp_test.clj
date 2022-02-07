@@ -19,11 +19,13 @@
 
 (def best-strat (add-delta-return-stream-to-strat (first ga/best-strats)))
 
-(def input-and-target-streams-arena (strat/get-input-and-target-streams 4 20))
+(def input-config (strat/get-input-config 4 20 1 0.1 0.1 100))
+
+(def input-and-target-streams-arena (strat/get-input-and-target-streams input-config))
 
 (def best-strat-arena (add-delta-return-stream-to-strat (vat/get-populated-strat-from-tree (best-strat :tree) input-and-target-streams-arena)))
 
-(ga/plot-strats [best-strat best-strat-arena] input-and-target-streams-arena)
+(ga/plot-strats-with-input-target-streams [best-strat best-strat-arena] input-and-target-streams-arena)
 
 (stats/z-score (best-strat :return-stream-delta) (best-strat-arena :return-stream-delta))
 

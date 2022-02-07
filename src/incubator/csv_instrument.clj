@@ -19,7 +19,7 @@
 (time
  (do
    (def eurusd (with-meta (subvec (format-csv-data (get-csv-data "eurusd.csv")) 0 543) {:name "eurusd"}))
-   (def input-config (strat/get-inputs-config 20 (count eurusd) 0.05 1 0 100))
+   (def input-config (strat/get-input-config 20 (count eurusd) 0.05 1 0 100))
    (def tree-config (strat/get-tree-config 2 6 (vat/get-index-pairs (input-config :num-input-streams))))
    (def input-streams (strat/get-input-streams input-config))
    (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
