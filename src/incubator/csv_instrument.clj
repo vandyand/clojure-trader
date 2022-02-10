@@ -25,6 +25,7 @@
    (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
    (def zeroed-eurusd (with-meta (vec (for [price eurusd] (- price (first eurusd)))) {:name "zeroed eurusd"}))
    (def input-and-eurusd-streams {:input-streams input-streams :target-stream zeroed-eurusd :target-stream-delta eurusd-delta})
-   (def ga-config (ga/get-ga-config 40 0.2 0.4 0.5 input-and-eurusd-streams input-config tree-config))
+   (def pop-config (ga/get-pop-config 40 0.5 0.4 0.4))
+   (def ga-config (ga/get-ga-config 20 input-config tree-config pop-config input-and-eurusd-streams))
    (def init-pop (ga/get-init-pop ga-config))
    (def best-strats (ga/run-epochs 10 init-pop ga-config))))
