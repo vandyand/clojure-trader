@@ -3,8 +3,9 @@
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
   ;;  [clojure.test.check.generators :as gen]
-   [clojure.string :as cs]
+  ;;  [clojure.string :as cs]
    [clojure.walk :as w]
+   [clojure.zip :as z]
    [oz.core :as oz]
    [clojure.set :as set]
    [incubator.sine_waves :as sw]))
@@ -28,10 +29,14 @@
 (defn get-tree-config [min-depth max-depth index-pairs]
   {:min-depth min-depth :max-depth max-depth :index-pairs index-pairs})
 
-(defn get-index-pairs [num-inputs]
-  (set (filter
-        #(not= (first %) (last %))
-        (for [x (range num-inputs) y (range num-inputs)] [x y]))))
+(defn get-index-pairs
+  "returns set of sets"
+  [num-inputs]
+  (set
+   (filter
+    #(not (nil? %))
+    (for [x (range num-inputs) y (range num-inputs)]
+      (when (not= x y)  #{x y})))))
 
 
 ;; MAKE TREE
@@ -40,35 +45,41 @@
 (defn isArrayMap? [testee] (= (type testee) clojure.lang.PersistentArrayMap))
 (defn isLong? [testee] (= (type testee) java.lang.Long))
 
-(defn make-raw-tree-recur
-  ([tree-config] (make-raw-tree-recur tree-config {} 0 #{}))
-  ([config tree depth index-pairs-used]
-   (if (and (>= depth (config :min-depth)) (or (> (rand) 0.5) (= depth (config :max-depth))))
-     (rand-nth [1 0])
-     (let [index-pair (rand-nth (vec (set/difference (config :index-pairs) index-pairs-used)))
-           new-branch #(make-raw-tree-recur config tree (inc depth) (set/union #{index-pair} index-pairs-used))]
-       {:input-indxs index-pair
-        :branchA (new-branch)
-        :branchB (new-branch)}))))
+(defn make-tree-recur
+  "available-ind-sets is the set of total index sets minus (difference) node parent index sets"
+  ([tree-config] (make-tree-recur (tree-config :index-pairs) tree-config 0))
+  ([available-ind-sets tree-config depth]
+   (let [ind-set (rand-nth (seq available-ind-sets))
+         new-available-ind-sets (set/difference available-ind-sets #{ind-set})
+         make-child #(if (and
+                          (>= depth (tree-config :min-depth))
+                          (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= depth (tree-config :max-depth))))
+                       (rand-nth [true false])
+                       (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
+     (as-> [] $
+       (z/vector-zip $)
+       (z/append-child $ ind-set)
+       (z/append-child $ (make-child))
+       (z/append-child $ (make-child))
+       (z/node $)))))
 
 (defn ameliorate-tree
-  "Fixes condition where both branches of a node are true or both are false (which negates the meaning of the node)"
+  "This function only works on vector trees.
+   Walk the tree. If two branches are identical, replace the node with the first branch"
   [tree]
   (w/postwalk
    #(if (and
-         (isArrayMap? %)
-         (isLong? (% :branchA))
-         (= (% :branchA) (% :branchB)))
-      (assoc % :branchB (mod (+ 1 (% :branchB)) 2))
+         (= (type %) clojure.lang.PersistentVector)
+         (= (nth % 1) (nth % 2)))
+      (nth % 1)
       %)
    tree))
 
 (defn make-tree
-  ([] (make-tree (get-tree-config 2 6 (get-index-pairs 4))))
-  ([tree-config] (ameliorate-tree (make-raw-tree-recur tree-config))))
-
-(defn print-tree [tree]
-  (print (cs/replace (str tree) ":b" "\n:b")))
+  ([tree-config]
+   (-> tree-config
+       (make-tree-recur)
+       (ameliorate-tree))))
 
 ;; SOLVE TREE FUNCTIONS
 
@@ -78,12 +89,12 @@
 (defn solve-tree
   "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
   [tree inst-inputs]
-  (if (= (type tree) java.lang.Long)
-    tree
+  (if (= (type tree) java.lang.Boolean)
+    (if tree 1 0)
     (solve-tree
-     (if (solve-cond inst-inputs (tree :input-indxs))
-       (tree :branchA)
-       (tree :branchB))
+     (if (solve-cond inst-inputs (first tree))
+       (nth tree 1)
+       (nth tree 2))
      inst-inputs)))
 
 
@@ -149,11 +160,13 @@
         (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
         (persistent! v))) {:name name}))
 
-(defn get-populated-strat-from-tree [tree input-and-target-streams solve-tree-fn]
-  (let [name (rand-suffix "strat")
-        sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)
-        return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
-    {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream}))
+(defn get-populated-strat-from-tree
+  ([tree input-and-target-streams] (get-populated-strat-from-tree tree input-and-target-streams solve-tree))
+  ([tree input-and-target-streams solve-tree-fn]
+   (let [name (rand-suffix "strat")
+         sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)
+         return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
+     {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))
 
 (defn get-populated-strat
   ([input-and-target-streams tree-config] (get-populated-strat input-and-target-streams tree-config make-tree solve-tree))
@@ -248,4 +261,3 @@
    (def strat3 (get-populated-strat input-and-target-streams tree-config))
    (def strat4 (get-populated-strat input-and-target-streams tree-config))
    (plot-strats-with-input-target-streams input-and-target-streams strat1 strat2 strat3 strat4)))
-
