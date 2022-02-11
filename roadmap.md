@@ -2,7 +2,6 @@
 
 ### Todo
 
-- [ ] (0.1.0) Refactor `strategy.clj` and `vec_strategy.clj`
 - [ ] (0.1.1) Refactor `ga_config` to not include input and target data, but only paramaters for the data
   - Lazy load input and target data
 - [ ] (0.2.0) Refactor `/incubator` by config type
@@ -17,3 +16,4 @@
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)
+- [x] (0.1.0) Refactor `strategy.clj` and `vec_strategy.clj`
