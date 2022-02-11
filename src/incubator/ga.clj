@@ -171,9 +171,18 @@
 
 (defn get-children-trees [parent-trees ga-config]
   (loop [v (transient (vec parent-trees))]
-    (if (< (count v) (+ (get-in ga-config [:pop-config :num-children]) (count parent-trees)))
+    (if (< (count v) (+ (get-in ga-config [:pop-config :num-children])
+                        (count parent-trees)))
       (recur
-       (let [new-child (duplicate-tree-check parent-trees (strat/ameliorate-tree (get-child-tree parent-trees (ga-config :pop-config) (ga-config :tree-config))))]
+       (let
+        [new-child
+         (duplicate-tree-check
+          parent-trees
+          (strat/ameliorate-tree
+           (get-child-tree
+            parent-trees
+            (ga-config :pop-config)
+            (ga-config :tree-config))))]
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 
