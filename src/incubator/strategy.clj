@@ -44,7 +44,7 @@
                (+ rand-v-shift)))}))
 
 (defn get-sine-configs [base-config num-key]
-  (vec (repeatedly (get base-config num-key) #(get-random-sine-config input-config))))
+  (vec (repeatedly (get base-config num-key) #(get-random-sine-config base-config))))
 
 (defn get-input-config [num-source-streams num-target-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
   (let [base-config {:num-source-streams num-source-streams
