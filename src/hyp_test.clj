@@ -9,7 +9,6 @@
   ;;  [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [incubator.vec_strategy :as vat]
    [incubator.strategy :as strat]
    [incubator.ga :as ga]
    [stats :as stats]))
@@ -23,7 +22,7 @@
 
 (def input-and-target-streams-arena (strat/get-input-and-target-streams input-config))
 
-(def best-strat-arena (add-delta-return-stream-to-strat (vat/get-populated-strat-from-tree (best-strat :tree) input-and-target-streams-arena)))
+(def best-strat-arena (add-delta-return-stream-to-strat (strat/get-populated-strat (best-strat :tree) input-and-target-streams-arena)))
 
 (ga/plot-strats-with-input-target-streams [best-strat best-strat-arena] input-and-target-streams-arena)
 
