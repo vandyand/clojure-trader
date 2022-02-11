@@ -11,6 +11,24 @@
   ;;  [clojure.set :as set]
    [incubator.strategy :as strat]))
 
+;; CONFIG FUNCTIONS
+
+(defn product-int [whole pct] (Math/round (double (* whole pct))))
+
+(defn  get-pop-config [pop-size parent-pct crossover-pct mutation-pct]
+  (assoc {:pop-size pop-size
+          :parent-pct parent-pct
+          :crossover-pct crossover-pct
+          :mutation-pct mutation-pct}
+         :num-parents (product-int pop-size parent-pct)
+         :num-children (product-int pop-size (- 1.0 parent-pct))))
+
+(defn get-ga-config [num-epochs input-config tree-config pop-config]
+  {:num-epochs num-epochs
+   :input-config input-config
+   :tree-config tree-config
+   :pop-config pop-config})
+
 ;; PLOT ALL THE STRATEGIES RETURN FUNCTIONS WITH THE INPUT DATA
 
 (defn plot-strats-with-input-target-streams [strats input-and-target-data]
@@ -26,7 +44,7 @@
 (defn get-populated-strats [ga-config]
   (loop [i 0 v (transient [])]
     (if (< i (get-in ga-config [:pop-config :num-parents]))
-      (recur (inc i) (conj! v (strat/get-populated-strat (:input-and-target-streams ga-config) (:tree-config ga-config))))
+      (recur (inc i) (conj! v (strat/get-populated-strat (ga-config :input-and-target-streams) (ga-config :tree-config))))
       (persistent! v))))
 
 (defn get-strat-fitness [strat]
@@ -139,16 +157,6 @@
 
 ;; RUN THROUGH
 
-(defn product-int [whole pct] (Math/round (double (* whole pct))))
-
-(defn  get-pop-config [pop-size parent-pct crossover-pct mutation-pct]
-  (assoc {:pop-size pop-size
-          :parent-pct parent-pct
-          :crossover-pct crossover-pct
-          :mutation-pct mutation-pct}
-         :num-parents (product-int pop-size parent-pct)
-         :num-children (product-int pop-size (- 1.0 parent-pct))))
-
 (defn get-init-pop [ga-config]
   (get-strats-fitnesses (get-populated-strats ga-config)))
 
@@ -210,21 +218,13 @@
   (println (map :fitness stats))
   (pp/pprint (map :tree stats)))
 
-(defn get-ga-config [num-epochs input-config tree-config pop-config input-and-target-streams]
-  {:num-epochs num-epochs
-   :input-config input-config
-   :tree-config tree-config
-   :pop-config pop-config
-   :input-and-target-streams input-and-target-streams})
-
 (def ga-config
   (let [num-epochs 20
         input-config (strat/get-input-config 4 100 10 1 0.1 100)
         tree-config (strat/get-tree-config 2 6 (strat/get-index-pairs (input-config :num-input-streams)))
-        pop-config (get-pop-config 50 0.5 0.4 0.5)
-        input-and-target-streams (strat/get-input-and-target-streams input-config)]
-    (get-ga-config num-epochs input-config tree-config pop-config input-and-target-streams)))
+        pop-config (get-pop-config 50 0.5 0.4 0.5)]
+    (get-ga-config num-epochs input-config tree-config pop-config)))
 
 (def best-strats (run-epochs 12 ga-config))
-(plot-strats-with-input-target-streams (take 5 best-strats) (ga-config :input-and-target-streams))
+(plot-strats-with-input-target-streams (take 5 best-strats) ga-config)
 (get-strats-info (take 5 best-strats))
