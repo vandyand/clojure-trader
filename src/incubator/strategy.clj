@@ -4,6 +4,7 @@
   ;;  [clojure.spec.gen.alpha :as sgen]
   ;;  [clojure.test.check.generators :as gen]
   ;;  [clojure.string :as cs]
+   [clojure.pprint :as pp]
    [clojure.walk :as w]
    [clojure.zip :as z]
    [oz.core :as oz]
@@ -12,19 +13,50 @@
 
 ;; START SERVER FOR VISUALIZATION
 
-(oz/start-server! 10667)
+;; (oz/start-server! 10667)
 
 
-;; CONFIG SETTINGS
+;; CONFIG FUNCTIONS
+
+;; You apply a strategy to source and target inputs to produce a return stream
 
 
-(defn get-input-config [num-input-streams num-data-points amp freq v-shift h-shift]
-  {:num-input-streams num-input-streams
-   :num-data-points num-data-points
-   :amp amp
-   :freq freq
-   :v-shift v-shift
-   :h-shift h-shift})
+(defn scaled-rand-dbl
+  "returns random double between min (inclusive) and max (exclusive)"
+  [min max]
+  (-> (- max min) (rand) (+ min)))
+
+(defn get-random-sine-config [input-config]
+  (let [rand-amp (scaled-rand-dbl 0 (input-config :max-amp))
+        rand-freq (scaled-rand-dbl 0 (input-config :max-freq))
+        rand-h-shift (scaled-rand-dbl 0 (input-config :max-h-shift))
+        rand-v-shift (scaled-rand-dbl 0 (input-config :max-v-shift))
+        args {:amp rand-amp :freq rand-freq :h-shift rand-h-shift :v-shift rand-v-shift}
+        name (sw/get-sine-fn-name args)]
+    {:name name
+     :args args
+     :fn (fn [x]
+           (-> x
+               (* rand-freq)
+               (- rand-h-shift)
+               (Math/sin)
+               (* rand-amp)
+               (+ rand-v-shift)))}))
+
+(defn get-sine-configs [base-config num-key]
+  (vec (repeatedly (get base-config num-key) #(get-random-sine-config input-config))))
+
+(defn get-input-config [num-source-streams num-target-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
+  (let [base-config {:num-source-streams num-source-streams
+                     :num-target-streams num-target-streams
+                     :num-data-points num-data-points
+                     :max-amp max-amp
+                     :max-freq max-freq
+                     :max-v-shift max-v-shift
+                     :max-h-shift max-h-shift}]
+    (assoc base-config
+           :source-streams-config (get-sine-configs base-config :num-source-streams)
+           :target-streams-config (get-sine-configs base-config :num-target-streams))))
 
 (defn get-tree-config [min-depth max-depth index-pairs]
   {:min-depth min-depth :max-depth max-depth :index-pairs index-pairs})
@@ -107,38 +139,17 @@
 (defn rand-suffix [input-str]
   (str input-str "-" (rand-caps-str 10)))
 
-(defn scaled-rand-dbl
-  "returns random double between min (inclusive) and max (exclusive)"
-  [min max]
-  (-> (- max min) (rand) (+ min)))
+(defn get-stream-from-fn
+  ([fn num-data-points]
+   (mapv fn (range num-data-points))))
 
-(defn get-stream-config [input-config]
-  (let [rand-amp (scaled-rand-dbl 0 (input-config :amp))
-        rand-freq (scaled-rand-dbl 0 (input-config :freq))
-        rand-h-shift (scaled-rand-dbl 0 (input-config :h-shift))
-        rand-v-shift (scaled-rand-dbl 0 (input-config :v-shift))
-        args {:amp rand-amp :freq rand-freq :h-shift rand-h-shift :v-shift rand-v-shift}
-        name (sw/get-sine-fn-name args)]
-    {:name name
-     :args args
-     :fn (fn [x]
-           (-> x
-               (* rand-freq)
-               (- rand-h-shift)
-               (Math/sin)
-               (* rand-amp)
-               (+ rand-v-shift)))}))
+(defn get-input-streams-util [input-config target-key]
+  (for [source-stream-config (get input-config target-key)]
+    (with-meta
+      (get-stream-from-fn (get source-stream-config :fn) (get input-config :num-data-points))
+      {:name (get source-stream-config :name) :args (get source-stream-config :args)})))
 
-(defn get-random-sine-stream
-  ([config]
-   (let [stream-config (get-stream-config config)]
-     (with-meta
-       (mapv
-        (stream-config :fn)
-        (range (config :num-data-points)))
-       {:name (stream-config :name) :args (stream-config :args)}))))
-
-(defn zip-input-streams [& streams]
+(defn zip-source-streams [& streams]
   (loop [i 0 v (transient [])]
     (if (< i (count (first streams)))
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
@@ -148,9 +159,29 @@
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
 
 
+(defn get-stream-delta
+  ([stream] (get-stream-delta stream (str (or (get (meta stream) :name) "no name") " delta")))
+  ([stream name]
+   (with-meta
+     (into [0.0]
+           (for [i (range (- (count stream) 1))]
+             (- (stream (+ i 1)) (stream i))))
+     {:name name})))
+
+(defn get-streams-delta [streams]
+  (for [stream streams]
+    (get-stream-delta stream)))
+
+(defn get-input-streams [input-config]
+  (let [source-streams (get-input-streams-util input-config :source-streams-config)
+        target-stream (first (get-input-streams-util input-config :target-streams-config))]
+    {:source-streams source-streams
+     :target-stream target-stream
+     :target-stream-delta (get-stream-delta target-stream "target")}))
+
 (defn get-sieve-stream
-  [name input-streams strat-tree solve-tree-fn]
-  (with-meta (vec (for [inputs (apply zip-input-streams input-streams)]
+  [name source-streams strat-tree solve-tree-fn]
+  (with-meta (vec (for [inputs (apply zip-source-streams source-streams)]
                     (solve-tree-fn strat-tree inputs))) {:name name}))
 
 (defn get-return-stream [name sieve-stream target-stream-delta]
@@ -161,40 +192,19 @@
         (persistent! v))) {:name name}))
 
 (defn get-populated-strat-from-tree
-  ([tree input-and-target-streams] (get-populated-strat-from-tree tree input-and-target-streams solve-tree))
-  ([tree input-and-target-streams solve-tree-fn]
+  ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))
+  ([tree input-config solve-tree-fn]
    (let [name (rand-suffix "strat")
-         sieve-stream (get-sieve-stream (str name " sieve stream") (input-and-target-streams :input-streams) tree solve-tree-fn)
-         return-stream (get-return-stream (str name " return stream") sieve-stream (input-and-target-streams :target-stream-delta))]
+         input-streams (get-input-streams input-config)
+         sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :source-streams) tree solve-tree-fn)
+         return-stream (get-return-stream (str name " return stream") sieve-stream (get input-streams :target-stream-delta))]
      {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))
 
 (defn get-populated-strat
-  ([input-and-target-streams tree-config] (get-populated-strat input-and-target-streams tree-config make-tree solve-tree))
-  ([input-and-target-streams tree-config make-tree-fn solve-tree-fn]
+  ([input-config tree-config] (get-populated-strat input-config tree-config make-tree solve-tree))
+  ([input-config tree-config make-tree-fn solve-tree-fn]
    (let [tree (make-tree-fn tree-config)]
-     (get-populated-strat-from-tree tree input-and-target-streams solve-tree-fn))))
-
-
-;; GET INPUT STREAMS AND TARGET DELTA STREAM FUNCTIONS
-
-
-(defn get-input-streams [input-config]
-  (repeatedly (input-config :num-input-streams) #(get-random-sine-stream input-config)))
-
-(defn get-stream-delta
-  ([stream] (get-stream-delta stream "stream delta"))
-  ([stream name]
-   (with-meta
-     (into [0.0]
-           (for [i (range (- (count stream) 1))]
-             (- (stream (+ i 1)) (stream i))))
-     {:name name})))
-
-(defn get-input-and-target-streams [input-config]
-  (let [input-streams (get-input-streams input-config)
-        target-stream (with-meta (rand-nth input-streams) {:name "target stream"})]
-    {:input-streams input-streams :target-stream target-stream :target-stream-delta (get-stream-delta target-stream "target")}))
-
+     (get-populated-strat-from-tree tree input-config solve-tree-fn))))
 
 
 ;; VISUALIZATION FORMATTING FUNCTION
@@ -213,8 +223,9 @@
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
 
-(defn get-plot-streams [input-and-target-streams & strats]
-  (let [plot-streams (transient (vec (conj (input-and-target-streams :input-streams) (input-and-target-streams :target-stream))))]
+(defn get-plot-streams [input-config & strats]
+  (let [input-streams (get-input-streams input-config)
+        plot-streams (transient (vec (conj (get input-streams :source-streams) (get input-streams :target-stream))))]
     (loop [i 0 v plot-streams]
       (if (< i (count strats))
         (recur (inc i) (conj! v ((nth strats i) :return-stream)))
@@ -241,23 +252,20 @@
 (defn plot-stream [stream]
   (generate-and-view-plot (format-stream-for-view stream)))
 
-(defn plot-strats-with-input-target-streams [input-and-target-streams & strats]
+(defn plot-strats-and-inputs [input-config & strats]
   (generate-and-view-plot
    (get-plot-values
-    (apply get-plot-streams input-and-target-streams strats))))
+    (apply get-plot-streams input-config strats))))
 
 (defn plot-strats [& strats]
   (generate-and-view-plot
    (get-plot-values
     (map :return-stream strats))))
 
-(time
- (do
-   (def inputs-config (get-input-config 4 100 10 0.1 0 100))
-   (def tree-config (get-tree-config 2 6 (get-index-pairs (inputs-config :num-input-streams))))
-   (def input-and-target-streams (get-input-and-target-streams inputs-config))
-   (def strat1 (get-populated-strat input-and-target-streams tree-config))
-   (def strat2 (get-populated-strat input-and-target-streams tree-config))
-   (def strat3 (get-populated-strat input-and-target-streams tree-config))
-   (def strat4 (get-populated-strat input-and-target-streams tree-config))
-   (plot-strats-with-input-target-streams input-and-target-streams strat1 strat2 strat3 strat4)))
+(def input-config (get-input-config 4 1 1000 10 0.1 0 100))
+(def tree-config (get-tree-config 2 6 (get-index-pairs (input-config :num-source-streams))))
+(def strat1 (get-populated-strat input-config tree-config))
+(def strat2 (get-populated-strat input-config tree-config))
+(def strat3 (get-populated-strat input-config tree-config))
+(def strat4 (get-populated-strat input-config tree-config))
+(plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
