@@ -15,11 +15,9 @@
 
 ;; (oz/start-server! 10667)
 
-
 ;; CONFIG FUNCTIONS
 
 ;; You apply a strategy to source and target inputs to produce a return stream
-
 
 (defn scaled-rand-dbl
   "returns random double between min (inclusive) and max (exclusive)"
@@ -70,9 +68,7 @@
     (for [x (range num-inputs) y (range num-inputs)]
       (when (not= x y)  #{x y})))))
 
-
 ;; MAKE TREE
-
 
 (defn isArrayMap? [testee] (= (type testee) clojure.lang.PersistentArrayMap))
 (defn isLong? [testee] (= (type testee) java.lang.Long))
@@ -129,9 +125,7 @@
        (nth tree 2))
      inst-inputs)))
 
-
 ;; CODIFY INPUT DATA FUNCTIONS
-
 
 (defn rand-caps-str [len]
   (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))
@@ -155,9 +149,7 @@
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
       (persistent! v))))
 
-
 ;; GET (AND POPULATE) STRATEGY FUNCTIONS
-
 
 (defn get-stream-delta
   ([stream] (get-stream-delta stream (str (or (get (meta stream) :name) "no name") " delta")))
@@ -206,9 +198,7 @@
    (let [tree (make-tree-fn tree-config)]
      (get-populated-strat-from-tree tree input-config solve-tree-fn))))
 
-
 ;; VISUALIZATION FORMATTING FUNCTION
-
 
 (defn format-stream-for-view
   "returns a collection of view data (maps) of form {:item <stream name> :x <x input angle> :y <stream solution at x>} from the stream"
@@ -219,9 +209,7 @@
         (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
         (persistent! v)))))
 
-
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
-
 
 (defn get-plot-streams [input-config & strats]
   (let [input-streams (get-input-streams input-config)

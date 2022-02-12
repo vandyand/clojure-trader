@@ -22,9 +22,7 @@
 (defn send-api-post-request [url options]
   (client/post url options))
 
-
 ;; UTILITY FUNCTIONS 
-
 
 (defn get-account-endpoint
   ([end] (get-account-endpoint (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
@@ -52,9 +50,7 @@
   ([endpoint query-params]
    (-> endpoint (get-url query-params) (send-api-get-request) (parse-response-body))))
 
-
 ;; ACCOUNT DATA FUNCTIONS
-
 
 (defn get-accounts [] (get-api-data "accounts"))
 
@@ -68,9 +64,7 @@
   ([account-id]
    (get-api-data (get-account-endpoint account-id "instruments"))))
 
-
 ;; GET CANDLES
-
 
 (defn get-candles
   ([instrument-name granularity count] (get-candles (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-name granularity count))
@@ -79,17 +73,13 @@
          query-params {:granularity granularity :count count}]
      (get-api-data endpoint query-params))))
 
-
 ;; GET OPEN POSITIONS
-
 
 (defn get-open-positions
   ([] (get-open-positions (get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
   ([account-id] (get-api-data (get-account-endpoint account-id "openPositions"))))
 
-
 ;; SEND ORDER FUNCTIONS
-
 
 (defn make-post-order-body [instrument units]
   {:order {:instrument instrument :units units :timeInForce "FOK" :type "MARKET" :positionFill "DEFAULT"}})
@@ -104,12 +94,10 @@
   ([account-id instrument units]
    (send-api-post-request (get-url (get-account-endpoint account-id "orders")) (make-request-options (make-post-order-body instrument units)))))
 
-
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
 ;; For our uses, we're going to rely heavily on close-trade function below and not close out entire positions.
 ;; The close-position functiona are here in case they are needed at some point in the future
-
 
 (defn close-position [instrument long-pos?]
   (send-api-put-request
@@ -123,9 +111,7 @@
 (defn close-short-position [instrument]
   (close-position instrument false))
 
-
 ;; TRADEES FUNCTIONS
-
 
 (defn get-open-trades []
   (get-api-data (get-account-endpoint "openTrades")))

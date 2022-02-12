@@ -20,7 +20,6 @@
 ;; (s/def :strategy/branch (s/or :strategy/node boolean))
 ;; (s/def :strategy/node)
 
-
 (def node4 {:id 4 :input-indxs [1 0] :branchA false :branchB true})
 (def node3 {:id 3 :input-indxs [1 3] :branchA true :branchB false})
 (def node2 {:id 2 :input-indxs [1 2] :branchA node3 :branchB node4})
