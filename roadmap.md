@@ -2,10 +2,6 @@
 
 ### Todo
 
-- [ ] (0.1.1) Refactor `ga-config` to not include input and target data, but only paramaters for the data
-  - Lazy load input and target data
-  - Make sure GA still works
-- [ ] (0.1.2) Use formatter
 - [ ] (0.1.3) Memoize sine function (strategy line ~124) and check if performance boost
 - [ ] (0.1.4) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
   - We are not losing any functionality here, only gaining optionality.
@@ -29,3 +25,7 @@
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)
 - [x] (0.1.0) Refactor `strategy.clj` and `vec_strategy.clj`
+- [x] (0.1.1) Refactor `ga-config` to not include input and target data, but only paramaters for the data
+  - Lazy load input and target data
+  - Make sure GA still works
+- [x] (0.1.2) Use formatter

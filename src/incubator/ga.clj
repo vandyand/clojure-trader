@@ -61,9 +61,7 @@
 (defn get-best-strats [strats num]
   (take num (reverse (sort-by :fitness strats))))
 
-
 ;; MUTATE ZIPPERS FUNCTIONS
-
 
 (defn rand-bool []
   (> 0.5 (rand)))
@@ -118,9 +116,7 @@
         (z/root))
     node1))
 
-
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
-
 
 (defn get-mutated-tree [tree]
   (strat/ameliorate-tree

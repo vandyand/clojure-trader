@@ -34,7 +34,6 @@
       (println
        (stats/z-score (best-strat :return-stream-delta) partial-return-stream-delta)))))
 
-
 ;; TODO
 ;; FINISH INCUBATOR
 ;; - USE TRADABLE INSTRUMENT(S) FOR TARGET DATA
