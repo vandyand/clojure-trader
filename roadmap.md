@@ -4,6 +4,7 @@
 
 - [ ] (0.1.1) Refactor `ga-config` to not include input and target data, but only paramaters for the data
   - Lazy load input and target data
+  - Make sure GA still works
 - [ ] (0.1.2) Use formatter
 - [ ] (0.1.3) Memoize sine function (strategy line ~124) and check if performance boost
 - [ ] (0.1.4) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
