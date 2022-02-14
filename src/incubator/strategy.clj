@@ -166,22 +166,25 @@
 
 (defn get-input-streams [input-config]
   (let [source-streams (get-input-streams-util input-config :source-streams-config)
-        target-stream (first (get-input-streams-util input-config :target-streams-config))]
+        target-streams (get-input-streams-util input-config :target-streams-config)]
     {:source-streams source-streams
-     :target-stream target-stream
-     :target-stream-delta (get-stream-delta target-stream "target")}))
+     :target-streams target-streams
+     :target-streams-delta (get-streams-delta target-streams)}))
 
 (defn get-sieve-stream
   [name source-streams strat-tree solve-tree-fn]
   (with-meta (vec (for [inputs (apply zip-source-streams source-streams)]
                     (solve-tree-fn strat-tree inputs))) {:name name}))
 
-(defn get-return-stream [name sieve-stream target-stream-delta]
-  (with-meta
-    (loop [i 1 v (transient [0.0])]
-      (if (< i (count sieve-stream))
-        (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
-        (persistent! v))) {:name name}))
+(defn get-return-stream [sieve-stream target-stream-delta]
+  (loop [i 1 v (transient [0.0])]
+    (if (< i (count sieve-stream))
+      (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
+      (persistent! v))))
+
+(defn get-return-streams [sieve-stream target-streams-delta]
+  (for [target-stream-delta target-streams-delta]
+    (with-meta (vec (get-return-stream sieve-stream target-stream-delta)) {:name (str "return stream " (rand-caps-str 5))})))
 
 (defn get-populated-strat-from-tree
   ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))
@@ -189,8 +192,8 @@
    (let [name (rand-suffix "strat")
          input-streams (get-input-streams input-config)
          sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :source-streams) tree solve-tree-fn)
-         return-stream (get-return-stream (str name " return stream") sieve-stream (get input-streams :target-stream-delta))]
-     {:name name :tree tree :sieve-stream sieve-stream :return-stream return-stream})))
+         return-streams (get-return-streams sieve-stream (get input-streams :target-streams-delta))]
+     {:name name :tree tree :sieve-stream sieve-stream :return-streams return-streams})))
 
 (defn get-populated-strat
   ([input-config tree-config] (get-populated-strat input-config tree-config make-tree solve-tree))
@@ -201,23 +204,24 @@
 ;; VISUALIZATION FORMATTING FUNCTION
 
 (defn format-stream-for-view
-  "returns a collection of view data (maps) of form {:item <stream name> :x <x input angle> :y <stream solution at x>} from the stream"
+  "returns a collection of view data (maps of form {:item <stream name> :x <x input angle> :y <stream solution at x>} )
+   from the stream"
   [stream]
-  (let [item  ((meta stream) :name)]
+  (let [item  (or (get (meta stream) :name) "no name")]
     (loop [i 0 v (transient [])]
       (if (< i (count stream))
-        (recur (inc i) (conj! v {:item item :x i :y (stream i)}))
+        (recur (inc i) (conj! v {:item item :x i :y (stream i)})) ;; view data structure
         (persistent! v)))))
 
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
-(defn get-plot-streams [input-config & strats]
+(defn get-strats-input-and-return-streams [input-config & strats]
   (let [input-streams (get-input-streams input-config)
-        plot-streams (transient (vec (conj (get input-streams :source-streams) (get input-streams :target-stream))))]
+        plot-streams (vec (into (get input-streams :source-streams) (get input-streams :target-streams)))]
     (loop [i 0 v plot-streams]
       (if (< i (count strats))
-        (recur (inc i) (conj! v ((nth strats i) :return-stream)))
-        (persistent! v)))))
+        (recur (inc i) (into v (get (nth strats i) :return-streams)))
+        v))))
 
 (defn get-plot-values [plot-streams]
   (flatten
@@ -243,15 +247,15 @@
 (defn plot-strats-and-inputs [input-config & strats]
   (generate-and-view-plot
    (get-plot-values
-    (apply get-plot-streams input-config strats))))
+    (apply get-strats-input-and-return-streams input-config strats))))
 
 (defn plot-strats [& strats]
   (generate-and-view-plot
    (get-plot-values
     (map :return-stream strats))))
 
-(def input-config (get-input-config 4 1 1000 10 0.1 0 100))
-(def tree-config (get-tree-config 2 6 (get-index-pairs (input-config :num-source-streams))))
+(def input-config (get-input-config 4 2 1000 10 0.1 0 100))
+(def tree-config (get-tree-config 2 6 (get-index-pairs (get input-config :num-source-streams))))
 (def strat1 (get-populated-strat input-config tree-config))
 (def strat2 (get-populated-strat input-config tree-config))
 (def strat3 (get-populated-strat input-config tree-config))

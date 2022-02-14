@@ -2,9 +2,6 @@
 
 ### Todo
 
-- [ ] (0.1.3) Memoize sine function (strategy line ~124) and check if performance boost
-- [ ] (0.1.4) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
-  - We are not losing any functionality here, only gaining optionality.
 - [ ] (0.2.0) Refactor `/incubator` by config type (input, tree, population, ga)
 - [ ] (0.3.0) Refactor `/incubator` to use `core.async` for performance boost with parallel processing.
 - [ ] (0.4.0) Refactor `/arena` to use `core.async` for api calls and whatnot.
@@ -20,6 +17,7 @@
 - [ ] Fuzz test one function with spec generator
 - [ ] Spec all functions
 - [ ] Fuzz test all functions with spec generators
+- [ ] Use clojure.edn for config data
 
 ### Completed Tasks
 
@@ -29,3 +27,7 @@
   - Lazy load input and target data
   - Make sure GA still works
 - [x] (0.1.2) Use formatter
+- [x] (OLD 0.1.3 : NO CHANGE NEEDED -- SKIPpED) Memoize sine function (:fn item returned from `get-random-sine-config`) and check if performance boost
+  - Test current, then memoize, then test again.
+- [x] (0.1.3) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
+  - We are not losing any functionality here, only gaining functionality.
