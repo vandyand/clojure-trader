@@ -51,7 +51,7 @@
       (persistent! v))))
 
 (defn get-strat-fitness [strat]
-  (let [fitness (last (strat :return-stream))]
+  (let [fitness (last (last (strat :return-streams)))]
     (assoc strat :fitness fitness)))
 
 (defn get-strats-fitnesses [strats]
@@ -222,9 +222,8 @@
       (get-strats-fitnesses)))
 
 (defn run-epochs
-  ([num-epochs ga-config] (run-epochs num-epochs (get-init-pop ga-config)
-                                      ga-config))
-  ([num-epochs population ga-config]
+  ([ga-config] (run-epochs (get-init-pop ga-config) ga-config))
+  ([population ga-config]
    (loop [i 0 pop population]
      (let [next-gen (ga-epoch pop ga-config)
            best-score (get (first next-gen) :fitness)
@@ -232,7 +231,7 @@
                      (/ (reduce + fitnesses) (count fitnesses)))]
        (println "gen  " i " best score: " best-score
                 " avg pop score: " average)
-       (if (< i num-epochs) (recur (inc i) next-gen) next-gen)))))
+       (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 (defn get-strats-info [stats]
   (println (map :fitness stats))
@@ -240,14 +239,14 @@
 
 (def ga-config
   (let [num-epochs 20
-        input-config (strat/get-input-config 4 1 100 10 1 0.1 100)
+        input-config (strat/get-input-config 10 2 1000 10 0.1 0.1 100)
         tree-config (strat/get-tree-config
-                     2 6 (strat/get-index-pairs
+                     3 6 (strat/get-index-pairs
                           (get input-config :num-source-streams)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
 
-(def best-strats (run-epochs 12 ga-config))
+(def best-strats (run-epochs ga-config))
 (plot-strats-and-inputs (take 5 best-strats)
                         (get ga-config :input-config))
 (get-strats-info (take 5 best-strats))
