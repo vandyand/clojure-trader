@@ -44,17 +44,17 @@
 (defn get-sine-configs [base-config num-key]
   (vec (repeatedly (get base-config num-key) #(get-random-sine-config base-config))))
 
-(defn get-input-config [num-source-streams num-target-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
-  (let [base-config {:num-source-streams num-source-streams
-                     :num-target-streams num-target-streams
+(defn get-input-config [num-inception-streams num-intention-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
+  (let [base-config {:num-inception-streams num-inception-streams
+                     :num-intention-streams num-intention-streams
                      :num-data-points num-data-points
                      :max-amp max-amp
                      :max-freq max-freq
                      :max-v-shift max-v-shift
                      :max-h-shift max-h-shift}]
     (assoc base-config
-           :source-streams-config (get-sine-configs base-config :num-source-streams)
-           :target-streams-config (get-sine-configs base-config :num-target-streams))))
+           :inception-streams-config (get-sine-configs base-config :num-inception-streams)
+           :intention-streams-config (get-sine-configs base-config :num-intention-streams))))
 
 (defn get-tree-config [min-depth max-depth index-pairs]
   {:min-depth min-depth :max-depth max-depth :index-pairs index-pairs})
@@ -138,12 +138,12 @@
    (mapv fn (range num-data-points))))
 
 (defn get-input-streams-util [input-config target-key]
-  (for [source-stream-config (get input-config target-key)]
+  (for [inception-stream-config (get input-config target-key)]
     (with-meta
-      (get-stream-from-fn (get source-stream-config :fn) (get input-config :num-data-points))
-      {:name (get source-stream-config :name) :args (get source-stream-config :args)})))
+      (get-stream-from-fn (get inception-stream-config :fn) (get input-config :num-data-points))
+      {:name (get inception-stream-config :name) :args (get inception-stream-config :args)})))
 
-(defn zip-source-streams [& streams]
+(defn zip-inception-streams [& streams]
   (loop [i 0 v (transient [])]
     (if (< i (count (first streams)))
       (recur (inc i) (conj! v (vec (for [stream streams] (stream i)))))
@@ -165,35 +165,35 @@
     (get-stream-delta stream)))
 
 (defn get-input-streams [input-config]
-  (let [source-streams (get-input-streams-util input-config :source-streams-config)
-        target-streams (get-input-streams-util input-config :target-streams-config)]
-    {:source-streams source-streams
-     :target-streams target-streams
-     :target-streams-delta (get-streams-delta target-streams)}))
+  (let [inception-streams (get-input-streams-util input-config :inception-streams-config)
+        intention-streams (get-input-streams-util input-config :intention-streams-config)]
+    {:inception-streams inception-streams
+     :intention-streams intention-streams
+     :intention-streams-delta (get-streams-delta intention-streams)}))
 
 (defn get-sieve-stream
-  [name source-streams strat-tree solve-tree-fn]
-  (with-meta (vec (for [inputs (apply zip-source-streams source-streams)]
+  [name inception-streams strat-tree solve-tree-fn]
+  (with-meta (vec (for [inputs (apply zip-inception-streams inception-streams)]
                     (solve-tree-fn strat-tree inputs))) {:name name}))
 
-(defn get-return-stream [sieve-stream target-stream-delta]
+(defn get-return-stream [sieve-stream intention-stream-delta]
   (loop [i 1 v (transient [0.0])]
     (if (< i (count sieve-stream))
-      (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
+      (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (intention-stream-delta i)))))
       (persistent! v))))
 
-(defn get-return-streams [sieve-stream target-streams-delta]
-  (for [target-stream-delta target-streams-delta]
-    (with-meta (vec (get-return-stream sieve-stream target-stream-delta)) {:name (str "return stream " (rand-caps-str 5))})))
+(defn get-return-streams [sieve-stream intention-streams-delta]
+  (for [intention-stream-delta intention-streams-delta]
+    (with-meta (vec (get-return-stream sieve-stream intention-stream-delta)) {:name (str "return stream " (rand-caps-str 5))})))
 
 (defn get-populated-strat-from-tree
   ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))
   ([tree input-config solve-tree-fn]
    (let [name (rand-suffix "strat")
          input-streams (get-input-streams input-config)
-         sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :source-streams) tree solve-tree-fn)
-         return-streams (get-return-streams sieve-stream (get input-streams :target-streams-delta))]
-     {:name name :tree tree :sieve-stream sieve-stream :return-streams return-streams})))
+         sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :inception-streams) tree solve-tree-fn)
+         return-streams (get-return-streams sieve-stream (get input-streams :intention-streams-delta))]
+     {:name name :input-streams input-streams :tree tree :sieve-stream sieve-stream :return-streams return-streams})))
 
 (defn get-populated-strat
   ([input-config tree-config] (get-populated-strat input-config tree-config make-tree solve-tree))
@@ -217,7 +217,7 @@
 
 (defn get-strats-input-and-return-streams [input-config & strats]
   (let [input-streams (get-input-streams input-config)
-        plot-streams (vec (into (get input-streams :source-streams) (get input-streams :target-streams)))]
+        plot-streams (vec (into (get input-streams :inception-streams) (get input-streams :intention-streams)))]
     (loop [i 0 v plot-streams]
       (if (< i (count strats))
         (recur (inc i) (into v (get (nth strats i) :return-streams)))
@@ -255,7 +255,7 @@
     (map :return-stream strats))))
 
 (def input-config (get-input-config 4 2 1000 10 0.1 0 100))
-(def tree-config (get-tree-config 2 6 (get-index-pairs (get input-config :num-source-streams))))
+(def tree-config (get-tree-config 2 6 (get-index-pairs (get input-config :num-inception-streams))))
 (def strat1 (get-populated-strat input-config tree-config))
 (def strat2 (get-populated-strat input-config tree-config))
 (def strat3 (get-populated-strat input-config tree-config))
