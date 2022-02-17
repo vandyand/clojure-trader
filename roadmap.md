@@ -2,9 +2,13 @@
 
 ### Todo
 
-- [ ] (0.2.0) Refactor `/incubator` by config type (input, tree, population, ga)
-- [ ] (0.3.0) Refactor `/incubator` to use `core.async` for performance boost with parallel processing.
-- [ ] (0.4.0) Refactor `/arena` to use `core.async` for api calls and whatnot.
+- [ ] (0.2.x) Work on arena v1 - No live trading (practice or live) only mock trading.
+  - [ ] Create stream bank - refactor inputs-config to subscribe to streams
+  - [ ] Setup mock strategy infrastructure (0.2.0)
+    - Create mock strategy with input data, tree data, target instrument data
+  - [ ] Package strategies from incubator (0.2.1)
+  - [ ] Run mock strategy (0.2.2)
+- [ ] (0.3.0) Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
 
 ### Continuous
 
@@ -18,6 +22,9 @@
 - [ ] Spec all functions
 - [ ] Fuzz test all functions with spec generators
 - [ ] Use clojure.edn for config data
+- [ ] Refactor `/incubator` to use `core.async` for performance boost with parallel processing.
+- [ ] Refactor `/incubator` by config type (input, tree, population, ga)
+- [ ] Performance: Store outside data streams in local db. Test if this is a performance boost (enough data and logically it will be)
 
 ### Completed Tasks
 
@@ -32,3 +39,5 @@
 - [x] (0.1.3) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
   - We are not losing any functionality here, only gaining functionality.
 - [x] (0.1.3-fix) Regression fix ga
+
+### Completed Nice to haves

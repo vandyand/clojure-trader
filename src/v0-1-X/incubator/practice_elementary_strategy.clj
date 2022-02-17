@@ -38,21 +38,21 @@
         (range 10)))
       {:name "sieve stream"}))
 
-  (def target-stream
+  (def intention-stream
     (with-meta input-stream-1 {:name "target stream"}))
 
-  (def target-stream-delta
+  (def intention-stream-delta
     (with-meta
       (into [0.0]
-            (for [i (range (- (count target-stream) 1))]
-              (- (target-stream (+ i 1)) (target-stream i))))
+            (for [i (range (- (count intention-stream) 1))]
+              (- (intention-stream (+ i 1)) (intention-stream i))))
       {:name "target stream deltas"}))
 
   (def return-stream
     (with-meta
       (loop [i 1 v (transient [0.0])]
         (if (< i 10)
-          (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (target-stream-delta i)))))
+          (recur (inc i) (conj! v (+ (v (- i 1)) (* (sieve-stream (- i 1)) (intention-stream-delta i)))))
           (persistent! v))) {:name "return stream"}))
 
   (defn format-stream-for-view [stream]
