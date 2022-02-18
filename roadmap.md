@@ -45,5 +45,7 @@
 - [x] (0.1.3) Make strategy able to take multiple targets as input. Return stream will be sum of returns of each
   - We are not losing any functionality here, only gaining functionality.
 - [x] (0.1.3-fix) Regression fix ga
+- [x] (0.2.0) Solve manually built straticator working
+- [x] (0.2.1) Build straticator working
 
 ### Completed Nice to haves
