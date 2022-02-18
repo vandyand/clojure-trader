@@ -1,4 +1,16 @@
+### Fri, Feb 18, 22
+
+What to do next? How do we want straticator to work? Are we constraining the straticator functions at all? The only constraint is that they all return continuous values and the last one (parentmost one) returns binary. This is basically a nerual net with different types of activation functions. Instead of just relu or tanh or what have you we're using literally anything.
+
+The parentmost node can use a decision tree to return binary. We need some way of collapsing multiple continuous values into binary which implies the need for if else logic (which is a decision).
+
+Previously we were only modifying this parent node to the straticator in the ga (which is fine). There's more power/potential though in modifying the entire straticator tree.
+
+What's the best way to construct these things though? We're generating random functions? They must return continuous values though, and not error out (so no divide by zero for example). How do we ensure these functions we're generating are compliant? We should test them before allowing them to be used? There are some families of functions that we know are compliant like sin and cos functions (and all other trig functions?) and add and multiply. So just use those? Let's just use (elementary functions)[https://en.wikipedia.org/wiki/Elementary_function] for now. That is constants, addition, multiplication, rational powers, exponentials, logarithms, trigonometric and hyperbolic functions.
+
 ### Thu, Feb 17, 22
+
+Working on 0.2.0
 
 #### Using Straticators:
 
