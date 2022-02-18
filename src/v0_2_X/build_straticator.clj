@@ -12,7 +12,13 @@
    (Math/sqrt (/ (apply + (map #(Math/pow (- % mu) 2) vs))
                  size))))
 
-(def one-arg-funcs (list #(Math/sin %) #(Math/cos %) #(Math/log %) #(Math/abs %) #(Math/exp %)))
+(def one-arg-funcs (list
+                    (with-meta #(Math/sin %) {:name "sin"})
+                    (with-meta #(Math/cos %) {:name "cos"})
+                    (with-meta #(Math/log (Math/abs (+ Math/E %))) {:name "modified log"})
+                    (with-meta #(Math/abs %) {:name "abs"})
+                    (with-meta #(Math/exp %) {:name "exp"})))
+
 (def many-arg-funcs
   [(with-meta (fn [& args] (apply + args)) {:name "+"})
    (with-meta (fn [& args] (apply * args)) {:name "*"})
@@ -27,9 +33,9 @@
 (defn make-straticator-recur
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     {:id 0 :shift (rand-int sstcr/num-data-points)}
-     (let [num-inputs (+ 1 (rand-int (get config :max-children)))
-           inputs (vec (repeatedly num-inputs #(rand-nth [{:id 0 :shift (rand-int 2)} (make-straticator-recur config (inc current-depth))])))
+     {:id 0 :shift (first (random-sample 0.333 (range)))}
+     (let [num-inputs (+ 1 (or (first (random-sample 0.333 (range (get config :max-children)))) 0))
+           inputs (vec (repeatedly num-inputs #(rand-nth [{:id 0 :shift (first (random-sample 0.333 (range)))} (make-straticator-recur config (inc current-depth))])))
            func (cond
                   (= num-inputs 1) (rand-nth one-arg-funcs)
                   (= num-inputs 2) (rand-nth two-arg-funcs)
