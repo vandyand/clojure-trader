@@ -9,7 +9,8 @@
    [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [incubator.strategy :as strat]))
+   [incubator.strategy :as strat]
+   [incubator.inputs :as inputs]))
 
 ;; CONFIG FUNCTIONS
 
@@ -239,14 +240,14 @@
 
 (def ga-config
   (let [num-epochs 20
-        input-config (strat/get-input-config 10 2 1000 10 0.1 0.1 100)
+        input-config (inputs/get-input-config 10 2 1000 10 0.1 0.1 100)
         tree-config (strat/get-tree-config
                      3 6 (strat/get-index-pairs
-                          (get input-config :num-source-streams)))
+                          (get input-config :num-inception-streams)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
 
-(def best-strats (run-epochs ga-config))
-(plot-strats-and-inputs (take 5 best-strats)
+(def best-pop (run-epochs ga-config))
+(plot-strats-and-inputs (take 5 best-pop)
                         (get ga-config :input-config))
-(get-strats-info (take 5 best-strats))
+(get-strats-info (take 5 best-pop))

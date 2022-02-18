@@ -42,13 +42,13 @@
 
 (defn get-url
   ([endpoint] (get-url endpoint nil))
-  ([endpoint query-params]
-   (str (get-env-data :OANDA_API_URL) endpoint (when query-params (format-query-params query-params)))))
+  ([endpoint instrument-config]
+   (str (get-env-data :OANDA_API_URL) endpoint (when instrument-config (format-query-params (dissoc instrument-config :name))))))
 
 (defn get-api-data
   ([endpoint] (get-api-data endpoint nil))
-  ([endpoint query-params]
-   (-> endpoint (get-url query-params) (send-api-get-request) (parse-response-body))))
+  ([endpoint instrument-config]
+   (-> endpoint (get-url instrument-config) (send-api-get-request) (parse-response-body))))
 
 ;; ACCOUNT DATA FUNCTIONS
 
@@ -67,11 +67,10 @@
 ;; GET CANDLES
 
 (defn get-candles
-  ([instrument-name granularity count] (get-candles (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-name granularity count))
-  ([account-id instrument-name granularity count]
-   (let [endpoint (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"))
-         query-params {:granularity granularity :count count}]
-     (get-api-data endpoint query-params))))
+  ([instrument-config] (get-candles (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
+  ([account-id instrument-config]
+   (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
+     (get-api-data endpoint instrument-config))))
 
 ;; GET OPEN POSITIONS
 
