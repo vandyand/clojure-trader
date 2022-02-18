@@ -2,13 +2,19 @@
 
 ### Todo
 
-- [ ] (0.2.x) Work on arena v1 - No live trading (practice or live) only mock trading.
+- [ ] (0.2.x) Keep working on straticators
+  - [ ] Nodes should more frequently take one input (to create raw materials as it were)
+  - [ ] Get it working with EUR_USD as extra input
+  - [ ] Make parentmost node a compatable strategy tree
+  - [ ] Solve straticators for intention stream(s) to create a return stream(s)
+  - [ ] Get the whole thing working with GA (make mutators and crossovers).
+- [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
   - [ ] Setup mock strategy infrastructure (0.2.0)
     - Create mock strategy with input data, tree data, target instrument data
   - [ ] Package strategies from incubator (0.2.1)
   - [ ] Run mock strategy (0.2.2)
-- [ ] (0.3.0) Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
+- [ ] (0.4.0) Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
 
 ### Continuous
 
