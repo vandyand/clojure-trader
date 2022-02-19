@@ -1,11 +1,11 @@
-(ns v0_2_X.solve_strategator
+(ns v0_2_X.solve_strindicator
   (:require [stats :as stats]
             [clojure.pprint :as pp]
-            [v0_2_X.build_strategator :as bstgr]))
+            [v0_2_X.build_strindicator :as bstgr]))
 
 (def num-data-points 10)
 
-(def strategator {:inputs [{:id 0}
+(def strindicator {:inputs [{:id 0}
                            {:inputs [{:id 0 :shift 0}]
                             :fn #(+ 1 %)}
                            {:inputs [{:id 0}
@@ -23,29 +23,29 @@
 
 (defn pos-or-zero [num] (if (pos? num) num 0))
 
-(defn solve-strategator-at-index [strategator subscription-streams current-ind]
-  (if (contains? strategator :id)
-    (let [stream-id (get strategator :id)
-          target-ind (pos-or-zero (- current-ind (or (get strategator :shift) 0)))]
+(defn solve-strindicator-at-index [strindicator subscription-streams current-ind]
+  (if (contains? strindicator :id)
+    (let [stream-id (get strindicator :id)
+          target-ind (pos-or-zero (- current-ind (or (get strindicator :shift) 0)))]
       (get-subscription-stream-val subscription-streams stream-id target-ind))
-    (let [stgr-fn (get strategator :fn)
-          stgr-inputs (get strategator :inputs)]
+    (let [stgr-fn (get strindicator :fn)
+          stgr-inputs (get strindicator :inputs)]
       (if (number? stgr-fn) stgr-fn
           (apply
            stgr-fn
-           (mapv #(solve-strategator-at-index % subscription-streams current-ind) stgr-inputs))))))
+           (mapv #(solve-strindicator-at-index % subscription-streams current-ind) stgr-inputs))))))
 
-(defn solve-strategator [strategator num-data-points]
+(defn solve-strindicator [strindicator num-data-points]
   (mapv
    (partial
-    solve-strategator-at-index
-    strategator
+    solve-strindicator-at-index
+    strindicator
     subscription-streams)
    (range num-data-points)))
 
 (def solution
-  (solve-strategator
-   strategator
+  (solve-strindicator
+   strindicator
    num-data-points))
 
 (println solution)

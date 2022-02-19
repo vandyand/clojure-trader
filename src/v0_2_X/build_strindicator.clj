@@ -1,7 +1,7 @@
-(ns v0_2_X.build_strategator
+(ns v0_2_X.build_strindicator
   (:require [stats :as stats]
             [clojure.pprint :as pp]
-            [v0_2_X.solve_strategator :as sstgr]))
+            [v0_2_X.solve_strindicator :as sstgr]))
 (defn mean
   ([vs] (mean (reduce + vs) (count vs)))
   ([sm sz] (/ sm sz)))
@@ -26,14 +26,14 @@
    (with-meta (fn [& args] (stdev args)) {:name "stdev"})])
 (def two-arg-funcs (cons (with-meta #(Math/pow %1 %2) {:name "pow"}) many-arg-funcs))
 
-(def strategator-config {:min-depth 3 :max-depth 5 :max-children 10})
+(def strindicator-config {:min-depth 3 :max-depth 5 :max-children 10})
 
-(defn make-strategator-recur
+(defn make-strindicator-recur
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
      {:id 0 :shift (first (random-sample 0.333 (range)))}
      (let [num-inputs (or (first (random-sample 0.25 (range (get config :max-children)))) 0)
-           inputs (vec (repeatedly num-inputs #(rand-nth [{:id 0 :shift (first (random-sample 0.333 (range)))} (make-strategator-recur config (inc current-depth))])))
+           inputs (vec (repeatedly num-inputs #(rand-nth [{:id 0 :shift (first (random-sample 0.333 (range)))} (make-strindicator-recur config (inc current-depth))])))
            func (cond
                   (= num-inputs 0) (rand)
                   (= num-inputs 1) (rand-nth one-arg-funcs)
@@ -43,8 +43,8 @@
         :fn func
         :inputs inputs}))))
 
-(def strategator-b (make-strategator-recur strategator-config 0))
+(def strindicator-b (make-strindicator-recur strindicator-config 0))
 
-(pp/pprint strategator-b)
+(pp/pprint strindicator-b)
 
-(println (sstgr/solve-strategator strategator-b sstgr/num-data-points))
+(println (sstgr/solve-strindicator strindicator-b sstgr/num-data-points))
