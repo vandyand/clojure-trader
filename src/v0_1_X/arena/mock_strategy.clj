@@ -1,6 +1,6 @@
-(ns arena.mock-strategy
-  (:require [incubator.ga :as ga]
-            [incubator.strategy :as strat]))
+(ns v0_1_X.arena.mock-strategy
+  (:require [v0_1_X.incubator.ga :as ga]
+            [v0_1_X.incubator.strategy :as strat]))
 
 (def ga-config
   (let [num-epochs 20

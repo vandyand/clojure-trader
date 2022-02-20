@@ -1,4 +1,4 @@
-(ns incubator.strategy
+(ns v0_1_X.incubator.strategy
   (:require
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
@@ -9,8 +9,9 @@
    [clojure.zip :as z]
    [oz.core :as oz]
    [clojure.set :as set]
-   [incubator.sine_waves :as sw]
-   [incubator.inputs :as inputs]))
+   [v0_1_X.incubator.sine_waves :as sw]
+   [v0_1_X.incubator.inputs :as inputs]))
+
 
 ;; START SERVER FOR VISUALIZATION
 
