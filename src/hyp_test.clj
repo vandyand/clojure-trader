@@ -9,8 +9,8 @@
   ;;  [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [incubator.strategy :as strat]
-   [incubator.ga :as ga]
+   [v0_1_X.incubator.strategy :as strat]
+   [v0_1_X.incubator.ga :as ga]
    [stats :as stats]))
 
 (defn add-delta-return-stream-to-strat [strat]

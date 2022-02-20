@@ -1,5 +1,5 @@
-(ns incubator.inputs
-  (:require [incubator.sine_waves :as sw]))
+(ns v0_1_X.incubator.inputs
+  (:require [v0_1_X.incubator.sine_waves :as sw]))
 
 (defn scaled-rand-dbl
   "returns random double between min (inclusive) and max (exclusive)"

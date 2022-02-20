@@ -1,8 +1,9 @@
-(ns arena.oanda_instrument
-  (:require [arena.oanda_api :as oa]
-            [incubator.strategy :as strat]
+(ns v0_1_X.arena.oanda_instrument
+  (:require [v0_1_X.arena.oanda_api :as oa]
+            [v0_1_X.incubator.strategy :as strat]
+            [v0_1_X.incubator.inputs :as inputs]
             ;; [clojure.pprint :as pp]
-            [incubator.ga :as ga]))
+            [v0_1_X.incubator.ga :as ga]))
 
 (defn format-candles [candles]
   (map
@@ -36,8 +37,8 @@
 (def instrument-config (get-instrument-config "EUR_USD" "H1" 5000))
 (def eurusd-stream (vec (for [data (get-open-prices  instrument-config)] (get data :o))))
 (def eurusd (with-meta eurusd-stream {:name "eurusd"}))
-(def input-config (strat/get-input-config 10 1 (count eurusd) 0.005 1 0 100))
-(def tree-config (strat/get-tree-config 2 8 (strat/get-index-pairs (input-config :num-input-streams))))
+(def input-config (inputs/get-input-config 10 1 (count eurusd) 0.005 1 0 100))
+(def tree-config (strat/get-tree-config 2 8 (strat/get-index-pairs (input-config :num-inception-streams))))
   ;;  (def input-streams (strat/get-input-streams input-config))
 (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
   ;;  (def input-and-eurusd-streams {:input-streams input-streams :intention-stream (with-meta (zero-stream eurusd-stream) {:name "zeroed target"}) :intention-stream-delta eurusd-delta})

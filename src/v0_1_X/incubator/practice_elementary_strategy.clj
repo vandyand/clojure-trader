@@ -1,4 +1,4 @@
-(ns incubator.practice_elementary_strategy
+(ns v0_1_X.incubator.practice_elementary_strategy
   (:require [oz.core :as oz]))
 
 (comment

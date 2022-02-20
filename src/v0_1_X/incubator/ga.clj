@@ -1,4 +1,4 @@
-(ns incubator.ga
+(ns v0_1_X.incubator.ga
   (:require
    [clojure.pprint :as pp]
   ;;  [clojure.spec.alpha :as s]
@@ -9,8 +9,8 @@
    [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [incubator.strategy :as strat]
-   [incubator.inputs :as inputs]))
+   [v0_1_X.incubator.strategy :as strat]
+   [v0_1_X.incubator.inputs :as inputs]))
 
 ;; CONFIG FUNCTIONS
 

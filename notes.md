@@ -3,7 +3,7 @@
 The random sine waves we are generating in 0.1.X incubator can be created in our strindy as it stands, and the same applies for a Moving Average indicator (for example). This being said, it is highly unlikely that these will ever be created randomly or even in a GA searching process. Is this ok? Try it out as is. There may come a point in the future where we force some structure into (onto?) our strindicators.
 
 helpful load command:
-(load "/0_1_X/incubator/sine_waves" "/0_1_X/incubator/inputs" "/0_1_X/incubator/strategy" "/0_1_X/incubator/ga" "/0_1_X/arena/oanda_api" "/0_1_X/arena/oanda_instrument")
+(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga" "/v0_1_X/arena/oanda_api" "/v0_1_X/arena/oanda_instrument")
 
 ### Fri, Feb 18, 22
 

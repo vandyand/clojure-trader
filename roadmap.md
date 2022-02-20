@@ -4,7 +4,6 @@
 
 - [ ] (0.2.x) Keep working on strindicators
   - [ ] Make it configurable to go long or short (maybe get this working in incubator 0.1.x first)
-  - [ ] Get it working with EUR_USD as extra input
   - [ ] Make parentmost node a compatable strategy tree
   - [ ] Solve strindicators for intention stream(s) to create a return stream(s)
   - [ ] Get the whole thing working with GA (make mutators and crossovers).
@@ -48,5 +47,6 @@
 - [x] (0.2.0) Solve manually built strindicator working
 - [x] (0.2.1) Build strindicator working
 - [x] (0.2.2) Nodes should more frequently take one input (to create raw materials as it were)
+- [x] (0.2.3) Get it working with EUR_USD as extra input
 
 ### Completed Nice to haves
