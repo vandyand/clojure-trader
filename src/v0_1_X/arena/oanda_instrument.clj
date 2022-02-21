@@ -38,7 +38,7 @@
 (def eurusd-stream (vec (for [data (get-open-prices  instrument-config)] (get data :o))))
 (def eurusd (with-meta eurusd-stream {:name "eurusd"}))
 (def input-config (inputs/get-sine-inputs-config 10 1 (count eurusd) 0.005 1 0 100))
-(def tree-config (strat/get-tree-config 2 8 (strat/get-index-pairs (input-config :num-inception-streams))))
+(def tree-config (strat/get-tree-config 2 8 (strat/get-index-pairs (count (get input-config :inception-streams-config)))))
   ;;  (def input-streams (strat/get-input-streams input-config))
 (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
   ;;  (def input-and-eurusd-streams {:input-streams input-streams :intention-stream (with-meta (zero-stream eurusd-stream) {:name "zeroed target"}) :intention-stream-delta eurusd-delta})

@@ -1,9 +1,18 @@
+### Mon, Feb 21, 22
+
+Currently strategy trees from v0.1.x are solved by taking in inception and intention streams. These streams aren't fetched/calculated in real time like strindicator streams are. What are we switching out here?Basically the strindicators are replacing the randome sine functions for inception streams. We can make this work but is this ideal? What do we want the final setup to look like? Previously we had envisioned the decision tree strategy sitting on top of the strindicator tree as the parent node and just solving everything one time slice at a time. We should probably do it this way going forward because this is how it will be solved in real life, one time step at a time.
+
+How would we do this though? I guess we're doing it already in the strindicator.... but not in the strategy tree solver. It's probably arbitrary when we fetch or calculate the inception stream values. The base tree solver solves for one instantanious input set at a time anyways and the whole strategy solver just zips up the inceptions streams into a stream of instant inputs and maps the solver over it. Iit's arbitrary to zip them and solve for them one at a time (obviously there might be performance considerations but conceptually it's arbitrary).
+
+How doo we lay this out then? What are next steps? Refactor the v0.1 incubator strategy to solve one at a time inputs? No matter what we're mapping over a range of length :num-data-points. This is the "ultimate" input. Instrument inceptions stream values are all fetched by these indexes and generated inception streams are all generatd from this input. It's the global "map" in that way. Make the strategies/strindicators able to solve for any step on this map (knowing the previous values as well). This is a proxy for time itself which is inherent in every stream. We are dealing with time series after all! Or shall we say, time streams... This is to say, everything is based on the global time axis.
+
+It might be nice to encode the random sine waves into the stindicators. We'd like to solve the strindicators one time step at a time which is entirely possible. It's also possible to encode the sine waves data in the strindicator. Perhaps it's best to just leave the sine data out for now as discussed in the previous post from Saturday, Feb 19. We can always add in the sine wave functions and other indicators like moving average later. For now just focus on getting a sieve stream and return stream (per instant time step) from the strindicators.
+
+Really, any binary function could be used as the "head" of the strindicator. The whole tree ought to return binary but there's arbitrary ways of doing that, >/< being the most obvious which is why > is used in the decision tree solver in strategy currently. We could even return constant numbers between 0 and 1 for position sizing or between -1 and 1 for long and short position sizing. Using remainder of (/ % 2) (like mod 2) would be one way of scaling it... Something like that.
+
 ### Sat, Feb 19, 22
 
-The random sine waves we are generating in 0.1.X incubator can be created in our strindy as it stands, and the same applies for a Moving Average indicator (for example). This being said, it is highly unlikely that these will ever be created randomly or even in a GA searching process. Is this ok? Try it out as is. There may come a point in the future where we force some structure into (onto?) our strindicators.
-
-helpful load command:
-(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga" "/v0_1_X/arena/oanda_api" "/v0_1_X/arena/oanda_instrument")
+The random sine waves we are generating in 0.1.X incubator can be created in our strindy as it stands, and the same applies for a Moving Average indicator (for example). This being said, it is highly unlikely that these will ever be created randomly or even in a GA searching process. Is this ok? Try it out and see. There may come a point in the future where we force some structure into (onto?) our strindicators.
 
 ### Fri, Feb 18, 22
 

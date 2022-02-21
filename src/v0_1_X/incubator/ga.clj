@@ -242,8 +242,7 @@
   (let [num-epochs 20
         input-config (inputs/get-sine-inputs-config 10 2 1000 10 0.1 0.1 100)
         tree-config (strat/get-tree-config
-                     3 6 (strat/get-index-pairs
-                          (get input-config :num-inception-streams)))
+                     3 6 (strat/get-index-pairs (count (get input-config :inception-streams-config))))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
 

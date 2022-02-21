@@ -6,7 +6,7 @@
   [min max]
   (-> (- max min) (rand) (+ min)))
 
-(defn get-rand-sine-config [rand-sine-template-config]
+(defn get-sine-fn-config [rand-sine-template-config]
   (let [rand-amp (scaled-rand 0 (get rand-sine-template-config :max-amp))
         rand-freq (scaled-rand 0 (get rand-sine-template-config :max-freq))
         rand-h-shift (scaled-rand 0 (get rand-sine-template-config :max-h-shift))
@@ -23,23 +23,24 @@
                (* rand-amp)
                (+ rand-v-shift)))}))
 
-(defn get-sine-configs [base-config num-key]
-  (vec (repeatedly (get base-config num-key) #(get-rand-sine-config base-config))))
+(defn get-sine-streams-config [sine-config-params num]
+  (vec (repeatedly num #(get-sine-fn-config sine-config-params))))
 
-(defn get-rand-sine-template-config [max-amp max-freq max-v-shift max-h-shift]
+(defn get-sine-config-params [max-amp max-freq max-v-shift max-h-shift]
   {:max-amp max-amp
    :max-freq max-freq
    :max-v-shift max-v-shift
    :max-h-shift max-h-shift})
 
+(defn get-input-config 
+  ([num-data-points] (get-input-config nil nil num-data-points nil nil))
+  ([num-data-points inception-streams-config intention-streams-config]
+  {:num-data-points num-data-points
+   :inception-streams-config inception-streams-config
+   :intention-streams-config intention-streams-config}))
+
 (defn get-sine-inputs-config [num-inception-streams num-intention-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
-  (let [base-config {:num-inception-streams num-inception-streams
-                     :num-intention-streams num-intention-streams
-                     :num-data-points num-data-points
-                     :max-amp max-amp
-                     :max-freq max-freq
-                     :max-v-shift max-v-shift
-                     :max-h-shift max-h-shift}]
-    (assoc base-config
-           :inception-streams-config (get-sine-configs base-config :num-inception-streams)
-           :intention-streams-config (get-sine-configs base-config :num-intention-streams))))
+  (let [sine-config-params (get-sine-config-params max-amp max-freq max-v-shift max-h-shift)
+        inception-streams-config (get-sine-streams-config sine-config-params num-inception-streams)
+        intention-streams-config (get-sine-streams-config sine-config-params num-intention-streams)]
+    (get-input-config num-data-points inception-streams-config intention-streams-config)))

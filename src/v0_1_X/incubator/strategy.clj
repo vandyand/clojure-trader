@@ -102,12 +102,6 @@
   ([fn num-data-points]
    (mapv fn (range num-data-points))))
 
-(defn get-input-streams-util [input-config target-key]
-  (for [inception-stream-config (get input-config target-key)]
-    (with-meta
-      (get-stream-from-fn (get inception-stream-config :fn) (get input-config :num-data-points))
-      {:name (get inception-stream-config :name) :args (get inception-stream-config :args)})))
-
 (defn zip-inception-streams [& streams]
   (loop [i 0 v (transient [])]
     (if (< i (count (first streams)))
@@ -129,6 +123,12 @@
   (for [stream streams]
     (get-stream-delta stream)))
 
+(defn get-input-streams-util [input-config target-key]
+  (for [inception-stream-config (get input-config target-key)]
+    (with-meta
+      (get-stream-from-fn (get inception-stream-config :fn) (get input-config :num-data-points))
+      {:name (get inception-stream-config :name) :args (get inception-stream-config :args)})))
+
 (defn get-input-streams [input-config]
   (let [inception-streams (get-input-streams-util input-config :inception-streams-config)
         intention-streams (get-input-streams-util input-config :intention-streams-config)]
@@ -138,8 +138,8 @@
 
 (defn get-sieve-stream
   [name inception-streams strat-tree solve-tree-fn]
-  (with-meta (vec (for [inputs (apply zip-inception-streams inception-streams)]
-                    (solve-tree-fn strat-tree inputs))) {:name name}))
+  (with-meta (vec (for [inst-inputs (apply zip-inception-streams inception-streams)]
+                    (solve-tree-fn strat-tree inst-inputs))) {:name name}))
 
 (defn get-return-stream [sieve-stream intention-stream-delta]
   (loop [i 1 v (transient [0.0])]
@@ -220,7 +220,7 @@
     (map :return-stream strats))))
 
 (def input-config (inputs/get-sine-inputs-config 4 2 1000 10 0.1 0 100))
-(def tree-config (get-tree-config 2 6 (get-index-pairs (get input-config :num-inception-streams))))
+(def tree-config (get-tree-config 2 6 (get-index-pairs (count (get input-config :inception-streams-config)))))
 (def strat1 (get-populated-strat input-config tree-config))
 (def strat2 (get-populated-strat input-config tree-config))
 (def strat3 (get-populated-strat input-config tree-config))

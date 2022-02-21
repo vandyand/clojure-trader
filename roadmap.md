@@ -52,3 +52,7 @@
 - [x] (0.2.4) Rename inputs config to sine inputs config because as it's currently used, it only supports random sine waves.
 
 ### Completed Nice to haves
+
+### Utility loader command
+
+(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga" "/v0_1_X/arena/oanda_api" "/v0_1_X/arena/oanda_instrument")
