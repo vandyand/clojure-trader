@@ -18,7 +18,7 @@
 
 (def best-strat (add-delta-return-stream-to-strat (first ga/best-strats)))
 
-(def input-config (strat/get-input-config 4 20 1 0.1 0.1 100))
+(def input-config (strat/get-sine-inputs-config 4 20 1 0.1 0.1 100))
 
 (def input-and-intention-streams-arena (strat/get-input-and-intention-streams input-config))
 
