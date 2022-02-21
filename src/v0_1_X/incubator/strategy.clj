@@ -219,7 +219,7 @@
    (get-plot-values
     (map :return-stream strats))))
 
-(def input-config (inputs/get-input-config 4 2 1000 10 0.1 0 100))
+(def input-config (inputs/get-sine-inputs-config 4 2 1000 10 0.1 0 100))
 (def tree-config (get-tree-config 2 6 (get-index-pairs (get input-config :num-inception-streams))))
 (def strat1 (get-populated-strat input-config tree-config))
 (def strat2 (get-populated-strat input-config tree-config))

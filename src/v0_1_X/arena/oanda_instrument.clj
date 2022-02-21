@@ -37,7 +37,7 @@
 (def instrument-config (get-instrument-config "EUR_USD" "H1" 5000))
 (def eurusd-stream (vec (for [data (get-open-prices  instrument-config)] (get data :o))))
 (def eurusd (with-meta eurusd-stream {:name "eurusd"}))
-(def input-config (inputs/get-input-config 10 1 (count eurusd) 0.005 1 0 100))
+(def input-config (inputs/get-sine-inputs-config 10 1 (count eurusd) 0.005 1 0 100))
 (def tree-config (strat/get-tree-config 2 8 (strat/get-index-pairs (input-config :num-inception-streams))))
   ;;  (def input-streams (strat/get-input-streams input-config))
 (def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))

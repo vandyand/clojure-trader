@@ -7,6 +7,7 @@
   - [ ] Make parentmost node a compatable strategy tree
   - [ ] Solve strindicators for intention stream(s) to create a return stream(s)
   - [ ] Get the whole thing working with GA (make mutators and crossovers).
+  - [ ] Make the strindicator subscription streams be fetched on demand, the correct one for each occasion according to strindicator config.
 - [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
   - [ ] Setup mock strategy infrastructure (0.3.0)
@@ -48,5 +49,6 @@
 - [x] (0.2.1) Build strindicator working
 - [x] (0.2.2) Nodes should more frequently take one input (to create raw materials as it were)
 - [x] (0.2.3) Get it working with EUR_USD as extra input
+- [x] (0.2.4) Rename inputs config to sine inputs config because as it's currently used, it only supports random sine waves.
 
 ### Completed Nice to haves
