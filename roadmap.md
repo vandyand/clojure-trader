@@ -4,8 +4,6 @@
 
 - [ ] (0.2.x) Keep working on strindicators
   - [ ] Make it configurable to go long or short (maybe get this working in incubator 0.1.x first)
-  - [ ] Make parentmost node a compatable strategy tree
-  - [ ] Solve strindicators for intention stream(s) to create a return stream(s)
   - [ ] Get the whole thing working with GA (make mutators and crossovers).
   - [ ] Make the strindicator subscription streams be fetched on demand, the correct one for each occasion according to strindicator config.
 - [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
@@ -50,6 +48,9 @@
 - [x] (0.2.2) Nodes should more frequently take one input (to create raw materials as it were)
 - [x] (0.2.3) Get it working with EUR_USD as extra input
 - [x] (0.2.4) Rename inputs config to sine inputs config because as it's currently used, it only supports random sine waves.
+- [x] (0.2.5)
+  - [x] Make parentmost node a compatable strategy tree
+  - [x] Solve strindicators for intention stream(s) to create a return stream(s)
 
 ### Completed Nice to haves
 
