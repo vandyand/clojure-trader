@@ -6,6 +6,7 @@
   - [ ] Make it configurable to go long or short (maybe get this working in incubator 0.1.x first)
   - [ ] Get the whole thing working with GA (make mutators and crossovers).
   - [ ] Make the strindicator subscription streams be fetched on demand, the correct one for each occasion according to strindicator config.
+  - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
   - [ ] Setup mock strategy infrastructure (0.3.0)
