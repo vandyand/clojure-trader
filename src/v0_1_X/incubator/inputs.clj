@@ -32,12 +32,12 @@
    :max-v-shift max-v-shift
    :max-h-shift max-h-shift})
 
-(defn get-input-config 
+(defn get-input-config
   ([num-data-points] (get-input-config nil nil num-data-points nil nil))
   ([num-data-points inception-streams-config intention-streams-config]
-  {:num-data-points num-data-points
-   :inception-streams-config inception-streams-config
-   :intention-streams-config intention-streams-config}))
+   {:num-data-points num-data-points
+    :inception-streams-config inception-streams-config
+    :intention-streams-config intention-streams-config}))
 
 (defn get-sine-inputs-config [num-inception-streams num-intention-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
   (let [sine-config-params (get-sine-config-params max-amp max-freq max-v-shift max-h-shift)

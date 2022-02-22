@@ -10,7 +10,8 @@
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
    [v0_1_X.incubator.strategy :as strat]
-   [v0_1_X.incubator.inputs :as inputs]))
+   [v0_1_X.incubator.inputs :as inputs]
+   [v0_2_X.strindicator :as strindy]))
 
 ;; CONFIG FUNCTIONS
 
@@ -212,7 +213,7 @@
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 
-(defn ga-epoch
+(defn run-epoch
   "config is map of keys: {:num-parents :num-children :crossover-pct :mutation-pct}"
   [population ga-config]
   (-> population
@@ -226,7 +227,7 @@
   ([ga-config] (run-epochs (get-init-pop ga-config) ga-config))
   ([population ga-config]
    (loop [i 0 pop population]
-     (let [next-gen (ga-epoch pop ga-config)
+     (let [next-gen (run-epoch pop ga-config)
            best-score (get (first next-gen) :fitness)
            average (let [fitnesses (map :fitness next-gen)]
                      (/ (reduce + fitnesses) (count fitnesses)))]
@@ -238,9 +239,27 @@
   (println (map :fitness stats))
   (pp/pprint (map :tree stats)))
 
+;; (def ga-config
+;;   (let [num-epochs 20
+;;         input-config (inputs/get-sine-inputs-config 10 2 1000 10 0.1 0.1 100)
+;;         tree-config (strat/get-tree-config
+;;                      3 6 (strat/get-index-pairs (count (get input-config :inception-streams-config))))
+;;         pop-config (get-pop-config 50 0.5 0.4 0.5)]
+;;     (get-ga-config num-epochs input-config tree-config pop-config)))
+
+;; (def best-pop (run-epochs ga-config))
+;; (plot-strats-and-inputs (take 5 best-pop)
+;;                         (get ga-config :input-config))
+;; (get-strats-info (take 5 best-pop))
+
+
+;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
+
+(def strindy-config (strindy/get-strindy-config 20 5 5 6 [0 1]))
+
 (def ga-config
-  (let [num-epochs 20
-        input-config (inputs/get-sine-inputs-config 10 2 1000 10 0.1 0.1 100)
+  (let [num-epochs 10
+        input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
         tree-config (strat/get-tree-config
                      3 6 (strat/get-index-pairs (count (get input-config :inception-streams-config))))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
