@@ -23,8 +23,8 @@
     (let [stream-id (get strindy :id)
           target-ind (pos-or-zero (- current-ind (or (get strindy :shift) 0)))]
       (cond (= stream-id 0) current-ind
-            (= stream-id 1) (get practice-eur-stream current-ind)
-            (= stream-id 2) (get practice-rand-stream current-ind)))
+            (= stream-id 1) (get practice-eur-stream target-ind)
+            (= stream-id 2) (get practice-rand-stream target-ind)))
     (let [strind-fn (get strindy :fn)
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
@@ -43,6 +43,7 @@
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 
+
 (def one-arg-funcs (list
                     (with-meta #(Math/sin %) {:name "sin"})
                     (with-meta #(Math/cos %) {:name "cos"})
@@ -51,25 +52,21 @@
 
 (def many-arg-funcs
   [(with-meta (fn [& args] (apply + args)) {:name "+"})
+   (with-meta (fn [& args] (apply - args)) {:name "-"})
    (with-meta (fn [& args] (apply * args)) {:name "*"})
-   (with-meta (fn [& args] (apply max args)) {:name "max"})
-   (with-meta (fn [& args] (apply min args)) {:name "min"})
+   (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
+  ;;  (with-meta (fn [& args] (apply max args)) {:name "max"})
+  ;;  (with-meta (fn [& args] (apply min args)) {:name "min"})
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
-   (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
+   (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})
+   (with-meta (fn [& args] (strat/solve-tree (strat/make-tree (strat/get-tree-config 0 10 (count args))) args)) {:name "binary tree"})
+   ])
 
-(def two-arg-funcs (cons (with-meta #(Math/pow %1 %2) {:name "pow"}) many-arg-funcs))
+(def two-arg-funcs
+  (into many-arg-funcs
+        [(with-meta #(Math/pow %1 %2) {:name "pow"})
+         (with-meta #(if (> %1 %2) 1 0) {:name "binary"})]))
 
-(defn get-strindy-config [num-strindies min-depth max-depth max-children subscription-ids]
-  {:num-strindies num-strindies :min-depth min-depth :max-depth max-depth :max-children max-children :subscription-ids subscription-ids})
-
-
-;; (defn binary-func [num-inputs] 
-;;   (with-meta 
-;;     (fn [& args] 
-;;       (strat/solve-tree 
-;;        (strat/make-tree (strat/get-tree-config 3 5 (strat/get-index-pairs num-inputs))) 
-;;        [args])) 
-;;     {:name "strat tree"}))
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))
@@ -78,7 +75,7 @@
      (rand-nth [{:id (rand-nth (get config :subscription-ids)) :shift (first (random-sample 0.5 (range)))} {:fn-name "rand constant" :fn (rand) :inputs []}])
      (let [max-children (get config :max-children)
            new-depth (inc current-depth)
-           num-inputs (or (first (random-sample 0.5 (range 1 max-children))) max-children)
+           num-inputs (or (first (random-sample 0.333 (range 1 max-children))) max-children)
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
                   ;; (= current-depth 0) (binary-func num-inputs)
@@ -103,27 +100,36 @@
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(defn get-strindy-fn-config [strindy-config]
-  (let [strindy (make-strindy-recur strindy-config)
-        name (strat/rand-suffix "strindy")]
-    {:name name
-     :fn (fn [x] (solve-strindy-at-index strindy x))}))
-
-(defn get-strindy-streams-config [strindy-config num]
-  (vec (repeatedly num #(get-strindy-fn-config strindy-config))))
-
-(defn get-strindy-inputs-config [num-inception-streams num-intention-streams num-data-points strindy-config]
-  (let [inception-streams-config (get-strindy-streams-config strindy-config num-inception-streams)
-        intention-streams-config (get-strindy-streams-config strindy-config num-intention-streams)]
-    (inputs/get-input-config num-data-points inception-streams-config intention-streams-config)))
+(defn get-strindy-config [num-strindies min-depth max-depth max-children subscription-ids]
+  {:num-strindies num-strindies :min-depth min-depth :max-depth max-depth :max-children max-children :subscription-ids subscription-ids})
 
 (def strindy-config (get-strindy-config 10 4 5 6 [0 1 2]))
 
+;; First solution to one strindy for testing: 
+;; (def strindy (make-strindy-recur strindy-config))
+
+;; (def solution (solve-strindy-at-index strindy 0))
+
+;; (pp/pprint strindy)
+;; (println "solution: " solution)
+
+(defn get-strindy-fn-config [strindy-config]
+  (let [strindy (make-strindy-recur strindy-config)
+        name (strat/rand-suffix "strindy")]
+    ;; (pp/pprint strindy)
+    {:name name
+     :fn (fn [x] (solve-strindy-at-index strindy x))}))
+
+(defn get-strindy-fn-configs [strindy-config num]
+  (vec (repeatedly num #(get-strindy-fn-config strindy-config))))
+
+(defn get-strindy-inputs-config [num-inception-streams num-intention-streams num-data-points strindy-config]
+  (let [inception-streams-config (get-strindy-fn-configs strindy-config num-inception-streams)
+        intention-streams-config (get-strindy-fn-configs strindy-config num-intention-streams)]
+    (inputs/get-input-config num-data-points inception-streams-config intention-streams-config)))
+
 (def input-config (get-strindy-inputs-config 4 1 100 strindy-config))
-;; (def input-config (inputs/get-sine-inputs-config 4 1 1000 10 0.1 0 100))
-(def tree-config (strat/get-tree-config 2 6 (strat/get-index-pairs (count (get input-config :inception-streams-config)))))
+(def tree-config (strat/get-tree-config 2 6 (count (get input-config :inception-streams-config))))
 (def strat1 (strat/get-populated-strat input-config tree-config))
-;; (def strat2 (strat/get-populated-strat input-config tree-config))
-;; (def strat3 (strat/get-populated-strat input-config tree-config))
-;; (def strat4 (strat/get-populated-strat input-config tree-config))
+;; (pp/pprint input-config)
 (strat/plot-strats-and-inputs input-config strat1)

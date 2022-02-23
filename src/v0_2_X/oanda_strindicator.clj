@@ -1,9 +1,11 @@
-(ns v0_1_X.arena.oanda_instrument
+(ns v0_2_X.oanda_strindicator
   (:require [v0_1_X.arena.oanda_api :as oa]
+            [v0_1_X.arena.oanda_instrument :as oai]
             [v0_1_X.incubator.strategy :as strat]
             [v0_1_X.incubator.inputs :as inputs]
             ;; [clojure.pprint :as pp]
-            [v0_1_X.incubator.ga :as ga]))
+            [v0_1_X.incubator.ga :as ga]
+            [v0_2_X.strindicator :as strindy]))
 
 (defn format-candles [candles]
   (map
@@ -30,20 +32,21 @@
 
 ;; (def instrument-streams (get-instrument-streams instrument-config))
 
+(defn get-instrument-stream [instrument-config] (vec (for [data (oai/get-open-prices  instrument-config)] (get data :o))))
 
 (defn zero-stream [stream]
   (vec (for [price stream] (- price (first stream)))))
 
-(def instrument-config (get-instrument-config "EUR_USD" "H1" 5000))
-(def eurusd-stream (vec (for [data (get-open-prices  instrument-config)] (get data :o))))
-(def eurusd (with-meta eurusd-stream {:name "eurusd"}))
-(def input-config (inputs/get-sine-inputs-config 10 1 (count eurusd) 0.005 1 0 100))
+(def num-data-points 1000)
+(def instrument-config (oai/get-instrument-config "EUR_USD" "H1" num-data-points))
+(def input-config (strindy/get-strindy-input-config 10 1 num-data-points 0.005 1 0 100))
 (def tree-config (strat/get-tree-config 2 8 (count (get input-config :inception-streams-config))))
-  ;;  (def input-streams (strat/get-input-streams input-config))
-(def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
-  ;;  (def input-and-eurusd-streams {:input-streams input-streams :intention-stream (with-meta (zero-stream eurusd-stream) {:name "zeroed target"}) :intention-stream-delta eurusd-delta})
 (def pop-config (ga/get-pop-config 40 0.5 0.4 0.4))
 (def ga-config (ga/get-ga-config 20 input-config tree-config pop-config))
+
+(def eurusd (with-meta (get-instrument-stream instrument-config) {:name "eurusd"}))
+(def eurusd-delta (strat/get-stream-delta eurusd "eurusd delta"))
+
 (def best-strats (ga/run-epochs ga-config))
 (ga/plot-strats-and-inputs (take 5 best-strats) input-config)
 (ga/get-strats-info (take 5 best-strats))

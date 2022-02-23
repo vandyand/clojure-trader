@@ -3,13 +3,13 @@
 ### Todo
 
 - [ ] (0.2.x) Keep working on strindicators
-  - [ ] Make it configurable to go long or short (maybe get this working in incubator 0.1.x first)
-  - [ ] Get the whole thing working with GA (make mutators and crossovers).
+  - [ ] Make strindicators truly composable. Separate config from population of config. Config should have all data for whole strindicator including special config for parent node if necessary.
+  - [ ] Get strindicators working with oanda api data as inception and intension streams
+  - [ ] Get strindicators working with GA (make mutators and crossovers).
   - [ ] Make the strindicator subscription streams be fetched on demand, the correct one for each occasion according to strindicator config.
-  - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
-  - [ ] Setup mock strategy infrastructure (0.3.0)
+  - [ ] Setup mock strategy infrastructure
     - Create mock strindicator with input data, tree data, target instrument data
   - [ ] Package strindicators from incubator (0.3.1)
   - [ ] Run mock strindicator (0.3.2)
@@ -30,6 +30,8 @@
 - [ ] Refactor `/incubator` to use `core.async` for performance boost with parallel processing.
 - [ ] Refactor `/incubator` by config type (input, tree, population, ga)
 - [ ] Performance: Store outside data streams in local db. Test if this is a performance boost (enough data and logically it will be)
+- [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
+- [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 
 ### Completed Tasks
 
@@ -57,4 +59,6 @@
 
 ### Utility loader command
 
+(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga")
+(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_2_X/strindicator")
 (load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga" "/v0_1_X/arena/oanda_api" "/v0_1_X/arena/oanda_instrument")
