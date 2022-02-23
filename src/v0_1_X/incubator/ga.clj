@@ -44,6 +44,7 @@
 ;; MAKE A BUNCH OF POPULATED STRATEGIES
 
 (defn get-populated-strats [ga-config]
+  (println "here 1000")
   (loop [i 0 v (transient [])]
     (if (< i (get-in ga-config [:pop-config :num-parents]))
       (recur (inc i)
@@ -91,8 +92,7 @@
 
 (defn new-rand-branch [loc]
   (if (z/branch? loc)
-    (let [subtree-config (strat/get-tree-config 0 1
-                                                (strat/get-index-pairs 4))
+    (let [subtree-config (strat/get-tree-config 0 1 4)
           new-node (strat/make-tree-recur subtree-config)]
       (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
 
@@ -226,6 +226,7 @@
 (defn run-epochs
   ([ga-config] (run-epochs (get-init-pop ga-config) ga-config))
   ([population ga-config]
+   (println "here 1500")
    (loop [i 0 pop population]
      (let [next-gen (run-epoch pop ga-config)
            best-score (get (first next-gen) :fitness)
@@ -235,15 +236,13 @@
                 " avg pop score: " average)
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
-(defn get-strats-info [stats]
-  (println (map :fitness stats))
-  (pp/pprint (map :tree stats)))
+
 
 ;; (def ga-config
 ;;   (let [num-epochs 20
 ;;         input-config (inputs/get-sine-inputs-config 10 2 1000 10 0.1 0.1 100)
 ;;         tree-config (strat/get-tree-config
-;;                      3 6 (strat/get-index-pairs (count (get input-config :inception-streams-config))))
+;;                      3 6 (count (get input-config :inception-streams-config)))
 ;;         pop-config (get-pop-config 50 0.5 0.4 0.5)]
 ;;     (get-ga-config num-epochs input-config tree-config pop-config)))
 
@@ -261,11 +260,13 @@
   (let [num-epochs 10
         input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
         tree-config (strat/get-tree-config
-                     3 6 (strat/get-index-pairs (count (get input-config :inception-streams-config))))
+                     3 6 (count (get input-config :inception-streams-config)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
-
+(println "here 100")
 (def best-pop (run-epochs ga-config))
+(println "here 500")
+
 (plot-strats-and-inputs (take 5 best-pop)
                         (get ga-config :input-config))
-(get-strats-info (take 5 best-pop))
+(strat/get-strats-info (take 5 best-pop))

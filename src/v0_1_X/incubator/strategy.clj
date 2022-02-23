@@ -21,9 +21,6 @@
 
 ;; You apply a strategy to source and target inputs to produce a return stream
 
-(defn get-tree-config [min-depth max-depth index-pairs]
-  {:min-depth min-depth :max-depth max-depth :index-pairs index-pairs})
-
 (defn get-index-pairs
   "returns set of sets"
   [num-inputs]
@@ -32,6 +29,9 @@
     #(not (nil? %))
     (for [x (range num-inputs) y (range num-inputs)]
       (when (not= x y)  #{x y})))))
+
+(defn get-tree-config [min-depth max-depth num-inputs]
+  {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs)})
 
 ;; MAKE TREE
 
@@ -42,6 +42,7 @@
   "available-ind-sets is the set of total index sets minus (difference) node parent index sets"
   ([tree-config] (make-tree-recur (tree-config :index-pairs) tree-config 0))
   ([available-ind-sets tree-config depth]
+  ;;  (println available-ind-sets tree-config depth)
    (let [ind-set (rand-nth (seq available-ind-sets))
          new-available-ind-sets (set/difference available-ind-sets #{ind-set})
          make-child #(if (and
@@ -77,13 +78,16 @@
 ;; SOLVE TREE FUNCTIONS
 
 (defn solve-cond [inputs input-indxs]
-  (> (inputs (first input-indxs)) (inputs (last input-indxs))))
+  ;; (println (type inputs))
+  (let [inputsVec (vec inputs)]
+   (> (inputsVec (first input-indxs)) (inputsVec (last input-indxs)))))
 
 (defn solve-tree
   "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
   [tree inst-inputs]
+  ;; (println "here 1250")
   (if (= (type tree) java.lang.Boolean)
-    (if tree 1 0)
+    (if tree 1.0 0.0)
     (solve-tree
      (if (solve-cond inst-inputs (first tree))
        (nth tree 1)
@@ -138,8 +142,13 @@
 
 (defn get-sieve-stream
   [name inception-streams strat-tree solve-tree-fn]
-  (with-meta (vec (for [inst-inputs (apply zip-inception-streams inception-streams)]
-                    (solve-tree-fn strat-tree inst-inputs))) {:name name}))
+  ;; (println "here 1260: " name strat-tree solve-tree-fn)
+  (with-meta (vec 
+              (for
+               [inst-inputs
+                (apply zip-inception-streams inception-streams)]
+                  (solve-tree-fn strat-tree inst-inputs)))
+    {:name name}))
 
 (defn get-return-stream [sieve-stream intention-stream-delta]
   (loop [i 1 v (transient [0.0])]
@@ -155,15 +164,21 @@
   ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))
   ([tree input-config solve-tree-fn]
    (let [name (rand-suffix "strat")
+        ;;  thing1 (println "here 1210")
          input-streams (get-input-streams input-config)
+        ;;  thing2 (println "here 1220")
          sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :inception-streams) tree solve-tree-fn)
-         return-streams (get-return-streams sieve-stream (get input-streams :intention-streams-delta))]
+        ;;  thing3 (println "here 1230")
+         return-streams (get-return-streams sieve-stream (get input-streams :intention-streams-delta))
+        ;;  thing4 (println "here 1240")
+         ]
      {:name name :input-streams input-streams :tree tree :sieve-stream sieve-stream :return-streams return-streams})))
 
 (defn get-populated-strat
   ([input-config tree-config] (get-populated-strat input-config tree-config make-tree solve-tree))
   ([input-config tree-config make-tree-fn solve-tree-fn]
    (let [tree (make-tree-fn tree-config)]
+  ;;  (println "here 1100")
      (get-populated-strat-from-tree tree input-config solve-tree-fn))))
 
 ;; VISUALIZATION FORMATTING FUNCTION
@@ -219,10 +234,15 @@
    (get-plot-values
     (map :return-stream strats))))
 
+(defn get-strats-info [strats]
+  (println (map :fitness strats))
+  (pp/pprint (map :tree strats)))
+
 (def input-config (inputs/get-sine-inputs-config 4 2 1000 10 0.1 0 100))
-(def tree-config (get-tree-config 2 6 (get-index-pairs (count (get input-config :inception-streams-config)))))
+(def tree-config (get-tree-config 2 6 (count (get input-config :inception-streams-config))))
 (def strat1 (get-populated-strat input-config tree-config))
 (def strat2 (get-populated-strat input-config tree-config))
 (def strat3 (get-populated-strat input-config tree-config))
 (def strat4 (get-populated-strat input-config tree-config))
 (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
+;; (get-strats-info [strat1 strat2 strat3 strat4])

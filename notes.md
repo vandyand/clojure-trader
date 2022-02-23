@@ -1,3 +1,13 @@
+### Wed, Feb 23, 22
+
+To confine strindicators to binary output one must use a binary function at the parent node. The greater than function is ideal for this. However, if one wants to compare more than two values to produce a binary result, one must use binary trees (decision trees). These are strategies in our system as it stands currently. Therefore, to constrain the output of our strindicators to binary, we must top off the strindicator with a binary tree. This is a new type of node.
+
+We could also mix in binary tree nodes into the strindicator in lower layers. There are theoretically no problems with this though one could make the case that information is lost at these nodes.
+
+It may prove beneficial to allow upper level nodes to subscribe to inputs of other nodes. This would make the strindicator tree into a strindcator graph or network. This is very similar to a neural network except nodes are allowed to have different activation functions. A neural net would be a subset of this type of strindicator which is fine. Then again, a graph is just a subset of a tree. Maybe make the strindicators trees for now with strategies potentially sprinkled in and turn it into a graph in the future for performance enhancement.
+
+Get to arena asap. How else will we know whether we're actualy improving the system or not?
+
 ### Mon, Feb 21, 22
 
 Currently strategy trees from v0.1.x are solved by taking in inception and intention streams. These streams aren't fetched/calculated in real time like strindicator streams are. What are we switching out here?Basically the strindicators are replacing the randome sine functions for inception streams. We can make this work but is this ideal? What do we want the final setup to look like? Previously we had envisioned the decision tree strategy sitting on top of the strindicator tree as the parent node and just solving everything one time slice at a time. We should probably do it this way going forward because this is how it will be solved in real life, one time step at a time.
@@ -59,4 +69,4 @@ For what it's worth, it has been shown that one can find fitting patterns (risin
 
 ### Todo:
 
-Make a recursive strindicator config generator. This will take in a set of inputs which each function in the strindicator function tree can subscribe to. To begin, use the integer series as the only input. After that, get it working with subscription inputs.
+- [x] Make a recursive strindicator config generator. This will take in a set of inputs which each function in the strindicator function tree can subscribe to. To begin, use the integer series as the only input. After that, get it working with subscription inputs.
