@@ -54,6 +54,7 @@
 - [x] (0.2.5)
   - [x] Make parentmost node a compatable strategy tree
   - [x] Solve strindicators for intention stream(s) to create a return stream(s)
+- [x] (0.2.6) Make strindicators compatable with binary tree nodes
 
 ### Completed Nice to haves
 
