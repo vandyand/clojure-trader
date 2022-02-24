@@ -42,12 +42,11 @@
   "available-ind-sets is the set of total index sets minus (difference) node parent index sets"
   ([tree-config] (make-tree-recur (tree-config :index-pairs) tree-config 0))
   ([available-ind-sets tree-config depth]
-  ;;  (println available-ind-sets tree-config depth)
    (let [ind-set (rand-nth (seq available-ind-sets))
          new-available-ind-sets (set/difference available-ind-sets #{ind-set})
-         make-child #(if (and
-                          (>= depth (tree-config :min-depth))
-                          (or (> (rand) 0.3) (empty? new-available-ind-sets) (>= depth (tree-config :max-depth))))
+         make-child #(if (or (empty? new-available-ind-sets) 
+                          (and (>= depth (tree-config :min-depth))
+                               (or (> (rand) 0.3) (>= depth (tree-config :max-depth)))))
                        (rand-nth [true false])
                        (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
      (as-> [] $
@@ -78,16 +77,14 @@
 ;; SOLVE TREE FUNCTIONS
 
 (defn solve-cond [inputs input-indxs]
-  ;; (println (type inputs))
   (let [inputsVec (vec inputs)]
    (> (inputsVec (first input-indxs)) (inputsVec (last input-indxs)))))
 
 (defn solve-tree
   "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
   [tree inst-inputs]
-  ;; (println "here 1250")
   (if (= (type tree) java.lang.Boolean)
-    (if tree 1.0 0.0)
+    (if tree 1 0)
     (solve-tree
      (if (solve-cond inst-inputs (first tree))
        (nth tree 1)
@@ -142,7 +139,6 @@
 
 (defn get-sieve-stream
   [name inception-streams strat-tree solve-tree-fn]
-  ;; (println "here 1260: " name strat-tree solve-tree-fn)
   (with-meta (vec 
               (for
                [inst-inputs
@@ -164,21 +160,15 @@
   ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))
   ([tree input-config solve-tree-fn]
    (let [name (rand-suffix "strat")
-        ;;  thing1 (println "here 1210")
          input-streams (get-input-streams input-config)
-        ;;  thing2 (println "here 1220")
          sieve-stream (get-sieve-stream (str name " sieve stream") (get input-streams :inception-streams) tree solve-tree-fn)
-        ;;  thing3 (println "here 1230")
-         return-streams (get-return-streams sieve-stream (get input-streams :intention-streams-delta))
-        ;;  thing4 (println "here 1240")
-         ]
+         return-streams (get-return-streams sieve-stream (get input-streams :intention-streams-delta))]
      {:name name :input-streams input-streams :tree tree :sieve-stream sieve-stream :return-streams return-streams})))
 
 (defn get-populated-strat
   ([input-config tree-config] (get-populated-strat input-config tree-config make-tree solve-tree))
   ([input-config tree-config make-tree-fn solve-tree-fn]
    (let [tree (make-tree-fn tree-config)]
-  ;;  (println "here 1100")
      (get-populated-strat-from-tree tree input-config solve-tree-fn))))
 
 ;; VISUALIZATION FORMATTING FUNCTION
@@ -245,4 +235,3 @@
 (def strat3 (get-populated-strat input-config tree-config))
 (def strat4 (get-populated-strat input-config tree-config))
 (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
-;; (get-strats-info [strat1 strat2 strat3 strat4])
