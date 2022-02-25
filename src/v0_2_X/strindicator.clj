@@ -7,18 +7,46 @@
 
 (defn pos-or-zero [num] (if (pos? num) num 0))
 
-(defn solve-strindy-for-inceptions [strindy inception-streams]
+(defn solve-strindy-for-inst-incep [strindy inception-streams]
   (if (contains? strindy :id)
     (let [stream-id (get strindy :id)
-          target-stream (get inception-streams stream-id)
-          target-ind (pos-or-zero (- (- (count target-stream) 1) (or (get strindy :shift) 0)))]
-      (get target-stream target-ind))
+          target-inception-stream (get inception-streams stream-id)
+          target-inception-stream-ind (pos-or-zero (- (- (count target-inception-stream) 1) (or (get strindy :shift) 0)))]
+      (get target-inception-stream target-inception-stream-ind))
     (let [strind-fn (get strindy :fn)
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
-          (let [solution (apply strind-fn (mapv #(solve-strindy-for-inceptions % inception-streams) strind-inputs))]
+          (let [solution (apply strind-fn (mapv #(solve-strindy-for-inst-incep % inception-streams) strind-inputs))]
             (if (Double/isNaN solution) 0.0 solution))))))
 
+(defn get-stream-deltas [stream] (mapv - stream (cons (first stream) stream)))
+
+(defn get-return-deltas [sieve intention-deltas] (map * (cons (first sieve) sieve) intention-deltas))
+
+(defn get-stream-from-deltas [deltas] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] deltas))
+
+(defn get-streams-from-db [ids] (vec (for [id ids] (get streams-db id))))
+
+(defn get-streams-walker [streams]
+  (mapv (fn [ind]
+          (mapv (fn [vect]
+                  (subvec vect 0 ind))
+                streams))
+        (range 1 (count (first streams)))))
+
+(defn get-return-streams-from-strindy [strindy stream-ids]
+  (let [inception-streams (get-streams-from-db (get stream-ids :inception-ids))
+        intention-streams (get-streams-from-db (get stream-ids :intention-ids))
+        inception-streams-walker (get-streams-walker inception-streams)
+        sieve-stream (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)
+        intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
+    ;; (println inception-streams)
+    ;; (println intention-streams)
+    (println sieve-stream)
+    ;; (println intention-streams-delta)
+    (for [intention-stream-delta intention-streams-delta] 
+      (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
+        (get-stream-from-deltas return-deltas)))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
@@ -48,18 +76,17 @@
 (def two-arg-funcs
   (into many-arg-funcs
         [(with-meta #(Math/pow %1 %2) {:name "pow"})
-         (with-meta #(if (> %1 %2) 1 0) {:name "binary"})
-         ]))
+         (with-meta #(if (> %1 %2) 1 0) {:name "binary"})]))
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (rand-nth [{:id (rand-nth (get config :subscription-ids)) :shift (first (random-sample 0.5 (range)))} {:fn-name "rand constant" :fn (rand) :inputs []}])
+     (rand-nth [{:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))} {:fn-name "rand constant" :fn (rand) :inputs []}])
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            new-depth (inc current-depth)
-           num-inputs (or (first (random-sample 0.333 (range (if (= current-depth 0) 2 1) max-children))) max-children)
+           num-inputs (or (first (random-sample 0.333 (range (if parent-node? 2 1) max-children))) max-children)
            potential-tree (when parent-node? (strat/make-tree (strat/get-tree-config 0 2 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
@@ -74,37 +101,46 @@
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(defn get-strindy-config [min-depth max-depth max-children subscription-ids]
-  {:min-depth min-depth :max-depth max-depth :max-children max-children :subscription-ids subscription-ids})
+(defn get-strindy-config [min-depth max-depth max-children inception-ids intention-ids]
+  {:min-depth min-depth :max-depth max-depth :max-children max-children :inception-ids inception-ids :intention-ids intention-ids})
 
-(def strindy-config (get-strindy-config 5 6 10 [0 1]))
+(def strindy-config (get-strindy-config 5 6 10 [0 1] [1]))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(def inception-streams (vec (for [id (get strindy-config :subscription-ids)] (get streams-db id))))
-
-;; Mock inception stream walker
-(def inception-streams-walker
-  (mapv (fn [ind]
-          (mapv (fn [vect]
-                  (subvec vect 0 ind))
-                inception-streams))
-        (range 1 100)))
-
-;; First solution to one strindy for testing: 
 (def strindy (make-strindy-recur strindy-config))
-
+(def return-streams (get-return-streams-from-strindy strindy strindy-config))
 ;; (pp/pprint strindy)
+;; (println return-streams)
 
-(def sieve-stream-1 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; (def sieve-stream-2 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; (def sieve-stream-3 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; (def sieve-stream-4 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
+;; (strat/plot-stream  (with-meta (vec (for [price (streams-db 1)] (- price (first (streams-db 1))))) {:name "eurusd"}))
+(strat/plot-stream  (first return-streams))
+;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(println "sieve-stream-1: " sieve-stream-1)
-;; (println "sieve-stream-2: " sieve-stream-2)
-;; (println "sieve-stream-3: " sieve-stream-3)
-;; (println "sieve-stream-4: " sieve-stream-4)
+;; (def inception-streams (vec (for [id (get strindy-config :inception-ids)] (get streams-db id))))
+
+;; ;; Mock inception stream walker
+;; (def inception-streams-walker
+;;   (mapv (fn [ind]
+;;           (mapv (fn [vect]
+;;                   (subvec vect 0 ind))
+;;                 inception-streams))
+;;         (range 1 100)))
+
+;; ;; First solution to one strindy for testing: 
+;; (def strindy (make-strindy-recur strindy-config))
+
+;; ;; (pp/pprint strindy)
+
+;; (def sieve-stream-1 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
+;; ;; (def sieve-stream-2 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
+;; ;; (def sieve-stream-3 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
+;; ;; (def sieve-stream-4 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
+
+;; (println "sieve-stream-1: " sieve-stream-1)
+;; ;; (println "sieve-stream-2: " sieve-stream-2)
+;; ;; (println "sieve-stream-3: " sieve-stream-3)
+;; ;; (println "sieve-stream-4: " sieve-stream-4)
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 

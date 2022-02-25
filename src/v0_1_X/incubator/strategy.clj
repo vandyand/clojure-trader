@@ -183,6 +183,9 @@
         (recur (inc i) (conj! v {:item item :x i :y (stream i)})) ;; view data structure
         (persistent! v)))))
 
+(defn format-streams-for-view [streams]
+  (for [stream streams] (format-stream-for-view stream)))
+
 ;; CREATE POPULATED STRATEGY AND VIEW PLOT
 
 (defn get-strats-input-and-return-streams [input-config & strats]
@@ -213,6 +216,9 @@
 
 (defn plot-stream [stream]
   (generate-and-view-plot (format-stream-for-view stream)))
+
+(defn plot-streams [streams]
+  (generate-and-view-plot (format-streams-for-view streams)))
 
 (defn plot-strats-and-inputs [input-config & strats]
   (generate-and-view-plot
