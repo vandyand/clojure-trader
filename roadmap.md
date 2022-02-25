@@ -3,7 +3,6 @@
 ### Todo
 
 - [ ] (0.2.x) Keep working on strindicators
-  - [ ] Make the strindicator solutions (including binary tree nodes) be fetched on demand, the correct one for each occasion according to strindicator config.
   - [ ] Make strindicators truly composable. Separate config from population of config. Config should have all data for whole strindicator including special config for parent node if necessary.
   - [ ] Get strindicators working with oanda api data as inception and intension streams
   - [ ] Get strindicators working with GA (make mutators and crossovers).
@@ -55,7 +54,7 @@
   - [x] Make parentmost node a compatable strategy tree
   - [x] Solve strindicators for intention stream(s) to create a return stream(s)
 - [x] (0.2.6) Make strindicators compatable with binary tree nodes
-
+- [x] (0.2.7) Get return streams from strindicators
 ### Completed Nice to haves
 
 ### Utility loader command

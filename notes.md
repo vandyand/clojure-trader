@@ -1,3 +1,13 @@
+### Thurs, Feb 24, 22
+
+Is there any benefit of solving for return stream at each time step instead of calculating it after the whole sieve stream is generated? In the same vein, is it necessary / beneficial to calculate the whole input streams (both inception and intention streams) before solving for the sieve stream?
+
+In real time (live) the sieve stream and return stream will be calculated at each time step so this capability is a must. If it's doing this in the live environment why do something different in the backtest environment? Well, it may be a performance increase to batch the calculation in backtesting, key word being "may". A performance comparison test would need to be run to verify this. Also, batching them is easier (maybe a little) conceptually. Though we'll have to write the live time-slice version anyways so the difficulty point is rather mute.
+
+Just do it as they say. One time slice at a time.
+
+This brings up another point that the inception streams should be subscribed to. Currently they're build in to the strindy solver function. Decouple this please and get instructions from config.
+
 ### Wed, Feb 23, 22
 
 To confine strindicators to binary output one must use a binary function at the parent node. The greater than function is ideal for this. However, if one wants to compare more than two values to produce a binary result, one must use binary trees (decision trees). These are strategies in our system as it stands currently. Therefore, to constrain the output of our strindicators to binary, we must top off the strindicator with a binary tree. This is a new type of node.
