@@ -3,16 +3,23 @@
 ### Todo
 
 - [ ] (0.2.x) Keep working on strindicators
-  - [ ] Make strindicators truly composable. Separate config from population of config. Config should have all data for whole strindicator including special config for parent node if necessary.
   - [ ] Get strindicators working with oanda api data as inception and intension streams
-  - [ ] Get strindicators working with GA (make mutators and crossovers).
-- [ ] (0.3.x) Work on arena v1 - No live trading (practice or live) only mock trading.
+  - [ ] Make GA for strindicators.
+    - [ ] Make population
+    - [ ] Get fitnesses
+    - [ ] Get parents
+    - [ ] Get children
+      - [ ] Make mutators
+      - [ ] Make crossovers
+    - [ ] repeat
+- [ ] Arena: Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
   - [ ] Setup mock strategy infrastructure
     - Create mock strindicator with input data, tree data, target instrument data
-  - [ ] Package strindicators from incubator (0.3.1)
-  - [ ] Run mock strindicator (0.3.2)
-- [ ] (0.4.0) Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
+  - [ ] Package strindicators from incubator
+  - [ ] Run mock strindicator
+- [ ] Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
+- [ ] Cleanup strindicator
 
 ### Continuous
 
