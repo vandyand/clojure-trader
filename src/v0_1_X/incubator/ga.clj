@@ -44,7 +44,6 @@
 ;; MAKE A BUNCH OF POPULATED STRATEGIES
 
 (defn get-populated-strats [ga-config]
-  (println "here 1000")
   (loop [i 0 v (transient [])]
     (if (< i (get-in ga-config [:pop-config :num-parents]))
       (recur (inc i)
@@ -226,7 +225,6 @@
 (defn run-epochs
   ([ga-config] (run-epochs (get-init-pop ga-config) ga-config))
   ([population ga-config]
-   (println "here 1500")
    (loop [i 0 pop population]
      (let [next-gen (run-epoch pop ga-config)
            best-score (get (first next-gen) :fitness)
@@ -254,18 +252,16 @@
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(def strindy-config (strindy/get-strindy-config 20 5 5 6 [0 1]))
-
 (def ga-config
   (let [num-epochs 10
+        strindy-config (strindy/get-strindy-config 5 5 6 [0 1] [1])
         input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
         tree-config (strat/get-tree-config
                      3 6 (count (get input-config :inception-streams-config)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
-(println "here 100")
+
 (def best-pop (run-epochs ga-config))
-(println "here 500")
 
 (plot-strats-and-inputs (take 5 best-pop)
                         (get ga-config :input-config))
