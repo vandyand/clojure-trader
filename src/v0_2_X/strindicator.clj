@@ -40,10 +40,7 @@
         inception-streams-walker (get-streams-walker inception-streams)
         sieve-stream (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)
         intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
-    ;; (println inception-streams)
-    ;; (println intention-streams)
     (println sieve-stream)
-    ;; (println intention-streams-delta)
     (for [intention-stream-delta intention-streams-delta] 
       (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
         (get-stream-from-deltas return-deltas)))))
@@ -56,21 +53,15 @@
                     (with-meta #(Math/tan %) {:name "tan"})
                     (with-meta #(Math/log (Math/abs (+ Math/E %))) {:name "modified log"})))
 
-
-
-
-;; We call these on their inputs. We can't make a new tree here. Any constants are from outside.
 (def many-arg-funcs
   [(with-meta (fn [& args] (apply + args)) {:name "+"})
    (with-meta (fn [& args] (apply - args)) {:name "-"})
    (with-meta (fn [& args] (apply * args)) {:name "*"})
    (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
-  ;;  (with-meta (fn [& args] (apply max args)) {:name "max"})
-  ;;  (with-meta (fn [& args] (apply min args)) {:name "min"})
+   (with-meta (fn [& args] (apply max args)) {:name "max"})
+   (with-meta (fn [& args] (apply min args)) {:name "min"})
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
    (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})
-  ;;  (with-meta (fn [& args] (partial-tree-solver args)) {:name "binary tree"})
-  ;;  (with-meta (fn [& args] (strat/solve-tree (strat/make-tree (strat/get-tree-config 0 10 (count args))) args)) {:name "binary tree"})
    ])
 
 (def two-arg-funcs
@@ -82,17 +73,17 @@
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (rand-nth [{:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))} {:fn-name "rand constant" :fn (rand) :inputs []}])
+     (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))} 
+           :else {:fn-name "rand constant" :fn (rand) :inputs []})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            new-depth (inc current-depth)
-           num-inputs (or (first (random-sample 0.2 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or parent-node? (and (>= num-inputs 2) (> (rand) 0.9)))
+           num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
+           tree-node? (or parent-node? (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
                   tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str "binary tree with " num-inputs " inputs")})
-                  (= num-inputs 0) (rand)
                   (= num-inputs 1) (rand-nth one-arg-funcs)
                   (= num-inputs 2) (rand-nth two-arg-funcs)
                   (> num-inputs 2) (rand-nth many-arg-funcs))]
@@ -105,12 +96,12 @@
 (defn get-strindy-config [min-depth max-depth max-children inception-ids intention-ids]
   {:min-depth min-depth :max-depth max-depth :max-children max-children :inception-ids inception-ids :intention-ids intention-ids})
 
-(def strindy-config (get-strindy-config 1 2 4 [0 1] [1]))
+(def strindy-config (get-strindy-config 5 6 10 [0 1] [1]))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 (def strindy (make-strindy-recur strindy-config))
-(pp/pprint strindy)
+;; (pp/pprint strindy)
 (def return-streams (get-return-streams-from-strindy strindy strindy-config))
 ;; (println return-streams)
 
