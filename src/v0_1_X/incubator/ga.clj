@@ -236,33 +236,33 @@
 
 
 
-;; (def ga-config
-;;   (let [num-epochs 20
-;;         input-config (inputs/get-sine-inputs-config 10 2 1000 10 0.1 0.1 100)
-;;         tree-config (strat/get-tree-config
-;;                      3 6 (count (get input-config :inception-streams-config)))
-;;         pop-config (get-pop-config 50 0.5 0.4 0.5)]
-;;     (get-ga-config num-epochs input-config tree-config pop-config)))
-
-;; (def best-pop (run-epochs ga-config))
-;; (plot-strats-and-inputs (take 5 best-pop)
-;;                         (get ga-config :input-config))
-;; (get-strats-info (take 5 best-pop))
-
-
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
 (def ga-config
-  (let [num-epochs 10
-        strindy-config (strindy/get-strindy-config 5 5 6 [0 1] [1])
-        input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
+  (let [num-epochs 20
+        input-config (inputs/get-sine-inputs-config 10 1 1000 10 0.1 0.1 100)
         tree-config (strat/get-tree-config
                      3 6 (count (get input-config :inception-streams-config)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
     (get-ga-config num-epochs input-config tree-config pop-config)))
 
 (def best-pop (run-epochs ga-config))
-
 (plot-strats-and-inputs (take 5 best-pop)
                         (get ga-config :input-config))
 (strat/get-strats-info (take 5 best-pop))
+
+
+;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
+
+;; (def ga-config
+;;   (let [num-epochs 10
+;;         strindy-config (strindy/get-strindy-config 5 5 6 [0 1] [1])
+;;         input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
+;;         tree-config (strat/get-tree-config
+;;                      3 6 (count (get input-config :inception-streams-config)))
+;;         pop-config (get-pop-config 50 0.5 0.4 0.5)]
+;;     (get-ga-config num-epochs input-config tree-config pop-config)))
+
+;; (def best-pop (run-epochs ga-config))
+
+;; (plot-strats-and-inputs (take 5 best-pop)
+;;                         (get ga-config :input-config))
+;; (strat/get-strats-info (take 5 best-pop))
