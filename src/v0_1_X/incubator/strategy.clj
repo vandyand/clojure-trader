@@ -64,7 +64,7 @@
    #(if (and
          (= (type %) clojure.lang.PersistentVector)
          (= (nth % 1) (nth % 2)))
-      (nth % 1)
+      [(first %) (not (last %)) (last %)]
       %)
    tree))
 

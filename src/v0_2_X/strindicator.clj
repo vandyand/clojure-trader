@@ -86,11 +86,12 @@
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            new-depth (inc current-depth)
-           num-inputs (or (first (random-sample 0.333 (range (if parent-node? 2 1) max-children))) max-children)
-           potential-tree (when parent-node? (strat/make-tree (strat/get-tree-config 0 2 num-inputs)))
+           num-inputs (or (first (random-sample 0.2 (range (if parent-node? 2 1) max-children))) max-children)
+           tree-node? (or parent-node? (and (>= num-inputs 2) (> (rand) 0.9)))
+           strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
-                  parent-node? (with-meta (fn [& args] (strat/solve-tree potential-tree args)) {:name (str "binary tree with " num-inputs " inputs")})
+                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str "binary tree with " num-inputs " inputs")})
                   (= num-inputs 0) (rand)
                   (= num-inputs 1) (rand-nth one-arg-funcs)
                   (= num-inputs 2) (rand-nth two-arg-funcs)
@@ -104,43 +105,17 @@
 (defn get-strindy-config [min-depth max-depth max-children inception-ids intention-ids]
   {:min-depth min-depth :max-depth max-depth :max-children max-children :inception-ids inception-ids :intention-ids intention-ids})
 
-(def strindy-config (get-strindy-config 5 6 10 [0 1] [1]))
+(def strindy-config (get-strindy-config 1 2 4 [0 1] [1]))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 (def strindy (make-strindy-recur strindy-config))
+(pp/pprint strindy)
 (def return-streams (get-return-streams-from-strindy strindy strindy-config))
-;; (pp/pprint strindy)
 ;; (println return-streams)
 
 ;; (strat/plot-stream  (with-meta (vec (for [price (streams-db 1)] (- price (first (streams-db 1))))) {:name "eurusd"}))
 (strat/plot-stream  (first return-streams))
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
-;; (def inception-streams (vec (for [id (get strindy-config :inception-ids)] (get streams-db id))))
-
-;; ;; Mock inception stream walker
-;; (def inception-streams-walker
-;;   (mapv (fn [ind]
-;;           (mapv (fn [vect]
-;;                   (subvec vect 0 ind))
-;;                 inception-streams))
-;;         (range 1 100)))
-
-;; ;; First solution to one strindy for testing: 
-;; (def strindy (make-strindy-recur strindy-config))
-
-;; ;; (pp/pprint strindy)
-
-;; (def sieve-stream-1 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; ;; (def sieve-stream-2 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; ;; (def sieve-stream-3 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-;; ;; (def sieve-stream-4 (mapv #(solve-strindy-for-inceptions strindy %) inception-streams-walker))
-
-;; (println "sieve-stream-1: " sieve-stream-1)
-;; ;; (println "sieve-stream-2: " sieve-stream-2)
-;; ;; (println "sieve-stream-3: " sieve-stream-3)
-;; ;; (println "sieve-stream-4: " sieve-stream-4)
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
