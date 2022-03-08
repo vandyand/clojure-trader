@@ -1,9 +1,11 @@
 (ns v0_2_X.strindicator
   (:require [stats :as stats]
             [clojure.pprint :as pp]
-            [v0_1_X.incubator.strategy :as strat]))
+            [v0_1_X.incubator.strategy :as strat]
+            [oz.core :as oz]))
 
-(def streams-db [(vec (range 100)) [1.13104 1.12975 1.12947 1.12943 1.13064 1.13053 1.1306 1.13118 1.13106 1.13188 1.13174 1.13192 1.13174 1.13219 1.13126 1.13461 1.13462 1.13482 1.1346 1.13408 1.13558 1.13219 1.13548 1.13626 1.13588 1.13554 1.13596 1.13582 1.1358 1.13578 1.13553 1.13573 1.13521 1.13472 1.1346 1.1348 1.13539 1.13636 1.13754 1.13898 1.13774 1.13806 1.13852 1.13656 1.1363 1.13653 1.13654 1.13808 1.13744 1.1377 1.13905 1.1382 1.13736 1.1376 1.13728 1.13796 1.13818 1.13828 1.13363 1.13422 1.13566 1.13604 1.13752 1.13584 1.13614 1.13755 1.13656 1.13778 1.13594 1.13594 1.13694 1.13628 1.13593 1.13628 1.13642 1.13601 1.13625 1.13614 1.13637 1.13598 1.13682 1.1367 1.13675 1.13638 1.1366 1.13709 1.137 1.13758 1.1371 1.1361 1.13626 1.13602 1.13491 1.13482 1.13411 1.13259 1.13224 1.13302 1.13312 1.13249]])
+(def streams-db [(vec (range 100))
+                 [1.13104 1.12975 1.12947 1.12943 1.13064 1.13053 1.1306 1.13118 1.13106 1.13188 1.13174 1.13192 1.13174 1.13219 1.13126 1.13461 1.13462 1.13482 1.1346 1.13408 1.13558 1.13219 1.13548 1.13626 1.13588 1.13554 1.13596 1.13582 1.1358 1.13578 1.13553 1.13573 1.13521 1.13472 1.1346 1.1348 1.13539 1.13636 1.13754 1.13898 1.13774 1.13806 1.13852 1.13656 1.1363 1.13653 1.13654 1.13808 1.13744 1.1377 1.13905 1.1382 1.13736 1.1376 1.13728 1.13796 1.13818 1.13828 1.13363 1.13422 1.13566 1.13604 1.13752 1.13584 1.13614 1.13755 1.13656 1.13778 1.13594 1.13594 1.13694 1.13628 1.13593 1.13628 1.13642 1.13601 1.13625 1.13614 1.13637 1.13598 1.13682 1.1367 1.13675 1.13638 1.1366 1.13709 1.137 1.13758 1.1371 1.1361 1.13626 1.13602 1.13491 1.13482 1.13411 1.13259 1.13224 1.13302 1.13312 1.13249]])
 
 (defn pos-or-zero [num] (if (pos? num) num 0))
 
@@ -27,6 +29,7 @@
 
 (defn get-streams-from-db [ids] (vec (for [id ids] (get streams-db id))))
 
+;; TODO - make this performant? or get rid of it...
 (defn get-streams-walker [streams]
   (mapv (fn [ind]
           (mapv (fn [vect]
@@ -34,14 +37,14 @@
                 streams))
         (range 1 (count (first streams)))))
 
-(defn get-return-streams-from-strindy [strindy stream-ids]
-  (let [inception-streams (get-streams-from-db (get stream-ids :inception-ids))
-        intention-streams (get-streams-from-db (get stream-ids :intention-ids))
-        inception-streams-walker (get-streams-walker inception-streams)
-        sieve-stream (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)
-        intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
-    (println sieve-stream)
-    (for [intention-stream-delta intention-streams-delta] 
+(defn get-sieve-stream [strindy strindy-config]
+  (let [inception-streams (get-streams-from-db (get strindy-config :inception-ids))
+        inception-streams-walker (get-streams-walker inception-streams)]
+    (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
+
+(defn get-return-streams-from-sieve [sieve-stream intention-streams]
+  (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
+    (for [intention-stream-delta intention-streams-delta]
       (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
         (get-stream-from-deltas return-deltas)))))
 
@@ -61,8 +64,7 @@
    (with-meta (fn [& args] (apply max args)) {:name "max"})
    (with-meta (fn [& args] (apply min args)) {:name "min"})
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
-   (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})
-   ])
+   (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
 
 (def two-arg-funcs
   (into many-arg-funcs
@@ -73,7 +75,7 @@
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))} 
+     (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
            :else {:fn-name "rand constant" :fn (rand) :inputs []})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
@@ -100,31 +102,10 @@
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(def strindy (make-strindy-recur strindy-config))
-;; (pp/pprint strindy)
-(def return-streams (get-return-streams-from-strindy strindy strindy-config))
-;; (println return-streams)
+;; (def strindy (make-strindy-recur strindy-config))
+;; ;; (pp/pprint strindy)
+;; (def sieve-stream (get-sieve-stream strindy strindy-config))
+;; (def return-streams (get-return-streams-from-sieve sieve-stream strindy-config))
 
-;; (strat/plot-stream  (with-meta (vec (for [price (streams-db 1)] (- price (first (streams-db 1))))) {:name "eurusd"}))
-(strat/plot-stream  (first return-streams))
-
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
-;; (defn get-strindy-fn-config [strindy-config]
-;;   (let [strindy (make-strindy-recur strindy-config)
-;;         name (strat/rand-suffix "strindy")]
-;;     {:name name
-;;      :fn (fn [x] (solve-strindy-for-inceptions strindy x))}))
-
-;; (defn get-strindy-fn-configs [strindy-config num]
-;;   (vec (repeatedly num #(get-strindy-fn-config strindy-config))))
-
-;; (defn get-strindy-inputs-config [num-inception-streams num-intention-streams num-data-points strindy-config]
-;;   (let [inception-streams-config (get-strindy-fn-configs strindy-config num-inception-streams)
-;;         intention-streams-config (get-strindy-fn-configs strindy-config num-intention-streams)]
-;;     (inputs/get-input-config num-data-points inception-streams-config intention-streams-config)))
-
-;; (def input-config (get-strindy-inputs-config 4 1 100 strindy-config))
-;; (def tree-config (strat/get-tree-config 2 6 (count (get input-config :inception-streams-config))))
-;; (def strat1 (strat/get-populated-strat input-config tree-config))
-;; (strat/plot-strats-and-inputs input-config strat1)
+;; ;; (strat/plot-stream  (with-meta (vec (for [price (streams-db 1)] (- price (first (streams-db 1))))) {:name "eurusd zeroed"}))
+;; (strat/plot-stream  (first return-streams))

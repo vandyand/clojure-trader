@@ -1,6 +1,11 @@
 # Roadmap and Such and So
 
-### Todo
+### Todo - short term
+
+- [ ] Implement return type in make-strindy-recur
+- [ ] Get multiple return streams from strindy - one for each intention stream (by applying sieve stream to it) plus one sum return stream
+
+### Todo - longer term
 
 - [ ] (0.2.x) Keep working on strindicators
   - [ ] Standardize config throughout 0.2.x (see notes)
@@ -39,6 +44,7 @@
 - [ ] Performance: Store outside data streams in local db. Test if this is a performance boost (enough data and logically it will be)
 - [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
+- [ ] Make strindicators able to subscribe to all available instruments as inception and intention data
 
 ### Completed Tasks
 

@@ -15,7 +15,7 @@
 
 ;; START SERVER FOR VISUALIZATION
 
-;; (oz/start-server! 10667)
+(oz/start-server! 10667)
 
 ;; CONFIG FUNCTIONS
 
