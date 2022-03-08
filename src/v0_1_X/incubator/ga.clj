@@ -235,7 +235,6 @@
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 
-
 (def ga-config
   (let [num-epochs 20
         input-config (inputs/get-sine-inputs-config 10 1 1000 10 0.1 0.1 100)

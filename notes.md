@@ -1,3 +1,14 @@
+### Sat, Feb 26, 22
+
+Configuration stuff:
+; Strindy config: by which strindies are created
+; Strindy: the strindy tree itself (no inception/intention streams in itself, only stream ids).
+; Backtested Strindy: package of - strindy, sieve stream and return stream(s), backtest data including (granularity & [num-data-points | (start-time, [end time])])
+; Arena strindy: package of - backtested strindy, arena-performance {returns, z-score, other-score?}
+; Live practice strindy: arena strindy + live-practive-performance {returns, z-score, other-score?}
+;; (skip one of arena strindy, live practice strindy? or combine them rather?)
+; Live trading strindy: live practice strindy + live-trading-performance {returns, z-score, other-score?}
+
 ### Thurs, Feb 24, 22
 
 Is there any benefit of solving for return stream at each time step instead of calculating it after the whole sieve stream is generated? In the same vein, is it necessary / beneficial to calculate the whole input streams (both inception and intention streams) before solving for the sieve stream?

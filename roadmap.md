@@ -3,6 +3,7 @@
 ### Todo
 
 - [ ] (0.2.x) Keep working on strindicators
+  - [ ] Standardize config throughout 0.2.x (see notes)
   - [ ] Get strindicators working with oanda api data as inception and intension streams
   - [ ] Make GA for strindicators.
     - [ ] Make population
