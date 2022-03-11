@@ -29,8 +29,3 @@
 
 (def return-streams (strindy/get-return-streams-from-sieve sieve-stream intention-streams))
 
-
-; Arena strindy: package of - backtested strindy, arena-performance {returns, z-score, other-score?}
-; Live practice strindy: arena strindy + live-practive-performance {returns, z-score, other-score?}
-;; (skip one of arena strindy, live practice strindy? or combine them rather?)
-; Live trading strindy: live practice strindy + live-trading-performance {returns, z-score, other-score?}

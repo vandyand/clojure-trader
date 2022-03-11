@@ -85,7 +85,7 @@
            max-children (get config :max-children)
            new-depth (inc current-depth)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or parent-node? (and (>= num-inputs 2) (< (rand) 0.1)))
+           tree-node? (or (and parent-node? (= (get config :return-type) "binary")) (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
