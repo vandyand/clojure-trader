@@ -27,7 +27,7 @@
 
 (defn get-stream-from-deltas [deltas] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] deltas))
 
-(defn get-streams-from-db [ids] (vec (for [id ids] (get streams-db id))))
+(defn get-streams-by-indexes [streams inds] (vec (for [ind inds] (get streams ind))))
 
 ;; TODO - make this performant? or get rid of it...
 (defn get-streams-walker [streams]
@@ -37,16 +37,20 @@
                 streams))
         (range 1 (count (first streams)))))
 
-(defn get-sieve-stream [strindy strindy-config]
-  (let [inception-streams (get-streams-from-db (get strindy-config :inception-ids))
-        inception-streams-walker (get-streams-walker inception-streams)]
+(defn get-streams-sum [streams]
+  (for [n (range (count (first streams)))]
+    (apply + (for [stream streams] (get stream n)))))
+
+(defn get-sieve-stream [strindy inception-streams]
+  (let [inception-streams-walker (get-streams-walker inception-streams)]
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn get-return-streams-from-sieve [sieve-stream intention-streams]
-  (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
-    (for [intention-stream-delta intention-streams-delta]
-      (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-        (get-stream-from-deltas return-deltas)))))
+  (let [return-streams (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
+         (for [intention-stream-delta intention-streams-delta]
+           (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
+             (get-stream-from-deltas return-deltas))))]
+    (into return-streams (vector (vec (get-streams-sum return-streams))))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
@@ -81,7 +85,7 @@
            max-children (get config :max-children)
            new-depth (inc current-depth)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or parent-node? (and (>= num-inputs 2) (< (rand) 0.1)))
+           tree-node? (or (and parent-node? (= (get config :return-type) "binary")) (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond

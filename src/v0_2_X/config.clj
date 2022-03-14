@@ -45,3 +45,10 @@
     (get-backtest-config num-data-points granularity streams-config strindy-config)))
 
 (def config (get-config ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 1000 "H1"))
+
+
+
+; Arena strindy: package of - backtested strindy, arena-performance {returns, z-score, other-score?}
+; Live practice strindy: arena strindy + live-practive-performance {returns, z-score, other-score?}
+;; (skip one of arena strindy, live practice strindy? or combine them rather?)
+; Live trading strindy: live practice strindy + live-trading-performance {returns, z-score, other-score?}

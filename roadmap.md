@@ -2,8 +2,6 @@
 
 ### Todo - short term
 
-- [ ] Implement return type in make-strindy-recur
-- [ ] Get multiple return streams from strindy - one for each intention stream (by applying sieve stream to it) plus one sum return stream
 
 ### Todo - longer term
 
@@ -39,12 +37,9 @@
 - [ ] Spec all functions
 - [ ] Fuzz test all functions with spec generators
 - [ ] Use clojure.edn for config data
-- [ ] Refactor `/incubator` to use `core.async` for performance boost with parallel processing.
-- [ ] Refactor `/incubator` by config type (input, tree, population, ga)
-- [ ] Performance: Store outside data streams in local db. Test if this is a performance boost (enough data and logically it will be)
+- [ ] Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
 - [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
-- [ ] Make strindicators able to subscribe to all available instruments as inception and intention data
 
 ### Completed Tasks
 
@@ -69,7 +64,11 @@
   - [x] Solve strindicators for intention stream(s) to create a return stream(s)
 - [x] (0.2.6) Make strindicators compatable with binary tree nodes
 - [x] (0.2.7) Get return streams from strindicators
+- [x] (0.2.9) Implement return type in make-strindy-recur
+- [x] (0.2.9) Get multiple return streams from strindy - one for each intention stream (by applying sieve stream to it) plus one sum return stream
+
 ### Completed Nice to haves
+- [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
 
 ### Utility loader command
 
