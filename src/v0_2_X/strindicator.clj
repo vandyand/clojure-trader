@@ -46,11 +46,11 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn get-return-streams-from-sieve [sieve-stream intention-streams]
-  (let [return-streams (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
-         (for [intention-stream-delta intention-streams-delta]
-           (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-             (get-stream-from-deltas return-deltas))))]
-    (into return-streams (vector (vec (get-streams-sum return-streams))))))
+        (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
+              return-streams (for [intention-stream-delta intention-streams-delta]
+                               (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
+                                 (get-stream-from-deltas return-deltas)))]
+          (into return-streams (vector (vec (get-streams-sum return-streams))))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 

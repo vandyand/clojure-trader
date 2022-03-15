@@ -32,23 +32,41 @@
    :strindy-config strindy-config})
 
 ; Strindy tree shape config:
-(defn get-tree-config 
+(defn get-tree-config
   "return-type is string of 'binary' | 'continuous'"
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
-(defn get-config [streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
-              num-data-points granularity]
+(defn get-backtest-config-util [streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
+                                num-data-points granularity]
   (let [streams-config (apply get-streams-config streams-vec)
         tree-config (get-tree-config tree-return-type tree-min-depth tree-max-depth tree-max-children)
         strindy-config (get-strindy-config tree-config streams-config)]
     (get-backtest-config num-data-points granularity streams-config strindy-config)))
 
-(def config (get-config ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 1000 "H1"))
 
+; GA config: add GA config to config... or keep it separate? That works. It makes more sense to keep it separate because
+; ga and strindies are really two separate entities. Then for mature strindies, we can package them up and ship to arena.
 
+(defn product-int [whole pct] (Math/round (double (* whole pct))))
 
-; Arena strindy: package of - backtested strindy, arena-performance {returns, z-score, other-score?}
+(defn  get-pop-config [pop-size parent-pct crossover-pct mutation-pct]
+  (assoc {:pop-size pop-size
+          :parent-pct parent-pct
+          :crossover-pct crossover-pct
+          :mutation-pct mutation-pct}
+         :num-parents (product-int pop-size parent-pct)
+         :num-children (product-int pop-size (- 1.0 parent-pct))))
+
+(defn get-ga-config [num-epochs backtest-config pop-config]
+  {:num-epochs num-epochs
+   :backtest-config backtest-config
+   :pop-config pop-config})
+
+(def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))
+(def ga-config (get-ga-config 5 backtest-config (get-pop-config 20 0.5 0.4 0.4)))
+
+; Arena strindy: package of - backtested populated strindy, arena-performance {returns, z-score, other-score?}
 ; Live practice strindy: arena strindy + live-practive-performance {returns, z-score, other-score?}
 ;; (skip one of arena strindy, live practice strindy? or combine them rather?)
 ; Live trading strindy: live practice strindy + live-trading-performance {returns, z-score, other-score?}

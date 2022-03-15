@@ -5,25 +5,22 @@
             [v0_2_X.oanda_strindicator :as ostrindy]))
 
 ; Get config
-(def config (config/get-config ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 12 "H1"))
+(def backtest-config (config/get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 12 "H1"))
 
 
 ; POPULATE! (not in GA way... put data in the config scaffolding as it were)
 
 ; Get strindy tree from strindy config
-(def strindy (strindy/make-strindy-recur (get config :strindy-config)))
+(def strindy (strindy/make-strindy-recur (get backtest-config :strindy-config)))
 
 ; Backtested Strindy: package of - strindy, sieve stream and return stream(s)
 
-(def instruments-config (ostrindy/get-instruments-config config))
-
-
-(def default-stream (vec (range (get (first instruments-config) :count))))
-(def other-streams (ostrindy/get-instruments-stream (rest instruments-config)))
+(def default-stream (vec (range (get backtest-config :num-data-points))))
+(def other-streams (ostrindy/get-instruments-streams backtest-config))
 (def streams (into [default-stream] other-streams))
 
-(def inception-streams (vec (for [ind (get-in config [:strindy-config :inception-ids])] (get streams ind))))
-(def intention-streams (vec (for [ind (get-in config [:strindy-config :intention-ids])] (get streams ind))))
+(def inception-streams (vec (for [ind (get-in backtest-config [:strindy-config :inception-ids])] (get streams ind))))
+(def intention-streams (vec (for [ind (get-in backtest-config [:strindy-config :intention-ids])] (get streams ind))))
 
 (def sieve-stream (strindy/get-sieve-stream strindy inception-streams))
 
