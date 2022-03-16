@@ -50,7 +50,9 @@
               return-streams (for [intention-stream-delta intention-streams-delta]
                                (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
                                  (get-stream-from-deltas return-deltas)))]
-          (into return-streams (vector (vec (get-streams-sum return-streams))))))
+          (if (= 1 (count return-streams))
+            return-streams
+            (into return-streams (vector (vec (get-streams-sum return-streams)))))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
@@ -80,7 +82,7 @@
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
      (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
-           :else {:fn-name "rand constant" :fn (rand) :inputs []})
+           :else {:fn-name "rand constant" :fn (rand)})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            new-depth (inc current-depth)
