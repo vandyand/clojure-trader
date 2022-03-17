@@ -2,7 +2,7 @@
   (:require [clojure.pprint :as pp]
             [clojure.zip :as z]
             [v0_2_X.config :as config]
-            [v0_2_X.populate :as populate]
+            [v0_2_X.hydrate :as hyd]
             [v0_2_X.strindicator :as strindy]
             [v0_2_X.oanda_strindicator :as ostrindy]))
 
@@ -22,9 +22,16 @@
      (assoc node :inputs (vec children)))
    strindy))
 
-(-> strindy (strindy-zip) (z/down) (z/right))
 
 ; get initial population with fitnesses
+
+(defn get-hydrated-strindies [ga-config]
+  (let [streams (hyd/get-backtest-streams (get ga-config :backtest-config))]
+   (loop [i 0 v (transient [])]
+    (if (< i (get-in ga-config [:pop-config :num-parents]))
+      (recur (inc i)
+             (conj! v (hyd/get-hydrated-strindy (get ga-config :strindy-config) streams)))
+      (persistent! v)))))
 
 ; get best parents
 

@@ -1,4 +1,4 @@
-(ns v0_2_X.populate
+(ns v0_2_X.hydrate
   (:require [clojure.pprint :as pp]
             [v0_2_X.config :as config]
             [v0_2_X.strindicator :as strindy]
@@ -36,8 +36,12 @@
     {:inception-streams (vec (for [ind (get-in backtest-config [:strindy-config :inception-ids])] (get streams ind)))
      :intention-streams (vec (for [ind (get-in backtest-config [:strindy-config :intention-ids])] (get streams ind)))}))
 
-(defn populate-strindy [strindy streams]
+(defn hydrate-strindy [strindy streams]
   (let [sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
-    {:sieve-stream sieve-stream
+    {:strindy strindy
+     :sieve-stream sieve-stream
      :return-streams (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))}))
 
+(defn get-hydrated-strindy [strindy-config streams]
+  (let [strindy (strindy/make-strindy-recur strindy-config)]
+    (hydrate-strindy strindy streams)))
