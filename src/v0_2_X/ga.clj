@@ -25,13 +25,17 @@
 
 ; get initial population with fitnesses
 
-(defn get-hydrated-strindies [ga-config]
+(defn get-hydrated-strindies 
+  ([ga-config] (get-hydrated-strindies ga-config (get-in ga-config [:pop-config :pop-size])))
+  ([ga-config num-strindies]
   (let [streams (hyd/get-backtest-streams (get ga-config :backtest-config))]
    (loop [i 0 v (transient [])]
-    (if (< i (get-in ga-config [:pop-config :num-parents]))
-      (recur (inc i)
-             (conj! v (hyd/get-hydrated-strindy (get ga-config :strindy-config) streams)))
-      (persistent! v)))))
+     (if (< i num-strindies)
+       (recur (inc i)
+              (conj! v (hyd/get-hydrated-strindy (get-in ga-config [:backtest-config :strindy-config]) streams)))
+       (persistent! v))))))
+
+(def init-pop (get-hydrated-strindies ga-config))
 
 ; get best parents
 
