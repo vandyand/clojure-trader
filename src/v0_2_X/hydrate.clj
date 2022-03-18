@@ -13,7 +13,6 @@
 ; POPULATE! (not in GA way... put data in the config scaffolding as it were)
 
 ; Get strindy tree from strindy config
-(def strindy (strindy/make-strindy-recur (get backtest-config :strindy-config)))
 
 ; Backtested Strindy: package of - strindy, sieve stream and return stream(s)
 
@@ -45,3 +44,7 @@
 (defn get-hydrated-strindy [strindy-config streams]
   (let [strindy (strindy/make-strindy-recur strindy-config)]
     (hydrate-strindy strindy streams)))
+
+#_(def strindy (strindy/make-strindy-recur (get backtest-config :strindy-config)))
+#_(def streams (get-backtest-streams backtest-config))
+#_(def hystrindy (hydrate-strindy strindy streams))

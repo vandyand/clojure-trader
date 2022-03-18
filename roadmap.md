@@ -39,6 +39,7 @@
 - [ ] Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
 - [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
+- [ ] Use constantly for rand constants in strindy trees (instead of the value itself).
 
 ### Completed Tasks
 

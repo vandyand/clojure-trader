@@ -136,8 +136,10 @@
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
 
 (defn get-crossover-tree [trees]
-  (let [rand-trees (shuffle trees) tree1 (first rand-trees)
-        tree2 (last rand-trees) n (rand-int 4)]
+  (let [rand-trees (shuffle trees)
+        tree1 (first rand-trees)
+        tree2 (last rand-trees) 
+        n (rand-int 4)]
     (strat/ameliorate-tree
      (cond
        (= n 0) (combine-node-branches tree1 tree2)

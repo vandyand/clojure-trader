@@ -1,3 +1,14 @@
+### Fri, Mar 18, 22
+
+How do we want to deal with strategy trees in strindy genetic algorithm? Seems like we'd want to optimize them... along with the indicators... and thus optimize the strindicator. Ok, good. How do we do that though? All we have in the strindicator is the actual solution function for the strategy tree. This is a wacko type of node.
+
+Well, how do we update any branch? Change the function or change the inputs, that's all there is to change. In the strategy case, changing the function is just a little more involved than in the simple function types like addition and subtraction. 
+
+There's another question of exactly how are we going to update the indicators. It's a little tricky because if there's a multi-input function with three inputs and then we trim one off... well the multi-input ones all work with two inputs, but if there's a one-input function and we add another input to it... it will either error out or just be a waste of a change...
+
+We could/should add an amelioration function to the strindies which we could run the modified ones through and it could trim unused inputs and whatnot. In this way we could make all the strindy functions able to take n inputs and during amelioration the inputs get trimed back if necessary, just deleting random children until the function has the right number of inputs. We just need to be careful when adding/deleting children from a strategy tree node because there's an unacceptably high chance that will cause an error (if we don't also update the strategy tree accordingly).
+
+
 ### Sat, Feb 26, 22
 
 Configuration stuff:

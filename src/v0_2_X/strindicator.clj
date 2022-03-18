@@ -56,14 +56,15 @@
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(def one-arg-funcs (list
-                    (with-meta #(Math/sin %) {:name "sin"})
-                    (with-meta #(Math/cos %) {:name "cos"})
-                    (with-meta #(Math/tan %) {:name "tan"})
-                    (with-meta #(Math/log (Math/abs (+ Math/E %))) {:name "modified log"})))
-
-(def many-arg-funcs
-  [(with-meta (fn [& args] (apply + args)) {:name "+"})
+(def strindy-funcs
+  [(with-meta (fn [& args] (Math/sin (first args))) {:name "sin"})
+   (with-meta (fn [& args] (Math/cos (first args))) {:name "cos"})
+   (with-meta (fn [& args] (Math/tan (first args))) {:name "tan"})
+   (with-meta (fn [& args] (Math/log (Math/abs (+ Math/E (first args))))) {:name "modified log"})
+   (with-meta (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))] 
+                             (Math/pow arg1 arg2))) {:name "pow"})
+   (with-meta (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0))) {:name "binary"})
+   (with-meta (fn [& args] (apply + args)) {:name "+"})
    (with-meta (fn [& args] (apply - args)) {:name "-"})
    (with-meta (fn [& args] (apply * args)) {:name "*"})
    (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
@@ -71,11 +72,6 @@
    (with-meta (fn [& args] (apply min args)) {:name "min"})
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
    (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
-
-(def two-arg-funcs
-  (into many-arg-funcs
-        [(with-meta #(Math/pow %1 %2) {:name "pow"})
-         (with-meta #(if (> %1 %2) 1 0) {:name "binary"})]))
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))
@@ -91,10 +87,8 @@
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
-                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str "binary tree with " num-inputs " inputs")})
-                  (= num-inputs 1) (rand-nth one-arg-funcs)
-                  (= num-inputs 2) (rand-nth two-arg-funcs)
-                  (> num-inputs 2) (rand-nth many-arg-funcs))]
+                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str strat-tree)})
+                  :else (rand-nth strindy-funcs))]
        {:fn-name (get (meta func) :name)
         :fn func
         :inputs inputs}))))
