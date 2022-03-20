@@ -1,6 +1,7 @@
 (ns v0_2_X.strindicator
   (:require [stats :as stats]
             [clojure.pprint :as pp]
+            [clojure.walk :as w]
             [v0_1_X.incubator.strategy :as strat]
             [oz.core :as oz]))
 
@@ -77,7 +78,7 @@
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
+     (cond (< (rand) 0.9) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
            :else {:fn-name "rand constant" :fn (rand)})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
@@ -92,6 +93,42 @@
        {:fn-name (get (meta func) :name)
         :fn func
         :inputs inputs}))))
+
+(defn ameliorate-strindy [strindy]
+  (w/postwalk (fn [form]
+                (if (and (map? form)
+                         (some #(= % :fn-name) (keys form)))
+                  (let [fn-name (get form :fn-name)
+                        inputs (get form :inputs)
+                        name-match #(= % fn-name)]
+                    (cond (and (some name-match ["sin" "cos" "tan" "modified log"])
+                               (> (count inputs) 1))
+                          (assoc form :inputs (vector (rand-nth inputs)))
+                          (and (some name-match ["+" "*" "max" "min" "mean"])
+                               (= (count inputs) 1))
+                          (first inputs)
+                          (and (some name-match ["pow" "binary"])
+                               (> (count inputs) 2))
+                          (assoc form :inputs (let [shuffled (shuffle inputs)] (vector (first shuffled) (second shuffled))))
+                          :else form))
+                  form))
+              strindy))
+
+(defn ameliorate-strindy-recur [strindy]
+  (let [new-strindy (ameliorate-strindy strindy)]
+    (if (= strindy new-strindy) strindy (ameliorate-strindy-recur new-strindy))))
+
+(defn make-strindy [config]
+  (-> config (make-strindy-recur) (ameliorate-strindy-recur)))
+
+#_(do
+  (def temp_config {:return-type "binary", :min-depth 2, :max-depth 3, :max-children 4, :inception-ids [0 1 2 3 4], :intention-ids [1]})
+  (def strindy (make-strindy-recur temp_config))
+  (def astrindy (ameliorate-strindy-recur strindy))
+  (println (= strindy astrindy))
+  (pp/pprint strindy)
+  (pp/pprint astrindy))
+
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 

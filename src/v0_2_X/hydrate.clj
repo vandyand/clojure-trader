@@ -7,7 +7,7 @@
 ; Get config
 (def backtest-config (config/get-backtest-config-util
                       ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                      "binary" 2 6 10 12 "H1"))
+                      "binary" 2 4 10 12 "H1"))
 
 
 ; POPULATE! (not in GA way... put data in the config scaffolding as it were)
@@ -46,5 +46,8 @@
     (hydrate-strindy strindy streams)))
 
 #_(def strindy (strindy/make-strindy-recur (get backtest-config :strindy-config)))
+#_(def astrindy (strindy/ameliorate-strindy strindy))
+
+
 #_(def streams (get-backtest-streams backtest-config))
 #_(def hystrindy (hydrate-strindy strindy streams))
