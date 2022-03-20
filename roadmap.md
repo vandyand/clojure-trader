@@ -6,7 +6,6 @@
 
 - [ ] (0.2.x) Keep working on strindicators
   - [ ] Standardize config throughout 0.2.x (see notes)
-  - [ ] Get strindicators working with oanda api data as inception and intension streams
   - [ ] Make GA for strindicators.
     - [ ] Make population
     - [ ] Get fitnesses
@@ -67,6 +66,7 @@
 - [x] (0.2.9) Implement return type in make-strindy-recur
 - [x] (0.2.9) Get multiple return streams from strindy - one for each intention stream (by applying sieve stream to it) plus one sum return stream
 - [x] (0.2.10) Refactor oanda_strindicator to not need instrument config. It should pair well with 0_2_x config and populate. 
+- [x] (0.2.10) Get strindicators working with oanda api data as inception and intension streams
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
