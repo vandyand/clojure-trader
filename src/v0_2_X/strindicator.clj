@@ -1,6 +1,7 @@
 (ns v0_2_X.strindicator
   (:require [stats :as stats]
             [clojure.pprint :as pp]
+            [clojure.walk :as w]
             [v0_1_X.incubator.strategy :as strat]
             [oz.core :as oz]))
 
@@ -46,22 +47,25 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn get-return-streams-from-sieve [sieve-stream intention-streams]
-  (let [return-streams (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))]
-         (for [intention-stream-delta intention-streams-delta]
-           (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-             (get-stream-from-deltas return-deltas))))]
-    (into return-streams (vector (vec (get-streams-sum return-streams))))))
+        (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
+              return-streams (for [intention-stream-delta intention-streams-delta]
+                               (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
+                                 (get-stream-from-deltas return-deltas)))]
+          (if (= 1 (count return-streams))
+            return-streams
+            (into return-streams (vector (vec (get-streams-sum return-streams)))))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
-(def one-arg-funcs (list
-                    (with-meta #(Math/sin %) {:name "sin"})
-                    (with-meta #(Math/cos %) {:name "cos"})
-                    (with-meta #(Math/tan %) {:name "tan"})
-                    (with-meta #(Math/log (Math/abs (+ Math/E %))) {:name "modified log"})))
-
-(def many-arg-funcs
-  [(with-meta (fn [& args] (apply + args)) {:name "+"})
+(def strindy-funcs
+  [(with-meta (fn [& args] (Math/sin (first args))) {:name "sin"})
+   (with-meta (fn [& args] (Math/cos (first args))) {:name "cos"})
+   (with-meta (fn [& args] (Math/tan (first args))) {:name "tan"})
+   (with-meta (fn [& args] (Math/log (Math/abs (+ Math/E (first args))))) {:name "modified log"})
+   (with-meta (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))] 
+                             (Math/pow arg1 arg2))) {:name "pow"})
+   (with-meta (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0))) {:name "binary"})
+   (with-meta (fn [& args] (apply + args)) {:name "+"})
    (with-meta (fn [& args] (apply - args)) {:name "-"})
    (with-meta (fn [& args] (apply * args)) {:name "*"})
    (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
@@ -70,17 +74,12 @@
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
    (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
 
-(def two-arg-funcs
-  (into many-arg-funcs
-        [(with-meta #(Math/pow %1 %2) {:name "pow"})
-         (with-meta #(if (> %1 %2) 1 0) {:name "binary"})]))
-
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (cond (< (rand) 0.75) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
-           :else {:fn-name "rand constant" :fn (rand) :inputs []})
+     (cond (< (rand) 0.9) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
+           :else {:fn-name "rand constant" :fn (rand)})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            new-depth (inc current-depth)
@@ -89,13 +88,47 @@
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
            func (cond
-                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str "binary tree with " num-inputs " inputs")})
-                  (= num-inputs 1) (rand-nth one-arg-funcs)
-                  (= num-inputs 2) (rand-nth two-arg-funcs)
-                  (> num-inputs 2) (rand-nth many-arg-funcs))]
+                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str strat-tree)})
+                  :else (rand-nth strindy-funcs))]
        {:fn-name (get (meta func) :name)
         :fn func
         :inputs inputs}))))
+
+(defn ameliorate-strindy [strindy]
+  (w/postwalk (fn [form]
+                (if (and (map? form)
+                         (some #(= % :fn-name) (keys form)))
+                  (let [fn-name (get form :fn-name)
+                        inputs (get form :inputs)
+                        name-match #(= % fn-name)]
+                    (cond (and (some name-match ["sin" "cos" "tan" "modified log"])
+                               (> (count inputs) 1))
+                          (assoc form :inputs (vector (rand-nth inputs)))
+                          (and (some name-match ["+" "*" "max" "min" "mean"])
+                               (= (count inputs) 1))
+                          (first inputs)
+                          (and (some name-match ["pow" "binary"])
+                               (> (count inputs) 2))
+                          (assoc form :inputs (let [shuffled (shuffle inputs)] (vector (first shuffled) (second shuffled))))
+                          :else form))
+                  form))
+              strindy))
+
+(defn ameliorate-strindy-recur [strindy]
+  (let [new-strindy (ameliorate-strindy strindy)]
+    (if (= strindy new-strindy) strindy (ameliorate-strindy-recur new-strindy))))
+
+(defn make-strindy [config]
+  (-> config (make-strindy-recur) (ameliorate-strindy-recur)))
+
+#_(do
+  (def temp_config {:return-type "binary", :min-depth 2, :max-depth 3, :max-children 4, :inception-ids [0 1 2 3 4], :intention-ids [1]})
+  (def strindy (make-strindy-recur temp_config))
+  (def astrindy (ameliorate-strindy-recur strindy))
+  (println (= strindy astrindy))
+  (pp/pprint strindy)
+  (pp/pprint astrindy))
+
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 

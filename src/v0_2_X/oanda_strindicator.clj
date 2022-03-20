@@ -11,28 +11,32 @@
 (defn get-instrument-config [name granularity count]
   {:name name :granularity granularity :count count})
 
+(defn get-instruments-config [config]
+  (for [stream-config (filterv #(not= (get % :name) "default") (get config :streams-config))]
+      (get-instrument-config (get stream-config :name) (get config :granularity) (get config :num-data-points))))
+
 (defn get-open-prices [instrument-config]
   (format-candles (get (oa/get-candles instrument-config) :candles)))
 
-(defn get-stream-from-instrument-by-key [instrument-config target-key]
-  (vec
-   (for [data (get-open-prices instrument-config)]
-     (get data target-key))))
+;; (defn get-stream-from-instrument-by-key [instrument-config target-key]
+;;   (vec
+;;    (for [data (get-open-prices instrument-config)]
+;;      (get data target-key))))
 
-(defn get-instrument-streams [instrument-config]
-  (map #(get-stream-from-instrument-by-key instrument-config %) [:o :time]))
+;; (defn get-instrument-streams [instrument-config]
+;;   (map #(get-stream-from-instrument-by-key instrument-config %) [:o :time]))
 
 ;; (def instrument-config (get-instrument-config "EUR_USD" "S5" 5))
 
 ;; (def instrument-streams (get-instrument-streams instrument-config))
 
-(defn get-instruments-config [config]
-  (for [stream-config (get config :streams-config)]
-    (get-instrument-config (get stream-config :name) (get config :granularity) (get config :num-data-points))))
+(defn get-instrument-stream [instrument-config]
+  (vec (for [data (get-open-prices instrument-config)] (get data :o))))
 
-(defn get-instruments-stream [config] 
-  (for [instrument-config config] 
-    (vec (for [data (get-open-prices instrument-config)] (get data :o)))))
+(defn get-instruments-streams [config]
+ (let [instruments-config (get-instruments-config config)]
+  (for [instrument-config instruments-config] 
+    (get-instrument-stream instrument-config))))
 
 (defn zero-stream [stream]
   (vec (for [price stream] (- price (first stream)))))
