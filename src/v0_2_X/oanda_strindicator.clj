@@ -38,9 +38,6 @@
   (for [instrument-config instruments-config] 
     (get-instrument-stream instrument-config))))
 
-(defn zero-stream [stream]
-  (vec (for [price stream] (- price (first stream)))))
-
 (def num-data-points 1000)
 (def instrument-config (get-instrument-config "EUR_USD" "H1" num-data-points))
 ;; (def input-config (strindy/get-strindy-input-config 10 1 num-data-points 0.005 1 0 100))

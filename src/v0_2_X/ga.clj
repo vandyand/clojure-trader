@@ -7,7 +7,7 @@
             [v0_2_X.config :as config]
             [v0_2_X.hydrate :as hyd]
             [v0_2_X.strindicator :as strindy]
-            [v0_2_X.oanda_strindicator :as ostrindy]))
+            [v0_2_X.plot :as plot]))
 
 
 ; zip function
@@ -25,12 +25,11 @@
 (defn get-hystrindies
   ([ga-config streams] (get-hystrindies ga-config streams (get-in ga-config [:pop-config :pop-size])))
   ([ga-config streams num-strindies]
-   (let []
      (loop [i 0 v (transient [])]
        (if (< i num-strindies)
          (recur (inc i)
                 (conj! v (hyd/get-hydrated-strindy (get-in ga-config [:backtest-config :strindy-config]) streams)))
-         (persistent! v))))))
+         (persistent! v)))))
 
 (defn get-hystrindy-fitness [hystrindy]
   (let [fitness (last (first (hystrindy :return-streams)))]
@@ -46,8 +45,8 @@
 
 ; get best parents
 
-(defn get-best-hystrindies [hystrindies num]
-  (take num (reverse (sort-by :fitness hystrindies))))
+(defn sort-hystrindies [hystrindies]
+  (reverse (sort-by :fitness hystrindies)))
 
 ;; (def parents-pop (get-best-hystrindies init-pop (get-in ga-config [:pop-config :num-parents])))
 
@@ -106,7 +105,8 @@
 
 (defn get-mutated-strindy-recur [strindy strindy-config]
   (let [mutated-strindy (get-mutated-strindy strindy strindy-config)]
-    (if (= mutated-strindy strindy) (get-mutated-strindy-recur strindy strindy-config) mutated-strindy)))
+    (if (= mutated-strindy strindy) (get-mutated-strindy-recur strindy strindy-config) 
+        (strindy/ameliorate-strindy-recur mutated-strindy))))
 
 (defn combine-strindies [strindy1 strindy2]
   (-> strindy1 strindy-zip z/down (z/replace (-> strindy2 strindy-zip z/down z/node)) z/root))
@@ -147,13 +147,13 @@
 
 
 (defn run-epoch
-  ([streams ga-config] (run-epoch (get-init-pop ga-config streams) streams ga-config))
+  ([streams ga-config] (run-epoch (sort-hystrindies (get-init-pop ga-config streams)) streams ga-config))
   ([population streams ga-config]
-   (let [parents-pop (get-best-hystrindies population (get-in ga-config [:pop-config :num-parents]))
+   (let [parents-pop (take (get-in ga-config [:pop-config :num-parents]) population)
          parents-strindies (map :strindy parents-pop)
          children-strindies (get-children-strindies parents-strindies ga-config)
          children-hystrindies (get-hystrindies-fitnesses (hyd/hydrate-strindies children-strindies streams))]
-     (into parents-pop children-hystrindies))))
+     (sort-hystrindies (into parents-pop children-hystrindies)))))
 
 (defn run-epochs
   ([streams ga-config] (run-epochs (get-init-pop ga-config streams) streams ga-config))
@@ -169,9 +169,9 @@
 
 (def backtest-config (config/get-backtest-config-util
                       ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                      "binary" 2 4 6 100 "H1"))
+                      "binary" 2 6 10 1200 "H1"))
 
-(def ga-config (config/get-ga-config 5 backtest-config (config/get-pop-config 20 0.5 0.4 0.6)))
+(def ga-config (config/get-ga-config 20 backtest-config (config/get-pop-config 40 0.2 0.4 0.6)))
 
 (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
 
@@ -179,7 +179,8 @@
 
 ;; (map #(strindy/print-strindy (get % :strindy)) best-pop)
 
-;; (strat/plot-strindies best-pop)
+;; (plot/plot-strindies (take 2 best-pop))
+(plot/plot-strindies-with-intentions (take 5 best-pop) (streams :intention-streams))
 
 (comment
   (do
