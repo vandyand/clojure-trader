@@ -202,15 +202,13 @@
     (if (< (count v) (+ (get-in ga-config [:pop-config :num-children])
                         (count parent-trees)))
       (recur
-       (let
-        [new-child
-         (duplicate-tree-check
-          parent-trees
-          (strat/ameliorate-tree
-           (get-child-tree
-            parent-trees
-            (get ga-config :pop-config)
-            (get ga-config :tree-config))))]
+       (let [new-child (duplicate-tree-check
+                        parent-trees
+                        (strat/ameliorate-tree
+                         (get-child-tree
+                          parent-trees
+                          (get ga-config :pop-config)
+                          (get ga-config :tree-config))))]
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 

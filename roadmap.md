@@ -4,8 +4,6 @@
 
 ### Todo - longer term
 
-- [ ] (0.2.x) Keep working on strindicators
-  
 - [ ] Arena: Work on arena v1 - No live trading (practice or live) only mock trading.
   - [ ] Create stream bank - refactor inputs-config to subscribe to streams
   - [ ] Setup mock strategy infrastructure
@@ -32,6 +30,7 @@
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] Use constantly for rand constants in strindy trees (instead of the value itself).
 - [ ] Update strindy ga crossover function to make it crossover branches further down than second level (so that potentially whole strindy2 tree could be grafted in to a low branch of strindy1). Same could be said for strat trees.
+- [ ] Cleanup hydrate file names to be more idomatic
 
 ### Completed Tasks
 
@@ -70,6 +69,8 @@
     - [x] Make crossovers
   - [x] Repeat
   - [x] Get plotting working
+- [x] (0.2.11) Make sure each hystrindy in ga has unique sieve stream
+
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
 
