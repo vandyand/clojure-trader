@@ -20,10 +20,18 @@
    []
    streams-config)) ; Need stream ids for strindy tree creation (not tree config)
 
-(defn get-strindy-config [tree-config streams-config]
+(defn get-strindy-config 
+  ([return-type min-depth max-depth max-children inception-ids intention-ids]
+   {:return-type return-type
+    :min-depth min-depth
+    :max-depth max-depth
+    :max-children max-children
+    :inception-ids inception-ids
+    :intention-ids intention-ids})
+  ([tree-config streams-config]
   (let [inception-ids (get-stream-ids streams-config "inception")
         intention-ids (get-stream-ids streams-config "intention")]
-    (into tree-config {:inception-ids inception-ids :intention-ids intention-ids})))
+    (into tree-config {:inception-ids inception-ids :intention-ids intention-ids}))))
 
 (defn get-backtest-config [num-data-points granularity streams-config strindy-config]
   {:num-data-points num-data-points

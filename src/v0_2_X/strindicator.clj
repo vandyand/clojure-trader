@@ -74,31 +74,32 @@
    (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
    (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
 
+(defn make-input [inception-ids]
+  {:id (rand-nth inception-ids) :shift (first (random-sample 0.5 (range)))})
+
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
-     (cond (< (rand) 0.9) {:id (rand-nth (get config :inception-ids)) :shift (first (random-sample 0.5 (range)))}
-           :else {:fn-name "rand constant" :fn (rand)})
+     (cond (< (rand) 0.9) (make-input (get config :inception-ids))
+           :else {:fn (with-meta (constantly (rand)) {:name "rand const"})})
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
-           new-depth (inc current-depth)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
            tree-node? (or (and parent-node? (= (get config :return-type) "binary")) (and (>= num-inputs 2) (< (rand) 0.1)))
-           strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 0 5 num-inputs)))
-           inputs (vec (repeatedly num-inputs #(make-strindy-recur config new-depth)))
+           strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs)))
+           inputs (vec (repeatedly num-inputs #(make-strindy-recur config (inc current-depth))))
            func (cond
-                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str strat-tree)})
+                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str strat-tree) :tree strat-tree})
                   :else (rand-nth strindy-funcs))]
-       {:fn-name (get (meta func) :name)
-        :fn func
+       {:fn func
         :inputs inputs}))))
 
 (defn ameliorate-strindy [strindy]
   (w/postwalk (fn [form]
                 (if (and (map? form)
-                         (some #(= % :fn-name) (keys form)))
-                  (let [fn-name (get form :fn-name)
+                         (some #(= % :inputs) (keys form)))
+                  (let [fn-name (get (meta (get form :fn)) :name)
                         inputs (get form :inputs)
                         name-match #(= % fn-name)]
                     (cond (and (some name-match ["sin" "cos" "tan" "modified log"])
@@ -120,6 +121,15 @@
 
 (defn make-strindy [config]
   (-> config (make-strindy-recur) (ameliorate-strindy-recur)))
+
+(defn print-strindy [strindy]
+  (pp/pprint
+   (w/postwalk
+    (fn [form]
+      (if (and (map? form) (some #(= % :fn) (keys form)))
+        {:fn-name ((meta (form :fn)) :name) :inputs (form :inputs)}
+        form))
+    strindy)))
 
 #_(do
   (def temp_config {:return-type "binary", :min-depth 2, :max-depth 3, :max-children 4, :inception-ids [0 1 2 3 4], :intention-ids [1]})

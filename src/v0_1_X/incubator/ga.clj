@@ -91,7 +91,7 @@
 
 (defn new-rand-branch [loc]
   (if (z/branch? loc)
-    (let [subtree-config (strat/get-tree-config 0 1 4)
+    (let [subtree-config (strat/get-tree-config 0 1 2)
           new-node (strat/make-tree-recur subtree-config)]
       (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
 
@@ -202,15 +202,13 @@
     (if (< (count v) (+ (get-in ga-config [:pop-config :num-children])
                         (count parent-trees)))
       (recur
-       (let
-        [new-child
-         (duplicate-tree-check
-          parent-trees
-          (strat/ameliorate-tree
-           (get-child-tree
-            parent-trees
-            (get ga-config :pop-config)
-            (get ga-config :tree-config))))]
+       (let [new-child (duplicate-tree-check
+                        parent-trees
+                        (strat/ameliorate-tree
+                         (get-child-tree
+                          parent-trees
+                          (get ga-config :pop-config)
+                          (get ga-config :tree-config))))]
          (if new-child (conj! v new-child) v)))
       (persistent! v))))
 
@@ -238,8 +236,8 @@
 
 
 (def ga-config
-  (let [num-epochs 20
-        input-config (inputs/get-sine-inputs-config 10 1 1000 10 0.1 0.1 100)
+  (let [num-epochs 10
+        input-config (inputs/get-sine-inputs-config 10 1 200 10 0.1 0.1 100)
         tree-config (strat/get-tree-config
                      3 6 (count (get input-config :inception-streams-config)))
         pop-config (get-pop-config 50 0.5 0.4 0.5)]
