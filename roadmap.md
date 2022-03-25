@@ -4,15 +4,8 @@
 
 ### Todo - longer term
 
-- [ ] Arena: Work on arena v1 - No live trading (practice or live) only mock trading.
-  - [ ] Create stream bank - refactor inputs-config to subscribe to streams
-  - [ ] Setup mock strategy infrastructure
-    - Create mock strindicator with input data, tree data, target instrument data
-  - [ ] Package strindicators from incubator
-  - [ ] Run mock strindicator
-- [ ] Refactor csv_instrument and oanda_instrument implementation. Codify commonalities into a function in ga.
-- [ ] Cleanup strindicator
-
+- [ ] (0.3.X) Arena: Work on arena v1
+- [ ] (0.4.X) Use `core.async` to leverage parallel processing (esp on alienware).
 ### Continuous
 
 - [ ] Learn macros and start using them throughout. Embrace the power of clojure.
@@ -28,7 +21,6 @@
 - [ ] Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
 - [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
-- [ ] Use constantly for rand constants in strindy trees (instead of the value itself).
 - [ ] Update strindy ga crossover function to make it crossover branches further down than second level (so that potentially whole strindy2 tree could be grafted in to a low branch of strindy1). Same could be said for strat trees.
 - [ ] Cleanup hydrate file names to be more idomatic
 
@@ -60,6 +52,7 @@
 - [x] (0.2.10) Refactor oanda_strindicator to not need instrument config. It should pair well with 0_2_x config and populate. 
 - [x] (0.2.10) Get strindicators working with oanda api data as inception and intension streams
 - [x] (0.2.11) Standardize config throughout 0.2.x (see notes)
+- [x] (0.2.11) Use constantly for rand constants in strindy trees (instead of the value itself).
 - [x] (0.2.11) Make GA for strindicators.
   - [x] Make population
   - [x] Get fitnesses
@@ -70,6 +63,7 @@
   - [x] Repeat
   - [x] Get plotting working
 - [x] (0.2.11) Make sure each hystrindy in ga has unique sieve stream
+- [x] (0.2.12) Refactor hystrindy return streams to include deltas.
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

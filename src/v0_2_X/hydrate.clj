@@ -49,7 +49,7 @@
        (persistent! v)))))
 
 (defn get-hystrindy-fitness [hystrindy]
-  (let [fitness (last (first (hystrindy :return-streams)))]
+  (let [fitness (-> hystrindy :return-streams first :sum-beck last)]
     (assoc hystrindy :fitness fitness)))
 
 (defn get-hystrindies-fitnesses [hystrindies]

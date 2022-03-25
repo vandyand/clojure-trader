@@ -1,3 +1,14 @@
+### Thurs, Mar 24, 22
+
+Arena notes: How are we going to do the arena?
+It's just like running a backtest. We solve the same strindy using the same solve-strindy function and simply pass in different inputs. The inputs will have come from the api and will be most recent (ie live). 
+
+We will want to refactor the return streams of the hystrindies to include return deltas. The live trading strindy will produce new deltas. These new deltas will be compared to the backtest deltas via hypothesis test. The target threshold value of the hypothesis test (by which the decision to go live or not is derived) will be determined later. It's probably more performant to do everything based off deltas? Even inception streams?
+
+Somewhere we'll have to run a chron job every x timeframe to get live prices with which to solve the strindy to get live return deltas. For now use the alienware desktop or aws lambda... We should start using the desktop soon though cause it's got better specs for running backtests.
+
+Todo: Refactor return values of hystrindies to include deltas. 
+
 ### Fri, Mar 18, 22
 
 How do we want to deal with strategy trees in strindy genetic algorithm? Seems like we'd want to optimize them... along with the indicators... and thus optimize the strindicator. Ok, good. How do we do that though? All we have in the strindicator is the actual solution function for the strategy tree. This is a wacko type of node.
