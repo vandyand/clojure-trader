@@ -37,8 +37,8 @@
         values (format-streams-for-view streams)]
   (generate-and-view-plot values)))
 
-(defn plot-strindies-with-intentions [strindies intention-streams]
-  (let [return-streams (map #(first (:return-streams %)) strindies)
+(defn plot-hystrindies-with-intentions [hystrindies intention-streams]
+  (let [return-streams (map #(-> % :return-streams first :sum-beck) hystrindies)
         zeroed-intention-streams (map zero-stream intention-streams)
         all-streams (into return-streams zeroed-intention-streams)
         values (format-streams-for-view all-streams)]

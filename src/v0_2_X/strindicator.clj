@@ -24,7 +24,7 @@
 
 (defn get-stream-deltas [stream] (mapv - stream (cons (first stream) stream)))
 
-(defn get-return-deltas [sieve intention-deltas] (map * (cons (first sieve) sieve) intention-deltas))
+(defn get-return-deltas [sieve intention-deltas] (mapv * (cons (first sieve) sieve) intention-deltas))
 
 (defn get-stream-from-deltas [deltas] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] deltas))
 
@@ -38,9 +38,15 @@
                 streams))
         (range 1 (count (first streams)))))
 
-(defn get-streams-sum [streams]
-  (for [n (range (count (first streams)))]
-    (apply + (for [stream streams] (get stream n)))))
+(defn get-sum-of-all-streams [return-streams]
+  (let [stream-length (count (get (first return-streams) :beck))
+        sum-delta
+        (vec (for [n (range stream-length)]
+          (reduce + (for [return-stream return-streams] (get-in return-stream [:delta n])))))
+        sum-beck
+        (vec (for [n (range stream-length)]
+          (reduce + (for [return-stream return-streams] (get-in return-stream [:beck n])))))]
+    {:sum-delta sum-delta :sum-beck sum-beck}))
 
 (defn get-sieve-stream [strindy inception-streams]
   (let [inception-streams-walker (get-streams-walker inception-streams)]
@@ -50,10 +56,9 @@
         (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
               return-streams (for [intention-stream-delta intention-streams-delta]
                                (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-                                 (get-stream-from-deltas return-deltas)))]
-          (if (= 1 (count return-streams))
-            return-streams
-            (into return-streams (vector (vec (get-streams-sum return-streams)))))))
+                                 {:delta return-deltas
+                                  :beck (get-stream-from-deltas return-deltas)}))]
+            (into return-streams (vector (get-sum-of-all-streams return-streams)))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
@@ -61,18 +66,19 @@
   [(with-meta (fn [& args] (Math/sin (first args))) {:name "sin"})
    (with-meta (fn [& args] (Math/cos (first args))) {:name "cos"})
    (with-meta (fn [& args] (Math/tan (first args))) {:name "tan"})
-   (with-meta (fn [& args] (Math/log (Math/abs (+ Math/E (first args))))) {:name "modified log"})
-   (with-meta (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))] 
-                             (Math/pow arg1 arg2))) {:name "pow"})
-   (with-meta (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0))) {:name "binary"})
+  ;;  (with-meta (fn [& args] (Math/log (Math/abs (+ Math/E (first args))))) {:name "modified log"})
+  ;;  (with-meta (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))] 
+  ;;                            (Math/pow arg1 arg2))) {:name "pow"})
+  ;;  (with-meta (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0))) {:name "binary"})
    (with-meta (fn [& args] (apply + args)) {:name "+"})
    (with-meta (fn [& args] (apply - args)) {:name "-"})
-   (with-meta (fn [& args] (apply * args)) {:name "*"})
-   (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
-   (with-meta (fn [& args] (apply max args)) {:name "max"})
-   (with-meta (fn [& args] (apply min args)) {:name "min"})
-   (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
-   (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})])
+  ;;  (with-meta (fn [& args] (apply * args)) {:name "*"})
+  ;;  (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
+  ;;  (with-meta (fn [& args] (apply max args)) {:name "max"})
+  ;;  (with-meta (fn [& args] (apply min args)) {:name "min"})
+  ;;  (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
+  ;;  (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})
+   ])
 
 (defn make-input [inception-ids]
   {:id (rand-nth inception-ids) :shift (first (random-sample 0.5 (range)))})

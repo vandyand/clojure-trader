@@ -126,20 +126,23 @@
                      (/ (reduce + fitnesses) (count fitnesses)))]
        (println "gen  " i " best score: " best-score
                 " avg parent score: " average)
-       (plot/plot-strindies-with-intentions (take 5 next-gen) (streams :intention-streams))
+       (plot/plot-hystrindies-with-intentions (take 5 next-gen) (streams :intention-streams))
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 (def backtest-config (config/get-backtest-config-util
-                      ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                      "binary" 1 3 10 1000 "H1"))
+                      ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
+                      ["EUR_USD" "intention"]
+                      "binary" 1 2 3 100 "M1"))
 
-(def ga-config (config/get-ga-config 20 backtest-config (config/get-pop-config 200 0.4 0.3 0.5)))
+(def ga-config (config/get-ga-config 100 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 
 (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
 
+;; (def init-pop (hyd/get-init-pop ga-config streams))
+
 (def best-pop (run-epochs streams ga-config))
 
-(plot/plot-strindies-with-intentions (take 5 best-pop) (streams :intention-streams))
+(plot/plot-hystrindies-with-intentions (take 5 best-pop) (streams :intention-streams))
 
 
 
