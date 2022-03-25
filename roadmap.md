@@ -4,14 +4,21 @@
 
 ### Todo - longer term
 
-- [ ] (0.3.X) Arena: Work on arena v1
+- [ ] (0.3.X) Arena
+  - [ ] Somehow know where backtest data ends and gauntlet data starts
+  - [ ] Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
+  - [ ] Delete hystrindies from edn file by id if z-score is too low
+  - [ ] Create Arena where ghystrindies trade via api on paper account
+  - [ ] Add arena performance data and z-score to ghystrindies (becoming aghystrindies)
+  - [ ] Good ones go live
+  - [ ] Add live performacne data and z-score to aghystrindies (becoming laghystrindies)
 - [ ] (0.4.X) Use `core.async` to leverage parallel processing (esp on alienware).
 ### Continuous
 
 - [ ] Learn macros and start using them throughout. Embrace the power of clojure.
 - [ ] Learn `core.async` and start using it throughout. Embrace the power of clojure.
 
-### Nice to haves
+### Nice to haves / Future features
 
 - [ ] Spec one function
 - [ ] Fuzz test one function with spec generator
@@ -23,7 +30,11 @@
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] Update strindy ga crossover function to make it crossover branches further down than second level (so that potentially whole strindy2 tree could be grafted in to a low branch of strindy1). Same could be said for strat trees.
 - [ ] Cleanup hydrate file names to be more idomatic
-
+- [ ] Make strat tree solver (strat/solve-tree) drier (currently used in multiple files including v0.2 ga and edn)
+- [ ] Get rid of :policy in strindicators, just put the key values on the first level with :inputs. There's no benefit to having these values in a lower level.
+- [ ] Shorting ability (make sieve-stream ternary or just inverse intention stream or sieve stream or delta stream)
+- [ ] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
+- [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, ghystrindies... etc) (yet to be seen if this is necessary though probably will be)
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)
@@ -64,6 +75,7 @@
   - [x] Get plotting working
 - [x] (0.2.11) Make sure each hystrindy in ga has unique sieve stream
 - [x] (0.2.12) Refactor hystrindy return streams to include deltas.
+- [x] (0.3.0) Hystrindies write and read to/from edn file
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

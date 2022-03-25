@@ -1,7 +1,8 @@
 (ns v0_2_X.hydrate
   (:require
    [v0_2_X.strindicator :as strindy]
-   [v0_2_X.oanda_strindicator :as ostrindy]))
+   [v0_2_X.oanda_strindicator :as ostrindy]
+   [v0_2_X.config :as config]))
 
 (defn get-backtest-streams [backtest-config]
   (let [default-stream (vec (range (get backtest-config :num-data-points)))
@@ -12,7 +13,8 @@
 
 (defn hydrate-strindy [strindy streams]
   (let [sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
-    {:strindy strindy
+    {:id (.toString (java.util.UUID/randomUUID))
+     :strindy strindy
      :sieve-stream sieve-stream
      :return-streams (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))}))
 
@@ -59,3 +61,18 @@
 (defn get-init-pop [ga-config streams]
   (get-hystrindies-fitnesses (get-unique-hystrindies ga-config streams)))
 
+
+(comment
+  (def backtest-config (config/get-backtest-config-util
+                      ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
+                        ["EUR_USD" "intention"]
+                        "binary" 1 2 3 100 "M1"))
+
+  (def streams (get-backtest-streams backtest-config))
+
+  (def strindy (strindy/make-strindy-recur (backtest-config :strindy-config)))
+
+  (def sieve-stream (strindy/get-sieve-stream strindy (streams :inception-streams)))
+
+  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (streams :intention-streams)))
+  )

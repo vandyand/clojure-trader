@@ -88,7 +88,7 @@
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
      (cond (< (rand) 0.9) (make-input (get config :inception-ids))
-           :else {:policy {:type "rand" :fn (constantly (rand))}})
+           :else (let [r (rand)] {:policy {:type "rand" :value r :fn (constantly r)}}))
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
