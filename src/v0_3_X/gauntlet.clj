@@ -1,8 +1,8 @@
 (ns v0_3_X.gauntlet
   (:require
-   [edn]
+   [file :as file]
     [v0_2_X.hydrate :as hyd]
-   [stats]))
+   [stats :as stats]))
 
 (defn get-overlap-ind [old new]
   (loop [i 0]
@@ -54,9 +54,9 @@
 
 
 (comment
-  (def hystrindies (edn/get-hystrindies-from-file))
+  (def hystrindies (file/get-hystrindies-from-file))
 
-  (def back-streams (edn/get-streams-from-file))
+  (def back-streams (first (file/read-file "streams.edn")))
 
   (def new-streams (hyd/get-backtest-streams (get back-streams :backtest-config)))
 
@@ -64,12 +64,12 @@
     (let [new (first (get new-streams :intention-streams))
           old (first (get back-streams :intention-streams))]
       (get-overlap-ind old new)))
-  
+
   (def fore-streams (get-fore-streams new-streams overlap-ind))
-  
+
   (def fore-hystrindies (get-fore-hystrindies hystrindies fore-streams))
-  
+
   (def ghystrindies (get-ghystrindies hystrindies fore-hystrindies))
-  
+
   (v0_2_X.plot/plot-with-intentions ghystrindies (fore-streams :intention-streams) :g-return-streams)
   )

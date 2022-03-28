@@ -1,17 +1,11 @@
-(ns edn
+(ns file
   (:require
    [clojure.edn :as edn]
    [v0_1_X.incubator.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
-   [v0_2_X.hydrate :as hyd]))
-
-;; (def backtest-config (config/get-backtest-config-util
-;;                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-;;                       ["EUR_USD" "intention"]
-;;                       "binary" 1 2 3 100 "M1"))
-
-;; (def strindy (strindy/make-strindy-recur (backtest-config :strindy-config)))
+   [v0_2_X.hydrate :as hyd]
+   [util]))
 
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
@@ -21,16 +15,27 @@
        form))
    strindy))
 
+(defn read-file [file-name]
+  (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") #"\n" "")))
+
+(defn write-file 
+  ([file-name contents] (write-file file-name contents true))
+  ([file-name contents append?]
+  (spit file-name (prn-str contents) :append append?)))
+
+(defn clear-file [file-name]
+  (spit file-name ""))
+
 (defn save-hystrindy-to-file
   ([hystrindy] (save-hystrindy-to-file "data.edn" hystrindy))
   ([file-name hystrindy]
    (let [formatted-hystrindy (assoc hystrindy :strindy (format-strindy-for-edn (hystrindy :strindy)))]
-     (spit file-name (prn-str formatted-hystrindy) :append true))))
+     (write-file file-name formatted-hystrindy))))
 
 (defn save-streams-to-file 
   ([streams] (save-streams-to-file "streams.edn" streams))
   ([file-name streams]
-  (spit file-name (prn-str streams) :append true)))
+  (write-file file-name streams)))
 
 (defn deformat-hystrindy [formatted-hystrindy]
   (clojure.walk/postwalk
@@ -41,8 +46,7 @@
                         (constantly (get-in form [:policy :value]))
                         (some #(= % :tree) (keys (form :policy)))
                         (fn [& args] (strat/solve-tree (get-in form [:policy :tree]) args))
-                        :else (:fn (reduce (fn [_ cur-val] (when (= (:type cur-val) form-type) (reduced cur-val)))
-                                           nil strindy/strindy-funcs)))]
+                        :else (:fn (util/find-in strindy/strindy-funcs :type form-type)))]
          (assoc form :policy (into (:policy form) {:fn func})))
        form))
    formatted-hystrindy))
@@ -50,14 +54,17 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "data.edn"))
   ([file-name]
-   (let [formatted-hystrindies (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") #"\n" ""))]
+   (let [formatted-hystrindies (read-file file-name)]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
 
-(defn get-streams-from-file
-  ([] (get-streams-from-file "streams.edn"))
-  ([file-name]
-   (edn/read-string (slurp file-name))))
+(defn delete-by-id [file-name id]
+  (let [contents (read-file file-name)
+        new-contents (filter #(not= (:id %) id) contents)]
+    (clear-file file-name)
+    (for [new-content new-contents]
+      (write-file file-name new-content))))
+
 
 (comment
   (def hystrindies (get-hystrindies-from-file))
