@@ -41,7 +41,7 @@
                         (constantly (get-in form [:policy :value]))
                         (some #(= % :tree) (keys (form :policy)))
                         (fn [& args] (strat/solve-tree (get-in form [:policy :tree]) args))
-                        :else (:fn (reduce (fn [acc cur-val] (when (= (:type cur-val) form-type) (reduced cur-val)))
+                        :else (:fn (reduce (fn [_ cur-val] (when (= (:type cur-val) form-type) (reduced cur-val)))
                                            nil strindy/strindy-funcs)))]
          (assoc form :policy (into (:policy form) {:fn func})))
        form))
@@ -50,9 +50,14 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "data.edn"))
   ([file-name]
-   (let [formatted-hystrindies (edn/read-string (clojure.string/replace (str "[" (slurp "data.edn") "]") #"\n" ""))]
+   (let [formatted-hystrindies (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") #"\n" ""))]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
+
+(defn get-streams-from-file
+  ([] (get-streams-from-file "streams.edn"))
+  ([file-name]
+   (edn/read-string (slurp file-name))))
 
 (comment
   (def hystrindies (get-hystrindies-from-file))

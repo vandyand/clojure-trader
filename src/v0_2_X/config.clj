@@ -1,11 +1,5 @@
 (ns v0_2_X.config)
 
-(def default-stream-config
-  {:name "default"
-   :id 0
-   :inception true
-   :intention false})
-
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]
   (reduce (fn [acc args] (conj acc {:name (first args) :incint (last args) :id (count acc)}))
@@ -71,8 +65,14 @@
    :backtest-config backtest-config
    :pop-config pop-config})
 
-(def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))
-(def ga-config (get-ga-config 5 backtest-config (get-pop-config 20 0.5 0.4 0.4)))
+(comment
+  (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))
+  
+  (println (v0_2_X.strindicator/make-strindy (:strindy-config backtest-config)))
+  
+  
+  (def ga-config (get-ga-config 5 backtest-config (get-pop-config 20 0.5 0.4 0.4)))
+  )
 
 ; Arena strindy: package of - backtested populated strindy, arena-performance {returns, z-score, other-score?}
 ; Live practice strindy: arena strindy + live-practive-performance {returns, z-score, other-score?}

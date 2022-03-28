@@ -7,12 +7,14 @@
 (defn get-backtest-streams [backtest-config]
   (let [default-stream (vec (range (get backtest-config :num-data-points)))
         other-streams (ostrindy/get-instruments-streams backtest-config)
-        streams (into [default-stream] other-streams)]
+        streams (into [default-stream] other-streams)
+        inception-ids (config/get-stream-ids (:streams-config backtest-config) "inception")
+        intention-ids (config/get-stream-ids (:streams-config backtest-config) "intention")]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (dissoc backtest-config :strindy-config)
      :time-stamp (quot (System/currentTimeMillis) 1000)
-     :inception-streams (vec (for [ind (get-in backtest-config [:strindy-config :inception-ids])] (get streams ind)))
-     :intention-streams (vec (for [ind (get-in backtest-config [:strindy-config :intention-ids])] (get streams ind)))}))
+     :inception-streams (vec (for [ind inception-ids] (get streams ind)))
+     :intention-streams (vec (for [ind intention-ids] (get streams ind)))}))
 
 (defn hydrate-strindy [strindy streams]
   (let [sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]

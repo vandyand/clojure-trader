@@ -5,7 +5,6 @@
 ### Todo - longer term
 
 - [ ] (0.3.X) Arena
-  - [ ] Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
   - [ ] Delete hystrindies from edn file by id if z-score is too low
   - [ ] Create Arena where ghystrindies trade via api on paper account
   - [ ] Add arena performance data and z-score to ghystrindies (becoming aghystrindies)
@@ -34,6 +33,7 @@
 - [ ] Shorting ability (make sieve-stream ternary or just inverse intention stream or sieve stream or delta stream)
 - [ ] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
 - [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, ghystrindies... etc) (yet to be seen if this is necessary though probably will be)
+- [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)
@@ -77,6 +77,7 @@
 - [x] (0.3.0) Hystrindies write and read to/from edn file
 - [x] (0.3.0) Streams write and read to/from edn file
 - [x] (0.3.0) Somehow know where backtest data ends and gauntlet data starts
+- [x] (0.3.1) Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
