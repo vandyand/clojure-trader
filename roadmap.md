@@ -34,6 +34,8 @@
 - [ ] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
 - [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, ghystrindies... etc) (yet to be seen if this is necessary though probably will be)
 - [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
+- [ ] Get more than 5000 count of backtest data from api for input streams
+- [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)

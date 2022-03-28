@@ -52,6 +52,20 @@
                       (-> back-hystrindy :return-streams first :sum-delta)
                       (-> fore-hystrindy :return-streams first :sum-delta))))))
 
+(defn run-gauntlet []
+  (let [back-hystrindies (file/get-hystrindies-from-file "data.edn")
+        back-streams (first (file/read-file "streams.edn"))
+        new-streams (hyd/get-backtest-streams (get back-streams :backtest-config))
+        overlap-ind (let [new (first (get new-streams :intention-streams))
+                          old (first (get back-streams :intention-streams))]
+                      (get-overlap-ind old new))
+        fore-streams (get-fore-streams new-streams overlap-ind)
+        fore-hystrindies (get-fore-hystrindies back-hystrindies fore-streams)]
+    (get-ghystrindies back-hystrindies fore-hystrindies)))
+
+(comment
+  (def ghystrindies (run-gauntlet))
+  )
 
 (comment
   (def hystrindies (file/get-hystrindies-from-file))
@@ -72,4 +86,35 @@
   (def ghystrindies (get-ghystrindies hystrindies fore-hystrindies))
 
   (v0_2_X.plot/plot-with-intentions ghystrindies (fore-streams :intention-streams) :g-return-streams)
+  )
+
+
+(comment
+  (def stream-hystrindies (group-by :streams-id (file/get-hystrindies-from-file "data.edn")))
+
+  (def back-streams (file/read-file "streams.edn"))
+
+  (def new-streams (for [back-stream back-streams]
+                     (hyd/get-backtest-streams (get back-stream :backtest-config))))
+
+  (def overlap-inds
+    (for [n (range (count back-streams))]
+     (let [new (-> new-streams (nth n) :intention-streams first)
+          old (-> back-streams (nth n) :intention-streams first)]
+      (get-overlap-ind old new))))
+
+  (def fore-streams (for [n (range (count back-streams))] 
+                      (get-fore-streams (nth new-streams n) (nth overlap-inds n))))
+
+  (def fore-hystrindies (for [n (range (count back-streams))]
+                          (get-fore-hystrindies 
+                           (get stream-hystrindies (nth (keys stream-hystrindies) n)) 
+                           (nth fore-streams n))))
+
+  (def ghystrindies (for [n (range (count back-streams))]
+                     (get-ghystrindies 
+                      (get stream-hystrindies (nth (keys stream-hystrindies) n)) 
+                      (nth fore-hystrindies n))))
+
+  (v0_2_X.plot/plot-with-intentions (second ghystrindies) ((second fore-streams) :intention-streams) :g-return-streams)
   )

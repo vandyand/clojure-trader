@@ -26,6 +26,16 @@
 (defn clear-file [file-name]
   (spit file-name ""))
 
+(defn delete-by-id [file-name id]
+  (let [contents (read-file file-name)
+        new-contents (filter #(not= (:id %) id) contents)]
+    (clear-file file-name)
+    (for [new-content new-contents]
+      (write-file file-name new-content))))
+
+(defn get-by-id [file-name id]
+  (util/find-in (read-file file-name) :id id))
+
 (defn save-hystrindy-to-file
   ([hystrindy] (save-hystrindy-to-file "data.edn" hystrindy))
   ([file-name hystrindy]
@@ -58,12 +68,6 @@
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
 
-(defn delete-by-id [file-name id]
-  (let [contents (read-file file-name)
-        new-contents (filter #(not= (:id %) id) contents)]
-    (clear-file file-name)
-    (for [new-content new-contents]
-      (write-file file-name new-content))))
 
 
 (comment
