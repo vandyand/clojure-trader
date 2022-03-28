@@ -5,7 +5,6 @@
 ### Todo - longer term
 
 - [ ] (0.3.X) Arena
-  - [ ] Somehow know where backtest data ends and gauntlet data starts
   - [ ] Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
   - [ ] Delete hystrindies from edn file by id if z-score is too low
   - [ ] Create Arena where ghystrindies trade via api on paper account
@@ -76,6 +75,8 @@
 - [x] (0.2.11) Make sure each hystrindy in ga has unique sieve stream
 - [x] (0.2.12) Refactor hystrindy return streams to include deltas.
 - [x] (0.3.0) Hystrindies write and read to/from edn file
+- [x] (0.3.0) Streams write and read to/from edn file
+- [x] (0.3.0) Somehow know where backtest data ends and gauntlet data starts
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

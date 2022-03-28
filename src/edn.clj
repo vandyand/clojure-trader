@@ -27,6 +27,10 @@
    (let [formatted-hystrindy (assoc hystrindy :strindy (format-strindy-for-edn (hystrindy :strindy)))]
      (spit file-name (prn-str formatted-hystrindy) :append true))))
 
+(defn save-streams-to-file 
+  ([streams] (save-streams-to-file "streams.edn" streams))
+  ([file-name streams]
+  (spit file-name (prn-str streams) :append true)))
 
 (defn deformat-hystrindy [formatted-hystrindy]
   (clojure.walk/postwalk

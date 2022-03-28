@@ -8,12 +8,16 @@
   (let [default-stream (vec (range (get backtest-config :num-data-points)))
         other-streams (ostrindy/get-instruments-streams backtest-config)
         streams (into [default-stream] other-streams)]
-    {:inception-streams (vec (for [ind (get-in backtest-config [:strindy-config :inception-ids])] (get streams ind)))
+    {:id (.toString (java.util.UUID/randomUUID))
+     :backtest-config (dissoc backtest-config :strindy-config)
+     :time-stamp (quot (System/currentTimeMillis) 1000)
+     :inception-streams (vec (for [ind (get-in backtest-config [:strindy-config :inception-ids])] (get streams ind)))
      :intention-streams (vec (for [ind (get-in backtest-config [:strindy-config :intention-ids])] (get streams ind)))}))
 
 (defn hydrate-strindy [strindy streams]
   (let [sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
+     :streams-id (get streams :id)
      :strindy strindy
      :sieve-stream sieve-stream
      :return-streams (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))}))
