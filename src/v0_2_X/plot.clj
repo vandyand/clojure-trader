@@ -32,14 +32,16 @@
 (defn zero-stream [stream]
   (vec (for [price stream] (- price (first stream)))))
 
-(defn plot-strindies [strindies]
-  (let [streams (map #(first (:return-streams %)) strindies)
+(defn plot-ghystrindies [ghystrindies]
+  (let [streams (map #(-> % :g-return-streams first :sum-beck) ghystrindies)
         values (format-streams-for-view streams)]
   (generate-and-view-plot values)))
 
-(defn plot-hystrindies-with-intentions [hystrindies intention-streams]
-  (let [return-streams (map #(-> % :return-streams first :sum-beck) hystrindies)
+(defn plot-with-intentions 
+  ([plotee intention-streams] (plot-with-intentions plotee intention-streams :return-streams))
+  ([plotee intention-streams return-key]
+  (let [return-streams (map #(-> % return-key first :sum-beck) plotee)
         zeroed-intention-streams (map zero-stream intention-streams)
         all-streams (into return-streams zeroed-intention-streams)
         values (format-streams-for-view all-streams)]
-    (generate-and-view-plot values)))
+    (generate-and-view-plot values))))
