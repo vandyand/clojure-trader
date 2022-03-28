@@ -33,16 +33,3 @@
     (let [partial-return-stream-delta (subvec arena-return-stream-delta 0 (+ 1 i))]
       (println
        (stats/z-score (best-strat :return-stream-delta) partial-return-stream-delta)))))
-
-;; TODO
-;; FINISH INCUBATOR
-;; - USE TRADABLE INSTRUMENT(S) FOR TARGET DATA
-;; - - GET TRADABLE INSTRUMENT HISTORICAL DATA (DAILY IS FINE FOR NOW)
-;; - CREATE INDICATORS MANUALLY (SOME OF THE TRADITIONAL ONES I.E. MA, RSI, BB, ETC... THESE TAKE TRADABLE INSTRUMENTS AS INPUT)
-;; - DESIGN ABSRACT INDICATOR GENERATOR
-;; - BUILD INDICATOR GENERATOR
-;; 
-;; NICE TO HAVE
-;; - SPEC EVERY FUNCTION
-;; - FUZZ TEST EVERY FUNCTION WITH SPEC GENERATORS
-;;

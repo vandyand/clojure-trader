@@ -16,7 +16,7 @@
           target-inception-stream (get inception-streams stream-id)
           target-inception-stream-ind (pos-or-zero (- (- (count target-inception-stream) 1) (or (get strindy :shift) 0)))]
       (get target-inception-stream target-inception-stream-ind))
-    (let [strind-fn (get strindy :fn)
+    (let [strind-fn (get-in strindy [:policy :fn])
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
           (let [solution (apply strind-fn (mapv #(solve-strindy-for-inst-incep % inception-streams) strind-inputs))]
@@ -42,10 +42,10 @@
   (let [stream-length (count (get (first return-streams) :beck))
         sum-delta
         (vec (for [n (range stream-length)]
-          (reduce + (for [return-stream return-streams] (get-in return-stream [:delta n])))))
+               (reduce + (for [return-stream return-streams] (get-in return-stream [:delta n])))))
         sum-beck
         (vec (for [n (range stream-length)]
-          (reduce + (for [return-stream return-streams] (get-in return-stream [:beck n])))))]
+               (reduce + (for [return-stream return-streams] (get-in return-stream [:beck n])))))]
     {:sum-delta sum-delta :sum-beck sum-beck}))
 
 (defn get-sieve-stream [strindy inception-streams]
@@ -53,31 +53,31 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn get-return-streams-from-sieve [sieve-stream intention-streams]
-        (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
-              return-streams (for [intention-stream-delta intention-streams-delta]
-                               (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-                                 {:delta return-deltas
-                                  :beck (get-stream-from-deltas return-deltas)}))]
-            (into return-streams (vector (get-sum-of-all-streams return-streams)))))
+  (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
+        return-streams (for [intention-stream-delta intention-streams-delta]
+                         (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
+                           {:delta return-deltas
+                            :beck (get-stream-from-deltas return-deltas)}))]
+    (into return-streams (vector (get-sum-of-all-streams return-streams)))))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 (def strindy-funcs
-  [(with-meta (fn [& args] (Math/sin (first args))) {:name "sin"})
-   (with-meta (fn [& args] (Math/cos (first args))) {:name "cos"})
-   (with-meta (fn [& args] (Math/tan (first args))) {:name "tan"})
-  ;;  (with-meta (fn [& args] (Math/log (Math/abs (+ Math/E (first args))))) {:name "modified log"})
-  ;;  (with-meta (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))] 
-  ;;                            (Math/pow arg1 arg2))) {:name "pow"})
-  ;;  (with-meta (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0))) {:name "binary"})
-   (with-meta (fn [& args] (apply + args)) {:name "+"})
-   (with-meta (fn [& args] (apply - args)) {:name "-"})
-  ;;  (with-meta (fn [& args] (apply * args)) {:name "*"})
-  ;;  (with-meta (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args)) {:name "/"})
-  ;;  (with-meta (fn [& args] (apply max args)) {:name "max"})
-  ;;  (with-meta (fn [& args] (apply min args)) {:name "min"})
-  ;;  (with-meta (fn [& args] (stats/mean args)) {:name "mean"})
-  ;;  (with-meta (fn [& args] (stats/stdev args)) {:name "stdev"})
+  [{:type "sin" :fn (fn [& args] (Math/sin (first args)))}
+   {:type "cos" :fn (fn [& args] (Math/cos (first args)))}
+   {:type "tan" :fn (fn [& args] (Math/tan (first args)))}
+  ;;  {:type "mlog" :fn (fn [& args] (Math/log (Math/abs (+ Math/E (first args)))))}
+  ;;  {:type "pow" :fn (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))]
+  ;;                                  (Math/pow arg1 arg2)))}
+  ;;  {:type "binary" :fn (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0)))}
+   {:type "+" :fn (fn [& args] (apply + args))}
+   {:type "-" :fn (fn [& args] (apply - args))}
+  ;;  {:type "*" :fn (fn [& args] (apply * args))}
+  ;;  {:type "/" :fn (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args))}
+  ;;  {:type "max" :fn (fn [& args] (apply max args))}
+  ;;  {:type "min" :fn (fn [& args] (apply min args))}
+  ;;  {:type "mean" :fn (fn [& args] (stats/mean args))}
+  ;;  {:type "stdev" :fn (fn [& args] (stats/stdev args))}
    ])
 
 (defn make-input [inception-ids]
@@ -88,27 +88,27 @@
   ([config current-depth]
    (if (and (>= current-depth (get config :min-depth)) (or (> (rand) 0.5) (= current-depth (get config :max-depth))))
      (cond (< (rand) 0.9) (make-input (get config :inception-ids))
-           :else {:fn (with-meta (constantly (rand)) {:name "rand const"})})
+           :else (let [r (rand)] {:policy {:type "rand" :value r :fn (constantly r)}}))
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
            tree-node? (or (and parent-node? (= (get config :return-type) "binary")) (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs)))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config (inc current-depth))))
-           func (cond
-                  tree-node? (with-meta (fn [& args] (strat/solve-tree strat-tree args)) {:name (str strat-tree) :tree strat-tree})
-                  :else (rand-nth strindy-funcs))]
-       {:fn func
+           func (if tree-node?
+                  {:type "strategy" :tree strat-tree :fn (fn [& args] (strat/solve-tree strat-tree args))}
+                  (rand-nth strindy-funcs))]
+       {:policy func
         :inputs inputs}))))
 
 (defn ameliorate-strindy [strindy]
   (w/postwalk (fn [form]
                 (if (and (map? form)
                          (some #(= % :inputs) (keys form)))
-                  (let [fn-name (get (meta (get form :fn)) :name)
+                  (let [policy-type (get-in form [:policy :type])
                         inputs (get form :inputs)
-                        name-match #(= % fn-name)]
-                    (cond (and (some name-match ["sin" "cos" "tan" "modified log"])
+                        name-match #(= % policy-type)]
+                    (cond (and (some name-match ["sin" "cos" "tan" "mlog"])
                                (> (count inputs) 1))
                           (assoc form :inputs (vector (rand-nth inputs)))
                           (and (some name-match ["+" "*" "max" "min" "mean"])
@@ -132,33 +132,7 @@
   (pp/pprint
    (w/postwalk
     (fn [form]
-      (if (and (map? form) (some #(= % :fn) (keys form)))
-        {:fn-name ((meta (form :fn)) :name) :inputs (form :inputs)}
+      (if (and (map? form) (some #(= % :policy) (keys form)))
+        {:type (get-in form [:policy :type]) :inputs (form :inputs)}
         form))
     strindy)))
-
-#_(do
-  (def temp_config {:return-type "binary", :min-depth 2, :max-depth 3, :max-children 4, :inception-ids [0 1 2 3 4], :intention-ids [1]})
-  (def strindy (make-strindy-recur temp_config))
-  (def astrindy (ameliorate-strindy-recur strindy))
-  (println (= strindy astrindy))
-  (pp/pprint strindy)
-  (pp/pprint astrindy))
-
-
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
-(defn get-strindy-config [min-depth max-depth max-children inception-ids intention-ids]
-  {:min-depth min-depth :max-depth max-depth :max-children max-children :inception-ids inception-ids :intention-ids intention-ids})
-
-(def strindy-config (get-strindy-config 5 6 10 [0 1] [1]))
-
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
-;; (def strindy (make-strindy-recur strindy-config))
-;; ;; (pp/pprint strindy)
-;; (def sieve-stream (get-sieve-stream strindy strindy-config))
-;; (def return-streams (get-return-streams-from-sieve sieve-stream strindy-config))
-
-;; ;; (strat/plot-stream  (with-meta (vec (for [price (streams-db 1)] (- price (first (streams-db 1))))) {:name "eurusd zeroed"}))
-;; (strat/plot-stream  (first return-streams))

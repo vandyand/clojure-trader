@@ -32,14 +32,14 @@
         (cond
             ; strat tree node
           (and (some #(= % :inputs) (keys form))
-               (some #(= % :tree) (keys (meta (form :fn)))))
-          (let [mutated-tree (iga/get-mutated-tree ((meta (form :fn)) :tree))]
-            (assoc form :fn (with-meta (fn [& args] (strat/solve-tree mutated-tree args)) {:name (str mutated-tree) :tree mutated-tree})))
+               (some #(= % :tree) (keys (form :policy))))
+          (let [mutated-tree (iga/get-mutated-tree (get-in form [:policy :tree]))]
+            (assoc form :policy {:fn (fn [& args] (strat/solve-tree mutated-tree args)) :type "strategy" :tree mutated-tree}))
             ; regular node
           (some #(= % :inputs) (keys form))
           (let [n (rand-int 6)]
             (cond
-              (< n 3) (assoc form :fn (rand-nth strindy/strindy-funcs))
+              (< n 3) (assoc form :policy (rand-nth strindy/strindy-funcs))
               (< n 4) (strindy/make-strindy
                        (config/get-strindy-config
                         "continuous" 1 2 3
@@ -56,8 +56,8 @@
             (assoc form :id (rand-nth (get strindy-config :inception-ids)))
             (assoc form :shift (first (random-sample 0.5 (range)))))
             ; rand const node
-          (some #(= % :fn) (keys form))
-          (assoc form :fn (with-meta (constantly (rand)) {:name "rand const"}))
+          (some #(= % :policy) (keys form))
+          (assoc form :policy {:type "rand" :fn (constantly (rand))})
           :else form)
         form)) strindy)))
 
@@ -129,22 +129,15 @@
        (plot/plot-hystrindies-with-intentions (take 5 next-gen) (streams :intention-streams))
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
-(def backtest-config (config/get-backtest-config-util
-                      ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                      ["EUR_USD" "intention"]
-                      "binary" 1 2 3 100 "M1"))
+;; (def backtest-config (config/get-backtest-config-util
+;;                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
+;;                       ["EUR_USD" "intention"]
+;;                       "binary" 1 2 3 100 "M1"))
 
-(def ga-config (config/get-ga-config 100 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
+;; (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 
-(def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
+;; (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
 
-;; (def init-pop (hyd/get-init-pop ga-config streams))
+;; ;; (def init-pop (hyd/get-init-pop ga-config streams))
 
-(def best-pop (run-epochs streams ga-config))
-
-(plot/plot-hystrindies-with-intentions (take 5 best-pop) (streams :intention-streams))
-
-
-
-
-
+;; (def best-pop (run-epochs streams ga-config))
