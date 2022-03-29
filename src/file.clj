@@ -7,6 +7,8 @@
    [v0_2_X.hydrate :as hyd]
    [util]))
 
+(def data-folder "data/")
+
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
    (fn [form]
@@ -16,15 +18,15 @@
    strindy))
 
 (defn read-file [file-name]
-  (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") #"\n" "")))
+  (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") #"\n" "")))
 
 (defn write-file 
   ([file-name contents] (write-file file-name contents true))
   ([file-name contents append?]
-  (spit file-name (prn-str contents) :append append?)))
+  (spit (str data-folder file-name) (prn-str contents) :append append?)))
 
 (defn clear-file [file-name]
-  (spit file-name ""))
+  (spit (str data-folder file-name) ""))
 
 (defn delete-by-id [file-name id]
   (let [contents (read-file file-name)
@@ -37,7 +39,7 @@
   (util/find-in (read-file file-name) :id id))
 
 (defn save-hystrindy-to-file
-  ([hystrindy] (save-hystrindy-to-file "data.edn" hystrindy))
+  ([hystrindy] (save-hystrindy-to-file "hystrindies.edn" hystrindy))
   ([file-name hystrindy]
    (let [formatted-hystrindy (assoc hystrindy :strindy (format-strindy-for-edn (hystrindy :strindy)))]
      (write-file file-name formatted-hystrindy))))
@@ -62,7 +64,7 @@
    formatted-hystrindy))
 
 (defn get-hystrindies-from-file
-  ([] (get-hystrindies-from-file "data.edn"))
+  ([] (get-hystrindies-from-file "data/hystrindies.edn"))
   ([file-name]
    (let [formatted-hystrindies (read-file file-name)]
      (for [formatted-hystrindy formatted-hystrindies]
