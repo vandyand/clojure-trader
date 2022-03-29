@@ -36,6 +36,9 @@
 - [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
 - [ ] Get more than 5000 count of backtest data from api for input streams
 - [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
+- [ ] Refactor back-streams to get rid of redundant data (when some stream is both inception and intention the data is currently duplicated which is unnecessary)
+- [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
+
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)

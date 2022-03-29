@@ -96,7 +96,7 @@
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
 ;; For our uses, we're going to rely heavily on close-trade function below and not close out entire positions.
-;; The close-position functiona are here in case they are needed at some point in the future
+;; The close-position functions are here in case they are needed at some point in the future
 
 (defn close-position [instrument long-pos?]
   (send-api-put-request
@@ -110,7 +110,7 @@
 (defn close-short-position [instrument]
   (close-position instrument false))
 
-;; TRADEES FUNCTIONS
+;; TRADES FUNCTIONS
 
 (defn get-open-trades []
   (get-api-data (get-account-endpoint "openTrades")))
@@ -123,10 +123,25 @@
    (get-url (get-account-endpoint (str "trades/" trade-id "/close")))
    (make-request-options {:units "ALL"})))
 
+;; CLIENT ID STUFF
+
 (defn update-trade-with-id [trade-id client-id]
   (send-api-put-request
    (get-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
    (make-request-options {:clientExtensions {:id client-id}})))
 
-(defn get-trade-id-from-order-response [response]
-  (-> response :body (json/read-str) :orderFillTransaction :id))
+(defn get-trade-client-id [trade-id]
+  (-> trade-id
+      get-open-trade
+      :trade
+      :clientExtensions
+      :id))
+
+(defn get-trade-by-client-id [client-id]
+  (let [trades (:trades (get-open-trades))]
+    (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
+
+(defn send-order-request-with-client-id [instrument units client-id]
+  (let [response (-> (send-order-request instrument units) :body json/json-str)]))
+
+

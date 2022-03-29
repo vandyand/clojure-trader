@@ -39,10 +39,22 @@
   (util/find-in (read-file file-name) :id id))
 
 (defn save-hystrindy-to-file
-  ([hystrindy] (save-hystrindy-to-file "hystrindies.edn" hystrindy))
-  ([file-name hystrindy]
-   (let [formatted-hystrindy (assoc hystrindy :strindy (format-strindy-for-edn (hystrindy :strindy)))]
+  ([hystrindy] (save-hystrindy-to-file hystrindy "hystrindies.edn"))
+  ([hystrindy file-name]
+   (let [formatted-hystrindy 
+         (assoc 
+          hystrindy 
+          :strindy 
+          (format-strindy-for-edn 
+           (get hystrindy 
+            :strindy)))]
      (write-file file-name formatted-hystrindy))))
+
+(defn save-hystrindies-to-file 
+  ([hystrindies] (save-hystrindies-to-file hystrindies "hystrindies.edn"))
+  ([hystrindies file-name]
+  (for [hyst hystrindies]
+    (save-hystrindy-to-file hyst file-name))))
 
 (defn save-streams-to-file 
   ([streams] (save-streams-to-file "streams.edn" streams))
