@@ -1,7 +1,7 @@
 (ns file
   (:require
    [clojure.edn :as edn]
-   [v0_1_X.incubator.strategy :as strat]
+   [v0_1_X.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
    [v0_2_X.hydrate :as hyd]

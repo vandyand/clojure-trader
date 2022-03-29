@@ -1,4 +1,4 @@
-(ns v0_1_X.arena.oanda_api
+(ns v0_1_X.oanda_api
   (:require [clj-http.client :as client]
             ;; [clojure.pprint :as pp]
             [clojure.data.json :as json]))

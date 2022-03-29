@@ -1,9 +1,11 @@
 (ns v0_2_X.load)
 
+(load "/v0_1_X/inputs")
+(load "/v0_1_X/strategy")
+(load "/v0_1_X/ga")
+
 (load "/v0_2_X/config")
 (load "/v0_2_X/oanda_strindicator")
-(load "/v0_1_X/incubator/ga")
-(load "/v0_1_X/incubator/strategy")
 
 (load "/v0_2_X/plot")
 
@@ -16,4 +18,6 @@
 (load "/file")
 
 (load "/v0_2_X/factory")
+
+(load "/v0_3_X/gauntlet")
 

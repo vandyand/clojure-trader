@@ -1,5 +1,5 @@
 (ns v0_2_X.oanda_strindicator
-  (:require [v0_1_X.arena.oanda_api :as oa]))
+  (:require [v0_1_X.oanda_api :as oa]))
 
 (defn format-candles [candles]
   (map

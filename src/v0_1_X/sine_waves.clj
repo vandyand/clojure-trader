@@ -1,4 +1,4 @@
-(ns v0_1_X.incubator.sine_waves
+(ns v0_1_X.sine_waves
   (:require
    [oz.core :as oz]
    [clojure.spec.alpha :as s]

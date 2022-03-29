@@ -1,4 +1,4 @@
-(ns v0_1_X.incubator.strategy
+(ns v0_1_X.strategy
   (:require
   ;;  [clojure.spec.alpha :as s]
   ;;  [clojure.spec.gen.alpha :as sgen]
@@ -9,13 +9,7 @@
    [clojure.zip :as z]
    [oz.core :as oz]
    [clojure.set :as set]
-   [v0_1_X.incubator.sine_waves :as sw]
-   [v0_1_X.incubator.inputs :as inputs]))
-
-
-;; START SERVER FOR VISUALIZATION
-
-(oz/start-server! 10667)
+   [v0_1_X.inputs :as inputs]))
 
 ;; CONFIG FUNCTIONS
 
@@ -234,12 +228,12 @@
   (println (map :fitness strats))
   (pp/pprint (map :tree strats)))
 
-;; (comment
-;;   (def input-config (inputs/get-sine-inputs-config 4 2 1000 10 0.1 0 100))
-;;   (def tree-config (get-tree-config 2 6 (count (get input-config :inception-streams-config))))
-;;   (def strat1 (get-populated-strat input-config tree-config))
-;;   (def strat2 (get-populated-strat input-config tree-config))
-;;   (def strat3 (get-populated-strat input-config tree-config))
-;;   (def strat4 (get-populated-strat input-config tree-config))
-;;   (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
-;;   )
+(comment
+  (def input-config (inputs/get-sine-inputs-config 4 2 1000 10 0.1 0 100))
+  (def tree-config (get-tree-config 2 6 (count (get input-config :inception-streams-config))))
+  (def strat1 (get-populated-strat input-config tree-config))
+  (def strat2 (get-populated-strat input-config tree-config))
+  (def strat3 (get-populated-strat input-config tree-config))
+  (def strat4 (get-populated-strat input-config tree-config))
+  (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
+  )
