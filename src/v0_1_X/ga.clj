@@ -1,4 +1,4 @@
-(ns v0_1_X.incubator.ga
+(ns v0_1_X.ga
   (:require
    [clojure.pprint :as pp]
   ;;  [clojure.spec.alpha :as s]
@@ -9,8 +9,8 @@
    [clojure.zip :as z]
   ;;  [oz.core :as oz]
   ;;  [clojure.set :as set]
-   [v0_1_X.incubator.strategy :as strat]
-   [v0_1_X.incubator.inputs :as inputs]
+   [v0_1_X.strategy :as strat]
+   [v0_1_X.inputs :as inputs]
    [v0_2_X.strindicator :as strindy]))
 
 ;; CONFIG FUNCTIONS
@@ -234,34 +234,17 @@
                 " avg pop score: " average)
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
+(comment
+  (def ga-config
+    (let [num-epochs 10
+          input-config (inputs/get-sine-inputs-config 10 1 200 10 0.1 0.1 100)
+          tree-config (strat/get-tree-config
+                       3 6 (count (get input-config :inception-streams-config)))
+          pop-config (get-pop-config 50 0.5 0.4 0.5)]
+      (get-ga-config num-epochs input-config tree-config pop-config)))
 
-(def ga-config
-  (let [num-epochs 10
-        input-config (inputs/get-sine-inputs-config 10 1 200 10 0.1 0.1 100)
-        tree-config (strat/get-tree-config
-                     3 6 (count (get input-config :inception-streams-config)))
-        pop-config (get-pop-config 50 0.5 0.4 0.5)]
-    (get-ga-config num-epochs input-config tree-config pop-config)))
-
-(def best-pop (run-epochs ga-config))
-(plot-strats-and-inputs (take 5 best-pop)
-                        (get ga-config :input-config))
-(strat/get-strats-info (take 5 best-pop))
-
-
-;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
-
-;; (def ga-config
-;;   (let [num-epochs 10
-;;         strindy-config (strindy/get-strindy-config 5 5 6 [0 1] [1])
-;;         input-config (strindy/get-strindy-inputs-config 10 1 100 strindy-config)
-;;         tree-config (strat/get-tree-config
-;;                      3 6 (count (get input-config :inception-streams-config)))
-;;         pop-config (get-pop-config 50 0.5 0.4 0.5)]
-;;     (get-ga-config num-epochs input-config tree-config pop-config)))
-
-;; (def best-pop (run-epochs ga-config))
-
-;; (plot-strats-and-inputs (take 5 best-pop)
-;;                         (get ga-config :input-config))
-;; (strat/get-strats-info (take 5 best-pop))
+  (def best-pop (run-epochs ga-config))
+  (plot-strats-and-inputs (take 5 best-pop)
+                          (get ga-config :input-config))
+  (strat/get-strats-info (take 5 best-pop))
+  )

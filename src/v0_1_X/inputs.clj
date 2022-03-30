@@ -1,5 +1,5 @@
-(ns v0_1_X.incubator.inputs
-  (:require [v0_1_X.incubator.sine_waves :as sw]))
+(ns v0_1_X.inputs
+  (:require [v0_1_X.sine_waves :as sw]))
 
 (defn scaled-rand
   "returns random double between min (inclusive) and max (exclusive)"
@@ -33,11 +33,10 @@
    :max-h-shift max-h-shift})
 
 (defn get-input-config
-  ([num-data-points] (get-input-config nil nil num-data-points nil nil))
-  ([num-data-points inception-streams-config intention-streams-config]
+  [num-data-points inception-streams-config intention-streams-config]
    {:num-data-points num-data-points
     :inception-streams-config inception-streams-config
-    :intention-streams-config intention-streams-config}))
+    :intention-streams-config intention-streams-config})
 
 (defn get-sine-inputs-config [num-inception-streams num-intention-streams num-data-points max-amp max-freq max-v-shift max-h-shift]
   (let [sine-config-params (get-sine-config-params max-amp max-freq max-v-shift max-h-shift)

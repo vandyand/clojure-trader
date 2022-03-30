@@ -36,6 +36,10 @@
 - [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
 - [ ] Get more than 5000 count of backtest data from api for input streams
 - [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
+- [ ] Refactor back-streams to get rid of redundant data (when some stream is both inception and intention the data is currently duplicated which is unnecessary)
+- [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
+- [ ] Don't use Thread/sleep in oanda_api requests lol. Use async or promise or something
+
 ### Completed Tasks
 
 - [x] Start using versioning with [SemVer](https://semver.org/) (Feb 10, 22)
@@ -80,12 +84,6 @@
 - [x] (0.3.0) Streams write and read to/from edn file
 - [x] (0.3.0) Somehow know where backtest data ends and gauntlet data starts
 - [x] (0.3.1) Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
-
+- [x] (0.3.2) Organize data files in dedicated folder
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
-
-### Utility loader command
-
-(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga")
-(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_2_X/strindicator")
-(load "/v0_1_X/incubator/sine_waves" "/v0_1_X/incubator/inputs" "/v0_1_X/incubator/strategy" "/v0_1_X/incubator/ga" "/v0_1_X/arena/oanda_api" "/v0_1_X/arena/oanda_instrument")

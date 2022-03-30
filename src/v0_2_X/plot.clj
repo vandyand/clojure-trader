@@ -1,6 +1,6 @@
 (ns v0_2_X.plot
   (:require [oz.core :as oz]
-            [v0_1_X.incubator.strategy :as strat]))
+            [v0_1_X.strategy :as strat]))
 
 (oz/start-server! 10668)
 

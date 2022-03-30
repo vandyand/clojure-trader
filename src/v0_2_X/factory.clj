@@ -8,18 +8,18 @@
  (def backtest-config (config/get-backtest-config-util
                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
                       ["EUR_USD" "both"]
-                      "binary" 2 5 10 600 "M1"))
+                      "binary" 1 3 5 100 "M1"))
 
-(def ga-config (config/get-ga-config 50 backtest-config (config/get-pop-config 50 0.4 0.3 0.5)))
+(def ga-config (config/get-ga-config 20 backtest-config (config/get-pop-config 20 0.4 0.3 0.5)))
 
 (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
 
 (file/save-streams-to-file streams)
 
-(dotimes [n 5]
+(dotimes [n 1]
   (def best-pop (ga/run-epochs (dissoc streams :backtest-config) ga-config))
 
   (def candidate (first best-pop))
   
-  (file/save-hystrindy-to-file candidate)
+  (file/save-hystrindy-to-file candidate "hystrindies.edn")
   )

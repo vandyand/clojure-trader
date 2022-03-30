@@ -1,11 +1,13 @@
 (ns file
   (:require
    [clojure.edn :as edn]
-   [v0_1_X.incubator.strategy :as strat]
+   [v0_1_X.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
    [v0_2_X.hydrate :as hyd]
    [util]))
+
+(def data-folder "data/")
 
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
@@ -16,15 +18,15 @@
    strindy))
 
 (defn read-file [file-name]
-  (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") #"\n" "")))
+  (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") #"\n" "")))
 
 (defn write-file 
   ([file-name contents] (write-file file-name contents true))
   ([file-name contents append?]
-  (spit file-name (prn-str contents) :append append?)))
+  (spit (str data-folder file-name) (prn-str contents) :append append?)))
 
 (defn clear-file [file-name]
-  (spit file-name ""))
+  (spit (str data-folder file-name) ""))
 
 (defn delete-by-id [file-name id]
   (let [contents (read-file file-name)
@@ -37,10 +39,22 @@
   (util/find-in (read-file file-name) :id id))
 
 (defn save-hystrindy-to-file
-  ([hystrindy] (save-hystrindy-to-file "data.edn" hystrindy))
-  ([file-name hystrindy]
-   (let [formatted-hystrindy (assoc hystrindy :strindy (format-strindy-for-edn (hystrindy :strindy)))]
+  ([hystrindy] (save-hystrindy-to-file hystrindy "hystrindies.edn"))
+  ([hystrindy file-name]
+   (let [formatted-hystrindy 
+         (assoc 
+          hystrindy 
+          :strindy 
+          (format-strindy-for-edn 
+           (get hystrindy 
+            :strindy)))]
      (write-file file-name formatted-hystrindy))))
+
+(defn save-hystrindies-to-file 
+  ([hystrindies] (save-hystrindies-to-file hystrindies "hystrindies.edn"))
+  ([hystrindies file-name]
+  (for [hyst hystrindies]
+    (save-hystrindy-to-file hyst file-name))))
 
 (defn save-streams-to-file 
   ([streams] (save-streams-to-file "streams.edn" streams))
@@ -62,7 +76,7 @@
    formatted-hystrindy))
 
 (defn get-hystrindies-from-file
-  ([] (get-hystrindies-from-file "data.edn"))
+  ([] (get-hystrindies-from-file "data/hystrindies.edn"))
   ([file-name]
    (let [formatted-hystrindies (read-file file-name)]
      (for [formatted-hystrindy formatted-hystrindies]

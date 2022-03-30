@@ -2,7 +2,7 @@
   (:require [stats :as stats]
             [clojure.pprint :as pp]
             [clojure.walk :as w]
-            [v0_1_X.incubator.strategy :as strat]
+            [v0_1_X.strategy :as strat]
             [oz.core :as oz]))
 
 (def streams-db [(vec (range 100))
