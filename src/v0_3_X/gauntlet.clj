@@ -107,9 +107,9 @@
 
 
 (comment
-  (def ghystrindieses (run-gauntlets))
+  (def ghystses (run-gauntlets))
   (file/clear-file "ghystrindies.edn")
-  (for [ghysts ghystrindieses]
+  (for [ghysts ghystses]
     (file/save-hystrindies-to-file ghysts "ghystrindies.edn")))
 
 
