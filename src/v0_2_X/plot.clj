@@ -32,8 +32,8 @@
 (defn zero-stream [stream]
   (vec (for [price stream] (- price (first stream)))))
 
-(defn plot-ghystrindies [ghystrindies]
-  (let [streams (map #(-> % :g-return-streams first :sum-beck) ghystrindies)
+(defn plot-gaustrindies [gaustrindies]
+  (let [streams (map #(-> % :g-return-streams first :sum-beck) gaustrindies)
         values (format-streams-for-view streams)]
   (generate-and-view-plot values)))
 

@@ -6,10 +6,10 @@
 
 - [ ] (0.3.X) Arena
   - [ ] Delete hystrindies from edn file by id if z-score is too low
-  - [ ] Create Arena where ghystrindies trade via api on paper account
-  - [ ] Add arena performance data and z-score to ghystrindies (becoming aghystrindies)
+  - [ ] Create Arena where gaustrindies trade via api on paper account
+  - [ ] Add arena performance data and z-score to gaustrindies (becoming agaustrindies)
   - [ ] Good ones go live
-  - [ ] Add live performacne data and z-score to aghystrindies (becoming laghystrindies)
+  - [ ] Add live performacne data and z-score to agaustrindies (becoming lagaustrindies)
 - [ ] (0.4.X) Use `core.async` to leverage parallel processing (esp on alienware).
 ### Continuous
 
@@ -24,7 +24,7 @@
 - [ ] Fuzz test all functions with spec generators
 - [ ] Use clojure.edn for config data
 - [ ] Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
-- [ ] Make strategy configurable to go long or short (maybe get this working in incubator 0.1.x first)
+- [ ] Make strategy configurable to go long or short (return -1, 0 or 1 instead of booleans. Make this configurable (:return-type "ternary" | "binary" | "continuous"))
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] Update strindy ga crossover function to make it crossover branches further down than second level (so that potentially whole strindy2 tree could be grafted in to a low branch of strindy1). Same could be said for strat trees.
 - [ ] Cleanup hydrate file names to be more idomatic
@@ -32,9 +32,9 @@
 - [ ] Get rid of :policy in strindicators, just put the key values on the first level with :inputs. There's no benefit to having these values in a lower level.
 - [ ] Shorting ability (make sieve-stream ternary or just inverse intention stream or sieve stream or delta stream)
 - [ ] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
-- [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, ghystrindies... etc) (yet to be seen if this is necessary though probably will be)
+- [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, gaustrindies... etc) (yet to be seen if this is necessary though probably will be)
 - [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
-- [ ] Get more than 5000 count of backtest data from api for input streams
+- [ ] Feat: Get more than 5000 count of backtest data from api for input streams
 - [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
 - [ ] Refactor back-streams to get rid of redundant data (when some stream is both inception and intention the data is currently duplicated which is unnecessary)
 - [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
@@ -83,7 +83,7 @@
 - [x] (0.3.0) Hystrindies write and read to/from edn file
 - [x] (0.3.0) Streams write and read to/from edn file
 - [x] (0.3.0) Somehow know where backtest data ends and gauntlet data starts
-- [x] (0.3.1) Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
+- [x] (0.3.1) Add gauntlet performance data and z-score to hystrindies (becoming gaustrindies)
 - [x] (0.3.2) Organize data files in dedicated folder
 - [x] (0.3.2) Added Arena
 - [x] (0.3.2) Updated oanda_api for crud operations on trades by client id

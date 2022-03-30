@@ -47,7 +47,7 @@
   (for [hystrindy hystrindies]
    (get-fore-hystrindy hystrindy fore-streams)))
 
-(defn get-ghystrindy [back-hystrindy fore-hystrindy]
+(defn get-gaustrindy [back-hystrindy fore-hystrindy]
   (let [g-return-streams (get fore-hystrindy :return-streams)]
     {:id (get back-hystrindy :id)
      :streams-id (get back-hystrindy :streams-id)
@@ -60,11 +60,11 @@
                (-> back-hystrindy :return-streams first :sum-delta)
                (-> fore-hystrindy :return-streams first :sum-delta))}))
 
-(defn get-ghystrindies [hystrindies fore-hystrindies]
+(defn get-gaustrindies [hystrindies fore-hystrindies]
   (for [n (range (count hystrindies))]
    (let [back-hystrindy (nth hystrindies n)
          fore-hystrindy (nth fore-hystrindies n)]
-     (get-ghystrindy back-hystrindy fore-hystrindy))))
+     (get-gaustrindy back-hystrindy fore-hystrindy))))
 
 (defn get-hystses-and-streamses-from-file []
   (let [back-hystrindieses (group-by :streams-id (file/get-hystrindies-from-file "hystrindies.edn"))
@@ -88,14 +88,14 @@
 (defn run-gauntlet-single [back-hystrindy back-streams new-streams]
   (let [fore-streams (get-fore-streams new-streams back-streams)
         fore-hystrindy (get-fore-hystrindy back-hystrindy fore-streams)]
-    (get-ghystrindy back-hystrindy fore-hystrindy)))
+    (get-gaustrindy back-hystrindy fore-hystrindy)))
 
 (defn run-gauntlet 
   ([] (apply run-gauntlet (get-hysts-and-streams-at-ind)))
   ([back-hystrindies back-streams new-streams]
   (let [fore-streams (get-fore-streams new-streams back-streams)
         fore-hystrindies (get-fore-hystrindies back-hystrindies fore-streams)]
-    (get-ghystrindies back-hystrindies fore-hystrindies))))
+    (get-gaustrindies back-hystrindies fore-hystrindies))))
 
 (defn run-gauntlets []
   (let [[back-hystrindieses back-streamses new-streamses] (get-hystses-and-streamses-from-file)]
@@ -107,10 +107,10 @@
 
 
 (comment
-  (def ghystses (run-gauntlets))
-  (file/clear-file "ghystrindies.edn")
-  (for [ghysts ghystses]
-    (file/save-hystrindies-to-file ghysts "ghystrindies.edn")))
+  (def gaustses (run-gauntlets))
+  (file/clear-file "gaustrindies.edn")
+  (for [gausts gaustses]
+    (file/save-hystrindies-to-file gausts "gaustrindies.edn")))
 
 
 (comment
@@ -124,9 +124,9 @@
 
   (def fore-hystrindies (get-fore-hystrindies hystrindies fore-streams))
 
-  (def ghystrindies (get-ghystrindies hystrindies fore-hystrindies))
+  (def gaustrindies (get-gaustrindies hystrindies fore-hystrindies))
 
-  (v0_2_X.plot/plot-with-intentions ghystrindies (fore-streams :intention-streams) :g-return-streams)
+  (v0_2_X.plot/plot-with-intentions gaustrindies (fore-streams :intention-streams) :g-return-streams)
   )
 
 
@@ -146,10 +146,10 @@
                            (get stream-hystrindies (nth (keys stream-hystrindies) n)) 
                            (nth fore-streams n))))
 
-  (def ghystrindies (for [n (range (count back-streams))]
-                     (get-ghystrindies 
+  (def gaustrindies (for [n (range (count back-streams))]
+                     (get-gaustrindies 
                       (get stream-hystrindies (nth (keys stream-hystrindies) n)) 
                       (nth fore-hystrindies n))))
 
-  (plot/plot-with-intentions (last ghystrindies) ((last fore-streams) :intention-streams) :g-return-streams)
+  (plot/plot-with-intentions (last gaustrindies) ((last fore-streams) :intention-streams) :g-return-streams)
   )

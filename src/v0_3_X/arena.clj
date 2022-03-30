@@ -5,46 +5,57 @@
    [v0_3_X.gauntlet :as gaunt]
    [v0_1_X.oanda_api :as oa]))
 
-(defn get-best-ghysts
-  ([ghysts cutoff-score]
-   (filterv (fn [ghyst] (> (:g-score ghyst) cutoff-score)) ghysts)))
+(defn get-best-gausts
+  ([gausts cutoff-score]
+   (filterv (fn [gaust] (> (:g-score gaust) cutoff-score)) gausts)))
 
-(defn get-best-ghyst [ghysts]
-  (reduce (fn [acc cur] (if (> (:g-score cur) (:g-score acc)) cur acc)) ghysts))
+(defn get-best-gaust [gausts]
+  (reduce (fn [acc cur] (if (> (:g-score cur) (:g-score acc)) cur acc)) gausts))
 
-(defn update-ghyst [ghyst]
-  (let [back-streams (file/get-by-id "streams.edn" (get ghyst :streams-id))
+(defn update-gaust [gaust]
+  (let [back-streams (file/get-by-id "streams.edn" (get gaust :streams-id))
         new-streams (hyd/get-backtest-streams (get back-streams :backtest-config))]
-    (gaunt/run-gauntlet-single ghyst back-streams new-streams)))
+    (gaunt/run-gauntlet-single gaust back-streams new-streams)))
 
-(defn update-ghysts [ghysts]
-  (for [ghyst ghysts]
-    (update-ghyst ghyst)))
+(defn update-gausts [gausts]
+  (for [gaust gausts]
+    (update-gaust gaust)))
 
 
 (def units 100)
 
-(def ghysts (file/get-hystrindies-from-file "ghystrindies.edn"))
-(def best-ghysts (get-best-ghysts ghysts 0.5))
+(def gausts (file/get-hystrindies-from-file "gaustrindies.edn"))
+(def best-gausts (get-best-gausts gausts -0.2))
+
+;; (for [gaust best-gausts])
 
 (def start-time (quot (System/currentTimeMillis) 1000))
-(def run-time-hrs 0.01)
-(def run-time (* run-time-hrs 60 60))
+(def run-time-hrs (/ 0.5 60.0))
+(def run-time (long (* run-time-hrs 60 60)))
+(def end-time (+ start-time run-time))
 
-(while (< (quot (System/currentTimeMillis) 1000) (+ start-time run-time))
+(def updated-gausts (update-gausts best-gausts))
 
-  (def updated-ghysts (update-ghysts best-ghysts))
-  
-  (for [updated-ghyst updated-ghysts]
-    (let [target-pos? (= 1 (-> updated-ghyst :g-sieve-stream last))
+
+(while (< (quot (System/currentTimeMillis) 1000) end-time)
+
+  (println "this ran")
+  (def updated-gausts (update-gausts best-gausts))
+  (println (count updated-gausts))
+
+
+  (for [updated-gaust updated-gausts]
+    (let [foo (println (keys updated-gaust))
+          target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
           current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
-    (cond
-      (and target-pos? (not current-pos?))
-      (do (oa/send-order-request "EUR_USD" units) (println "position opened!"))
-      (and (not target-pos?) current-pos?)
-      (do (oa/send-order-request "EUR_USD" (* -1 units)) (println "position closed!"))
-      :else (println "nothing happened!"))))
-  (Thread/sleep 15000))
+      (cond
+        (and target-pos? (not current-pos?))
+        (do (oa/send-order-request "EUR_USD" units) (println "position opened!"))
+        (and (not target-pos?) current-pos?)
+        (do (oa/send-order-request "EUR_USD" (* -1 units)) (println "position closed!"))
+        :else (println "nothing happened!"))))
+
+  (Thread/sleep 1000))
 
 
 (oa/send-order-request "EUR_USD" 100)
