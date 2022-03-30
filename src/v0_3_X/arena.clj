@@ -1,6 +1,8 @@
 (ns v0-3-X.arena
   (:require
    [file :as file]
+   [util :as util]
+   [v0_2_X.config :as config]
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_1_X.oanda_api :as oa]))
@@ -21,41 +23,81 @@
   (for [gaust gausts]
     (update-gaust gaust)))
 
+(defn get-intention-instruments [gaust]
+  (let [back-streams (file/get-by-id "streams.edn" (:streams-id gaust))]
+    (config/get-streams-info (-> back-streams :backtest-config :streams-config) "intention" :name)))
 
-(def units 100)
+(defn get-gausts-with-returns []
+  (let [gausts (file/get-hystrindies-from-file "gaustrindies.edn")
+        hysts (file/get-hystrindies-from-file "hystrindies.edn")]
+    (map #(assoc % :return-streams (-> hysts (util/find-in :id (:id %)) :return-streams)) gausts)))
 
-(def gausts (file/get-hystrindies-from-file "gaustrindies.edn"))
+
+(def gausts (get-gausts-with-returns))
+
 (def best-gausts (get-best-gausts gausts -0.2))
+(count best-gausts)
 
-;; (for [gaust best-gausts])
+(def best-gaust (get-best-gaust gausts))
 
-(def start-time (quot (System/currentTimeMillis) 1000))
-(def run-time-hrs (/ 0.5 60.0))
-(def run-time (long (* run-time-hrs 60 60)))
-(def end-time (+ start-time run-time))
+(do
+  (def start-time (quot (System/currentTimeMillis) 1000))
+  ;; (def run-time-hrs (/ 0. 60.0))
+  ;; (def run-time (long (* run-time-hrs 60 60)))
+  (def run-time 4)
+  (def end-time (+ start-time run-time))
 
-(def updated-gausts (update-gausts best-gausts))
+  (def units 100)
 
+  (while (< (quot (System/currentTimeMillis) 1000) end-time)
 
-(while (< (quot (System/currentTimeMillis) 1000) end-time)
+    (def updated-gausts (update-gausts best-gausts))
 
-  (println "this ran")
-  (def updated-gausts (update-gausts best-gausts))
-  (println (count updated-gausts))
+    (doseq [updated-gaust updated-gausts]
+      (let [intention-instruments (get-intention-instruments updated-gaust)
+           target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
+           current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
+      ;; (println "target-pos?: " target-pos?)
+      ;; (println "current-pos?: " current-pos?)
+      (println "intention-instruments: " intention-instruments)
+       (doseq [instrument intention-instruments]
+        ;; (println instrument units)
+         (cond
+           (and target-pos? (not current-pos?))
+           (doall (oa/send-order-request instrument units) (println "position opened!"))
+           (and (not target-pos?) current-pos?)
+           (doall (oa/send-order-request instrument (* -1 units)) (println "position closed!"))
+           :else (println "nothing happened!")))))
 
+    (Thread/sleep 1000)))
 
-  (for [updated-gaust updated-gausts]
-    (let [foo (println (keys updated-gaust))
-          target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
-          current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
-      (cond
-        (and target-pos? (not current-pos?))
-        (do (oa/send-order-request "EUR_USD" units) (println "position opened!"))
-        (and (not target-pos?) current-pos?)
-        (do (oa/send-order-request "EUR_USD" (* -1 units)) (println "position closed!"))
-        :else (println "nothing happened!"))))
+;; (do
+;;   (def start-time (quot (System/currentTimeMillis) 1000))
+;;   (def run-time-hrs (/ 0.5 60.0))
+;;   (def run-time (long (* run-time-hrs 60 60)))
+;;   (def end-time (+ start-time run-time))
 
-  (Thread/sleep 1000))
+;;   (def units 100)
+
+;;   (while (< (quot (System/currentTimeMillis) 1000) end-time)
+
+;;     (def updated-gausts (update-gaust best-gaust))
+
+;;     (doseq [updated-gaust updated-gausts]
+;;       (let [intention-instruments (get-intention-instruments updated-gaust)
+;;             target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
+;;             current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
+;;         (println "target-pos?: " target-pos?)
+;;         (println "current-pos?: " current-pos?)
+;;         (run!
+;;          (fn [instrument] (cond
+;;                             (and target-pos? (not current-pos?))
+;;                             (doall (oa/send-order-request instrument units) (println "position opened!"))
+;;                             (and (not target-pos?) current-pos?)
+;;                             (doall (oa/send-order-request instrument (* -1 units)) (println "position closed!"))
+;;                             :else (println "nothing happened!")))
+;;          intention-instruments)))
+;;     (Thread/sleep 1000)))
 
 
 (oa/send-order-request "EUR_USD" 100)

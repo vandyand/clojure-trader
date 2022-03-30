@@ -8,8 +8,8 @@
   (let [default-stream (vec (range (get backtest-config :num-data-points)))
         other-streams (ostrindy/get-instruments-streams backtest-config)
         streams (into [default-stream] other-streams)
-        inception-ids (config/get-stream-ids (:streams-config backtest-config) "inception")
-        intention-ids (config/get-stream-ids (:streams-config backtest-config) "intention")]
+        inception-ids (config/get-streams-info (:streams-config backtest-config) "inception")
+        intention-ids (config/get-streams-info (:streams-config backtest-config) "intention")]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (dissoc backtest-config :strindy-config)
      :time-stamp (quot (System/currentTimeMillis) 1000)

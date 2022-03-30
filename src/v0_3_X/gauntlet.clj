@@ -110,7 +110,7 @@
   (def gaustses (run-gauntlets))
   (file/clear-file "gaustrindies.edn")
   (for [gausts gaustses]
-    (file/save-hystrindies-to-file gausts "gaustrindies.edn")))
+    (file/save-hystrindies-to-file (map #(dissoc % :return-streams) gausts) "gaustrindies.edn")))
 
 
 (comment

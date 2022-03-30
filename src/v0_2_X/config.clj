@@ -5,14 +5,16 @@
   (reduce (fn [acc args] (conj acc {:name (first args) :incint (last args) :id (count acc)}))
           [{:name "default" :incint "inception" :id 0}] (partition 2 args)))
 
-(defn get-stream-ids [streams-config incint]
+(defn get-streams-info 
+  ([streams-config incint] (get-streams-info streams-config incint :id))
+  ([streams-config incint target-key]
   (reduce
    (fn [acc arg]
      (if (or (= (get arg :incint) incint)
              (= (get arg :incint) "both"))
-       (conj acc (get arg :id)) acc))
+       (conj acc (get arg target-key)) acc))
    []
-   streams-config)) ; Need stream ids for strindy tree creation (not tree config)
+   streams-config))) ; Need stream ids for strindy tree creation (not tree config)
 
 (defn get-strindy-config 
   ([return-type min-depth max-depth max-children inception-ids intention-ids]
@@ -23,8 +25,8 @@
     :inception-ids inception-ids
     :intention-ids intention-ids})
   ([tree-config streams-config]
-  (let [inception-ids (get-stream-ids streams-config "inception")
-        intention-ids (get-stream-ids streams-config "intention")]
+  (let [inception-ids (get-streams-info streams-config "inception")
+        intention-ids (get-streams-info streams-config "intention")]
     (into tree-config {:inception-ids inception-ids :intention-ids intention-ids}))))
 
 (defn get-backtest-config [num-data-points granularity streams-config strindy-config]
