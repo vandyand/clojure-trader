@@ -38,6 +38,7 @@
 - [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
 - [ ] Refactor back-streams to get rid of redundant data (when some stream is both inception and intention the data is currently duplicated which is unnecessary)
 - [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
+- [ ] Don't use Thread/sleep in oanda_api requests lol. Use async or promise or something
 
 ### Completed Tasks
 

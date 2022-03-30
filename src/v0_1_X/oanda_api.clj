@@ -86,7 +86,8 @@
 (defn make-request-options [body]
   {:headers (get-headers)
    :content-type :json
-   :body (json/write-str body)})
+   :body (json/write-str body)
+   :as :json})
 
 (defn send-order-request
   ([instrument units] (send-order-request (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
@@ -98,11 +99,13 @@
 ;; For our uses, we're going to rely heavily on close-trade function below and not close out entire positions.
 ;; The close-position functions are here in case they are needed at some point in the future
 
-(defn close-position [instrument long-pos?]
+(defn close-position 
+  ([instrument] (close-position instrument true))
+  ([instrument long-pos?]
   (send-api-put-request
    (get-url
     (get-account-endpoint (str "positions/" instrument "/close")))
-   (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"}))))
+   (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))))
 
 (defn close-long-position [instrument]
   (close-position instrument true))
@@ -142,6 +145,29 @@
     (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
 
 (defn send-order-request-with-client-id [instrument units client-id]
-  (let [response (-> (send-order-request instrument units) :body json/json-str)]))
+  (let [trade-id (-> (send-order-request instrument units) :body :orderFillTransaction :id)]
+    (Thread/sleep 100)
+    (update-trade-with-id trade-id client-id)))
 
+(defn close-trade-by-client-id [client-id]
+  (let [trade-id (-> (get-trade-by-client-id client-id) first :id)]
+    (Thread/sleep 100)
+    (close-trade trade-id)))
 
+(comment
+  (get-open-trades)
+
+  (close-position "EUR_USD")
+
+  (send-order-request-with-client-id "EUR_USD" 17 "id-17")
+
+  (get-trade-by-client-id "id-17")
+
+  (for [n (range 1 10)]
+    (send-order-request-with-client-id "EUR_USD" n (str "id-" n)))
+
+  (close-trade-by-client-id "id-1")
+
+  (for [n (range 2 10)]
+    (close-trade-by-client-id (str "id-" n)))
+  )
