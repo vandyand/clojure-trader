@@ -85,5 +85,7 @@
 - [x] (0.3.0) Somehow know where backtest data ends and gauntlet data starts
 - [x] (0.3.1) Add gauntlet performance data and z-score to hystrindies (becoming ghystrindies)
 - [x] (0.3.2) Organize data files in dedicated folder
+- [x] (0.3.2) Added Arena
+- [x] (0.3.2) Updated oanda_api for crud operations on trades by client id
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

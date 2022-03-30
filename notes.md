@@ -1,6 +1,6 @@
 ### Wed, Mar 30, 22
 Todo:
-- Long and short strategies (return -1, 0 or 1 instead of booleans)
+- Long and short strategies (return -1, 0 or 1 instead of booleans)?
 - Lots of instruments
 - Finish orders/trading system, tagging trades by strindy id
 
