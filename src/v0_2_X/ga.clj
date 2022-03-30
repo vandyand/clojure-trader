@@ -94,7 +94,7 @@
       (< n c-pct)
       (get-crossover-strindy parent-strindies)
       (< n (+ c-pct m-pct))
-      (get-mutated-strindy-recur (rand-nth parent-strindies) strindy-config)
+      (get-mutated-strindy-recur (first (random-sample 0.1 (cycle parent-strindies))) strindy-config)
       :else (strindy/make-strindy strindy-config))))
 
 (defn get-unique-children-hystrindies
