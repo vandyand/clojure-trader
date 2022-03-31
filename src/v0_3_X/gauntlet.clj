@@ -1,40 +1,26 @@
 (ns v0_3_X.gauntlet
   (:require
+   [util :as util]
    [file :as file]
    [v0_2_X.hydrate :as hyd]
    [v0_2_X.plot :as plot]
    [stats :as stats]))
 
-(defn get-overlap-ind [old new]
-  (loop [i 0]
-    (cond
-      (>= i (count new)) -1
-      (let [sub-new (subvec new 0 (- (count new) i))
-            sub-old (subvec old (- (count old) (count sub-new)))]
-        (= sub-old sub-new))
-      i
-      :else (recur (inc i)))))
-
-(defn get-fore-series [new overlap-ind]
-  (if (> overlap-ind -1)
-   (subvec new (- (count new) overlap-ind))
-    new))
-
 (defn fore-intention-streams [new-streams overlap-ind]
   (for [stream (get new-streams :intention-streams)]
-    (get-fore-series stream overlap-ind)))
+    (util/subvec-end stream overlap-ind)))
 
 (defn fore-inception-streams [new-streams overlap-ind]
   (let [new-inception-streams (get new-streams :inception-streams)
         new-default-stream (first new-inception-streams)
         new-other-streams (rest new-inception-streams)
-        fore-default-stream (mapv #(+ % overlap-ind 1) (get-fore-series new-default-stream overlap-ind))] 
+        fore-default-stream (mapv #(+ % overlap-ind 1) (util/subvec-end new-default-stream overlap-ind))] 
     (into [fore-default-stream]
           (for [stream new-other-streams]
-            (get-fore-series stream overlap-ind)))))
+            (util/subvec-end stream overlap-ind)))))
 
 (defn get-fore-streams [new-streams old-streams]
-  (let [overlap-ind (get-overlap-ind (-> old-streams :intention-streams first) 
+  (let [overlap-ind (util/get-overlap-ind (-> old-streams :intention-streams first) 
                                      (-> new-streams :intention-streams first))]
     {:id (.toString (java.util.UUID/randomUUID))
    :inception-streams (fore-inception-streams new-streams overlap-ind)

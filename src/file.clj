@@ -21,7 +21,7 @@
   (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") #"\n" "")))
 
 (defn write-file 
-  ([file-name contents] (write-file file-name contents true))
+  ([file-name contents] (write-file file-name contents false))
   ([file-name contents append?]
   (spit (str data-folder file-name) (prn-str contents) :append append?)))
 
@@ -48,7 +48,7 @@
           (format-strindy-for-edn 
            (get hystrindy 
             :strindy)))]
-     (write-file file-name formatted-hystrindy))))
+     (write-file file-name formatted-hystrindy true))))
 
 (defn save-hystrindies-to-file 
   ([hystrindies] (save-hystrindies-to-file hystrindies "hystrindies.edn"))
@@ -59,7 +59,7 @@
 (defn save-streams-to-file 
   ([streams] (save-streams-to-file "streams.edn" streams))
   ([file-name streams]
-  (write-file file-name streams)))
+  (write-file file-name streams true)))
 
 (defn deformat-hystrindy [formatted-hystrindy]
   (clojure.walk/postwalk

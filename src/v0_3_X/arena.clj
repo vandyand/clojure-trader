@@ -41,15 +41,15 @@
 (def best-gaust (get-best-gaust gausts))
 
 (do
-  (def start-time (quot (System/currentTimeMillis) 1000))
+  (def start-time (util/current-time-sec))
   ;; (def run-time-hrs (/ 0. 60.0))
   ;; (def run-time (long (* run-time-hrs 60 60)))
-  (def run-time 4)
+  (def run-time 4) ;; seconds
   (def end-time (+ start-time run-time))
 
   (def units 100)
 
-  (while (< (quot (System/currentTimeMillis) 1000) end-time)
+  (while (< (util/current-time-sec) end-time)
 
     (def updated-gausts (update-gausts best-gausts))
 
@@ -72,14 +72,14 @@
     (Thread/sleep 1000)))
 
 ;; (do
-;;   (def start-time (quot (System/currentTimeMillis) 1000))
+;;   (def start-time (util/current-time-sec))
 ;;   (def run-time-hrs (/ 0.5 60.0))
 ;;   (def run-time (long (* run-time-hrs 60 60)))
 ;;   (def end-time (+ start-time run-time))
 
 ;;   (def units 100)
 
-;;   (while (< (quot (System/currentTimeMillis) 1000) end-time)
+;;   (while (< (util/current-time-sec) end-time)
 
 ;;     (def updated-gausts (update-gaust best-gaust))
 

@@ -1,5 +1,6 @@
 (ns v0_2_X.hydrate
   (:require
+   [util :as util]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.oanda_strindicator :as ostrindy]
    [v0_2_X.config :as config]))
@@ -12,7 +13,7 @@
         intention-ids (config/get-streams-info (:streams-config backtest-config) "intention")]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (dissoc backtest-config :strindy-config)
-     :time-stamp (quot (System/currentTimeMillis) 1000)
+     :time-stamp (util/current-time-sec)
      :inception-streams (vec (for [ind inception-ids] (get streams ind)))
      :intention-streams (vec (for [ind intention-ids] (get streams ind)))}))
 

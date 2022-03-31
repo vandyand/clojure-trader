@@ -24,15 +24,15 @@
                       ;;  "CAD_CHF" "inception" "GBP_CHF" "inception" "EUR_AUD" "inception" "GBP_CAD" "inception"]
                       ;; ["EUR_USD" "both"]
                          stream-arg
-                         "binary" 2 6 12 1200 "H1"))
+                         "binary" 1 2 3 120 "M5"))
 
-   (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 100 0.4 0.3 0.5)))
+   (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.3 0.5)))
 
    (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
 
    (file/save-streams-to-file streams)
 
-   (dotimes [n 7]
+   (dotimes [n 1]
      (def best-pop (ga/run-epochs (dissoc streams :backtest-config) ga-config))
 
      (def candidate (first best-pop))

@@ -1,43 +1,102 @@
 (ns playing.playing
-  (:require [clojure.pprint :as pp]))
+  (:require [clojure.pprint :as pp]
+            [clojure.data.json :as json]
+            [clj-http.client :as client]
+            [clojure.core.async :as async]))
 
-(defmacro thing [arg1 arg2]
-  `[~arg1 ~arg2])
+(let [c (async/chan 2)]
+  (async/thread (doseq [x (range 5)]
+                  (async/>!! c x)
+                  (println "putting value " x " on channel")))
+  (async/thread
+    (Thread/sleep 1000)
+    (doseq [x (range 5)]
+      (println "from chan " (async/<!! c)))))
 
-(macroexpand (thing 2 3))
-(macroexpand-1 (thing 2 3))
+(let [c (async/chan)]
+  (async/thread
+   (async/put! c "this string" (fn [sent?] (println "has been sent? " sent?))))
+  (async/thread
+   (async/take! c (fn [val] (println "taken = " val)))))
 
-(thing 2 4)
 
-(defmacro infix [form]
-  (list (second form) (first form) (nth form 2)))
+(let [c (async/chan 2)]
+  (async/go (doseq [x (range 5)]
+                  (async/>! c x)
+                  (println "putting value " x " on channel!")))
+  (async/go
+    #_(Thread/sleep 1000)
+    (doseq [x (range 5)]
+      (println "taking " (async/<! c) " from channel!"))))
 
-(infix (2 + 9))
 
-(macroexpand (infix (2 + 4)))
+(defn fetch-user [user-id]
+  (Thread/sleep 1000)
+  (-> (str "https://reqres.in/api/users/" user-id)
+      client/get
+      :body
+      json/read-json
+      :data))
 
-(= '(1 2 3) `(1 2 ~(infix (2 + 1))))
+(defn email-user [email]
+  (println "Email sent to " email))
 
-(defn funnc [i]
-  (fn [x] (* i x)))
+(defn process-users []
+  (let [c (async/chan)]
+    (async/thread
+      (doseq [x (range 1 5)]
+        (async/>!! c (fetch-user x))))
+    (async/thread
+      (loop []
+        (when-some [user (async/<!! c)]
+          (email-user (:email user)))
+        (recur)))))
 
-((funnc 3) 4)
+(defn process-users-go []
+  (let [c (async/chan)]
+    (async/go
+      (doseq [x (range 1 5)]
+        (async/>! c (fetch-user x))))
+    (async/go-loop []
+     (when-some [user (async/<! c)]
+       (email-user (:email user))
+       (recur)))))
 
-(defmacro func [& args]
-  `(* ~(for [arg args] arg)))
+(def users-channel (async/chan))
 
-(func 3 4)
+(defn process-users-go-chan [channel]
+    (async/go
+      (doseq [x (range 1 5)]
+        (async/>! channel (fetch-user x))))
+    (async/go-loop []
+      (when-some [user (async/<! channel)]
+        (email-user (:email user))
+        (recur))))
 
-(macroexpand (func 3))
+(process-users-go-chan users-channel)
 
-(map (func 3) [2 3 4])
+(async/close! users-channel)
 
-(defmacro thing [& args]
-  (apply + args))
+;------------------------------------;------------------------------------;------------------------------------
 
-(thing 2 3)
+(def a (atom 0))
 
-(defmacro func-gen []
-  `(defn ~(symbol "nameee") [arg1] {:arg1 arg1}))
+(def file-channel (async/chan))
 
-(pp/pprint (macroexpand-1 (func-gen)))
+(async/go
+ (with-open [reader (clojure.java.io/reader "data/streams/EUR_USD-M1.edn")]
+   (doseq [line (line-seq reader)]
+     (async/>! file-channel line))))
+
+(async/go-loop 
+ []
+ (when-some [line (clojure.edn/read-string (async/<! file-channel))]
+   (println (:time-stamp line) (= (get line :time-stamp) 1648743341))
+   (if (= (get line :time-stamp) 1648743341) 
+     (swap! a (fn [_ x] x) (get line :time-stamp)))
+     nil)
+   (recur))
+
+@a
+
+(async/close! file-channel)

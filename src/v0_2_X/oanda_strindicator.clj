@@ -8,8 +8,10 @@
       :o (Double/parseDouble (get-in candle [:mid :o]))})
    candles))
 
-(defn get-instrument-config [name granularity count]
-  {:name name :granularity granularity :count count})
+(defn get-instrument-config 
+  ([name granularity] (get-instrument-config name granularity 5000))
+  ([name granularity count]
+  {:name name :granularity granularity :count count}))
 
 (defn get-instruments-config [config]
   (for [stream-config (filterv #(not= (get % :name) "default") (get config :streams-config))]
@@ -38,8 +40,10 @@
   (for [instrument-config instruments-config] 
     (get-instrument-stream instrument-config))))
 
-(def num-data-points 1000)
-(def instrument-config (get-instrument-config "EUR_USD" "H1" num-data-points))
+(comment
+  (def num-data-points 1000)
+  (def instrument-config (get-instrument-config "EUR_USD" "H1" num-data-points))
+  )
 ;; (def input-config (strindy/get-strindy-input-config 10 1 num-data-points 0.005 1 0 100))
 ;; (def tree-config (strat/get-tree-config 2 8 (count (get input-config :inception-streams-config))))
 ;; (def pop-config (ga/get-pop-config 40 0.5 0.4 0.4))

@@ -1,5 +1,6 @@
 (ns v0_2_X.load)
 
+(load "/util")
 (load "/v0_1_X/inputs")
 (load "/v0_1_X/strategy")
 (load "/v0_1_X/oanda_api")
@@ -15,6 +16,8 @@
 (load "/v0_2_X/strindicator")
 
 (load "/v0_2_X/ga")
+
+(load "/v0_2_X/streams")
 
 (load "/file")
 

@@ -1,7 +1,10 @@
+### Thurs, Mar 31, 22
+- Get rid of redundant data in saved edn files (multiple return streams in hystrindies.edn (really only need delta right?), multiple duplicate streams in streams.edn)
+
 ### Wed, Mar 30, 22
 Todo:
 - Long and short strategies (return -1, 0 or 1 instead of booleans)?
-- Lots of instruments
+- Lots of instruments [x]
 - Finish orders/trading system, tagging trades by strindy id
 
 ### Thurs, Mar 24, 22
