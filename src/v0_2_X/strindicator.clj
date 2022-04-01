@@ -22,13 +22,11 @@
           (let [solution (apply strind-fn (mapv #(solve-strindy-for-inst-incep % inception-streams) strind-inputs))]
             (if (Double/isNaN solution) 0.0 solution))))))
 
-(defn get-stream-deltas [stream] (mapv - stream (cons (first stream) stream)))
+(defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
 
-(defn get-return-deltas [sieve intention-deltas] (mapv * (cons (first sieve) sieve) intention-deltas))
+(defn sieve->rivulet [sieve intention-rivulet] (mapv * (cons (first sieve) sieve) intention-rivulet))
 
-(defn get-stream-from-deltas [deltas] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] deltas))
-
-(defn get-streams-by-indexes [streams inds] (vec (for [ind inds] (get streams ind))))
+(defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
 ;; TODO - make this performant? or get rid of it...
 (defn get-streams-walker [streams]
@@ -40,25 +38,25 @@
 
 (defn get-sum-of-all-streams [return-streams]
   (let [stream-length (count (get (first return-streams) :beck))
-        sum-delta
+        sum-rivulet
         (vec (for [n (range stream-length)]
-               (reduce + (for [return-stream return-streams] (get-in return-stream [:delta n])))))
+               (reduce + (for [return-stream return-streams] (get-in return-stream [:rivulet n])))))
         sum-beck
         (vec (for [n (range stream-length)]
                (reduce + (for [return-stream return-streams] (get-in return-stream [:beck n])))))]
-    {:sum-delta sum-delta :sum-beck sum-beck}))
+    {:rivulet sum-rivulet :beck sum-beck}))
 
 (defn get-sieve-stream [strindy inception-streams]
   (let [inception-streams-walker (get-streams-walker inception-streams)]
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn get-return-streams-from-sieve [sieve-stream intention-streams]
-  (let [intention-streams-delta (for [intention-stream intention-streams] (get-stream-deltas intention-stream))
-        return-streams (for [intention-stream-delta intention-streams-delta]
-                         (let [return-deltas (get-return-deltas sieve-stream intention-stream-delta)]
-                           {:delta return-deltas
-                            :beck (get-stream-from-deltas return-deltas)}))]
-    (into return-streams (vector (get-sum-of-all-streams return-streams)))))
+  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet intention-stream))
+        return-streams (for [intention-rivulet intention-streams-rivulet]
+                         (let [return-rivulet (sieve->rivulet sieve-stream intention-rivulet)]
+                           {:rivulet return-rivulet
+                            :beck (rivulet->beck return-rivulet)}))]
+    (get-sum-of-all-streams return-streams)))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 

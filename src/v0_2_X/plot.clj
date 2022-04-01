@@ -33,14 +33,14 @@
   (vec (for [price stream] (- price (first stream)))))
 
 (defn plot-gaustrindies [gaustrindies]
-  (let [streams (map #(-> % :g-return-streams first :sum-beck) gaustrindies)
+  (let [streams (map #(-> % :g-return-stream :beck) gaustrindies)
         values (format-streams-for-view streams)]
   (generate-and-view-plot values)))
 
 (defn plot-with-intentions 
-  ([plotee intention-streams] (plot-with-intentions plotee intention-streams :return-streams))
+  ([plotee intention-streams] (plot-with-intentions plotee intention-streams :return-stream))
   ([plotee intention-streams return-key]
-  (let [return-streams (map #(-> % return-key first :sum-beck) plotee)
+  (let [return-streams (map #(-> % return-key :beck) plotee)
         zeroed-intention-streams (map zero-stream intention-streams)
         all-streams (into return-streams zeroed-intention-streams)
         values (format-streams-for-view all-streams)]

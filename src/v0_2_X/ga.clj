@@ -104,21 +104,21 @@
      (if (< (count v) (get-in ga-config [:pop-config :num-children]))
        (recur
         (let [new-strindy (get-child-strindy (map :strindy parents-pop) ga-config)
-              new-hystrindy (hyd/hydrate-strindy new-strindy streams)
+              new-hystrindy (hyd/hydrate-strindy new-strindy (get ga-config :backtest-config))
               new-sieve (get new-hystrindy :sieve-stream)
               prior-sieves (map :sieve-stream (into parents-pop v))]
           (if (hyd/is-sieve-unique? new-sieve prior-sieves) (conj v new-hystrindy) v)))
        (hyd/get-hystrindies-fitnesses v))))
 
 (defn run-epoch
-  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config streams)) streams ga-config))
+  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config)) streams ga-config))
   ([population streams ga-config]
    (let [parents-pop (take (get-in ga-config [:pop-config :num-parents]) population)
          children-pop (get-unique-children-hystrindies parents-pop ga-config streams)]
      (sort-hystrindies (into parents-pop children-pop)))))
 
 (defn run-epochs
-  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config streams))streams ga-config))
+  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config))streams ga-config))
   ([population streams ga-config]
    (loop [i 0 pop population]
      (let [next-gen (run-epoch pop streams ga-config)
@@ -138,12 +138,9 @@
 
   (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 
-  (def streams (streams/fetch-streams (get ga-config :backtest-config)))
+  (def streams (streams/fetch-formatted-streams (get ga-config :backtest-config)))
 
-;; (def init-pop (hyd/get-init-pop ga-config streams))
-  (def formatted-streams
-    {:inception-streams (streams/get-incint-streams backtest-config streams "inception")
-     :intention-streams (streams/get-incint-streams backtest-config streams "intention")})
+;; (def init-pop (hyd/get-init-pop ga-config))
   
   (def best-pop (run-epochs formatted-streams ga-config))
   )

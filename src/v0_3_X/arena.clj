@@ -5,6 +5,7 @@
    [v0_2_X.config :as config]
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
+   [v0_2_X.streams :as streams]
    [v0_1_X.oanda_api :as oa]))
 
 (defn get-best-gausts
@@ -15,22 +16,22 @@
   (reduce (fn [acc cur] (if (> (:g-score cur) (:g-score acc)) cur acc)) gausts))
 
 (defn update-gaust [gaust]
-  (let [back-streams (file/get-by-id "streams.edn" (get gaust :streams-id))
-        new-streams (hyd/get-backtest-streams (get back-streams :backtest-config))]
-    (gaunt/run-gauntlet-single gaust back-streams new-streams)))
+  (let [back-streams nil ;(file/get-by-id "streams.edn" (get gaust :streams-id))
+        new-streams (streams/fetch-formatted-streams (get back-streams :backtest-config))]
+    (gaunt/run-gauntlet gaust back-streams new-streams)))
 
 (defn update-gausts [gausts]
   (for [gaust gausts]
     (update-gaust gaust)))
 
 (defn get-intention-instruments [gaust]
-  (let [back-streams (file/get-by-id "streams.edn" (:streams-id gaust))]
+  (let [back-streams nil];(file/get-by-id "streams.edn" (:streams-id gaust))]
     (config/get-streams-info (-> back-streams :backtest-config :streams-config) "intention" :name)))
 
 (defn get-gausts-with-returns []
   (let [gausts (file/get-hystrindies-from-file "gaustrindies.edn")
         hysts (file/get-hystrindies-from-file "hystrindies.edn")]
-    (map #(assoc % :return-streams (-> hysts (util/find-in :id (:id %)) :return-streams)) gausts)))
+    (map #(assoc % :return-stream (-> hysts (util/find-in :id (:id %)) :return-stream)) gausts)))
 
 
 (def gausts (get-gausts-with-returns))

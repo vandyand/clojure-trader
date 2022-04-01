@@ -5,40 +5,46 @@
    [v0_2_X.streams :as streams]
    [file :as file]))
 
-(def cpairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
-             "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
-             "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
-             "EUR_AUD" "GBP_CAD"])
+(comment
+  (do
+    (def backtest-config (config/get-backtest-config-util
+                          ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
+                          "binary" 2 3 4 120 "M1"))
 
-(def stream-args
-  (for [n (range (count cpairs))]
-    (assoc (conj (vec (interpose "inception" cpairs)) "inception") (-> n (* 2) (+ 1)) "both")))
+    (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 20 0.4 0.2 0.4)))
 
-;; (for [stream-arg stream-args]
-(do
-  (def backtest-config (config/get-backtest-config-util
-                      ;; ["EUR_USD" "inception" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception" 
-                      ;;  "EUR_GBP" "inception" "EUR_JPY" "inception" "USD_CHF" "inception" "AUD_JPY" "inception" 
-                      ;;  "USD_CAD" "inception" "AUD_CAD" "inception" "CHF_JPY" "inception" "EUR_CHF" "inception" 
-                      ;;  "NZD_USD" "inception" "EUR_CAD" "inception" "NZD_JPY" "inception" "AUD_CHF" "inception" 
-                      ;;  "CAD_CHF" "inception" "GBP_CHF" "inception" "EUR_AUD" "inception" "GBP_CAD" "inception"]
-                      ;; ["EUR_USD" "both"]
-                        ;;  stream-arg
-                        ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
-                        "binary" 2 4 6 1200 "M5"))
+    (def streams (streams/fetch-formatted-streams backtest-config))
 
-  (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 40 0.4 0.3 0.5)))
+    (dotimes [n 3]
+      (def best-pop (ga/run-epochs streams ga-config))
 
-  (def streams (streams/fetch-streams backtest-config))
+      (def candidate (first best-pop))
 
-  (def formatted-streams
-    {:inception-streams (streams/get-incint-streams backtest-config streams "inception")
-     :intention-streams (streams/get-incint-streams backtest-config streams "intention")})
+      (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)) "hystrindies.edn"))))
 
-  (dotimes [n 1]
-    (def best-pop (ga/run-epochs formatted-streams ga-config))
+(comment
+  (def cpairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
+               "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
+               "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
+               "EUR_AUD" "GBP_CAD"])
 
-    (def candidate (first best-pop))
+  (def stream-args
+    (for [n (range (count cpairs))]
+      (assoc (conj (vec (interpose "inception" cpairs)) "inception") (-> n (* 2) (+ 1)) "both")))
 
-    (file/save-hystrindy-to-file candidate "hystrindies.edn")))
-    ;;  )
+  (for [stream-arg stream-args]
+    (do
+      (def backtest-config (config/get-backtest-config-util
+                            stream-arg
+                            "binary" 2 4 6 1200 "M1"))
+
+      (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 40 0.4 0.3 0.5)))
+
+      (def streams (streams/fetch-formatted-streams backtest-config))
+
+      (dotimes [n 3]
+        (def best-pop (ga/run-epochs streams ga-config))
+
+        (def candidate (first best-pop))
+
+        (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)) "hystrindies.edn")))))
