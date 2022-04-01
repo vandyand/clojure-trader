@@ -10,21 +10,15 @@
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
 
 (defn up-to-date? [time-stamp granularity]
-  (println "up to date?: " time-stamp granularity)
-  (< 
-   (util/current-time-sec) 
-     (+ 
-      time-stamp 
-        (util/granularity->seconds granularity)
-        )))
+  (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
 
-(defn update-stream-file 
+(defn update-stream-file
   ([instrument-config old-stream]
    (let [file-name (get-instrument-file-name instrument-config)
          new-stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))
          overlap-ind (util/get-overlap-ind old-stream new-stream)
          updated-stream (into old-stream (util/subvec-end new-stream overlap-ind))]
-     (file/write-file 
+     (file/write-file
       file-name
       {:time-stamp (util/current-time-sec)
        :stream updated-stream}
@@ -39,36 +33,46 @@
       (if up-to-date?
         (util/subvec-end (vec (get file-content :stream)) (get instrument-config :count))
         (do
-         (update-stream-file instrument-config (get file-content :stream))
-         (get-stream-from-file-or-api instrument-config)))
+          (update-stream-file instrument-config (get file-content :stream))
+          (get-stream-from-file-or-api instrument-config)))
       (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
         (file/write-file
          file-name
          {:time-stamp (util/current-time-sec)
           :stream stream})
-        stream))))
+        (util/subvec-end stream (get instrument-config :count))))))
 
-(defn serve-streams [backtest-config]
+(defn fetch-streams [backtest-config]
   (let [instruments-config (ostrindy/get-instruments-config backtest-config)]
-    (for [instrument-config instruments-config]
-      (get-stream-from-file-or-api instrument-config))))
+    (doall
+     (for [instrument-config instruments-config]
+       {:instrument (get instrument-config :name)
+        :stream (get-stream-from-file-or-api instrument-config)}))))
 
+(defn get-incint-streams [backtest-config streams incint]
+  (let [init-stream (if (= incint "inception") [(vec (range (get backtest-config :num-data-points)))] [])]
+    (into
+     init-stream
+     (map (fn [valid-stream-config]
+            (get (util/find-in streams :instrument (get valid-stream-config :name)) :stream))
+          (filter
+           (fn [stream-config] 
+             (and
+              (not= (get stream-config :name) "default")
+              (not= (get stream-config :incint)
+                   (if (= incint "inception") "intention" "inception"))))
+           (get backtest-config :streams-config))))))
 
 (comment
   (def backtest-config (config/get-backtest-config-util
                         ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ;; ["EUR_USD" "intention"]
                         "binary" 1 2 3 100 "M1"))
-  
-  (def streams (serve-streams backtest-config))
 
-  (println streams)
-  
-  ;; (def streams (hyd/get-backtest-streams backtest-config))
+  (def streams (fetch-streams backtest-config))
 
-  (def strindy (strindy/make-strindy-recur (backtest-config :strindy-config)))
+  (def strindy (strindy/make-strindy (backtest-config :strindy-config)))
 
-  (def sieve-stream (strindy/get-sieve-stream strindy (streams :inception-streams)))
+  (def sieve-stream (strindy/get-sieve-stream strindy (get-incint-streams backtest-config streams "inception")))
 
-  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (streams :intention-streams)))
-  )
+  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (get-incint-streams backtest-config streams "intention"))))

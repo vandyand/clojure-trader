@@ -7,7 +7,8 @@
             [v0_2_X.config :as config]
             [v0_2_X.hydrate :as hyd]
             [v0_2_X.strindicator :as strindy]
-            [v0_2_X.plot :as plot]))
+            [v0_2_X.plot :as plot]
+            [v0_2_X.streams :as streams]))
 
 (defn strindy-zip [strindy]
   (z/zipper
@@ -137,9 +138,12 @@
 
   (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 
-  (def streams (hyd/get-backtest-streams (get ga-config :backtest-config)))
+  (def streams (streams/fetch-streams (get ga-config :backtest-config)))
 
 ;; (def init-pop (hyd/get-init-pop ga-config streams))
-
-  (def best-pop (run-epochs streams ga-config))
+  (def formatted-streams
+    {:inception-streams (streams/get-incint-streams backtest-config streams "inception")
+     :intention-streams (streams/get-incint-streams backtest-config streams "intention")})
+  
+  (def best-pop (run-epochs formatted-streams ga-config))
   )
