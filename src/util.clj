@@ -1,8 +1,10 @@
 (ns util)
 
-(defn find-in [coll _key _val] 
+(defn find-in [coll _key _val]
   (reduce (fn [_ cur-val] (when (= (_key cur-val) _val) (reduced cur-val)))
-        nil coll))
+          nil coll))
+
+
 
 (defn subvec-end [v cnt]
   (if (> cnt -1)
@@ -10,14 +12,25 @@
     v))
 
 (defn get-overlap-ind [old new]
+  (if (> (count new) (count old))
+    (when (= old (subvec new 0 (count old)))
+      (- (count new) (count old)))
+    (loop [i 0]
+      (cond
+        (>= i (count new)) -1
+        (let [sub-new (subvec new 0 (- (count new) i))
+              sub-old (subvec old (- (count old) (count sub-new)))]
+          (= sub-old sub-new))
+        i
+        :else (recur (inc i))))))
+
+(defn get-fore-series [proxy new]
   (loop [i 0]
-    (cond
-      (>= i (count new)) -1
-      (let [sub-new (subvec new 0 (- (count new) i))
-            sub-old (subvec old (- (count old) (count sub-new)))]
-        (= sub-old sub-new))
-      i
-      :else (recur (inc i)))))
+    (when (<= i (- (count new) (count proxy)))
+      (let [test-vec (subvec new (- (count new) (count proxy) i) (- (count new) i))]
+        (if (= test-vec proxy)
+          (subvec-end new i)
+          (recur (inc i)))))))
 
 (defn current-time-sec []
   (quot (System/currentTimeMillis) 1000))

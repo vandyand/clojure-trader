@@ -41,6 +41,8 @@
 - [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
 - [ ] Don't use Thread/sleep in oanda_api requests lol. Use async or promise or something
 - [ ] Refactor `fore?` in streams and hystrindies. Currently very redundant arg passing through many functions.
+- [ ] Fix bug with solving gaustys with only one time slice of fore-data. Right now it bugs out with zero-index or something.
+- [ ] Feat: ability to mix and match granualrities in inception and intention streams.
 
 ### Completed Tasks
 

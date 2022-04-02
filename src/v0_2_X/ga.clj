@@ -142,5 +142,5 @@
 
 ;; (def init-pop (hyd/get-init-pop ga-config))
   
-  (def best-pop (run-epochs formatted-streams ga-config))
+  (def best-pop (run-epochs streams ga-config))
   )

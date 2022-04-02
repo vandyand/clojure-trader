@@ -50,7 +50,7 @@
   (let [inception-streams-walker (get-streams-walker inception-streams)]
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
-(defn get-return-streams-from-sieve [sieve-stream intention-streams]
+(defn sieve->return [sieve-stream intention-streams]
   (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet intention-stream))
         return-streams (for [intention-rivulet intention-streams-rivulet]
                          (let [return-rivulet (sieve->rivulet sieve-stream intention-rivulet)]

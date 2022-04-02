@@ -39,13 +39,13 @@
    :beck (strindy/rivulet->beck rivulet)})
 
 (defn get-gaustrindy [back-hystrindy fore-hystrindy] 
-  (let [g-return-streams (get fore-hystrindy :return-stream)]
+  (let [g-return-stream (get fore-hystrindy :return-stream)]
     {:id (get back-hystrindy :id)
      :strindy (get back-hystrindy :strindy)
      :return-stream (repopulate-return-stream (-> back-hystrindy :return-stream :rivulet))
      :g-sieve-stream (get fore-hystrindy :sieve-stream)
-     :g-return-streams g-return-streams
-     :g-fitness (-> g-return-streams :beck last)
+     :g-return-stream g-return-stream
+     :g-fitness (-> g-return-stream :beck last)
      :g-score (stats/z-score
                (-> back-hystrindy :return-stream :rivulet)
                (-> fore-hystrindy :return-stream :rivulet))}))
@@ -68,11 +68,13 @@
 
 
 (comment
-  (def hystrindies (file/get-hystrindies-from-file))
+  (def hysts (file/get-hystrindies-from-file))
 
-  (def fore-hystrindies (get-fore-hystrindies hystrindies))
+  (def fysts (get-fore-hystrindies hysts))
 
-  (def gaustrindies (get-gaustrindies hystrindies fore-hystrindies))
+  
+  
+  ;; (def gausts (get-gaustrindies hysts fysts))
 
-  (file/save-hystrindies-to-file gaustrindies "gaustrindies.edn")
+  ;; (file/save-hystrindies-to-file gausts "gaustrindies.edn")
   )

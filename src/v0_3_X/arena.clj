@@ -18,7 +18,8 @@
 (defn update-gaust [gaust]
   (let [back-streams nil ;(file/get-by-id "streams.edn" (get gaust :streams-id))
         new-streams (streams/fetch-formatted-streams (get back-streams :backtest-config))]
-    (gaunt/run-gauntlet gaust back-streams new-streams)))
+    ;; (gaunt/run-hyst-gauntlet gaust back-streams new-streams)
+    (gaunt/run-hyst-gauntlet gaust)))
 
 (defn update-gausts [gausts]
   (for [gaust gausts]
@@ -33,44 +34,44 @@
         hysts (file/get-hystrindies-from-file "hystrindies.edn")]
     (map #(assoc % :return-stream (-> hysts (util/find-in :id (:id %)) :return-stream)) gausts)))
 
+(comment
+  (def gausts (get-gausts-with-returns))
 
-(def gausts (get-gausts-with-returns))
+  (def best-gausts (get-best-gausts gausts -0.2))
+  (count best-gausts)
 
-(def best-gausts (get-best-gausts gausts -0.2))
-(count best-gausts)
+  (def best-gaust (get-best-gaust gausts))
 
-(def best-gaust (get-best-gaust gausts))
-
-(do
-  (def start-time (util/current-time-sec))
+  (do
+    (def start-time (util/current-time-sec))
   ;; (def run-time-hrs (/ 0. 60.0))
   ;; (def run-time (long (* run-time-hrs 60 60)))
-  (def run-time 4) ;; seconds
-  (def end-time (+ start-time run-time))
+    (def run-time 4) ;; seconds
+    (def end-time (+ start-time run-time))
 
-  (def units 100)
+    (def units 100)
 
-  (while (< (util/current-time-sec) end-time)
+    (while (< (util/current-time-sec) end-time)
 
-    (def updated-gausts (update-gausts best-gausts))
+      (def updated-gausts (update-gausts best-gausts))
 
-    (doseq [updated-gaust updated-gausts]
-      (let [intention-instruments (get-intention-instruments updated-gaust)
-           target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
-           current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
+      (doseq [updated-gaust updated-gausts]
+        (let [intention-instruments (get-intention-instruments updated-gaust)
+              target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
+              current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
       ;; (println "target-pos?: " target-pos?)
       ;; (println "current-pos?: " current-pos?)
-      (println "intention-instruments: " intention-instruments)
-       (doseq [instrument intention-instruments]
+          (println "intention-instruments: " intention-instruments)
+          (doseq [instrument intention-instruments]
         ;; (println instrument units)
-         (cond
-           (and target-pos? (not current-pos?))
-           (doall (oa/send-order-request instrument units) (println "position opened!"))
-           (and (not target-pos?) current-pos?)
-           (doall (oa/send-order-request instrument (* -1 units)) (println "position closed!"))
-           :else (println "nothing happened!")))))
+            (cond
+              (and target-pos? (not current-pos?))
+              (doall (oa/send-order-request instrument units) (println "position opened!"))
+              (and (not target-pos?) current-pos?)
+              (doall (oa/send-order-request instrument (* -1 units)) (println "position closed!"))
+              :else (println "nothing happened!")))))
 
-    (Thread/sleep 1000)))
+      (Thread/sleep 1000))))
 
 ;; (do
 ;;   (def start-time (util/current-time-sec))
@@ -100,15 +101,15 @@
 ;;          intention-instruments)))
 ;;     (Thread/sleep 1000)))
 
+(comment
+  (oa/send-order-request "EUR_USD" 100)
 
-(oa/send-order-request "EUR_USD" 100)
+  (oa/update-trade-with-id "186" "id-124")
 
-(oa/update-trade-with-id "186" "id-124")
+  (oa/get-open-trade "182")
 
-(oa/get-open-trade "182")
+  (oa/get-open-trades)
 
-(oa/get-open-trades)
+  (oa/get-trade-client-id "182")
 
-(oa/get-trade-client-id "182")
-
-(oa/get-trade-by-client-id "id-125")
+  (oa/get-trade-by-client-id "id-125"))

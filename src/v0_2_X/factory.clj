@@ -9,9 +9,9 @@
   (do
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
-                          "binary" 2 3 4 120 "M1"))
+                          "binary" 2 3 4 1200 "M1"))
 
-    (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 20 0.4 0.2 0.4)))
+    (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 20 0.4 0.2 0.4)))
 
     (def streams (streams/fetch-formatted-streams backtest-config))
 

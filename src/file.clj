@@ -3,9 +3,6 @@
    [clojure.edn :as edn]
    [v0_1_X.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
-   [v0_2_X.config :as config]
-   [v0_2_X.hydrate :as hyd]
-   [v0_2_X.streams :as streams]
    [util]))
 
 (def data-folder "data/")
@@ -72,7 +69,7 @@
    formatted-hystrindy))
 
 (defn get-hystrindies-from-file
-  ([] (get-hystrindies-from-file "data/hystrindies.edn"))
+  ([] (get-hystrindies-from-file "hystrindies.edn"))
   ([file-name]
    (let [formatted-hystrindies (read-file file-name)]
      (for [formatted-hystrindy formatted-hystrindies]

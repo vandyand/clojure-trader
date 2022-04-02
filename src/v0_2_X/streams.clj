@@ -13,39 +13,33 @@
   (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
 
 (defn update-stream-file
-  ([instrument-config old-stream fore?]
+  ([instrument-config old-stream]
    (let [file-name (get-instrument-file-name instrument-config)
          new-stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))
          overlap-ind (util/get-overlap-ind old-stream new-stream)
-         fore-stream (util/subvec-end new-stream overlap-ind)
-         updated-stream (into old-stream fore-stream)]
+         updated-stream (into old-stream (util/subvec-end new-stream overlap-ind))]
      (file/write-file
       file-name
       {:time-stamp (util/current-time-sec)
        :stream updated-stream}
       false)
-     (if fore? fore-stream updated-stream))))
+     updated-stream)))
 
-(defn get-stream-from-file-or-api 
-  ([instrument-config] (get-stream-from-file-or-api instrument-config false))
-  ([instrument-config fore?]
-  (let [file-name (get-instrument-file-name instrument-config)
-        file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
-        file-content (when file-exists (first (file/read-file file-name)))]
-    (if file-content
-      (let [up-to-date-stream (if (when file-content (up-to-date?
-                                                      (get file-content :time-stamp)
-                                                      (get instrument-config :granularity)))
-                                (vec (get file-content :stream))
-                                (vec (update-stream-file instrument-config (get file-content :stream) fore?)))]
-        (if fore? up-to-date-stream
-            (util/subvec-end up-to-date-stream (get instrument-config :count))))
-      (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
-        (file/write-file
-         file-name
-         {:time-stamp (util/current-time-sec)
-          :stream stream})
-        (util/subvec-end stream (get instrument-config :count)))))))
+(defn get-stream-from-file-or-api
+  [instrument-config]
+   (let [file-name (get-instrument-file-name instrument-config)
+         file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
+         file-content (when file-exists (first (file/read-file file-name)))]
+     (if file-content
+       (if (up-to-date? (get file-content :time-stamp) (get instrument-config :granularity))
+         (vec (get file-content :stream))
+         (vec (update-stream-file instrument-config (get file-content :stream))))
+       (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
+         (file/write-file
+          file-name
+          {:time-stamp (util/current-time-sec)
+           :stream stream})
+         stream))))
 
 (defn fetch-streams 
   ([backtest-config] (fetch-streams backtest-config false))
@@ -53,8 +47,11 @@
   (let [instruments-config (ostrindy/get-instruments-config backtest-config)]
     (doall
      (for [instrument-config instruments-config]
+       (let [whole-stream (get-stream-from-file-or-api instrument-config)
+             stream (if fore? (util/get-fore-series (get backtest-config :stream-proxy) whole-stream)
+                        (util/subvec-end whole-stream (get instrument-config :count)))]
        {:instrument (get instrument-config :name)
-        :stream (get-stream-from-file-or-api instrument-config fore?)})))))
+        :stream stream}))))))
 
 (defn get-incint-streams [backtest-config streams incint fore?]
   (let [init-stream (if (= incint "inception") 
@@ -77,7 +74,7 @@
 (defn fetch-formatted-streams 
   ([backtest-config] (fetch-formatted-streams backtest-config false))
   ([backtest-config fore?]
-  (let [streams (fetch-streams backtest-config)]
+  (let [streams (fetch-streams backtest-config fore?)]
     {:inception-streams (get-incint-streams backtest-config streams "inception" fore?)
      :intention-streams (get-incint-streams backtest-config streams "intention" fore?)})))
 
@@ -93,4 +90,4 @@
 
   (def sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams)))
 
-  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))))
+  (def return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))))

@@ -1,5 +1,6 @@
 (ns v0_2_X.hydrate
   (:require
+   [util :as util]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
    [v0_2_X.streams :as streams]))
@@ -8,12 +9,13 @@
   ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
   ([strindy backtest-config fore?]
   (let [streams (streams/fetch-formatted-streams backtest-config fore?)
+        stream-proxy (-> streams :intention-streams first (util/subvec-end 10))
         sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
-     :backtest-config backtest-config
+     :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
      :strindy strindy
      :sieve-stream sieve-stream
-     :return-stream (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))})))
+     :return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))})))
 
 (defn is-sieve-unique? [test-stream sieve-streams]
   (not (some #(= % test-stream) sieve-streams)))
@@ -58,4 +60,4 @@
 
   (def sieve-stream (strindy/get-sieve-stream strindy (streams :inception-streams)))
 
-  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (streams :intention-streams))))
+  (def return-stream (strindy/sieve->return sieve-stream (streams :intention-streams))))
