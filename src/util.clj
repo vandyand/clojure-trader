@@ -4,8 +4,6 @@
   (reduce (fn [_ cur-val] (when (= (_key cur-val) _val) (reduced cur-val)))
           nil coll))
 
-
-
 (defn subvec-end [v cnt]
   (if (> cnt -1)
     (subvec v (- (count v) cnt))
@@ -24,12 +22,12 @@
         i
         :else (recur (inc i))))))
 
-(defn get-fore-series [proxy new]
+(defn get-fore-ind [proxy new]
   (loop [i 0]
     (when (<= i (- (count new) (count proxy)))
       (let [test-vec (subvec new (- (count new) (count proxy) i) (- (count new) i))]
         (if (= test-vec proxy)
-          (subvec-end new i)
+          i
           (recur (inc i)))))))
 
 (defn current-time-sec []

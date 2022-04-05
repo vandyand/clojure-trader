@@ -27,37 +27,39 @@
 
 (defn get-stream-from-file-or-api
   [instrument-config]
-   (let [file-name (get-instrument-file-name instrument-config)
-         file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
-         file-content (when file-exists (first (file/read-file file-name)))]
-     (if file-content
-       (if (up-to-date? (get file-content :time-stamp) (get instrument-config :granularity))
-         (vec (get file-content :stream))
-         (vec (update-stream-file instrument-config (get file-content :stream))))
-       (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
-         (file/write-file
-          file-name
-          {:time-stamp (util/current-time-sec)
-           :stream stream})
-         stream))))
+  (let [file-name (get-instrument-file-name instrument-config)
+        file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
+        file-content (when file-exists (first (file/read-file file-name)))]
+    (if file-content
+      (if (up-to-date? (get file-content :time-stamp) (get instrument-config :granularity))
+        (vec (get file-content :stream))
+        (vec (update-stream-file instrument-config (get file-content :stream))))
+      (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
+        (file/write-file
+         file-name
+         {:time-stamp (util/current-time-sec)
+          :stream stream})
+        stream))))
 
-(defn fetch-streams 
+(defn fetch-streams
   ([backtest-config] (fetch-streams backtest-config false))
   ([backtest-config fore?]
-  (let [instruments-config (ostrindy/get-instruments-config backtest-config)]
-    (doall
+   (let [instruments-config (ostrindy/get-instruments-config backtest-config)
+         num-data-points (if fore?
+                           (util/get-fore-ind (get backtest-config :stream-proxy) 
+                                              (get-stream-from-file-or-api (first instruments-config)))
+                           (get backtest-config :count))]
      (for [instrument-config instruments-config]
        (let [whole-stream (get-stream-from-file-or-api instrument-config)
-             stream (if fore? (util/get-fore-series (get backtest-config :stream-proxy) whole-stream)
-                        (util/subvec-end whole-stream (get instrument-config :count)))]
-       {:instrument (get instrument-config :name)
-        :stream stream}))))))
+             stream (util/subvec-end whole-stream num-data-points)]
+         {:instrument (get instrument-config :name)
+          :stream stream})))))
 
 (defn get-incint-streams [backtest-config streams incint fore?]
-  (let [init-stream (if (= incint "inception") 
+  (let [init-stream (if (= incint "inception")
                       [(if fore?
                          (vec (map #(+ % (get backtest-config :num-data-points)) (-> streams first :stream count range)))
-                         (vec (range (get backtest-config :num-data-points))))] 
+                         (vec (range (get backtest-config :num-data-points))))]
                       [])]
     (into
      init-stream
@@ -71,12 +73,12 @@
                     (if (= incint "inception") "intention" "inception"))))
            (get backtest-config :streams-config))))))
 
-(defn fetch-formatted-streams 
+(defn fetch-formatted-streams
   ([backtest-config] (fetch-formatted-streams backtest-config false))
   ([backtest-config fore?]
-  (let [streams (fetch-streams backtest-config fore?)]
-    {:inception-streams (get-incint-streams backtest-config streams "inception" fore?)
-     :intention-streams (get-incint-streams backtest-config streams "intention" fore?)})))
+   (let [streams (fetch-streams backtest-config fore?)]
+     {:inception-streams (get-incint-streams backtest-config streams "inception" fore?)
+      :intention-streams (get-incint-streams backtest-config streams "intention" fore?)})))
 
 (comment
   (def backtest-config (config/get-backtest-config-util

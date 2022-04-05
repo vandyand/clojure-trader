@@ -15,27 +15,19 @@
 (defn get-best-gaust [gausts]
   (reduce (fn [acc cur] (if (> (:g-score cur) (:g-score acc)) cur acc)) gausts))
 
-(defn update-gaust [gaust]
-  (let [back-streams nil ;(file/get-by-id "streams.edn" (get gaust :streams-id))
-        new-streams (streams/fetch-formatted-streams (get back-streams :backtest-config))]
-    ;; (gaunt/run-hyst-gauntlet gaust back-streams new-streams)
-    (gaunt/run-hyst-gauntlet gaust)))
-
-(defn update-gausts [gausts]
-  (for [gaust gausts]
-    (update-gaust gaust)))
-
 (defn get-intention-instruments [gaust]
   (let [back-streams nil];(file/get-by-id "streams.edn" (:streams-id gaust))]
     (config/get-streams-info (-> back-streams :backtest-config :streams-config) "intention" :name)))
 
-(defn get-gausts-with-returns []
-  (let [gausts (file/get-hystrindies-from-file "gaustrindies.edn")
-        hysts (file/get-hystrindies-from-file "hystrindies.edn")]
-    (map #(assoc % :return-stream (-> hysts (util/find-in :id (:id %)) :return-stream)) gausts)))
+;; (defn get-gausts-with-returns []
+;;   (let [gausts (file/get-hystrindies-from-file "gaustrindies.edn")
+;;         hysts (file/get-hystrindies-from-file "hystrindies.edn")]
+;;     (map #(assoc % :return-stream (-> hysts (util/find-in :id (:id %)) :return-stream)) gausts)))
+
+
 
 (comment
-  (def gausts (get-gausts-with-returns))
+  (def gausts (file/get-hystrindies-from-file "gaustrindies.edn"))
 
   (def best-gausts (get-best-gausts gausts -0.2))
   (count best-gausts)
