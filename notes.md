@@ -1,3 +1,8 @@
+### Mon, Apr 11, 22
+We should organize our hystrindies data better by splitting it into different files for different backtests. This will make it easier to work with for gausts too - which should also be split into different files (or added to the hyst files?)
+
+Also, lets get the arena working.
+
 ### Fri, Apr 1, 22
 The idea is to run a gauntlet with any hysty at all. Hysties have backtest config in them but we also need some way of telling what the future data is. Right now, we pull the data and use overlap index to tell what the future data is. This only works, however, if we have the old data, or know what it is somehow. We can put a timestamp in the hysty which could work but then we have to figure out from the new data how much of it is after that time stamp (not impossible). An alternative is to record open times for each open price in the stream data. This is a lot of extra data...
 

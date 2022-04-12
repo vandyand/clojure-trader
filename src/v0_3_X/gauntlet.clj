@@ -22,6 +22,7 @@
   (let [g-return-stream (get fore-hystrindy :return-stream)]
     {:id (get back-hystrindy :id)
      :strindy (get back-hystrindy :strindy)
+     :streams-config (-> back-hystrindy :backtest-config :streams-config)
      :return-stream (repopulate-return-stream (-> back-hystrindy :return-stream :rivulet))
      :g-sieve-stream (get fore-hystrindy :sieve-stream)
      :g-return-stream g-return-stream
@@ -40,7 +41,8 @@
   (let [hysts (file/get-hystrindies-from-file)
         fysts (get-fore-hystrindies hysts)
         gausts (get-gaustrindies hysts fysts)]
-    (file/save-hystrindies-to-file gausts "gaustrindies.edn")))
+    (file/save-hystrindies-to-file gausts "gaustrindies.edn")
+    gausts))
 
 
 

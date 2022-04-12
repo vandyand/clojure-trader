@@ -45,10 +45,14 @@
   ([backtest-config] (fetch-streams backtest-config false))
   ([backtest-config fore?]
    (let [instruments-config (ostrindy/get-instruments-config backtest-config)
+        ;;  baz (clojure.pprint/pprint backtest-config)
+        ;;  bas (clojure.pprint/pprint instruments-config)
          num-data-points (if fore?
                            (util/get-fore-ind (get backtest-config :stream-proxy) 
                                               (get-stream-from-file-or-api (first instruments-config)))
-                           (get backtest-config :count))]
+                           (get backtest-config :num-data-points))
+        ;;  foo (println "num-data-points: " num-data-points)
+         ]
      (for [instrument-config instruments-config]
        (let [whole-stream (get-stream-from-file-or-api instrument-config)
              stream (util/subvec-end whole-stream num-data-points)]

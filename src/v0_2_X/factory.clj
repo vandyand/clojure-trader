@@ -15,7 +15,7 @@
 
     (def streams (streams/fetch-formatted-streams backtest-config))
 
-    (dotimes [n 3]
+    (dotimes [n 5]
       (def best-pop (ga/run-epochs streams ga-config))
 
       (def candidate (first best-pop))

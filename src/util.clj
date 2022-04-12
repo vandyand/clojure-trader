@@ -5,7 +5,9 @@
           nil coll))
 
 (defn subvec-end [v cnt]
-  (if (> cnt -1)
+  ;; (println "v: " v)
+  ;; (println "cnt: " cnt)
+  (if (and (> cnt -1) (> (count v) cnt))
     (subvec v (- (count v) cnt))
     v))
 
