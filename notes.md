@@ -1,7 +1,22 @@
+### Mon, Apr 11, 22
+We should organize our hystrindies data better by splitting it into different files for different backtests. This will make it easier to work with for gausts too - which should also be split into different files (or added to the hyst files?)
+
+Also, lets get the arena working.
+
+### Fri, Apr 1, 22
+The idea is to run a gauntlet with any hysty at all. Hysties have backtest config in them but we also need some way of telling what the future data is. Right now, we pull the data and use overlap index to tell what the future data is. This only works, however, if we have the old data, or know what it is somehow. We can put a timestamp in the hysty which could work but then we have to figure out from the new data how much of it is after that time stamp (not impossible). An alternative is to record open times for each open price in the stream data. This is a lot of extra data...
+
+The problem is we're storing all the data to a file for easy access but there's no way of knowing, in the file, what times the prices are from. Somehow we need the times of prices in order to get the prices between the end of the hyst and the present. We need this to work for all "supported" time frames. 
+
+Either way we need the time stamp in the hyst. That or just save the end however many values (like 10) of the first intention stream as a proxy to know our place.
+
+### Thurs, Mar 31, 22
+- Get rid of redundant data in saved edn files (multiple return streams in hystrindies.edn (really only need delta right?), multiple duplicate streams in streams.edn)
+
 ### Wed, Mar 30, 22
 Todo:
 - Long and short strategies (return -1, 0 or 1 instead of booleans)?
-- Lots of instruments
+- Lots of instruments [x]
 - Finish orders/trading system, tagging trades by strindy id
 
 ### Thurs, Mar 24, 22

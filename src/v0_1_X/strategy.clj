@@ -1,9 +1,5 @@
 (ns v0_1_X.strategy
   (:require
-  ;;  [clojure.spec.alpha :as s]
-  ;;  [clojure.spec.gen.alpha :as sgen]
-  ;;  [clojure.test.check.generators :as gen]
-  ;;  [clojure.string :as cs]
    [clojure.pprint :as pp]
    [clojure.walk :as w]
    [clojure.zip :as z]
@@ -28,9 +24,6 @@
   {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs)})
 
 ;; MAKE TREE
-
-(defn isArrayMap? [testee] (= (type testee) clojure.lang.PersistentArrayMap))
-(defn isLong? [testee] (= (type testee) java.lang.Long))
 
 (defn make-tree-recur
   "available-ind-sets is the set of total index sets minus (difference) node parent index sets"

@@ -1,71 +1,51 @@
 (ns v0_2_X.hydrate
   (:require
+   [util :as util]
    [v0_2_X.strindicator :as strindy]
-   [v0_2_X.oanda_strindicator :as ostrindy]
-   [v0_2_X.config :as config]))
+   [v0_2_X.config :as config]
+   [v0_2_X.streams :as streams]))
 
-(defn get-backtest-streams [backtest-config]
-  (let [default-stream (vec (range (get backtest-config :num-data-points)))
-        other-streams (ostrindy/get-instruments-streams backtest-config)
-        streams (into [default-stream] other-streams)
-        inception-ids (config/get-streams-info (:streams-config backtest-config) "inception")
-        intention-ids (config/get-streams-info (:streams-config backtest-config) "intention")]
+(defn hydrate-strindy 
+  ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
+  ([strindy backtest-config fore?]
+  (let [streams (streams/fetch-formatted-streams backtest-config fore?)
+        stream-proxy (-> streams :intention-streams first (util/subvec-end 10))
+        sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
-     :backtest-config (dissoc backtest-config :strindy-config)
-     :time-stamp (quot (System/currentTimeMillis) 1000)
-     :inception-streams (vec (for [ind inception-ids] (get streams ind)))
-     :intention-streams (vec (for [ind intention-ids] (get streams ind)))}))
-
-(defn hydrate-strindy [strindy streams]
-  (let [sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
-    {:id (.toString (java.util.UUID/randomUUID))
-     :streams-id (get streams :id)
+     :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
      :strindy strindy
      :sieve-stream sieve-stream
-     :return-streams (strindy/get-return-streams-from-sieve sieve-stream (get streams :intention-streams))}))
-
-(defn hydrate-strindies [strindies streams]
-  (for [strindy strindies]
-    (hydrate-strindy strindy streams)))
+     :return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))})))
 
 (defn is-sieve-unique? [test-stream sieve-streams]
   (not (some #(= % test-stream) sieve-streams)))
 
-(defn get-hydrated-strindy [strindy-config streams]
-  (let [strindy (strindy/make-strindy strindy-config)]
-    (hydrate-strindy strindy streams)))
+(defn get-rand-hyst [backtest-config]
+  (let [strindy (strindy/make-strindy (get backtest-config :strindy-config))]
+    (hydrate-strindy strindy backtest-config false)))
 
 (defn get-unique-hystrindies
-  ([ga-config streams] (get-unique-hystrindies ga-config streams (get-in ga-config [:pop-config :pop-size])))
-  ([ga-config streams num-strindies]
+  ([ga-config] (get-unique-hystrindies ga-config (get-in ga-config [:pop-config :pop-size])))
+  ([ga-config num-strindies]
    (loop [v []]
      (if (< (count v) num-strindies)
        (recur
-        (let [new-hystrindy (get-hydrated-strindy (get-in ga-config [:backtest-config :strindy-config]) streams)
+        (let [new-hystrindy (get-rand-hyst (get ga-config :backtest-config))
               new-sieve (get new-hystrindy :sieve-stream)
               prior-sieves (map :sieve-stream v)]
           (if (is-sieve-unique? new-sieve prior-sieves) (conj v new-hystrindy) v)))
        v))))
 
-(defn get-hystrindies
-  ([ga-config streams] (get-hystrindies ga-config streams (get-in ga-config [:pop-config :pop-size])))
-  ([ga-config streams num-strindies]
-   (loop [i 0 v (transient [])]
-     (if (< i num-strindies)
-       (recur (inc i)
-              (conj! v (get-hydrated-strindy (get-in ga-config [:backtest-config :strindy-config]) streams)))
-       (persistent! v)))))
-
 (defn get-hystrindy-fitness [hystrindy]
-  (let [fitness (-> hystrindy :return-streams first :sum-beck last)]
+  (let [fitness (-> hystrindy :return-stream :beck last)]
     (assoc hystrindy :fitness fitness)))
 
 (defn get-hystrindies-fitnesses [hystrindies]
   (for [hystrindy hystrindies]
     (get-hystrindy-fitness hystrindy)))
 
-(defn get-init-pop [ga-config streams]
-  (get-hystrindies-fitnesses (get-unique-hystrindies ga-config streams)))
+(defn get-init-pop [ga-config]
+  (get-hystrindies-fitnesses (get-unique-hystrindies ga-config)))
 
 
 (comment
@@ -74,11 +54,10 @@
                         ["EUR_USD" "intention"]
                         "binary" 1 2 3 100 "M1"))
 
-  (def streams (get-backtest-streams backtest-config))
+  (def streams (streams/fetch-formatted-streams backtest-config))
 
   (def strindy (strindy/make-strindy-recur (backtest-config :strindy-config)))
 
   (def sieve-stream (strindy/get-sieve-stream strindy (streams :inception-streams)))
 
-  (def return-streams (strindy/get-return-streams-from-sieve sieve-stream (streams :intention-streams)))
-  )
+  (def return-stream (strindy/sieve->return sieve-stream (streams :intention-streams))))

@@ -2,6 +2,7 @@
 
 ### Todo - short term
 
+- [ ] Get gauntlet working with new streams refactor
 ### Todo - longer term
 
 - [ ] (0.3.X) Arena
@@ -39,6 +40,9 @@
 - [ ] Refactor back-streams to get rid of redundant data (when some stream is both inception and intention the data is currently duplicated which is unnecessary)
 - [ ] Refactor back-hystrindieses in gauntlet to be vector of values of map instead of map - refactor gauntlet
 - [ ] Don't use Thread/sleep in oanda_api requests lol. Use async or promise or something
+- [ ] Refactor `fore?` in streams and hystrindies. Currently very redundant arg passing through many functions.
+- [ ] Fix bug with solving gaustys with only one time slice of fore-data. Right now it bugs out with zero-index or something.
+- [ ] Feat: ability to mix and match granualrities in inception and intention streams.
 
 ### Completed Tasks
 
@@ -87,5 +91,7 @@
 - [x] (0.3.2) Organize data files in dedicated folder
 - [x] (0.3.2) Added Arena
 - [x] (0.3.2) Updated oanda_api for crud operations on trades by client id
+- [x] (0.2.13) Refactor streams
+- [x] (0.2.13) Get factory working with new streams refactor
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
