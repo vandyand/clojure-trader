@@ -1,4 +1,4 @@
-(ns v0-3-X.arena
+(ns v0_3_X.arena
   (:require
    [file :as file]
    [util :as util]
@@ -17,6 +17,20 @@
 
 (defn get-intention-instruments [gaust]
   (map :name (filter #(not= (get % :incint) "inception") (-> gaust :streams-config))))
+
+(defn run-arena []
+  (let [gausts (gaunt/run-gauntlet)
+        best-gaust (get-best-gaust gausts)
+        intention-instruments (get-intention-instruments best-gaust)
+        target-pos? (= 1 (-> best-gaust :g-sieve-stream last))]
+    (doseq [instrument intention-instruments]
+      (let [current-pos? (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))]
+        (cond
+          (and target-pos? (not current-pos?))
+          (doall (oa/send-order-request instrument 100) (println instrument ": position opened!"))
+          (and (not target-pos?) current-pos?)
+          (doall (oa/send-order-request instrument (* -1 100)) (println instrument ": position closed!"))
+          :else (println instrument ": nothing happened!"))))))
 
 (comment
   (do

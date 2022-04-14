@@ -26,10 +26,10 @@
 
   (load "/file")
 
-  (load "/v0_2_X/factory")
+  (load "/v0_2_X/hyst_factory")
 
   (load "/v0_3_X/gauntlet")
 
-  ;; (load "/v0_3_X/arena")
+  (load "/v0_3_X/arena")
   )
 
