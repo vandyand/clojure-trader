@@ -95,6 +95,7 @@
 - [x] (0.2.13) Refactor streams
 - [x] (0.2.13) Get factory working with new streams refactor
 - [x] (0.2.13) Get gauntlet working with new streams refactor
+- [x] (0.3.3) Get runner working
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
