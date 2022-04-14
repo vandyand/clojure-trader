@@ -1,10 +1,11 @@
 # Roadmap and Such and So
 
 ### Todo - short term
-
-- [ ] Get gauntlet working with new streams refactor
+- [ ] (0.3.X) Fix sieve stream last index delta issue
+- [ ] (0.3.X) Make hystrindies into separate files as we did with streams
 ### Todo - longer term
 
+- [ ] Make crossover better (more intelligent somehow?)
 - [ ] (0.3.X) Arena
   - [ ] Delete hystrindies from edn file by id if z-score is too low
   - [ ] Create Arena where gaustrindies trade via api on paper account
@@ -93,5 +94,7 @@
 - [x] (0.3.2) Updated oanda_api for crud operations on trades by client id
 - [x] (0.2.13) Refactor streams
 - [x] (0.2.13) Get factory working with new streams refactor
+- [x] (0.2.13) Get gauntlet working with new streams refactor
+
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

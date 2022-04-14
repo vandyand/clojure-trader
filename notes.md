@@ -1,3 +1,6 @@
+### Wed, Apr 13, 22
+What's the best way to store hysts? Just put groups of them in the same files. The file names can be a sha256 hash of their stringified factory-config (or not stringified? whichever). Do we ever want to generate config from a hash? If so, we shouldn't use a one-way function like sha256... We'd have to use some type of encoding. We could just make our own code... just make a config->code function and a code->config function. The code can be a string to use as the file name. Or just use sha or some other hashing algorithm and make a lookup table in another file called "config.edn" or something. Just store the hash value with the config settings and voilà.
+
 ### Mon, Apr 11, 22
 We should organize our hystrindies data better by splitting it into different files for different backtests. This will make it easier to work with for gausts too - which should also be split into different files (or added to the hyst files?)
 
