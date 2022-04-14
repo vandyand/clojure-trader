@@ -1,26 +1,50 @@
-(ns v0_2_X.factory
+(ns v0_2_X.hyst_factory
   (:require
    [v0_2_X.config :as config]
    [v0_2_X.ga :as ga]
    [v0_2_X.streams :as streams]
    [file :as file]))
 
+
+(defn run-factory [factory-config]
+  (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
+  (dotimes [n (-> factory-config :factory-num-produced)]
+    (let [best-pop (ga/run-epochs streams factory-config)
+          candidate (first best-pop)]
+    (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))
+                                 "hystrindies.edn")))))
+
+(comment
+  (def backtest-config (config/get-backtest-config-util
+                        ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
+                        "binary" 2 3 4 1200 "M5"))
+
+  (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 30 0.4 0.2 0.4)))
+
+  (def factory-config (config/get-factory-config 3 ga-config))
+  
+  (run-factory factory-config)
+  )
+
 (comment
   (do
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
-                          "binary" 2 3 4 1200 "M1"))
+                          "binary" 2 3 4 1200 "M5"))
 
-    (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 20 0.4 0.2 0.4)))
+    (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 30 0.4 0.2 0.4)))
 
     (def streams (streams/fetch-formatted-streams backtest-config))
 
-    (dotimes [n 5]
+    (dotimes [n 2]
       (def best-pop (ga/run-epochs streams ga-config))
 
       (def candidate (first best-pop))
 
-      (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)) "hystrindies.edn"))))
+      (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)) 
+                                   "hystrindies.edn"))))
+
+
 
 (comment
   (def cpairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"

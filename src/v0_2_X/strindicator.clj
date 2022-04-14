@@ -24,7 +24,8 @@
 
 (defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
 
-(defn sieve->rivulet [sieve intention-rivulet] (mapv * (cons (first sieve) sieve) intention-rivulet))
+(defn sieve->rivulet [sieve intention-rivulet] 
+  (mapv * (cons (first sieve) sieve) intention-rivulet)) ;; Look for bug here. Not sure first sieve is correct
 
 (defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
