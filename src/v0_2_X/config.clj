@@ -67,6 +67,9 @@
    :backtest-config backtest-config
    :pop-config pop-config})
 
+(defn get-factory-config [factory-num-produced ga-config]
+  (assoc ga-config :factory-num-produced factory-num-produced))
+
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))
   
