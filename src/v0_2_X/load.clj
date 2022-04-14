@@ -31,5 +31,7 @@
   (load "/v0_3_X/gauntlet")
 
   (load "/v0_3_X/arena")
+  
+  (load "/v0_3_X/runner")
   )
 
