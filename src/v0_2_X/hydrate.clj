@@ -3,9 +3,7 @@
    [util :as util]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
-   [v0_2_X.streams :as streams]
-   [buddy.core.hash :as hash]
-   [buddy.core.codecs :refer (bytes->hex)]))
+   [v0_2_X.streams :as streams]))
 
 (defn hydrate-strindy 
   ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
@@ -49,8 +47,6 @@
 (defn get-init-pop [ga-config]
   (get-hystrindies-fitnesses (get-unique-hystrindies ga-config)))
 
-(defn hyst->file-name [hystrindy]
-  (-> hystrindy :ga-config hash/md5 bytes->hex))
 
 (comment
   (def backtest-config (config/get-backtest-config-util

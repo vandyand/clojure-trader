@@ -18,19 +18,20 @@
 
   (load "/v0_2_X/strindicator")
 
-  (load "/file")
-
   (load "/v0_2_X/streams")
 
   (load "/v0_2_X/hydrate")
 
   (load "/v0_2_X/ga")
 
+  (load "/file")
+
   (load "/v0_2_X/hyst_factory")
 
   (load "/v0_3_X/gauntlet")
 
   (load "/v0_3_X/arena")
-
-  (load "/v0_3_X/runner"))
+  
+  (load "/v0_3_X/runner")
+  )
 
