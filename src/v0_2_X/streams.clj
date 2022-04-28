@@ -19,7 +19,7 @@
          overlap-ind (util/get-overlap-ind old-stream new-stream)
          updated-stream (into old-stream (util/subvec-end new-stream overlap-ind))]
      (file/write-file
-      (str file/data-folder file-name)
+      file-name
       {:time-stamp (util/current-time-sec)
        :stream updated-stream}
       false)
@@ -36,7 +36,7 @@
         (vec (update-stream-file instrument-config (get file-content :stream))))
       (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
         (file/write-file
-         (str file/data-folder file-name)
+         file-name
          {:time-stamp (util/current-time-sec)
           :stream stream})
         stream))))
