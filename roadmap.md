@@ -1,8 +1,9 @@
 # Roadmap and Such and So
 
 ### Todo - short term
-- [ ] (0.3.X) Fix sieve stream last index delta issue
+- [ ] Go long and short - test with one intention instrument
 - [ ] (0.3.X) Make hystrindies into separate files as we did with streams
+
 ### Todo - longer term
 
 - [ ] Make crossover better (more intelligent somehow?)
@@ -44,6 +45,7 @@
 - [ ] Refactor `fore?` in streams and hystrindies. Currently very redundant arg passing through many functions.
 - [ ] Fix bug with solving gaustys with only one time slice of fore-data. Right now it bugs out with zero-index or something.
 - [ ] Feat: ability to mix and match granualrities in inception and intention streams.
+- [ ] Get multiple candidate hystrindies from GA instead of just the best one as is currently the case.
 
 ### Completed Tasks
 
@@ -96,6 +98,7 @@
 - [x] (0.2.13) Get factory working with new streams refactor
 - [x] (0.2.13) Get gauntlet working with new streams refactor
 - [x] (0.3.3) Get runner working
+- [x] (0.3.4) Fix sieve stream last index delta issue
 
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

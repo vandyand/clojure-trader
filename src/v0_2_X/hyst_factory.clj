@@ -3,6 +3,7 @@
    [v0_2_X.config :as config]
    [v0_2_X.ga :as ga]
    [v0_2_X.streams :as streams]
+   [v0_2_X.hydrate :as hyd]
    [file :as file]))
 
 
@@ -10,9 +11,10 @@
   (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
   (dotimes [n (-> factory-config :factory-num-produced)]
     (let [best-pop (ga/run-epochs streams factory-config)
-          candidate (first best-pop)]
+          candidate (first best-pop) ;; Update to get multiple candidates from one GA?
+          file-name (hyd/hyst->file-name candidate)]
     (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))
-                                 "hystrindies.edn")))))
+                                 file-name)))))
 
 (comment
   (def backtest-config (config/get-backtest-config-util
