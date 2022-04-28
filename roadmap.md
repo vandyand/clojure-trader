@@ -1,8 +1,8 @@
 # Roadmap and Such and So
 
 ### Todo - short term
-- [ ] (0.3.X) Fix sieve stream last index delta issue
-- [ ] (0.3.X) Make hystrindies into separate files as we did with streams
+- [ ] Go long and short - test with one intention instrument
+
 ### Todo - longer term
 
 - [ ] Make crossover better (more intelligent somehow?)
