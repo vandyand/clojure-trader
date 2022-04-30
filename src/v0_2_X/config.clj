@@ -17,6 +17,7 @@
    streams-config))) ; Need stream ids for strindy tree creation (not tree config)
 
 (defn get-strindy-config 
+  "don't worry, these overrides return the same structure!"
   ([return-type min-depth max-depth max-children inception-ids intention-ids]
    {:return-type return-type
     :min-depth min-depth
@@ -37,7 +38,7 @@
 
 ; Strindy tree shape config:
 (defn get-tree-config
-  "return-type is string of 'binary' | 'continuous'"
+  "return-type is string of 'binary' | 'ternary' (long and short) | 'continuous'"
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 

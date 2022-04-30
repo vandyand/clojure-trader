@@ -5,7 +5,8 @@
    [clojure.zip :as z]
    [oz.core :as oz]
    [clojure.set :as set]
-   [v0_1_X.inputs :as inputs]))
+   [v0_1_X.inputs :as inputs]
+   [helpers :as helpers]))
 
 ;; CONFIG FUNCTIONS
 
@@ -20,8 +21,12 @@
     (for [x (range num-inputs) y (range num-inputs)]
       (when (not= x y)  #{x y})))))
 
-(defn get-tree-config [min-depth max-depth num-inputs]
-  {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs)})
+(defn get-tree-config 
+  "return-type is: binary | ternary"
+  ([min-depth max-depth num-inputs] (get-tree-config min-depth max-depth num-inputs "binary"))
+  ([min-depth max-depth num-inputs return-type]
+   (let [bintern (if (contains? #{"binary" "ternary"} return-type) return-type "binary")]
+   {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs) :return-type bintern})))
 
 ;; MAKE TREE
 
@@ -34,7 +39,7 @@
          make-child #(if (or (empty? new-available-ind-sets) 
                           (and (>= depth (tree-config :min-depth))
                                (or (> (rand) 0.3) (>= depth (tree-config :max-depth)))))
-                       (rand-nth [true false])
+                       (rand-nth (helpers/return-type->vec (get tree-config :return-type)))
                        (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
      (as-> [] $
        (z/vector-zip $)
@@ -45,13 +50,17 @@
 
 (defn ameliorate-tree
   "This function only works on vector trees.
-   Walk the tree. If two branches are identical, replace the node with the first branch"
+   Walk the tree. If two branches are identical, replace the first branch with boolean opposite of second branch"
   [tree]
   (w/postwalk
    #(if (and
          (= (type %) clojure.lang.PersistentVector)
          (= (nth % 1) (nth % 2)))
-      [(first %) (not (last %)) (last %)]
+      ;; Make sure to only potentially inlude -1 if tree-config return-type is "ternary", if "binary" values are only 0 and 1
+      ;[(first %) (- (mod (+ (last %) 2) 3) 1) (last %)] ;; This makes [cond 1 1] -> [cond -1 1] with 1 -> -1, 0 -> 1, -1 -> 0 for middle leaf
+      
+      ;; This is easier for now...
+      (last %)
       %)
    tree))
 
@@ -70,8 +79,8 @@
 (defn solve-tree
   "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
   [tree inst-inputs]
-  (if (= (type tree) java.lang.Boolean)
-    (if tree 1 0)
+  (if (= (type tree) java.lang.Long)
+    tree
     (solve-tree
      (if (solve-cond inst-inputs (first tree))
        (nth tree 1)

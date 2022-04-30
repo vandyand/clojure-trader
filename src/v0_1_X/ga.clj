@@ -11,7 +11,9 @@
   ;;  [clojure.set :as set]
    [v0_1_X.strategy :as strat]
    [v0_1_X.inputs :as inputs]
-   [v0_2_X.strindicator :as strindy]))
+   [v0_2_X.strindicator :as strindy]
+   [helpers :as helpers]
+   [v0_2_X.config :as config]))
 
 ;; CONFIG FUNCTIONS
 
@@ -85,14 +87,15 @@
   (if (z/branch? loc) (-> loc (z/replace (-> loc (rand-branch) (z/node))))
       loc))
 
-(defn replace-rand-branch-with-rand-bool [loc]
-  (if (z/branch? loc) (-> loc (rand-branch) (z/replace (rand-bool)) (z/up))
+(defn replace-rand-branch-with-rand-val [loc return-type]
+  (if (z/branch? loc) (-> loc (rand-branch) (z/replace (rand-nth (helpers/return-type->vec return-type))) (z/up))
       loc))
 
-(defn new-rand-branch [loc]
+(defn new-rand-branch
+  [loc return-type]
   (if (z/branch? loc)
-    (let [subtree-config (strat/get-tree-config 0 1 2)
-          new-node (strat/make-tree-recur subtree-config)]
+    (let [subtree-config (strat/get-tree-config 0 1 2 return-type)
+          new-node (strat/make-tree subtree-config)]
       (-> loc (rand-branch) (z/replace new-node) (z/up))) loc))
 
 (defn switch-branches [loc]
@@ -119,18 +122,20 @@
 
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
 
-(defn get-mutated-tree [tree]
+(defn get-mutated-tree 
+  ([tree] (get-mutated-tree tree "binary"))
+  ([tree return-type]
   (strat/ameliorate-tree
    (let [n (rand-int 8)]
      (cond
-       (= n 0) (-> tree (z/vector-zip) (replace-rand-branch-with-rand-bool) (z/root))
-       (= n 1) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-bool) (z/root))
+       (= n 0) (-> tree (z/vector-zip) (replace-rand-branch-with-rand-val return-type) (z/root))
+       (= n 1) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-val return-type) (z/root))
        (= n 2) (-> tree (z/vector-zip) (prune-rand-branch) (z/root))
        (= n 3) (-> tree (z/vector-zip) (rand-branch) (prune-rand-branch) (z/root))
-       (= n 4) (-> tree (z/vector-zip) (new-rand-branch) (z/root))
-       (= n 5) (-> tree (z/vector-zip) (rand-branch) (new-rand-branch) (z/root))
+       (= n 4) (-> tree (z/vector-zip) (new-rand-branch return-type) (z/root))
+       (= n 5) (-> tree (z/vector-zip) (rand-branch) (new-rand-branch return-type) (z/root))
        (= n 6) (-> tree (z/vector-zip) (switch-branches) (z/root))
-       (= n 7) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root))))))
+       (= n 7) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root)))))))
 
 (defn get-rand-tree-branch [tree]
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
@@ -194,7 +199,7 @@
       (get get-crossover-tree parent-trees)
       (< n (+ (get pop-config :crossover-pct)
               (get pop-config :mutation-pct)))
-      (get-mutated-tree (rand-nth parent-trees))
+      (get-mutated-tree (rand-nth parent-trees) (get tree-config :return-type))
       :else (strat/make-tree-recur tree-config))))
 
 (defn get-children-trees [parent-trees ga-config]
