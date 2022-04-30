@@ -52,11 +52,11 @@
   (def backtest-config (config/get-backtest-config-util
                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ["EUR_USD" "intention"]
-                        "binary" 1 2 3 100 "M1"))
+                        "ternary" 1 2 3 12 "H4"))
 
   (def streams (streams/fetch-formatted-streams backtest-config))
 
-  (def strindy (strindy/make-strindy-recur (backtest-config :strindy-config)))
+  (def strindy (strindy/make-strindy (backtest-config :strindy-config)))
 
   (def sieve-stream (strindy/get-sieve-stream strindy (streams :inception-streams)))
 

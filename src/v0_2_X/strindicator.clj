@@ -88,8 +88,9 @@
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or (and parent-node? (= (get config :return-type) "binary")) (and (>= num-inputs 2) (< (rand) 0.1)))
-           strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs)))
+           tree-node? (or (and parent-node? (contains? #{"binary" "ternary"} (get config :return-type))) 
+                          (and (>= num-inputs 2) (< (rand) 0.1)))
+           strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs (get config :return-type))))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config (inc current-depth))))
            func (if tree-node?
                   {:type "strategy" :tree strat-tree :fn (fn [& args] (strat/solve-tree strat-tree args))}

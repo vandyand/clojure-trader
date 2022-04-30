@@ -15,15 +15,16 @@
                                  "hystrindies.edn")))))
 
 (comment
-  (def backtest-config (config/get-backtest-config-util
-                        ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
-                        "binary" 2 3 4 1200 "M5"))
+  (do
+    (def backtest-config (config/get-backtest-config-util
+                          ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
+                          "ternary" 2 3 3 12 "H4"))
 
-  (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 30 0.4 0.2 0.4)))
+    (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 30 0.4 0.4 0.4)))
 
-  (def factory-config (config/get-factory-config 3 ga-config))
-  
-  (run-factory factory-config)
+    (def factory-config (config/get-factory-config 3 ga-config))
+
+    (run-factory factory-config))
   )
 
 (comment
