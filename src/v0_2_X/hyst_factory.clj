@@ -12,7 +12,7 @@
   (dotimes [n (-> factory-config :factory-num-produced)]
     (let [best-pop (ga/run-epochs streams factory-config)
           candidate (first best-pop) ;; Update to get multiple candidates from one GA?
-          file-name (hyd/hyst->file-name candidate)]
+          file-name "hystrindies.edn"]
     (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))
                                  file-name)))))
 
@@ -20,7 +20,7 @@
   (do
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                          "ternary" 2 3 3 12 "H4"))
+                          "ternary" 2 3 3 120 "H4" "sharpe"))
 
     (def ga-config (config/get-ga-config 12 backtest-config (config/get-pop-config 30 0.4 0.4 0.4)))
 

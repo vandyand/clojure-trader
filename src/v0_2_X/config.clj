@@ -30,11 +30,14 @@
         intention-ids (get-streams-info streams-config "intention")]
     (into tree-config {:inception-ids inception-ids :intention-ids intention-ids}))))
 
-(defn get-backtest-config [num-data-points granularity streams-config strindy-config]
+(defn get-backtest-config 
+  ([num-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points granularity "balance" streams-config strindy-config))
+  ([num-data-points granularity fitness-type streams-config strindy-config]
   {:num-data-points num-data-points
    :granularity granularity
+   :fitness-type fitness-type
    :streams-config streams-config
-   :strindy-config strindy-config})
+   :strindy-config strindy-config}))
 
 ; Strindy tree shape config:
 (defn get-tree-config
@@ -43,11 +46,11 @@
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
 (defn get-backtest-config-util [streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
-                                num-data-points granularity]
+                                num-data-points granularity fitness-type]
   (let [streams-config (apply get-streams-config streams-vec)
         tree-config (get-tree-config tree-return-type tree-min-depth tree-max-depth tree-max-children)
         strindy-config (get-strindy-config tree-config streams-config)]
-    (get-backtest-config num-data-points granularity streams-config strindy-config)))
+    (get-backtest-config num-data-points granularity fitness-type streams-config strindy-config)))
 
 
 ; GA config: add GA config to config... or keep it separate? That works. It makes more sense to keep it separate because
