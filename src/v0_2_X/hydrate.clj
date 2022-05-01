@@ -4,8 +4,7 @@
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.config :as config]
    [v0_2_X.streams :as streams]
-   [buddy.core.hash :as hash]
-   [buddy.core.codecs :refer (bytes->hex)]))
+   [stats :as stats]))
 
 (defn hydrate-strindy 
   ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
@@ -39,7 +38,9 @@
        v))))
 
 (defn get-hystrindy-fitness [hystrindy]
-  (let [fitness (-> hystrindy :return-stream :beck last)]
+  (let [fitness-type (get-in hystrindy [:backtest-config :fitness-type])
+        fitness (cond (= fitness-type "balance") (-> hystrindy :return-stream :beck last)
+                      (= fitness-type "sharpe") (-> hystrindy :return-stream :rivulet stats/sharpe))]
     (assoc hystrindy :fitness fitness)))
 
 (defn get-hystrindies-fitnesses [hystrindies]
@@ -48,9 +49,6 @@
 
 (defn get-init-pop [ga-config]
   (get-hystrindies-fitnesses (get-unique-hystrindies ga-config)))
-
-(defn hyst->file-name [hystrindy]
-  (-> hystrindy :ga-config hash/md5 bytes->hex))
 
 (comment
   (def backtest-config (config/get-backtest-config-util

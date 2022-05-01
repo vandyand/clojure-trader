@@ -134,3 +134,11 @@
 (defn z-score [pop sample]
   (let [x (mean sample) μ (mean pop) n (count sample) σ (stdev pop)]
     (/ (* (- x μ) (Math/sqrt n)) σ)))
+
+(defn sharpe [vs]
+  ;; (println vs)
+  (if (<= (count vs) 1) 0.0
+      (let [μ (mean vs) σ (stdev vs)]
+        ;; (println "μ: " μ)
+        ;; (println "σ: " σ)
+        (if (= σ 0.0) 0.0 (/ μ σ)))))

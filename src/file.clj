@@ -6,7 +6,6 @@
    [util]))
 
 (def data-folder "data/")
-(def hyst-folder "hystrindies/")
 
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
@@ -46,7 +45,7 @@
           (format-strindy-for-edn 
            (get hystrindy 
             :strindy)))]
-     (write-file (str hyst-folder file-name) formatted-hystrindy true)))
+     (write-file (str data-folder file-name) formatted-hystrindy true)))
 
 (defn save-hystrindies-to-file 
   ([hystrindies] (save-hystrindies-to-file hystrindies "hystrindies.edn"))
@@ -71,6 +70,6 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "hystrindies.edn"))
   ([file-name]
-   (let [formatted-hystrindies (read-file (str hyst-folder file-name))]
+   (let [formatted-hystrindies (read-file (str data-folder file-name))]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
