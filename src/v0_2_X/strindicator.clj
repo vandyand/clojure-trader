@@ -22,7 +22,9 @@
 (defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
 
 (defn sieve->rivulet [sieve intention-rivulet] 
-  (mapv * (conj sieve 0) intention-rivulet))
+  ;; (mapv * (conj sieve 0) intention-rivulet) ;; Figure out which is accurate...
+  (mapv * (cons (first sieve) sieve) intention-rivulet)
+  )
 
 (defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
