@@ -55,5 +55,5 @@
 
   (def gausts (get-gaustrindies hysts fysts))
 
-  (file/save-hystrindies-to-file gausts "gaustrindies.edn")
+  (file/save-hystrindies-to-file gausts)
   )

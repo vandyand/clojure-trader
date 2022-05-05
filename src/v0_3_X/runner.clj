@@ -23,8 +23,9 @@
 (comment
   (do
     (def backtest-config (config/get-backtest-config-util
-                          ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "both" "EUR_GBP" "inception" "USD_JPY" "inception"]
-                          "binary" 4 8 12 1200 "M30"))
+                          ["EUR_USD" "inception" "AUD_USD" "inception" "GBP_USD" "inception"
+                           "EUR_GBP" "both" "USD_JPY" "inception"]
+                          "binary" 4 8 12 1200 120 "M5"))
 
     (def ga-config (config/get-ga-config 100 backtest-config (config/get-pop-config 200 0.4 0.2 0.4)))
 

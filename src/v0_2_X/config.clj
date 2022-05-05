@@ -47,12 +47,15 @@
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
-(defn get-backtest-config-util [streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
-                                num-data-points granularity fitness-type]
+(defn get-backtest-config-util 
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points granularity fitness-type]
+   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points 0 granularity fitness-type))
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
+                                num-data-points shift-data-points granularity fitness-type]
   (let [streams-config (apply get-streams-config streams-vec)
         tree-config (get-tree-config tree-return-type tree-min-depth tree-max-depth tree-max-children)
         strindy-config (get-strindy-config tree-config streams-config)]
-    (get-backtest-config num-data-points granularity fitness-type streams-config strindy-config)))
+    (get-backtest-config num-data-points shift-data-points granularity fitness-type streams-config strindy-config))))
 
 
 ; GA config: add GA config to config... or keep it separate? That works. It makes more sense to keep it separate because
