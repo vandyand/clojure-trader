@@ -31,9 +31,11 @@
     (into tree-config {:inception-ids inception-ids :intention-ids intention-ids}))))
 
 (defn get-backtest-config 
-  ([num-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points granularity "balance" streams-config strindy-config))
-  ([num-data-points granularity fitness-type streams-config strindy-config]
+  ([num-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points 0 granularity streams-config strindy-config))
+  ([num-data-points shift-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points shift-data-points granularity "balance" streams-config strindy-config))
+  ([num-data-points shift-data-points granularity fitness-type streams-config strindy-config]
   {:num-data-points num-data-points
+   :shift-data-points shift-data-points
    :granularity granularity
    :fitness-type fitness-type
    :streams-config streams-config
