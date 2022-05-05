@@ -17,8 +17,7 @@
 
     (def factory-config (config/get-factory-config 19 ga-config))
 
-    (factory/run-factory factory-config))
-  )
+    (factory/run-factory factory-config)))
 
 
 (comment
@@ -34,22 +33,20 @@
     (factory/run-factory factory-config)
 
     (println "sleeping... " (util/current-time-sec))
-    
+
     (Thread/sleep (* 1000 60 30))
-    
+
     (while true
       (println "running...  " (util/current-time-sec))
       (arena/run-best-gaust)
-      (Thread/sleep 30000))
-    )
-  )
+      (Thread/sleep 30000))))
 
 (comment
   (while true
-    (arena/run-best-gausts)
-    (Thread/sleep 600000))
-  )
+    (try (arena/run-best-gausts)
+         (Thread/sleep 600000)
+         (catch Throwable e
+           (println "Error has been caught!" (.getMessage e))))))
 
 (comment
-  (arena/run-best-gausts)
-  )
+  (arena/run-best-gausts))
