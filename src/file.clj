@@ -70,6 +70,6 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "hystrindies.edn"))
   ([file-name]
-   (let [formatted-hystrindies (read-file (str data-folder file-name))]
+   (let [formatted-hystrindies (read-file file-name)]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))

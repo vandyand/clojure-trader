@@ -39,17 +39,17 @@
     
     (while true
       (println "running...  " (util/current-time-sec))
-      (arena/run-arena)
+      (arena/run-best-gaust)
       (Thread/sleep 30000))
     )
   )
 
 (comment
   (while true
-    (arena/run-arena)
-    (Thread/sleep 30000))
+    (arena/run-best-gausts)
+    (Thread/sleep 600000))
   )
 
 (comment
-  (arena/run-arena)
+  (arena/run-best-gausts)
   )

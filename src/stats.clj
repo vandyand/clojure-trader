@@ -142,3 +142,8 @@
         ;; (println "μ: " μ)
         ;; (println "σ: " σ)
         (if (= σ 0.0) 0.0 (/ μ σ)))))
+
+(defn sum [vs]
+  (if (= 0 (count vs))
+    0.0
+  (apply + vs)))
