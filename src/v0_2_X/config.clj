@@ -48,8 +48,12 @@
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
 (defn get-backtest-config-util 
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points granularity]
+   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children 
+                             num-data-points 0 granularity "sharpe"))
   ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points granularity fitness-type]
-   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points 0 granularity fitness-type))
+   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children 
+                             num-data-points 0 granularity fitness-type))
   ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
                                 num-data-points shift-data-points granularity fitness-type]
   (let [streams-config (apply get-streams-config streams-vec)
