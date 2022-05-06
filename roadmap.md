@@ -100,5 +100,10 @@
 - [x] (0.3.3) Get runner working
 - [x] (0.3.4) Fix sieve stream last index delta issue
 - [x] (0.3.6) Added sharpe as fitness option for hystrindies
+- [x] (0.3.8) Updated arena to run multiple good gausts
+- [x] (0.3.8) Updated hystrindies to save to seperate files
+- [x] (0.3.8) Added shift-data-points to streams for validation range
+- [x] (0.3.8) Redid streams data file saving stuff
+- [x] (0.3.8) run-arena working with multiple hyst files
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
