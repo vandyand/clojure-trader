@@ -6,6 +6,7 @@
    [util]))
 
 (def data-folder "data/")
+(def hyst-folder "hysts/")
 
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
@@ -26,6 +27,9 @@
 (defn clear-file [file-name]
   (spit (str data-folder file-name) ""))
 
+(defn delete-file [file-name]
+  (clojure.java.io/delete-file (str data-folder file-name)))
+
 (defn delete-by-id [file-name id]
   (let [contents (read-file file-name)
         new-contents (filter #(not= (:id %) id) contents)]
@@ -36,22 +40,36 @@
 (defn get-by-id [file-name id]
   (util/find-in (read-file file-name) :id id))
 
+(defn hyst->file-name [hyst]
+  (str (clojure.string/join
+        "-"
+        (conj
+         (rest
+          (map
+           (fn [stream-conf] (if (= "inception" (get stream-conf :incint))
+                               (clojure.string/lower-case (get stream-conf :name))
+                               (str "Target_" (get stream-conf :name))))
+           (-> hyst :backtest-config :streams-config)))
+         (-> hyst :backtest-config :num-data-points)
+         (-> hyst :backtest-config :granularity)))
+       ".edn"))
+
 (defn save-hystrindy-to-file
-  [hystrindy file-name]
+  [hystrindy]
    (let [formatted-hystrindy 
          (assoc 
           hystrindy 
           :strindy 
           (format-strindy-for-edn 
            (get hystrindy 
-            :strindy)))]
-     (write-file (str data-folder file-name) formatted-hystrindy true)))
+            :strindy)))
+         file-name (hyst->file-name hystrindy)]
+     (write-file (str data-folder hyst-folder file-name) formatted-hystrindy true)))
 
 (defn save-hystrindies-to-file 
-  ([hystrindies] (save-hystrindies-to-file hystrindies "hystrindies.edn"))
-  ([hystrindies file-name]
+  ([hystrindies]
   (for [hyst hystrindies]
-    (save-hystrindy-to-file hyst file-name))))
+    (save-hystrindy-to-file hyst))))
 
 (defn deformat-hystrindy [formatted-hystrindy]
   (clojure.walk/postwalk
@@ -70,6 +88,6 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "hystrindies.edn"))
   ([file-name]
-   (let [formatted-hystrindies (read-file file-name)]
+   (let [formatted-hystrindies (read-file (str hyst-folder file-name))]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))

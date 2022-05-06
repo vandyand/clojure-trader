@@ -31,9 +31,11 @@
     (into tree-config {:inception-ids inception-ids :intention-ids intention-ids}))))
 
 (defn get-backtest-config 
-  ([num-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points granularity "balance" streams-config strindy-config))
-  ([num-data-points granularity fitness-type streams-config strindy-config]
+  ([num-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points 0 granularity streams-config strindy-config))
+  ([num-data-points shift-data-points granularity streams-config strindy-config] (get-backtest-config num-data-points shift-data-points granularity "balance" streams-config strindy-config))
+  ([num-data-points shift-data-points granularity fitness-type streams-config strindy-config]
   {:num-data-points num-data-points
+   :shift-data-points shift-data-points
    :granularity granularity
    :fitness-type fitness-type
    :streams-config streams-config
@@ -45,12 +47,19 @@
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
-(defn get-backtest-config-util [streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
-                                num-data-points granularity fitness-type]
+(defn get-backtest-config-util 
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points granularity]
+   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children 
+                             num-data-points 0 granularity "sharpe"))
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children num-data-points granularity fitness-type]
+   (get-backtest-config-util streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children 
+                             num-data-points 0 granularity fitness-type))
+  ([streams-vec tree-return-type tree-min-depth tree-max-depth tree-max-children
+                                num-data-points shift-data-points granularity fitness-type]
   (let [streams-config (apply get-streams-config streams-vec)
         tree-config (get-tree-config tree-return-type tree-min-depth tree-max-depth tree-max-children)
         strindy-config (get-strindy-config tree-config streams-config)]
-    (get-backtest-config num-data-points granularity fitness-type streams-config strindy-config)))
+    (get-backtest-config num-data-points shift-data-points granularity fitness-type streams-config strindy-config))))
 
 
 ; GA config: add GA config to config... or keep it separate? That works. It makes more sense to keep it separate because

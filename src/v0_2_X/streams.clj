@@ -9,37 +9,72 @@
 (defn get-instrument-file-name [instrument-config]
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
 
-(defn up-to-date? [time-stamp granularity]
+(defn in-time-window? [time-stamp granularity]
   (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
 
-(defn update-stream-file
-  ([instrument-config old-stream]
-   (let [file-name (get-instrument-file-name instrument-config)
-         new-stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))
-         overlap-ind (util/get-overlap-ind old-stream new-stream)
-         updated-stream (into old-stream (util/subvec-end new-stream overlap-ind))]
-     (file/write-file
-      (str file/data-folder file-name)
-      {:time-stamp (util/current-time-sec)
-       :stream updated-stream}
-      false)
-     updated-stream)))
+(defn get-api-stream [instrument-config]
+  (ostrindy/get-instrument-stream (assoc instrument-config :count 5000)))
 
-(defn get-stream-from-file-or-api
+;;if file does not exist -> make new file and populate with data from api and return data
+;;else (if file does exist)...
+;;    if file is up to date -> read file content and return the stream
+;;    else (if file is not up to date)...
+;;        delete the file.
+;;        recur.
+
+(defn create-stream-file [file-name instrument-config] 
+  (let [api-stream (get-api-stream instrument-config)]
+      (file/write-file
+       (str file/data-folder file-name)
+       {:time-stamp (util/current-time-sec)
+        :stream api-stream})
+      api-stream))
+
+;; (defn update-stream-file
+;;   ([instrument-config old-stream]
+;;    (let [file-name (get-instrument-file-name instrument-config)
+;;          new-stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))
+;;          overlap-ind (util/get-overlap-ind old-stream new-stream)
+;;          updated-stream (into old-stream (util/subvec-end new-stream overlap-ind))]
+;;      (file/write-file
+;;       (str file/data-folder file-name)
+;;       {:time-stamp (util/current-time-sec)
+;;        :stream updated-stream})
+;;      updated-stream)))
+
+
+(defn get-whole-stream
   [instrument-config]
   (let [file-name (get-instrument-file-name instrument-config)
-        file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
-        file-content (when file-exists (first (file/read-file file-name)))]
-    (if file-content
-      (if (up-to-date? (get file-content :time-stamp) (get instrument-config :granularity))
-        (vec (get file-content :stream))
-        (vec (update-stream-file instrument-config (get file-content :stream))))
-      (let [stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
-        (file/write-file
-         (str file/data-folder file-name)
-         {:time-stamp (util/current-time-sec)
-          :stream stream})
-        stream))))
+        file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))]
+    (if (not file-exists)
+       (create-stream-file file-name instrument-config)
+      (let [file-content (when file-exists (first (file/read-file file-name)))
+            up-to-date? (when file-content
+                               (in-time-window? (get file-content :time-stamp)
+                                            (get instrument-config :granularity)))]
+        (if up-to-date?
+            (vec (:stream file-content))
+          (do (file/delete-file file-name)
+              ;; (println "deleting file " file-name)
+              ;; (Thread/sleep 1000)
+              (get-whole-stream instrument-config)))))))
+
+;; (defn get-whole-stream-from-file-or-api
+;;   [instrument-config]
+;;   (let [file-name (get-instrument-file-name instrument-config)
+;;         file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
+;;         file-content (when file-exists (first (file/read-file file-name)))
+;;         file-up-to-date? (when file-content (up-to-date? (get file-content :time-stamp) (get instrument-config :granularity)))]
+;;     (if file-up-to-date?
+;;       (vec (get file-content :stream))
+;;       (vec (update-stream-file instrument-config)))
+;;     (let [api-stream (ostrindy/get-instrument-stream (assoc instrument-config :count 5000))]
+;;       (file/write-file
+;;        (str file/data-folder file-name)
+;;        {:time-stamp (util/current-time-sec)
+;;         :stream api-stream})
+;;       api-stream)))
 
 (defn fetch-streams
   ([backtest-config] (fetch-streams backtest-config false))
@@ -48,14 +83,18 @@
         ;;  baz (clojure.pprint/pprint backtest-config)
         ;;  bas (clojure.pprint/pprint instruments-config)
          num-data-points (if fore?
-                           (util/get-fore-ind (get backtest-config :stream-proxy) 
-                                              (get-stream-from-file-or-api (first instruments-config)))
+                           (util/get-fore-ind (get backtest-config :stream-proxy)
+                                              (get-whole-stream (first instruments-config)))
                            (get backtest-config :num-data-points))
+         shift-data-points (if fore? 0 (-> backtest-config :shift-data-points))
         ;;  foo (println "num-data-points: " num-data-points)
          ]
      (for [instrument-config instruments-config]
-       (let [whole-stream (get-stream-from-file-or-api instrument-config)
-             stream (util/subvec-end whole-stream num-data-points)]
+       (let [whole-stream (get-whole-stream instrument-config)
+             whole-stream-count (count whole-stream)
+            ;;  foo (println whole-stream-count num-data-points shift-data-points)
+            ;;  stream (util/subvec-end whole-stream num-data-points)
+             stream (subvec whole-stream (- whole-stream-count num-data-points shift-data-points) (- whole-stream-count shift-data-points))]
          {:instrument (get instrument-config :name)
           :stream stream})))))
 

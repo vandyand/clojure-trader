@@ -39,8 +39,8 @@
           fore-hystrindy (nth fore-hystrindies n)]
       (get-gaustrindy back-hystrindy fore-hystrindy))))
 
-(defn run-gauntlet []
-  (let [hysts (file/get-hystrindies-from-file)
+(defn run-gauntlet [hysts-file-name]
+  (let [hysts (file/get-hystrindies-from-file hysts-file-name)
         fysts (get-fore-hystrindies hysts)
         gausts (get-gaustrindies hysts fysts)]
     ;; (file/save-hystrindies-to-file gausts "gaustrindies.edn")
@@ -55,5 +55,5 @@
 
   (def gausts (get-gaustrindies hysts fysts))
 
-  (file/save-hystrindies-to-file gausts "gaustrindies.edn")
+  (file/save-hystrindies-to-file gausts)
   )

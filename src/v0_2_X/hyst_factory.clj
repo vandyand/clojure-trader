@@ -11,10 +11,8 @@
   (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
   (dotimes [n (-> factory-config :factory-num-produced)]
     (let [best-pop (ga/run-epochs streams factory-config)
-          candidate (first best-pop) ;; Update to get multiple candidates from one GA?
-          file-name "hystrindies.edn"]
-    (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))
-                                 file-name)))))
+          candidate (first best-pop)] ;; Update to get multiple candidates from one GA?
+    (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)))))))
 
 (comment
   (do
