@@ -135,15 +135,43 @@
   (let [x (mean sample) μ (mean pop) n (count sample) σ (stdev pop)]
     (/ (* (- x μ) (Math/sqrt n)) σ)))
 
+(defn balance [beck]
+  (last beck))
+
 (defn sharpe [vs]
-  ;; (println vs)
   (if (<= (count vs) 1) 0.0
       (let [μ (mean vs) σ (stdev vs)]
-        ;; (println "μ: " μ)
-        ;; (println "σ: " σ)
         (if (= σ 0.0) 0.0 (/ μ σ)))))
+
+(defn lr-sharpe [vs]
+  (if (<= (count vs) 1) 0.0
+      (let [μ (mean vs) σ (stdev vs)]
+        (if (= σ 0.0) 0.0 (/ μ σ σ)))))
+
+(defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
+
+(defn max-dd-period [vs]
+  (if (<= (count vs) 1) 0.0
+      (let [beck (rivulet->beck vs)]
+        (loop [i 0 last-best 0 max-period 0 cur-period 0]
+          (if (< i (count beck))
+            (if (>= last-best (nth beck i))
+              (recur (inc i) last-best
+                     (if (> (inc cur-period) max-period) (inc cur-period) max-period) (inc cur-period))
+              (recur (inc i) (nth beck i) max-period 0))
+            (double (/ max-period (count vs))))))))
+
+(defn inv-max-dd-period [vs]
+  (if (<= (count vs) 1) 0.0
+       (/ 1 (max-dd-period vs))))
+
+(defn score-x [vs]
+  (if (<= (count vs) 1) 0.0
+      (let [_sharpe (sharpe vs)
+            _max-dd-period (max-dd-period vs)]
+        (/ _sharpe _max-dd-period))))
 
 (defn sum [vs]
   (if (= 0 (count vs))
     0.0
-  (apply + vs)))
+    (apply + vs)))

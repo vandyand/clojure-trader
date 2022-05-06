@@ -39,8 +39,12 @@
 
 (defn get-hystrindy-fitness [hystrindy]
   (let [fitness-type (get-in hystrindy [:backtest-config :fitness-type])
-        fitness (cond (= fitness-type "balance") (-> hystrindy :return-stream :beck last)
-                      (= fitness-type "sharpe") (-> hystrindy :return-stream :rivulet stats/sharpe))]
+        fitness (cond (= fitness-type "balance") (-> hystrindy :return-stream :beck stats/balance)
+                      (= fitness-type "sharpe") (-> hystrindy :return-stream :rivulet stats/sharpe)
+                      (= fitness-type "lr-sharpe") (-> hystrindy :return-stream :rivulet stats/lr-sharpe)
+                      (= fitness-type "inv-max-dd-period") (-> hystrindy :return-stream :rivulet stats/inv-max-dd-period)
+                      (= fitness-type "score-x") (-> hystrindy :return-stream :rivulet stats/score-x)
+                      )]
     (assoc hystrindy :fitness fitness)))
 
 (defn get-hystrindies-fitnesses [hystrindies]

@@ -10,6 +10,7 @@
 (load "/v0_1_X/ga")
 
 (load "/util")
+(load "/stats")
 
 (load "/v0_2_X/config")
 

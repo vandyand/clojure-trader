@@ -49,39 +49,21 @@
         (catch Throwable e
           (println "Error has been caught!" (.getMessage e)))))))
 
-(comment
-  (arena/run-arena ["S30-50-Target_EUR_USD.edn"
-                    "S30-50-Target_AUD_USD.edn"])
-  )
-
-(comment
- (do
-  (arena/run-best-gausts "S30-50-Target_EUR_USD.edn")
-  (arena/run-best-gausts "S30-50-Target_AUD_USD.edn"))
-  
-  )
 
 (comment
   (do
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "inception" "AUD_USD" "inception" "GBP_USD" "inception"
-                           "EUR_GBP" "both" "USD_JPY" "inception"]
-                          "binary" 4 8 12 1200 120 "M5"))
+                           "EUR_GBP" "inception" "USD_JPY" "both"]
+                          "ternary" 2 4 6 2000 200 "M15" "score-x"))
 
-    (def ga-config (config/get-ga-config 100 backtest-config (config/get-pop-config 200 0.4 0.2 0.4)))
+    (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 10 0.4 0.2 0.4)))
 
-    (def factory-config (config/get-factory-config 5 ga-config))
+    (def factory-config (config/get-factory-config 21 ga-config))
 
     (factory/run-factory factory-config)
-
-    (println "sleeping... " (util/current-time-sec))
-
-    (Thread/sleep (* 1000 60 30))
-
-    (while true
-      (println "running...  " (util/current-time-sec))
-      (arena/run-best-gaust)
-      (Thread/sleep 30000))))
+  )
+)
 
 (comment
   (while true
@@ -97,7 +79,7 @@
   )
 
 (comment
-  (try (arena/run-arena ["M10-50-eur_usd-AUD_USD-gbp_usd-eur_gbp-usd_chf-usd_cad-usd_jpy.edn"])
+  (try (arena/run-arena ["M15-2000-eur_usd-aud_usd-gbp_usd-eur_gbp-Target_USD_JPY.edn"])
        (catch Throwable e
          (println "Error has been caught!" (.getMessage e))))
   )
