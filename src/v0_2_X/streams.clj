@@ -4,7 +4,8 @@
    [util :as util]
    [v0_2_X.config :as config]
    [v0_2_X.strindicator :as strindy]
-   [v0_2_X.oanda_strindicator :as ostrindy]))
+   [api.util :as api_util]
+   [api.instruments :as instruments]))
 
 (defn get-instrument-file-name [instrument-config]
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
@@ -13,7 +14,7 @@
   (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
 
 (defn get-api-stream [instrument-config]
-  (ostrindy/get-instrument-stream (assoc instrument-config :count 5000)))
+  (instruments/get-instrument-stream (assoc instrument-config :count 1000)))
 
 ;;if file does not exist -> make new file and populate with data from api and return data
 ;;else (if file does exist)...
@@ -50,9 +51,10 @@
     (if (not file-exists)
        (create-stream-file file-name instrument-config)
       (let [file-content (when file-exists (first (file/read-file file-name)))
-            up-to-date? (when file-content
-                               (in-time-window? (get file-content :time-stamp)
-                                            (get instrument-config :granularity)))]
+            up-to-date?
+            (when file-content
+              (in-time-window? (get file-content :time-stamp)
+                               (get instrument-config :granularity)))]
         (if up-to-date?
             (vec (:stream file-content))
           (do (file/delete-file file-name)
@@ -79,7 +81,7 @@
 (defn fetch-streams
   ([backtest-config] (fetch-streams backtest-config false))
   ([backtest-config fore?]
-   (let [instruments-config (ostrindy/get-instruments-config backtest-config)
+   (let [instruments-config (api_util/get-instruments-config backtest-config)
         ;;  baz (clojure.pprint/pprint backtest-config)
         ;;  bas (clojure.pprint/pprint instruments-config)
          num-data-points (if fore?

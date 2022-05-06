@@ -6,7 +6,7 @@
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_2_X.streams :as streams]
-   [v0_1_X.oanda_api :as oa]
+   [api.oanda_api :as oa]
    [stats :as stats]))
 
 (defn get-best-gausts

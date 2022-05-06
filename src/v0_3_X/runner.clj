@@ -3,51 +3,23 @@
    [util :as util]
    [v0_2_X.config :as config]
    [v0_2_X.hyst_factory :as factory]
-   [v0_3_X.arena :as arena]))
+   [v0_3_X.arena :as arena]
+   [clojure.core.async :as async]))
 
 
 (comment
   (do
     (def backtest-config (config/get-backtest-config-util
-                          ["EUR_USD" "both" "GBP_USD" "inception" "EUR_GBP" "inception"]
-                          "ternary" 2 3 4 2500 250 "H4" "sharpe"))
+                          ["BTCUSD" "both"]
+                          "ternary" 2 3 4 500 50 "H1" "score-x"))
 
-    (def ga-config (config/get-ga-config 15 backtest-config (config/get-pop-config 100 0.8 0.1 0.7)))
+    (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.5 0.1 0.5)))
 
-    (def factory-config (config/get-factory-config 11 ga-config))
-
-    (factory/run-factory factory-config)
-
-
-    (def backtest-config (config/get-backtest-config-util
-                          ["EUR_USD" "inception" "GBP_USD" "both" "EUR_GBP" "inception"]
-                          "ternary" 2 3 4 2500 250 "H4" "sharpe"))
-
-    (def ga-config (config/get-ga-config 15 backtest-config (config/get-pop-config 100 0.8 0.1 0.7)))
-
-    (def factory-config (config/get-factory-config 11 ga-config))
+    (def factory-config (config/get-factory-config 3 ga-config))
 
     (factory/run-factory factory-config)
-
-
-    (def backtest-config (config/get-backtest-config-util
-                          ["EUR_USD" "inception" "GBP_USD" "inception" "EUR_GBP" "both"]
-                          "ternary" 2 3 4 2500 250 "H4" "sharpe"))
-
-    (def ga-config (config/get-ga-config 15 backtest-config (config/get-pop-config 100 0.8 0.1 0.7)))
-
-    (def factory-config (config/get-factory-config 11 ga-config))
-
-    (factory/run-factory factory-config)
-
-    (while true
-      (try
-        (Thread/sleep 600000)
-        (arena/run-arena ["H4-2500-Target_EUR_USD-gbp_usd-eur_gbp.edn"
-                          "H4-2500-eur_usd-Target_GBP_USD-eur_gbp.edn"
-                          "H4-2500-eur_usd-gbp_usd-Target_EUR_GBP.edn"])
-        (catch Throwable e
-          (println "Error has been caught!" (.getMessage e)))))))
+    
+    ))
 
 
 (comment
@@ -66,20 +38,35 @@
 )
 
 (comment
-  (while true
-    (try (arena/run-arena ["M5-50-EUR_USD-aud_usd-gbp_usd-eur_gbp-usd_chf-usd_cad-usd_jpy.edn"
-                           "M10-50-eur_usd-AUD_USD-gbp_usd-eur_gbp-usd_chf-usd_cad-usd_jpy.edn"])
-         (Thread/sleep (* 1000 600)) ;; last arg is seconds of pause
+  (async/go-loop []
+    (try (arena/run-arena ["M15-2000-eur_usd-aud_usd-gbp_usd-eur_gbp-Target_USD_JPY.edn"
+                           "H4-2500-Target_EUR_USD-gbp_usd-eur_gbp.edn"
+                           "H4-2500-eur_usd-Target_GBP_USD-eur_gbp.edn"
+                           "H4-2500-eur_usd-gbp_usd-Target_EUR_GBP.edn"])
          (catch Throwable e
-           (println "Error has been caught!" (.getMessage e))))))
-
-(comment
-  (arena/run-arena ["M5-50-EUR_USD-aud_usd-gbp_usd-eur_gbp-usd_chf-usd_cad-usd_jpy.edn"
-                           "M10-50-eur_usd-AUD_USD-gbp_usd-eur_gbp-usd_chf-usd_cad-usd_jpy.edn"])
+           (println "Error has been caught!" (.getMessage e))))
+    (Thread/sleep 300000)
+    (recur))
   )
 
+(comment 
+  (async/go
+   
+    (def backtest-config (config/get-backtest-config-util
+                          ["EUR_USD" "inception" "AUD_USD" "both" "GBP_USD" "inception"
+                           "EUR_GBP" "inception" "USD_JPY" "inception"]
+                          "ternary" 2 3 4 2400 2400 "M15" "sharpe"))
+
+    (def ga-config (config/get-ga-config 15 backtest-config (config/get-pop-config 100 0.4 0.2 0.4)))
+
+    (def factory-config (config/get-factory-config 21 ga-config))
+
+    (factory/run-factory factory-config)
+   ))
+
 (comment
-  (try (arena/run-arena ["M15-2000-eur_usd-aud_usd-gbp_usd-eur_gbp-Target_USD_JPY.edn"])
-       (catch Throwable e
-         (println "Error has been caught!" (.getMessage e))))
+  (async/go
+    (try (arena/run-arena ["M15-2400-eur_usd-Target_AUD_USD-gbp_usd-eur_gbp-usd_jpy.edn"])
+         (catch Throwable e
+           (println "Error has been caught!" (.getMessage e)))))
   )
