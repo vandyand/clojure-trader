@@ -1,3 +1,9 @@
+### Sun, May 1, 22
+It's May!
+To make crossover better or functional at all we should switch to a parameterized strindicator. We can do this using a code maybe? Each function type is encoded as a number... Crossover gets tricky because the strategy at the pinnacle of the strindicator only works well on its own inputs. Two strindicators can be both very good and very similar but unable to be crossovered simply because the inputs can be in different places. One could argue this doesn't matter because the GA will just pick the ones that work but this set up is potentially very inefficient. If we want to know whether it's actually inefficient we'd have to do some testing... blah. 
+
+Still, a parameterized version would be cool. This could be a Neural Net or some type of parameterized (coded) version of what we already have. Although a parameterized version of what we already have would not be more efficient. The current setup just doesn't lend itself to productive reproduction via crossover. If we want something that lends itself to productive reproduction via crossover, that's a design constraint we need to include from the beginning which would necessitate a large (or complete) redesign. Keep thinking on this...
+
 ### Wed, Apr 13, 22
 What's the best way to store hysts? Just put groups of them in the same files. The file names can be a sha256 hash of their stringified factory-config (or not stringified? whichever). Do we ever want to generate config from a hash? If so, we shouldn't use a one-way function like sha256... We'd have to use some type of encoding. We could just make our own code... just make a config->code function and a code->config function. The code can be a string to use as the file name. Or just use sha or some other hashing algorithm and make a lookup table in another file called "config.edn" or something. Just store the hash value with the config settings and voilà.
 
