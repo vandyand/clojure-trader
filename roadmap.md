@@ -6,7 +6,7 @@
 
 ### Todo - longer term
 
-- [ ] Make crossover better (more intelligent somehow?)
+- [ ] Make crossover better (more intelligent somehow?) (Somehow make new type of strindicator with updateable params - much easier to mutate and crossover... USE A CODE! See notes)
 - [ ] (0.3.X) Arena
   - [ ] Delete hystrindies from edn file by id if z-score is too low
   - [ ] Create Arena where gaustrindies trade via api on paper account
