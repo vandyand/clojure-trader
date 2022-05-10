@@ -10,6 +10,7 @@
   ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
   ([strindy backtest-config fore?]
   (let [streams (streams/fetch-formatted-streams backtest-config fore?)
+        ;; foo (println "streams" streams)
         stream-proxy (-> streams :inception-streams second (util/subvec-end 10)) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
         sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))

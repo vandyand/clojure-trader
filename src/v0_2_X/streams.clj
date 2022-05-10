@@ -14,7 +14,7 @@
   (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
 
 (defn get-api-stream [instrument-config]
-  (instruments/get-instrument-stream (assoc instrument-config :count 1000)))
+  (instruments/get-instrument-stream (assoc instrument-config :count 5000)))
 
 ;;if file does not exist -> make new file and populate with data from api and return data
 ;;else (if file does exist)...
@@ -84,8 +84,8 @@
    (let [instruments-config (api_util/get-instruments-config backtest-config)
         ;;  baz (clojure.pprint/pprint backtest-config)
         ;;  bas (clojure.pprint/pprint instruments-config)
-         num-data-points (if fore?
-                           (util/get-fore-ind (get backtest-config :stream-proxy)
+         num-data-points (if (and fore? (get backtest-config :stream-proxy))
+                             (util/get-fore-ind (get backtest-config :stream-proxy)
                                               (get-whole-stream (first instruments-config)))
                            (get backtest-config :num-data-points))
          shift-data-points (if fore? 0 (-> backtest-config :shift-data-points))

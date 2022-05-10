@@ -21,12 +21,12 @@
 (defn binancify-instrument-config [instrument-config]
   {:symbol (:name instrument-config) 
    :interval (gran->binance-gran (:granularity instrument-config)) 
-   :limit (:count instrument-config)})
+   :limit (if (> (:count instrument-config) 1000) 1000 (:count instrument-config))})
 
 ;; CONFIG FUNCTIONS 
 
 (defn get-instrument-config 
-  ([name granularity] (get-instrument-config name granularity 1000))
+  ([name granularity] (get-instrument-config name granularity 5000))
   ([name granularity count]
   {:name name :granularity granularity :count count}))
 
@@ -38,7 +38,7 @@
 
 (defn send-api-get-request
   ([url headers]
-   (println url headers)
+  ;;  (println url headers)
    (client/get url {:headers headers :content-type :json})))
 
 (defn send-api-put-request [url options]

@@ -30,6 +30,9 @@
 (defn account-instruments->names [account-instruments]
   (map (fn [instrument] (:name instrument)) (:instruments account-instruments)))
 
+(defn get-account-instruments-names []
+  (-> (get-account-instruments) account-instruments->names))
+
 ;; GET CANDLES
 
 (defn get-candles

@@ -49,13 +49,14 @@
 (defn run-best-gausts 
   ([] (run-best-gausts "hystrindies.edn"))
   ([hysts-file-name]
-  (let [units 100
+  (let [units 1000
         gausts (gaunt/run-gauntlet hysts-file-name)
+        ;; bar (println gausts)
         best-gausts (get-best-gausts gausts)
         intention-instruments (get-intention-instruments (first best-gausts))
         target-dirs (mapv #(-> % :g-sieve-stream last) best-gausts)
-        foo (println "target directions:" target-dirs)
-        target-pos (* units (stats/sum target-dirs))]
+        foo (println (get-intention-instruments (first gausts)) " target directions:" target-dirs)
+        target-pos (if (> (count target-dirs) 0) (int (* units (stats/mean target-dirs))) 0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
@@ -82,8 +83,8 @@
     ))))
 
 (comment
-  (do
-    (def gausts (gaunt/run-gauntlet "hystrindies.edn"))
+  ;; (do
+    (def gausts (gaunt/run-gauntlet "M15-200-#EUR_USD.edn"))
     
     (println (map :g-score gausts))
 
@@ -101,7 +102,7 @@
             (and (not target-pos?) current-pos?)
             (doall (oa/send-order-request instrument (* -1 100)) (println instrument ": position closed!"))
             :else (println instrument ": nothing happened!"))))))
-  )
+  ;; )
 
 (comment
   (oa/get-account-summary)

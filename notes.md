@@ -1,3 +1,13 @@
+### Tues, May 10, 22
+We should make a testing framework to validate design decisions such as "are limit orders better than market orders" and such.
+
+To validate decisions like these we can assess the rate of drop-off of z-scores in the fore test accross a wide range of instruments and configuration settings (though that wouldn't cover limit vs market orders...)
+
+Basically we need a way to search the configuration parameter space to find classes/sets/groups or configuration data that yields robust z-scores in fore testing. 
+
+Z-score dropoff (overfitting) is the #1 enemy. Solve this => solve trading system => $$$. For the time being, all energy and attention spent on this trading system should focus on eliminating this enemy. The rest is details which can follow.
+
+
 ### Wed, Apr 13, 22
 What's the best way to store hysts? Just put groups of them in the same files. The file names can be a sha256 hash of their stringified factory-config (or not stringified? whichever). Do we ever want to generate config from a hash? If so, we shouldn't use a one-way function like sha256... We'd have to use some type of encoding. We could just make our own code... just make a config->code function and a code->config function. The code can be a string to use as the file name. Or just use sha or some other hashing algorithm and make a lookup table in another file called "config.edn" or something. Just store the hash value with the config settings and voilà.
 
