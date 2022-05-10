@@ -2,7 +2,7 @@
   (:require
    [file :as file]
    [util :as util]
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_2_X.streams :as streams]

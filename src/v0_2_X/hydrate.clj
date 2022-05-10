@@ -2,7 +2,7 @@
   (:require
    [util :as util]
    [v0_2_X.strindicator :as strindy]
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.streams :as streams]
    [stats :as stats]))
 

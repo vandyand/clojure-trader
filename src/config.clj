@@ -1,4 +1,4 @@
-(ns v0_2_X.config)
+(ns config)
 
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]

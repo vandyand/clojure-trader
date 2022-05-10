@@ -40,20 +40,6 @@
 (defn get-by-id [file-name id]
   (util/find-in (read-file file-name) :id id))
 
-(defn backtest-config->file-name [backtest-config]
-  (str (clojure.string/join
-        "-"
-        (conj
-         (rest
-          (map
-           (fn [stream-conf] (if (= "inception" (get stream-conf :incint))
-                               (get stream-conf :name)
-                               (str "T_" (get stream-conf :name))))
-           (get backtest-config :streams-config)))
-         (get backtest-config :num-data-points)
-         (get backtest-config :granularity)))
-       ".edn"))
-
 (defn save-hystrindy-to-file
   [hystrindy]
    (let [formatted-hystrindy 
@@ -63,7 +49,7 @@
           (format-strindy-for-edn 
            (get hystrindy 
             :strindy)))
-         file-name (backtest-config->file-name (:backtest-config hystrindy))]
+         file-name (util/backtest-config->file-name (:backtest-config hystrindy))]
      (write-file (str data-folder hyst-folder file-name) formatted-hystrindy true)))
 
 (defn save-hystrindies-to-file 
