@@ -46,6 +46,10 @@
           (println "nothing happened"))
         )))))
 
+(defn get-robustness [hysts-file-name]
+  (let [gaunts (gaunt/run-gauntlet hysts-file-name)]
+  (double (/ (-> gaunts get-best-gausts count) (count gaunts)))))
+
 (defn run-best-gausts 
   ([] (run-best-gausts "hystrindies.edn"))
   ([hysts-file-name]

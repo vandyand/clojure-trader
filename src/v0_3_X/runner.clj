@@ -26,7 +26,7 @@
                        [30 0.5 0.2 0.5]
                        10 20))
   (factory/run-factory factory-config)
-  (run-runner [(util/backtest-config->file-name (:backtest-config factory-config))] 30000)
+  (run-runner [(util/config->file-name factory-config)] 30000)
   ;; (run-runner ["M15-250-CAD_SGD-AUD_CAD-AUD_CHF-EUR_USD-EUR_JPY-EUR_GBP-GBP_USD-T_AUD_USD.edn"] 30000)
   )
 

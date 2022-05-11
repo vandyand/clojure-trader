@@ -48,8 +48,15 @@
       (= "W" time-frame) (* 60 60 24 7)
       (= "M" time-frame) (* 60 60 24 7 31))))
 
-(defn backtest-config->file-name [backtest-config]
-  (str (clojure.string/join
+(defn find-nested
+  [m k]
+  (->> (tree-seq map? vals m)
+       (filter map?)
+       (some k)))
+
+(defn config->file-name [config]
+  (let [backtest-config (find-nested config :backtest-config)]
+    (str (clojure.string/join
         "-"
         (conj
          (rest
@@ -60,4 +67,4 @@
            (get backtest-config :streams-config)))
          (get backtest-config :num-data-points)
          (get backtest-config :granularity)))
-       ".edn"))
+       ".edn")))

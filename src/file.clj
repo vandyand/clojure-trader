@@ -49,7 +49,7 @@
           (format-strindy-for-edn 
            (get hystrindy 
             :strindy)))
-         file-name (util/backtest-config->file-name (:backtest-config hystrindy))]
+         file-name (util/config->file-name hystrindy)]
      (write-file (str data-folder hyst-folder file-name) formatted-hystrindy true)))
 
 (defn save-hystrindies-to-file 
