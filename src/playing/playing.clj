@@ -84,15 +84,15 @@
 (def file-channel (async/chan))
 
 (async/go
- (with-open [reader (clojure.java.io/reader "data/streams/EUR_USD-M1.edn")]
+ (with-open [reader (clojure.java.io/reader "data/streams/EUR_USD-M15.edn")]
    (doseq [line (line-seq reader)]
      (async/>! file-channel line))))
 
 (async/go-loop 
  []
  (when-some [line (clojure.edn/read-string (async/<! file-channel))]
-   (println (:time-stamp line) (= (get line :time-stamp) 1648743341))
-   (if (= (get line :time-stamp) 1648743341) 
+   (println (get line :time-stamp) (= (get line :time-stamp) 1651866177))
+   (if (= (get line :time-stamp) 1651866177) 
      (swap! a (fn [_ x] x) (get line :time-stamp)))
      nil)
    (recur))

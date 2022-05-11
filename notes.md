@@ -1,3 +1,12 @@
+### Tues, May 10, 22
+We should make a testing framework to validate design decisions such as "are limit orders better than market orders" and such.
+
+To validate decisions like these we can assess the rate of drop-off of z-scores in the fore test accross a wide range of instruments and configuration settings (though that wouldn't cover limit vs market orders...)
+
+Basically we need a way to search the configuration parameter space to find classes/sets/groups or configuration data that yields robust z-scores in fore testing. 
+
+Z-score dropoff (overfitting) is the #1 enemy. Solve this => solve trading system => $$$. For the time being, all energy and attention spent on this trading system should focus on eliminating this enemy. The rest is details which can follow.
+
 ### Sun, May 1, 22
 It's May!
 To make crossover better or functional at all we should switch to a parameterized strindicator. We can do this using a code maybe? Each function type is encoded as a number... Crossover gets tricky because the strategy at the pinnacle of the strindicator only works well on its own inputs. Two strindicators can be both very good and very similar but unable to be crossovered simply because the inputs can be in different places. One could argue this doesn't matter because the GA will just pick the ones that work but this set up is potentially very inefficient. If we want to know whether it's actually inefficient we'd have to do some testing... blah. 

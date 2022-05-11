@@ -1,6 +1,6 @@
 (ns v0_2_X.hyst_factory
   (:require
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.ga :as ga]
    [v0_2_X.streams :as streams]
    [v0_2_X.hydrate :as hyd]
@@ -13,6 +13,28 @@
     (let [best-pop (ga/run-epochs streams factory-config)
           candidate (first best-pop)] ;; Update to get multiple candidates from one GA?
     (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)))))))
+
+(defn pairs->stream-args [pairs]
+  (for [n (range (count pairs))]
+      (assoc (conj (vec (interpose "inception" pairs)) "inception") (-> n (* 2) (+ 1)) "both")))
+
+(defn run-many-factories [pairs factory-config-util-args]
+  (let [streams-args (pairs->stream-args pairs)]
+    (doseq [stream-args streams-args]
+      (let [factory-config-args (assoc-in factory-config-util-args [0 0] stream-args)
+            factory-config (apply config/get-factory-config-util factory-config-args)]
+        (run-factory factory-config))))
+  )
+
+(comment
+  (def pairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
+               "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
+               "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
+               "EUR_AUD" "GBP_CAD"])
+  )
+
+
+
 
 (comment
   (do

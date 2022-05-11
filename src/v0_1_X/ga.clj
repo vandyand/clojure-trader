@@ -13,7 +13,7 @@
    [v0_1_X.inputs :as inputs]
    [v0_2_X.strindicator :as strindy]
    [helpers :as helpers]
-   [v0_2_X.config :as config]))
+   [config :as config]))
 
 ;; CONFIG FUNCTIONS
 

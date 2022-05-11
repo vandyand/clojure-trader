@@ -25,7 +25,7 @@
 
 (defn mean
   ([vs] (mean (reduce + vs) (count vs)))
-  ([sm sz] (/ sm sz)))
+  ([sm sz] (double (/ sm sz))))
 
 (defn stdev
   ([vs]
@@ -143,7 +143,7 @@
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ)))))
 
-(defn lr-sharpe [vs]
+(defn sharpe-per-std [vs]
   (if (<= (count vs) 1) 0.0
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ σ)))))

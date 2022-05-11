@@ -1,4 +1,4 @@
-(ns v0_2_X.config)
+(ns config)
 
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]
@@ -61,7 +61,6 @@
         strindy-config (get-strindy-config tree-config streams-config)]
     (get-backtest-config num-data-points shift-data-points granularity fitness-type streams-config strindy-config))))
 
-
 ; GA config: add GA config to config... or keep it separate? That works. It makes more sense to keep it separate because
 ; ga and strindies are really two separate entities. Then for mature strindies, we can package them up and ship to arena.
 
@@ -82,6 +81,12 @@
 
 (defn get-factory-config [factory-num-produced ga-config]
   (assoc ga-config :factory-num-produced factory-num-produced))
+
+(defn get-factory-config-util [backtest-config-args pop-config-args ga-num-epochs factory-num-produced]
+  (let [backtest-config (apply get-backtest-config-util backtest-config-args)
+        pop-config (apply get-pop-config pop-config-args)
+        ga-config (get-ga-config ga-num-epochs backtest-config pop-config)]
+    (get-factory-config factory-num-produced ga-config)))
 
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))

@@ -1,82 +1,51 @@
-(ns v0_1_X.oanda_api
+(ns api.oanda_api
   (:require [clj-http.client :as client]
             ;; [clojure.pprint :as pp]
-            [clojure.data.json :as json]))
-
-(defn get-sensative-data [keywd]
-  ((json/read-str (slurp ".sensative.json") :key-fn keyword) keywd))
-
-(defn get-env-data [keywd]
-  ((json/read-str (slurp ".env.json") :key-fn keyword) keywd))
-
-(defn get-headers [] {:Authorization (str "Bearer " (get-sensative-data :OANDA_API_KEY)) :Accept-Datetime-Format "UNIX"})
-
-;; SEND REQUESTS
-
-(defn send-api-get-request
-  ([url] (client/get url {:headers (get-headers) :content-type :json})))
-
-(defn send-api-put-request [url options]
-  (client/put url options))
-
-(defn send-api-post-request [url options]
-  (client/post url options))
+            [clojure.data.json :as json]
+            [env :as env]
+            [api.util :as util]
+            [api.headers :as headers]))
 
 ;; UTILITY FUNCTIONS 
 
 (defn get-account-endpoint
-  ([end] (get-account-endpoint (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
+  ([end] (get-account-endpoint (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
   ([account-id end]
    (str "accounts/" account-id "/" end)))
 
-(defn parse-response-body [response]
-  (json/read-str (response :body) :key-fn keyword))
-
-(defn format-query-params [query-params]
-  (str
-   "?"
-   (reduce
-    #(str %1 "&" %2)
-    (for [kv query-params]
-      (str (name (key kv)) "=" (val kv))))))
-
-(defn get-url
-  ([endpoint] (get-url endpoint nil))
-  ([endpoint instrument-config]
-   (str (get-env-data :OANDA_API_URL) endpoint (when instrument-config (format-query-params (dissoc instrument-config :name))))))
-
-(defn get-api-data
-  ([endpoint] (get-api-data endpoint nil))
-  ([endpoint instrument-config]
-   (-> endpoint (get-url instrument-config) (send-api-get-request) (parse-response-body))))
-
 ;; ACCOUNT DATA FUNCTIONS
 
-(defn get-accounts [] (get-api-data "accounts"))
+(defn get-accounts [] (util/get-oanda-api-data "accounts"))
 
 (defn get-account-summary
-  ([] (get-account-summary (get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([] (get-account-summary (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
   ([account-id]
-   (get-api-data (get-account-endpoint account-id "summary"))))
+   (util/get-oanda-api-data (get-account-endpoint account-id "summary"))))
 
 (defn get-account-instruments
-  ([] (get-account-instruments (get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([] (get-account-instruments (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
   ([account-id]
-   (get-api-data (get-account-endpoint account-id "instruments"))))
+   (util/get-oanda-api-data (get-account-endpoint account-id "instruments"))))
+
+(defn account-instruments->names [account-instruments]
+  (map (fn [instrument] (:name instrument)) (:instruments account-instruments)))
+
+(defn get-account-instruments-names []
+  (-> (get-account-instruments) account-instruments->names))
 
 ;; GET CANDLES
 
 (defn get-candles
-  ([instrument-config] (get-candles (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
+  ([instrument-config] (get-candles (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
   ([account-id instrument-config]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
-     (get-api-data endpoint instrument-config))))
+     (util/get-oanda-api-data endpoint instrument-config))))
 
 ;; GET OPEN POSITIONS
 
 (defn get-open-positions
-  ([] (get-open-positions (get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
-  ([account-id] (get-api-data (get-account-endpoint account-id "openPositions"))))
+  ([] (get-open-positions (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([account-id] (util/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
 
 ;; SEND ORDER FUNCTIONS
 
@@ -84,15 +53,39 @@
   {:order {:instrument instrument :units units :timeInForce "FOK" :type "MARKET" :positionFill "DEFAULT"}})
 
 (defn make-request-options [body]
-  {:headers (get-headers)
+  {:headers (headers/get-oanda-headers)
    :content-type :json
    :body (json/write-str body)
    :as :json})
 
 (defn send-order-request
-  ([instrument units] (send-order-request (get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
+  ([instrument units] (send-order-request (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
   ([account-id instrument units]
-   (send-api-post-request (get-url (get-account-endpoint account-id "orders")) (make-request-options (make-post-order-body instrument units)))))
+   (util/send-api-post-request 
+    (util/build-oanda-url (get-account-endpoint account-id "orders")) 
+    (make-request-options (make-post-order-body instrument units)))))
+
+;; OANDA STRINDICATOR STUFF
+
+(defn format-candles [candles]
+  (map
+   (fn [candle]
+     {:time (Double/parseDouble (get candle :time))
+      :open (Double/parseDouble (get-in candle [:mid :o]))})
+   candles))
+
+(defn get-open-prices [instrument-config]
+  (format-candles (get (get-candles instrument-config) :candles)))
+
+(defn get-instrument-stream [instrument-config]
+  (vec (for [data (get-open-prices instrument-config)] (get data :open))))
+
+(defn get-instruments-streams [config]
+ (let [instruments-config (util/get-instruments-config config)]
+  (for [instrument-config instruments-config] 
+    (get-instrument-stream instrument-config))))
+
+
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
@@ -102,8 +95,8 @@
 (defn close-position 
   ([instrument] (close-position instrument true))
   ([instrument long-pos?]
-  (send-api-put-request
-   (get-url
+  (util/send-api-put-request
+   (util/build-oanda-url
     (get-account-endpoint (str "positions/" instrument "/close")))
    (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))))
 
@@ -116,21 +109,21 @@
 ;; TRADES FUNCTIONS
 
 (defn get-open-trades []
-  (get-api-data (get-account-endpoint "openTrades")))
+  (util/get-oanda-api-data  (get-account-endpoint "openTrades")))
 
 (defn get-open-trade [trade-id]
-  (get-api-data (get-account-endpoint (str "trades/" trade-id))))
+  (util/get-oanda-api-data  (get-account-endpoint (str "trades/" trade-id))))
 
 (defn close-trade [trade-id]
-  (send-api-put-request
-   (get-url (get-account-endpoint (str "trades/" trade-id "/close")))
+  (util/send-api-put-request
+   (util/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/close")))
    (make-request-options {:units "ALL"})))
 
 ;; CLIENT ID STUFF
 
 (defn update-trade-with-id [trade-id client-id]
-  (send-api-put-request
-   (get-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
+  (util/send-api-put-request
+   (util/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
    (make-request-options {:clientExtensions {:id client-id}})))
 
 (defn get-trade-client-id [trade-id]
@@ -171,3 +164,8 @@
   (for [n (range 2 10)]
     (close-trade-by-client-id (str "id-" n)))
   )
+
+(comment
+  (account-instruments->names (get-account-instruments))
+  )
+  
