@@ -1,12 +1,10 @@
 (ns v0_3_X.runner
   (:require
    [util :as util]
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.hyst_factory :as factory]
    [v0_3_X.arena :as arena]
    [clojure.core.async :as async]))
-
-
 
 (defn run-runner [runner-file-names _delay]
   (async/go-loop []
@@ -18,16 +16,20 @@
   ))
 
 ;; AUD_CAD CAD_CHF AUD_CHF CAD_SGD
-(comment 
-  (def factory-config (config/get-factory-config-util 
+(comment
+  (def factory-config (config/get-factory-config-util
                        [["CAD_SGD" "inception" "AUD_CAD" "inception"
-                         "CAD_CHF" "inception" "AUD_CHF" "inception"
-                         "EUR_CHF" "both"]
-                        "ternary" 1 2 3 200 200 "M15" "score-x"]
-                       [30 0.5 0.1 0.5]
-                       10 10))
+                         "AUD_CHF" "inception" "EUR_USD" "inception"
+                         "EUR_JPY" "inception" "EUR_GBP" "inception"
+                         "GBP_USD" "inception" "AUD_USD" "both"]
+                        "ternary" 1 2 3 250 500 "M15" "score-x"]
+                       [30 0.5 0.2 0.5]
+                       10 20))
   (factory/run-factory factory-config)
+  (run-runner [(util/config->file-name factory-config)] 30000)
+  ;; (run-runner ["M15-250-CAD_SGD-AUD_CAD-AUD_CHF-EUR_USD-EUR_JPY-EUR_GBP-GBP_USD-T_AUD_USD.edn"] 30000)
   )
+
 (comment
   ;; (arena/run-best-gausts "M15-2000-#EUR_USD.edn")
   (run-runner ["M15-200-T_CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF.edn"] 30000)
@@ -35,6 +37,7 @@
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-T_CAD_CHF-AUD_CHF.edn"] 30000)
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-CAD_CHF-T_AUD_CHF.edn"] 30000)
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF-T_EUR_CHF.edn"] 30000)
+  (run-runner ["M15-250-CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF-EUR_CHF-T_EUR_USD.edn"] 30000)
   )
 
 (comment

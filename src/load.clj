@@ -19,7 +19,7 @@
 
 (load "/file")
 
-(load "/v0_2_X/config")
+(load "/config")
 
 (load "/v0_2_X/strindicator")
 
@@ -36,6 +36,8 @@
 (load "/v0_3_X/arena")
 
 (load "/v0_3_X/runner")
+
+(load "/v0_3_X/laboratory")
 
 
 (comment

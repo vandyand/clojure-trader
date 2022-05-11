@@ -2,7 +2,7 @@
   (:require
    [file :as file]
    [util :as util]
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.strindicator :as strindy]
    [api.util :as api_util]
    [api.instruments :as instruments]))

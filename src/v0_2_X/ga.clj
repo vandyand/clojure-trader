@@ -4,7 +4,7 @@
             [clojure.walk :as w]
             [v0_1_X.ga :as iga]
             [v0_1_X.strategy :as strat]
-            [v0_2_X.config :as config]
+            [config :as config]
             [v0_2_X.hydrate :as hyd]
             [v0_2_X.strindicator :as strindy]
             [v0_2_X.plot :as plot]

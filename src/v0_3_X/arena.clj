@@ -2,7 +2,7 @@
   (:require
    [file :as file]
    [util :as util]
-   [v0_2_X.config :as config]
+   [config :as config]
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_2_X.streams :as streams]
@@ -45,6 +45,10 @@
                  (println "pos-change: " pos-change))
           (println "nothing happened"))
         )))))
+
+(defn get-robustness [hysts-file-name]
+  (let [gaunts (gaunt/run-gauntlet hysts-file-name)]
+  (double (/ (-> gaunts get-best-gausts count) (count gaunts)))))
 
 (defn run-best-gausts 
   ([] (run-best-gausts "hystrindies.edn"))

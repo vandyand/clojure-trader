@@ -143,7 +143,7 @@
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ)))))
 
-(defn lr-sharpe [vs]
+(defn sharpe-per-std [vs]
   (if (<= (count vs) 1) 0.0
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ σ)))))
