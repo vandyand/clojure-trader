@@ -20,7 +20,9 @@
   (let [intention-instruments (get-intention-instruments (first gausts))
         target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
         foo (println (get-intention-instruments (first gausts)) " target directions:" target-dirs)
-        target-pos (if (> (count target-dirs) 0) (int (* 100 (count target-dirs) (stats/mean target-dirs))) 0)]
+        target-pos (if (> (count target-dirs) 0)
+                     (int (* 100 (if (> (count target-dirs) 10) 10 (count (target-dirs))) (stats/mean target-dirs)))
+                     0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))

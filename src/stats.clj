@@ -143,11 +143,6 @@
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ)))))
 
-(defn sharpe-per-std [vs]
-  (if (<= (count vs) 1) 0.0
-      (let [μ (mean vs) σ (stdev vs)]
-        (if (= σ 0.0) 0.0 (/ μ σ σ)))))
-
 (defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
 (defn max-dd-period [vs]
@@ -164,6 +159,11 @@
 (defn inv-max-dd-period [vs]
   (if (<= (count vs) 1) 0.0
        (/ 1 (max-dd-period vs))))
+
+(defn sharpe-per-std [vs]
+  (if (<= (count vs) 1) 0.0
+      (let [μ (mean vs) σ (stdev vs)]
+        (if (= σ 0.0) 0.0 (/ μ σ σ)))))
 
 (defn score-x [vs]
   (if (<= (count vs) 1) 0.0

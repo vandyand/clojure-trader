@@ -21,10 +21,10 @@
 (comment
   (async/go-loop []
     (let [factory-config (config/get-factory-config-util
-                          [["USD_JPY" "both"]
-                           "long-only" 1 2 2 250 250 "M15" "sharpe-per-std"]
-                          [10 0.5 0.2 0.5]
-                          0 100)
+                          [["USD_CAD" "both"]
+                           "ternary" 1 2 2 250 250 "M15" "sharpe-per-std"]
+                          [20 0.5 0.2 0.5]
+                          0 20)
           robust-hysts (factory/run-checked-factory factory-config)]
       (arena/post-gausts (gaunt/run-gauntlet robust-hysts)))
     (Thread/sleep 280000)
@@ -37,7 +37,7 @@
                        [["AUD_JPY" "both"]
                         "ternary" 1 2 3 250 500 "M15" "score-x"]
                        [10 0.5 0.2 0.5]
-                       0 100))
+                       0 10))
   (factory/run-factory factory-config)
   (arena/get-robustness (util/config->file-name factory-config))
   )
