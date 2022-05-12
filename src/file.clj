@@ -7,6 +7,7 @@
 
 (def data-folder "data/")
 (def hyst-folder "hysts/")
+(def lab-folder "lab/")
 
 (defn format-strindy-for-edn [strindy]
   (clojure.walk/postwalk
@@ -41,7 +42,8 @@
   (util/find-in (read-file file-name) :id id))
 
 (defn save-hystrindy-to-file
-  [hystrindy]
+  ([hyst] (save-hystrindy-to-file hyst hyst-folder))
+  ([hystrindy folder]
    (let [formatted-hystrindy 
          (assoc 
           hystrindy 
@@ -50,7 +52,7 @@
            (get hystrindy 
             :strindy)))
          file-name (util/config->file-name hystrindy)]
-     (write-file (str data-folder hyst-folder file-name) formatted-hystrindy true)))
+     (write-file (str data-folder folder file-name) formatted-hystrindy true))))
 
 (defn save-hystrindies-to-file 
   ([hystrindies]

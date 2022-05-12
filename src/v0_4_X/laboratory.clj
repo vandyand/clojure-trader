@@ -1,10 +1,12 @@
-(ns v0_3_X.laboratory
+(ns v0_4_X.laboratory
   (:require
    [v0_3_X.arena :as arena]
    [config :as config]
+   [file :as file]
    [v0_2_X.hyst_factory :as factory]
    [clojure.core.async :as async]
    [util :as util]
+   [v0_3_X.gauntlet :as gaunt]
    ))
 
 (defn parse-config-arg-ranges [config-arg-ranges]
@@ -17,9 +19,34 @@
     (arena/get-robustness (util/config->file-name factory-config)))))
 
 (comment
+  (async/go-loop []
+    (let [factory-config (config/get-factory-config-util
+                          [["USD_JPY" "both"]
+                           "long-only" 1 2 2 250 250 "M15" "sharpe-per-std"]
+                          [10 0.5 0.2 0.5]
+                          0 100)
+          robust-hysts (factory/run-checked-factory factory-config)]
+      (arena/post-gausts (gaunt/run-gauntlet robust-hysts)))
+    (Thread/sleep 280000)
+    (recur))
+  )
+
+
+(comment
+  (def factory-config (config/get-factory-config-util
+                       [["AUD_JPY" "both"]
+                        "ternary" 1 2 3 250 500 "M15" "score-x"]
+                       [10 0.5 0.2 0.5]
+                       0 100))
+  (factory/run-factory factory-config)
+  (arena/get-robustness (util/config->file-name factory-config))
+  )
+
+
+(comment
 
   ( ["EUR_JPY" "AUD_CAD"] 
-           [[["ternary" "binary"]
+           [[["ternary" "long-only" "short-only"]
              [1 2 3] [2 4 6]]
             [[250 500]]
             ["M15" "M30" "H1"]

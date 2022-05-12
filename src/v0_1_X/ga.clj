@@ -123,7 +123,7 @@
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
 
 (defn get-mutated-tree 
-  ([tree] (get-mutated-tree tree "binary"))
+  ([tree] (get-mutated-tree tree "long-only"))
   ([tree return-type]
   (strat/ameliorate-tree
    (let [n (rand-int 8)]

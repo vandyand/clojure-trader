@@ -15,7 +15,21 @@
     (recur)
   ))
 
-;; AUD_CAD CAD_CHF AUD_CHF CAD_SGD
+(comment
+  (run-runner ["M15-250-T_AUD_JPY.edn"] 300000)
+  )
+
+(comment
+  (def factory-config (config/get-factory-config-util
+                       [["AUD_JPY" "both"]
+                        "ternary" 1 2 3 250 500 "M15" "score-x"]
+                       [10 0.5 0.2 0.5]
+                       1 100))
+  (factory/run-factory factory-config)
+  (run-runner [(util/config->file-name factory-config)] 30000)
+  ;; (run-runner ["M15-250-CAD_SGD-AUD_CAD-AUD_CHF-EUR_USD-EUR_JPY-EUR_GBP-GBP_USD-T_AUD_USD.edn"] 30000)
+  )
+
 (comment
   (def factory-config (config/get-factory-config-util
                        [["CAD_SGD" "inception" "AUD_CAD" "inception"

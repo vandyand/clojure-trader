@@ -50,9 +50,10 @@
 
 (defn find-nested
   [m k]
-  (->> (tree-seq map? vals m)
+  (let [rtn-val (->> (tree-seq map? vals m)
        (filter map?)
-       (some k)))
+       (some k))]
+    (if rtn-val rtn-val m)))
 
 (defn config->file-name [config]
   (let [backtest-config (find-nested config :backtest-config)]

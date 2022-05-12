@@ -9,73 +9,48 @@
    [api.oanda_api :as oa]
    [stats :as stats]))
 
-(defn get-best-gausts
-  ([gausts] (get-best-gausts gausts -0.25))
-  ([gausts cutoff-score]
-   (filterv (fn [gaust] (> (:z-score gaust) cutoff-score)) gausts)))
-
-(defn get-best-gaust [gausts]
-  (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
-
 (defn get-intention-instruments [gaust]
   (map :name (filter #(not= (get % :incint) "inception") (-> gaust :streams-config))))
 
-(defn run-best-gaust 
-  ([] (run-best-gaust "hystrindies.edn"))
-  ([hysts-file-name]
-  (let [units 100
-        gausts (gaunt/run-gauntlet hysts-file-name)
-        best-gaust (get-best-gaust gausts)
-        intention-instruments (get-intention-instruments best-gaust)
-        target-dir (-> best-gaust :g-sieve-stream last)
-        target-pos (* units target-dir)]
-    (doseq [instrument intention-instruments]
-      (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
-            long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
-            short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
-            current-pos (when current-pos-data (+ long-pos short-pos ))
-            pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
-        (println "best gaust id: " (-> best-gaust :id))
-        (println "best gaust z-score: " (-> best-gaust :z-score))
-        (if (not= pos-change 0) 
-          (do (oa/send-order-request instrument pos-change)
-                 (println instrument ": position changed")
-                 (println "prev-pos: "  current-pos)
-                 (println "target-pos: " target-pos)
-                 (println "pos-change: " pos-change))
-          (println "nothing happened"))
-        )))))
-
 (defn get-robustness [hysts-file-name]
   (let [gaunts (gaunt/run-gauntlet hysts-file-name)]
-  (double (/ (-> gaunts get-best-gausts count) (count gaunts)))))
+  (double (/ (-> gaunts gaunt/get-best-gausts count) (count gaunts)))))
 
-(defn run-best-gausts 
-  ([] (run-best-gausts "hystrindies.edn"))
-  ([hysts-file-name]
-  (let [units 1000
-        gausts (gaunt/run-gauntlet hysts-file-name)
-        ;; bar (println gausts)
-        best-gausts (get-best-gausts gausts)
-        intention-instruments (get-intention-instruments (first best-gausts))
-        target-dirs (mapv #(-> % :g-sieve-stream last) best-gausts)
+(defn post-gausts [gausts]
+  (let [intention-instruments (get-intention-instruments (first gausts))
+        target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
         foo (println (get-intention-instruments (first gausts)) " target directions:" target-dirs)
-        target-pos (if (> (count target-dirs) 0) (int (* units (stats/mean target-dirs))) 0)]
+        target-pos (if (> (count target-dirs) 0) (int (* 100 (count target-dirs) (stats/mean target-dirs))) 0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
             short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
             current-pos (when current-pos-data (+ long-pos short-pos))
             pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
-        (println "best gaust ids: " (map :id best-gausts))
-        (println "best gaust z-score: " (map :z-score best-gausts))
+        (println "best gaust ids: " (map :id gausts))
+        (println "best gaust z-score: " (map :z-score gausts))
         (if (not= pos-change 0)
           (do (oa/send-order-request instrument pos-change)
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
               (println "pos-change: " pos-change))
-          (println "nothing happened")))))))
+          (println "nothing happened"))))))
+
+(defn run-best-gaust 
+  ([] (run-best-gaust "hystrindies.edn"))
+  ([hysts-file-name]
+  (let [gausts (gaunt/run-gauntlet hysts-file-name)
+        best-gaust (gaunt/get-best-gaust gausts)]
+      (post-gausts best-gaust))))
+
+(defn run-best-gausts 
+  ([] (run-best-gausts "hystrindies.edn"))
+  ([hysts-file-name]
+  (let [gausts (gaunt/run-gauntlet hysts-file-name)
+        ;; bar (println gausts)
+        best-gausts (gaunt/get-best-gausts gausts)]
+    (post-gausts best-gausts))))
 
 (defn run-arena 
   ([hysts-file-names] (run-arena hysts-file-names 0))
@@ -92,7 +67,7 @@
     
     (println (map :g-score gausts))
 
-    (def best-gaust (get-best-gaust gausts))
+    (def best-gaust (gaunt/get-best-gaust gausts))
 
     (get-intention-instruments best-gaust)
 

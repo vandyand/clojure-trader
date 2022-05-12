@@ -2,10 +2,18 @@
   (:require
    [file :as file]
    [v0_2_X.hydrate :as hyd]
-   [v0_2_X.plot :as plot]
    [v0_2_X.strindicator :as strindy]
    [stats :as stats]
    ))
+
+(defn good-gaust? [gaust]
+  (> (:z-score gaust) -0.25))
+
+(defn get-best-gausts [gausts]
+   (filterv good-gaust? gausts))
+
+(defn get-best-gaust [gausts]
+  (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
 
 (defn get-fore-hystrindy [hystrindy]
   (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) :fore)))
@@ -39,14 +47,17 @@
           fore-hystrindy (nth fore-hystrindies n)]
       (get-gaustrindy back-hystrindy fore-hystrindy))))
 
-(defn run-gauntlet [hysts-file-name]
-  (let [hysts (file/get-hystrindies-from-file hysts-file-name)
+(defn run-gauntlet 
+  "arg is either vector of hysts or string file-name of hysts file"
+  [arg]
+  (let [hysts (if (= (type arg) java.lang.String) (file/get-hystrindies-from-file arg) arg)
         fysts (get-fore-hystrindies hysts)
         gausts (get-gaustrindies hysts fysts)]
-    ;; (file/save-hystrindies-to-file gausts "gaustrindies.edn")
     gausts))
 
-
+(defn run-guantlet-single [hyst]
+  (let [fyst (get-fore-hystrindy hyst)]
+    (get-gaustrindy hyst fyst)))
 
 (comment
   (def hysts (file/get-hystrindies-from-file))

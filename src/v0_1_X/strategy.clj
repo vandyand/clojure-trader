@@ -22,10 +22,10 @@
       (when (not= x y)  #{x y})))))
 
 (defn get-tree-config 
-  "return-type is: binary | ternary"
-  ([min-depth max-depth num-inputs] (get-tree-config min-depth max-depth num-inputs "binary"))
+  "return-type is: long-only | short-only | ternary"
+  ([min-depth max-depth num-inputs] (get-tree-config min-depth max-depth num-inputs "long-only"))
   ([min-depth max-depth num-inputs return-type]
-   (let [bintern (if (contains? #{"binary" "ternary"} return-type) return-type "binary")]
+   (let [bintern (if (contains? #{"long-only" "ternary"} return-type) return-type "long-only")]
    {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs) :return-type bintern})))
 
 ;; MAKE TREE
@@ -56,7 +56,7 @@
    #(if (and
          (= (type %) clojure.lang.PersistentVector)
          (= (nth % 1) (nth % 2)))
-      ;; Make sure to only potentially inlude -1 if tree-config return-type is "ternary", if "binary" values are only 0 and 1
+      ;; Make sure to only potentially inlude -1 if tree-config return-type is "ternary", if "long-only" values are only 0 and 1
       ;[(first %) (- (mod (+ (last %) 2) 3) 1) (last %)] ;; This makes [cond 1 1] -> [cond -1 1] with 1 -> -1, 0 -> 1, -1 -> 0 for middle leaf
       
       ;; This is easier for now...
