@@ -5,14 +5,27 @@
             [v0_2_X.streams :as streams]
             [v0_3_X.gauntlet :as gaunt]))
 
-(defn run-factory
+(defn run-factory-to-file
   "Writes hysts to file"
   ([factory-config]
    (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
      (dotimes [n (-> factory-config :factory-num-produced)]
        (let [best-pop (ga/run-epochs streams factory-config)
              candidate (first best-pop)] ;; Update to get multiple candidates from one GA?
-         (file/save-hystrindy-to-file (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))))))))
+         (file/save-hystrindy-to-file 
+          (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck))))))))
+
+(defn run-factory
+  "Returns vector of length :factory-num-produced of 'good' hysts"
+  ([factory-config]
+   (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
+     (loop [v (transient [])]
+       (if (>= (count v) (:factory-num-produced factory-config))
+         (persistent! v)
+         (let [best-pop (ga/run-epochs streams factory-config)
+               candidate (assoc (first best-pop) :return-stream
+                                (dissoc (get (first best-pop) :return-stream) :beck))]
+             (recur (conj! v candidate))))))))
 
 (defn run-checked-factory
   "Returns vector of length :factory-num-produced of 'good' hysts"
@@ -38,7 +51,7 @@
     (doseq [stream-args streams-args]
       (let [factory-config-args (assoc-in factory-config-util-args [0 0] stream-args)
             factory-config (apply config/get-factory-config-util factory-config-args)]
-        (run-factory factory-config)))))
+        (run-factory-to-file factory-config)))))
 
 (comment
   (def pairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
@@ -59,7 +72,7 @@
 
     (def factory-config (config/get-factory-config 3 ga-config))
 
-    (run-factory factory-config)))
+    (run-factory-to-file factory-config)))
 
 (comment
   (do

@@ -35,6 +35,9 @@
 (defn current-time-sec []
   (quot (System/currentTimeMillis) 1000))
 
+(defn current-time-msec []
+  (System/currentTimeMillis))
+
 ;; supports these types of granularities https://developer.oanda.com/rest-live-v20/instrument-df/#CandlestickGranularity
 (defn granularity->seconds [granularity]
   (let [time-frame (subs granularity 0 1)

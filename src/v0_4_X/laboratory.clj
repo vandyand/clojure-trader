@@ -15,19 +15,46 @@
 (defn run-lab [configs]
   (doseq [config configs]
     (let [factory-config (apply config/get-factory-config-util config)]
-    (factory/run-factory factory-config)
+    (factory/run-factory-to-file factory-config)
     (arena/get-robustness (util/config->file-name factory-config)))))
 
 (comment
   (async/go-loop []
     (let [factory-config (config/get-factory-config-util
-                          [["USD_CAD" "both"]
-                           "ternary" 1 2 2 250 250 "M15" "sharpe-per-std"]
-                          [20 0.5 0.2 0.5]
-                          0 20)
+                          [["USD_CHF" "both"]
+                           "ternary" 1 2 3 500 0 "H1" "sharpe-per-std"]
+                          [10 0.5 0.2 0.5]
+                          0 500)
+          hysts (factory/run-factory factory-config)]
+      (arena/post-hysts hysts))
+    (Thread/sleep (* 1000 60 60))
+    (recur))
+  )
+
+(comment
+  (async/go-loop []
+    (let [factory-config (config/get-factory-config-util
+                          [["AUD_JPY" "both"]
+                           "ternary" 1 2 3 500 0 "M15" "score-x"]
+                          [10 0.5 0.2 0.5]
+                          0 500)
+          file-name (util/config->file-name factory-config)]
+      (factory/run-factory-to-file factory-config)
+      (arena/post-gausts (gaunt/run-gauntlet file-name)))
+    (Thread/sleep 900000)
+    (recur))
+  )
+
+(comment
+  (async/go-loop []
+    (let [factory-config (config/get-factory-config-util
+                          [["AUD_JPY" "both"]
+                           "ternary" 1 2 3 500 0 "M15" "sharpe-per-std"]
+                          [10 0.5 0.2 0.5]
+                          0 500)
           robust-hysts (factory/run-checked-factory factory-config)]
       (arena/post-gausts (gaunt/run-gauntlet robust-hysts)))
-    (Thread/sleep 280000)
+    (Thread/sleep 900000)
     (recur))
   )
 
@@ -35,10 +62,10 @@
 (comment
   (def factory-config (config/get-factory-config-util
                        [["AUD_JPY" "both"]
-                        "ternary" 1 2 3 250 500 "M15" "score-x"]
+                        "ternary" 1 2 3 250 0 "M15" "score-x"]
                        [10 0.5 0.2 0.5]
-                       0 10))
-  (factory/run-factory factory-config)
+                       0 500))
+  (factory/run-factory-to-file factory-config)
   (arena/get-robustness (util/config->file-name factory-config))
   )
 
@@ -63,4 +90,4 @@
                         "ternary" 1 2 3 250 500 "M15" "score-x"]
                        [30 0.5 0.2 0.5]
                        10 20))
-  (factory/run-factory factory-config))
+  (factory/run-factory-to-file factory-config))

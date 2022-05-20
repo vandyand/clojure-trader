@@ -128,7 +128,7 @@
                      (/ (reduce + fitnesses) (count fitnesses)))]
        (when (env/get-env-data :GA_LOGGING?) (println "gen  " i " best score: " best-score
                 " avg parent score: " average))
-       (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams))
+       (when (env/get-env-data :GA_PLOTTING?) (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams)))
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 (comment

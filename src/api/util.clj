@@ -18,7 +18,7 @@
     "H1" "1h" "H2" "2h" "H4" "4h" "H6" "6h" "H8" "8h"
     "H12" "12h" "D" "1d" "W" "1w" "M" "1M" granularity))
 
-(defn binancify-instrument-config [instrument-config]
+(defn binancify-candles-instrument-config [instrument-config]
   {:symbol (:name instrument-config) 
    :interval (gran->binance-gran (:granularity instrument-config)) 
    :limit (if (> (:count instrument-config) 1000) 1000 (:count instrument-config))})
@@ -45,25 +45,34 @@
   (client/put url options))
 
 (defn send-api-post-request [url options]
-  (client/post url options))
+  (println url)
+  (println options)
+  (client/post
+   url
+   (assoc
+    {}
+    :headers {"X-MBX-APIKEY" (get options :X-MBX-APIKEY)}
+    :content-type "application/x-www-form-urlencoded"
+    :debug true
+    :async true)
+   (fn [response] (println "response is:" response))
+   (fn [exception] (println "exception is: " (clojure.pprint/pprint exception)))))
 
 
 ;; UTILITY FUNCTIONS
 
 (defn format-query-params [query-params]
-  (str
-   "?"
    (reduce
     #(str %1 "&" %2)
     (for [kv query-params]
-      (str (name (key kv)) "=" (val kv))))))
+      (str (name (key kv)) "=" (val kv)))))
 
 (defn build-url [target endpoint instrument-config]
   (let [url-keywd (cond (= target "oanda") :OANDA_API_URL
                         (= target "binance") :BINANCE_API_URL)]
     (str (env/get-env-data url-keywd)
          endpoint
-         (when instrument-config (format-query-params (dissoc instrument-config :name))))))
+         (when instrument-config (str "?" (format-query-params (dissoc instrument-config :name)))))))
 
 (defn build-oanda-url
   ([endpoint] (build-oanda-url endpoint nil))
@@ -73,7 +82,7 @@
 (defn build-binance-url
   ([endpoint] (build-oanda-url endpoint nil))
   ([endpoint instrument-config]
-   (build-url "binance" endpoint (binancify-instrument-config instrument-config))))
+   (build-url "binance" endpoint instrument-config)))
 
 (defn parse-response-body [response]
   (json/read-str (response :body) :key-fn keyword))
@@ -92,7 +101,7 @@
   ([endpoint] (get-binance-api-data endpoint nil))
   ([endpoint instrument-config]
    (-> endpoint
-       (build-binance-url instrument-config)
+       (build-binance-url (binancify-candles-instrument-config instrument-config))
        (get-api-data (headers/get-binance-headers)))))
 
 

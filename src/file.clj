@@ -3,7 +3,7 @@
    [clojure.edn :as edn]
    [v0_1_X.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
-   [util]))
+   [util :as util]))
 
 (def data-folder "data/")
 (def hyst-folder "hysts/")

@@ -1,12 +1,12 @@
 (ns api.binance_api
   (:require
    [env :as env]
-   [api.util :as util]
+   [api.util :as api-util]
    [clojure.data.json :as json]
    [api.headers :as headers]))
 
 (defn get-candles [instrument-config]
-  (util/get-binance-api-data "klines" instrument-config))
+  (api-util/get-binance-api-data "klines" instrument-config))
 
 (defn format-candles [candles]
    (map
@@ -22,26 +22,37 @@
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))
 
 
+;; (defn send-order-request
+;;   ([instrument units] (send-order-request (env/get-env-data :BINANCE_DEFAULT_ACCOUNT_ID) instrument units))
+;;   ([account-id instrument units]
+;;    (api-util/send-api-post-request 
+;;     (api-util/build-oanda-url (get-account-endpoint account-id "orders")) 
+;;     (make-request-options (make-post-order-body instrument units)))))
+
+
 (comment
-  (def instrument-config (util/get-instrument-config "ETHBTC" "M30" 12))
+  (api-util/send-api-post-request (api-util/build-binance-url "order/test") {:symbol "BTCUSDT" :side "BUY" :type "MARKET" }))
+
+(comment
+  (def instrument-config (api-util/get-instrument-config "ETHBTC" "M30" 12))
   (get-open-prices instrument-config)
   (get-instrument-stream instrument-config)
   )
 
 (comment
-  (get-candles (util/get-instrument-config "ETHBTC" "M30" 50))
+  (get-candles (api-util/get-instrument-config "ETHBTC" "M30" 10))
   )
 
 (comment
-  (util/get-binance-api-data "time")
+  (api-util/get-binance-api-data "time")
   )
 
 (comment 
-  (map :symbol (:symbols (util/get-binance-api-data "exchangeInfo")))
-  (util/get-binance-api-data "exchangeInfo" {:symbol "ETHBTC"})
-  (util/get-binance-api-data "exchangeInfo" {:symbols "[\"ETHBTC\",\"LTCBTC\"]"})
+  (map :symbol (:symbols (api-util/get-binance-api-data "exchangeInfo")))
+  (api-util/get-binance-api-data "exchangeInfo" {:symbol "ETHBTC"})
+  (api-util/get-binance-api-data "exchangeInfo" {:symbols "[\"ETHBTC\",\"LTCBTC\"]"})
 )
 
 (comment
-  (util/get-binance-api-data "klines" {:symbol "ETHBTC" :interval "15m" :limit 10})
+  (api-util/get-binance-api-data "klines" {:symbol "ETHBTC" :interval "15m" :limit 10})
   )

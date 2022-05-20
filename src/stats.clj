@@ -25,7 +25,7 @@
 
 (defn mean
   ([vs] (mean (reduce + vs) (count vs)))
-  ([sm sz] (double (/ sm sz))))
+  ([vs sz] (if (not= 0 sz) (double (/ vs sz)) 0.0)))
 
 (defn stdev
   ([vs]

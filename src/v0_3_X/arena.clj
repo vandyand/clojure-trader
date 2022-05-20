@@ -9,19 +9,48 @@
    [api.oanda_api :as oa]
    [stats :as stats]))
 
-(defn get-intention-instruments [gaust]
+(defn get-intention-instruments-from-gaust [gaust]
   (map :name (filter #(not= (get % :incint) "inception") (-> gaust :streams-config))))
+
+(defn get-intention-instruments-from-hyst [hyst]
+  (map :name (filter #(not= (get % :incint) "inception") (-> hyst :backtest-config :streams-config))))
 
 (defn get-robustness [hysts-file-name]
   (let [gaunts (gaunt/run-gauntlet hysts-file-name)]
   (double (/ (-> gaunts gaunt/get-best-gausts count) (count gaunts)))))
 
-(defn post-gausts [gausts]
-  (let [intention-instruments (get-intention-instruments (first gausts))
-        target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
-        foo (println (get-intention-instruments (first gausts)) " target directions:" target-dirs)
+(defn post-hysts [hysts]
+  (let [intention-instruments (get-intention-instruments-from-hyst (first hysts))
+        target-dirs (mapv #(-> % :sieve-stream last) hysts)
+        foo (println intention-instruments " target directions:" target-dirs)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 100 (if (> (count target-dirs) 10) 10 (count (target-dirs))) (stats/mean target-dirs)))
+                     (int (* 100 
+                             (if (> (count target-dirs) 10) 10 (count target-dirs)) 
+                             (stats/mean target-dirs)))
+                     0)]
+    (doseq [instrument intention-instruments]
+      (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
+            long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
+            short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
+            current-pos (when current-pos-data (+ long-pos short-pos))
+            pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
+        (println "best hyst ids: " (map :id hysts))
+        (if (not= pos-change 0)
+          (do (oa/send-order-request instrument pos-change)
+              (println instrument ": position changed")
+              (println "prev-pos: "  current-pos)
+              (println "target-pos: " target-pos)
+              (println "pos-change: " pos-change))
+          (println "nothing happened"))))))
+
+(defn post-gausts [gausts]
+  (let [intention-instruments (get-intention-instruments-from-gaust (first gausts))
+        target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
+        foo (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
+        target-pos (if (> (count target-dirs) 0)
+                     (int (* 100 
+                             (if (> (count target-dirs) 10) 10 (count target-dirs)) 
+                             (stats/mean target-dirs)))
                      0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
@@ -71,9 +100,9 @@
 
     (def best-gaust (gaunt/get-best-gaust gausts))
 
-    (get-intention-instruments best-gaust)
+    (get-intention-instruments-from-gaust best-gaust)
 
-    (let [intention-instruments (get-intention-instruments best-gaust)
+    (let [intention-instruments (get-intention-instruments-from-gaust best-gaust)
           target-pos? (= 1 (-> best-gaust :g-sieve-stream last))]
       (doseq [instrument intention-instruments]
         (let [current-pos? (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))]
@@ -124,7 +153,7 @@
 ;;       (def updated-gausts (update-gausts best-gausts))
 
 ;;       (doseq [updated-gaust updated-gausts]
-;;         (let [intention-instruments (get-intention-instruments updated-gaust)
+;;         (let [intention-instruments (get-intention-instruments-from-gaust updated-gaust)
 ;;               target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
 ;;               current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
 ;;       ;; (println "target-pos?: " target-pos?)
@@ -154,7 +183,7 @@
 ;;     (def updated-gausts (update-gaust best-gaust))
 
 ;;     (doseq [updated-gaust updated-gausts]
-;;       (let [intention-instruments (get-intention-instruments updated-gaust)
+;;       (let [intention-instruments (get-intention-instruments-from-gaust updated-gaust)
 ;;             target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
 ;;             current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
 ;;         (println "target-pos?: " target-pos?)
@@ -164,7 +193,7 @@
 ;;                             (and target-pos? (not current-pos?))
 ;;                             (doall (oa/send-order-request instrument units) (println "position opened!"))
 ;;                             (and (not target-pos?) current-pos?)
-;;                             (doall (oa/send-order-request instrument (* -1 units)) (println "position closed!"))
+;;                             (doall (oa/send-order-request instrument (* -1 units)) (` "position closed!"))
 ;;                             :else (println "nothing happened!")))
 ;;          intention-instruments)))
 ;;     (Thread/sleep 1000)))
