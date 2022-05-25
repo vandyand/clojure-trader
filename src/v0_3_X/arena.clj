@@ -58,8 +58,8 @@
             short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
             current-pos (when current-pos-data (+ long-pos short-pos))
             pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
-        (println "best gaust ids: " (map :id gausts))
-        (println "best gaust z-score: " (map :z-score gausts))
+        (println "best gausts ids: " (map :id gausts))
+        (println "best gausts z-score: " (map :z-score gausts))
         (if (not= pos-change 0)
           (do (oa/send-order-request instrument pos-change)
               (println instrument ": position changed")
@@ -81,7 +81,10 @@
   (let [gausts (gaunt/run-gauntlet hysts-file-name)
         ;; bar (println gausts)
         best-gausts (gaunt/get-best-gausts gausts)]
-    (post-gausts best-gausts))))
+    (if (> (count best-gausts) 0)
+      (post-gausts best-gausts)
+      (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "dummy-guast--zero-position")]]
+       (post-gausts dummy-gausts))))))
 
 (defn run-arena 
   ([hysts-file-names] (run-arena hysts-file-names 0))

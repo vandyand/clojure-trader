@@ -3,7 +3,26 @@
             [file :as file]
             [v0_2_X.ga :as ga]
             [v0_2_X.streams :as streams]
-            [v0_3_X.gauntlet :as gaunt]))
+            [v0_3_X.gauntlet :as gaunt]
+            [clojure.core.async :as async]
+            [util :as util]))
+
+(defn run-factory-to-file-async
+  "Writes hysts to file"
+  [factory-config file-chan watcher-atom]
+  (file/open-file-writer-async
+   file-chan
+   (str file/data-folder file/hyst-folder (util/config->file-name factory-config))
+   watcher-atom)
+  (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
+    (dotimes [n (-> factory-config :factory-num-produced)]
+      (async/go
+        (let [best-pop (ga/run-epochs streams factory-config)
+              candidate (first best-pop)] ;; Update to get multiple candidates from one GA?
+          (async/>!
+           file-chan
+           (file/format-hyst-for-edn
+            (assoc candidate :return-stream (dissoc (get candidate :return-stream) :beck)))))))))
 
 (defn run-factory-to-file
   "Writes hysts to file"

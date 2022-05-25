@@ -26,8 +26,7 @@
                        [10 0.5 0.2 0.5]
                        1 100))
   (factory/run-factory-to-file factory-config)
-  (run-runner [(util/config->file-name factory-config)] 30000)
-  ;; (run-runner ["M15-250-CAD_SGD-AUD_CAD-AUD_CHF-EUR_USD-EUR_JPY-EUR_GBP-GBP_USD-T_AUD_USD.edn"] 30000)
+  (run-runner [(util/config->file-name factory-config)] 28000)
   )
 
 (comment

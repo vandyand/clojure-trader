@@ -6,8 +6,7 @@
    [v0_2_X.hyst_factory :as factory]
    [clojure.core.async :as async]
    [util :as util]
-   [v0_3_X.gauntlet :as gaunt]
-   ))
+   [v0_3_X.gauntlet :as gaunt]))
 
 (defn parse-config-arg-ranges [config-arg-ranges]
   )
@@ -18,32 +17,163 @@
     (factory/run-factory-to-file factory-config)
     (arena/get-robustness (util/config->file-name factory-config)))))
 
+;; (defn feed-forward-test []
+;;   (let [factory-config (config/get-factory-config-util
+;;                           [["AUD_JPY" "both"]
+;;                            "ternary" 1 2 3 250 500 "M15" "score-x"]
+;;                           [10 0.5 0.2 0.5]
+;;                           0 200)
+;;           file-name (util/config->file-name factory-config)]
+;;       (factory/run-factory-to-file factory-config)
+;;       (arena/run-best-gausts file-name)
+;;       (file/delete-file (str file/hyst-folder file-name)))
+;;   )
+
 (comment
+  (time
+   (let [factory-config (config/get-factory-config-util
+                         [["EUR_JPY" "both"]
+                          "ternary" 1 4 6 500 500 "H1" "score-x"]
+                         [20 0.25 0.2 0.5]
+                         3 1000)
+         file-name (util/config->file-name factory-config)
+         file-chan (async/chan)
+         watcher-atom (atom 0)]
+     (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+     (loop []
+       (Thread/sleep 1000)
+       (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+         (do
+           (arena/run-best-gausts file-name)
+           (file/delete-file (str file/hyst-folder file-name)))
+         (recur))))))
+
+(comment
+  "Async factory runner"
+  (def schedule-chan (async/chan))
+
+  (def future-times (util/get-future-unix-times-sec "M15" 24))
+
+  (util/put-future-times schedule-chan future-times)
+
+  (async/go-loop []
+    (when-some [val (async/<! schedule-chan)]
+      (let [factory-config (config/get-factory-config-util
+                            [["AUD_JPY" "both"]
+                             "ternary" 1 4 6 500 500 "M15" "score-x"]
+                            [20 0.25 0.2 0.5]
+                            3 250)
+            file-name (util/config->file-name factory-config)
+            file-chan (async/chan)
+            watcher-atom (atom 0)]
+        (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+        (loop []
+          (Thread/sleep 1000)
+          (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+            (do
+              (arena/run-best-gausts file-name)
+              (file/delete-file (str file/hyst-folder file-name)))
+            (recur)))))
+    (recur))
+
+  (async/close! schedule-chan)
+
+  )
+
+(comment
+  "Another async factory test"
+  (time
+   (let [factory-config (config/get-factory-config-util
+                        [["EUR_JPY" "both"]
+                         "ternary" 1 4 6 500 500 "M15" "score-x"]
+                        [20 0.25 0.2 0.5]
+                        3 10)
+        file-name (util/config->file-name factory-config)
+        file-chan (async/chan)
+        watcher-atom (atom 0)]
+    (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+    (loop []
+      (Thread/sleep 1000)
+      (println @watcher-atom)
+      (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+        (do
+          (arena/run-best-gausts file-name)
+          (file/delete-file (str file/hyst-folder file-name)))
+        (recur)))
+    ))
+  )
+
+(comment
+  "Speed comparison"
+  (time
+   (let [factory-config (config/get-factory-config-util
+                            [["EUR_JPY" "both"]
+                             "ternary" 1 4 6 50 50 "M15" "score-x"]
+                            [10 0.25 0.2 0.5]
+                            3 200)
+            file-name (util/config->file-name factory-config)]
+        (factory/run-factory-to-file factory-config)
+        (arena/run-best-gausts file-name)
+        (file/delete-file (str file/hyst-folder file-name)))))
+
+
+(comment
+  "Scheduled runner (synchronous factory)"
+  (def schedule-chan (async/chan))
+  
+  (def future-times (util/get-future-unix-times-sec "M15" 26))
+  
+  (util/put-future-times schedule-chan future-times)
+  
+  (async/go-loop []
+    (when-some [val (async/<! schedule-chan)]
+      (let [factory-config (config/get-factory-config-util
+                            [["AUD_JPY" "both"]
+                             "ternary" 1 4 6 500 500 "M15" "score-x"]
+                            [20 0.25 0.2 0.5]
+                            3 250)
+            file-name (util/config->file-name factory-config)]
+        (factory/run-factory-to-file factory-config)
+        (arena/run-best-gausts file-name)
+        (file/delete-file (str file/hyst-folder file-name)))
+      )
+    (recur))
+  
+  (async/close! schedule-chan)
+  )
+
+
+(comment
+  "This works"
   (async/go-loop []
     (let [factory-config (config/get-factory-config-util
-                          [["USD_CHF" "both"]
-                           "ternary" 1 2 3 500 0 "H1" "sharpe-per-std"]
+                          [["AUD_JPY" "both"]
+                           "ternary" 1 2 3 250 500 "M15" "score-x"]
                           [10 0.5 0.2 0.5]
-                          0 500)
+                          0 200)
+          file-name (util/config->file-name factory-config)]
+      (factory/run-factory-to-file factory-config)
+      (arena/run-best-gausts file-name)
+      (file/delete-file (str file/hyst-folder file-name))
+      (Thread/sleep 280000))
+    (recur))
+  )
+
+(comment
+  "works for hysts (no fore robustness checking)"
+  (async/go-loop []
+    (let [factory-config  (config/get-factory-config-util
+                           [["AUD_JPY" "both"]
+                            "ternary" 1 2 3 250 500 "M15" "score-x"]
+                           [10 0.5 0.2 0.5]
+                           1 100)
           hysts (factory/run-factory factory-config)]
       (arena/post-hysts hysts))
     (Thread/sleep (* 1000 60 60))
     (recur))
   )
 
-(comment
-  (async/go-loop []
-    (let [factory-config (config/get-factory-config-util
-                          [["AUD_JPY" "both"]
-                           "ternary" 1 2 3 500 0 "M15" "score-x"]
-                          [10 0.5 0.2 0.5]
-                          0 500)
-          file-name (util/config->file-name factory-config)]
-      (factory/run-factory-to-file factory-config)
-      (arena/post-gausts (gaunt/run-gauntlet file-name)))
-    (Thread/sleep 900000)
-    (recur))
-  )
+
 
 (comment
   (async/go-loop []
@@ -60,13 +190,16 @@
 
 
 (comment
-  (def factory-config (config/get-factory-config-util
-                       [["AUD_JPY" "both"]
-                        "ternary" 1 2 3 250 0 "M15" "score-x"]
-                       [10 0.5 0.2 0.5]
-                       0 500))
-  (factory/run-factory-to-file factory-config)
-  (arena/get-robustness (util/config->file-name factory-config))
+  "Testing robustness"
+  (do
+    (def factory-config (config/get-factory-config-util
+                         [["AUD_JPY" "both"]
+                          "ternary" 1 2 3 250 250 "M15" "score-x"]
+                         [10 0.5 0.2 0.5]
+                         0 100))
+    (factory/run-factory-to-file factory-config)
+    (println (arena/get-robustness (util/config->file-name factory-config)))
+    (file/delete-file (str file/hyst-folder (util/config->file-name factory-config))))
   )
 
 

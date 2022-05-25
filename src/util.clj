@@ -1,4 +1,6 @@
-(ns util)
+(ns util
+  (:require
+   [clojure.core.async :as async]))
 
 (defn find-in [coll _key _val]
   (reduce (fn [_ cur-val] (when (= (_key cur-val) _val) (reduced cur-val)))
@@ -51,6 +53,19 @@
       (= "W" time-frame) (* 60 60 24 7)
       (= "M" time-frame) (* 60 60 24 7 31))))
 
+(defn get-future-unix-times-sec [granularity _count]
+  (let [start-midnight 1653278400]
+    (loop [check-time start-midnight v (transient [])]
+      (if (>= (count v) _count) (persistent! v)
+          (let [new-time (+ check-time (granularity->seconds granularity))]
+            (if (> check-time (current-time-sec))
+              (recur new-time (conj! v check-time))
+              (recur new-time v)))))))
+
+(defn future-times-ons [chan granularity]
+  )
+
+
 (defn find-nested
   [m k]
   (let [rtn-val (->> (tree-seq map? vals m)
@@ -72,3 +87,35 @@
          (get backtest-config :num-data-points)
          (get backtest-config :granularity)))
        ".edn")))
+
+;------------------------------------;------------------------------------;------------------------------------
+
+(defn put-future-times [chan future-times]
+  (async/go-loop
+   [v future-times]
+    (if (= (count v) 0) nil
+     (if (< (first v) (util/current-time-sec))
+      (do
+        (println "put val on channel: " (first v))
+        (async/>! chan (first v))
+        (recur (rest v)))
+      (recur v)))))
+
+(defn future-times-ons [chan]
+  (async/go-loop []
+    (when-some [val (async/<! chan)]
+      (println "took val from channel: " val))
+    (recur)))
+
+(comment
+  (do
+    (def times-chan (async/chan))
+
+    (def future-times (util/get-future-unix-times-sec "S5" 2))
+
+    (put-future-times times-chan future-times)
+
+    (future-times-ons times-chan))
+
+  (async/close! times-chan)
+  )

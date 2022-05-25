@@ -45,18 +45,21 @@
   (client/put url options))
 
 (defn send-api-post-request [url options]
-  (println url)
-  (println options)
-  (client/post
-   url
-   (assoc
-    {}
-    :headers {"X-MBX-APIKEY" (get options :X-MBX-APIKEY)}
-    :content-type "application/x-www-form-urlencoded"
-    :debug true
-    :async true)
-   (fn [response] (println "response is:" response))
-   (fn [exception] (println "exception is: " (clojure.pprint/pprint exception)))))
+  (client/post url options))
+
+;; (defn send-api-post-request [url options]
+;;   (println url)
+;;   (println options)
+;;   (client/post
+;;    url
+;;    (assoc
+;;     {}
+;;     :headers {"X-MBX-APIKEY" (get options :X-MBX-APIKEY)}
+;;     :content-type "application/x-www-form-urlencoded"
+;;     :debug true
+;;     :async true)
+;;    (fn [response] (println "response is:" response))
+;;    (fn [exception] (println "exception is: " (clojure.pprint/pprint exception)))))
 
 
 ;; UTILITY FUNCTIONS

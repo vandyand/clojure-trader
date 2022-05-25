@@ -3,7 +3,10 @@
    [clojure.edn :as edn]
    [v0_1_X.strategy :as strat]
    [v0_2_X.strindicator :as strindy]
-   [util :as util]))
+   [util :as util]
+   [clojure.core.async :as async]
+   [clojure.java.io :as io]
+   [env :as env]))
 
 (def data-folder "data/")
 (def hyst-folder "hysts/")
@@ -41,16 +44,13 @@
 (defn get-by-id [file-name id]
   (util/find-in (read-file file-name) :id id))
 
+(defn format-hyst-for-edn [hyst]
+  (assoc hyst :strindy (format-strindy-for-edn (get hyst :strindy))))
+
 (defn save-hystrindy-to-file
   ([hyst] (save-hystrindy-to-file hyst hyst-folder))
   ([hystrindy folder]
-   (let [formatted-hystrindy 
-         (assoc 
-          hystrindy 
-          :strindy 
-          (format-strindy-for-edn 
-           (get hystrindy 
-            :strindy)))
+   (let [formatted-hystrindy (format-hyst-for-edn hystrindy)
          file-name (util/config->file-name hystrindy)]
      (write-file (str data-folder folder file-name) formatted-hystrindy true))))
 
@@ -79,3 +79,13 @@
    (let [formatted-hystrindies (read-file (str hyst-folder file-name))]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
+
+(defn open-file-writer-async [from-chan full-file-name watcher-atom]
+  (async/go
+    (loop []
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?))
+        (when-some [v (async/<! from-chan)]
+          (with-open [wrtr (io/writer full-file-name :append true)]
+            (.write wrtr (str v "\n"))
+            (swap! watcher-atom inc)))
+        (recur)))))
