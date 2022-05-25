@@ -129,7 +129,7 @@
   (def backtest-config (config/get-backtest-config-util
                         ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ;; ["EUR_USD" "intention"]
-                        "binary" 1 2 3 100 "M15"))
+                        "long-only" 1 2 3 100 "M15"))
 
   (def streams (fetch-formatted-streams backtest-config))
 

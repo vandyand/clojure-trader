@@ -21,12 +21,12 @@
 
 (defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
 
-(defn sieve->rivulet [sieve intention-rivulet] 
-  ;; (mapv * (conj sieve 0) intention-rivulet) ;; Figure out which is accurate...
-  (mapv * (cons (first sieve) sieve) intention-rivulet)
+(defn sieve->rivulet [sieve intention-rivulet]
+  (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) [])
   )
 
-(defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
+(defn rivulet->beck [rivulet] 
+  (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
 ;; TODO - make this performant? or get rid of it...
 (defn get-streams-walker [streams]
@@ -90,7 +90,7 @@
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or (and parent-node? (contains? #{"binary" "ternary"} (get config :return-type))) 
+           tree-node? (or (and parent-node? (contains? #{"long-only" "short-only" "ternary"} (get config :return-type))) 
                           (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs (get config :return-type))))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config (inc current-depth))))

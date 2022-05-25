@@ -15,7 +15,20 @@
     (recur)
   ))
 
-;; AUD_CAD CAD_CHF AUD_CHF CAD_SGD
+(comment
+  (run-runner ["M15-250-T_AUD_JPY.edn"] 300000)
+  )
+
+(comment
+  (def factory-config (config/get-factory-config-util
+                       [["AUD_JPY" "both"]
+                        "ternary" 1 2 3 250 500 "M15" "score-x"]
+                       [10 0.5 0.2 0.5]
+                       1 100))
+  (factory/run-factory-to-file factory-config)
+  (run-runner [(util/config->file-name factory-config)] 28000)
+  )
+
 (comment
   (def factory-config (config/get-factory-config-util
                        [["CAD_SGD" "inception" "AUD_CAD" "inception"
@@ -25,7 +38,7 @@
                         "ternary" 1 2 3 250 500 "M15" "score-x"]
                        [30 0.5 0.2 0.5]
                        10 20))
-  (factory/run-factory factory-config)
+  (factory/run-factory-to-file factory-config)
   (run-runner [(util/config->file-name factory-config)] 30000)
   ;; (run-runner ["M15-250-CAD_SGD-AUD_CAD-AUD_CHF-EUR_USD-EUR_JPY-EUR_GBP-GBP_USD-T_AUD_USD.edn"] 30000)
   )
@@ -63,7 +76,7 @@
 
     (def factory-config (config/get-factory-config 3 ga-config))
 
-    (factory/run-factory factory-config)
+    (factory/run-factory-to-file factory-config)
     
     ))
 
@@ -79,7 +92,7 @@
 
     (def factory-config (config/get-factory-config 21 ga-config))
 
-    (factory/run-factory factory-config)
+    (factory/run-factory-to-file factory-config)
    
    (loop []
      (try (arena/run-arena ["M15-2000-target_eur_usd-aud_usd-gbp_usd-eur_gbp-usd_jpy-eur_jpy-aud_jpy.edn"])
@@ -136,7 +149,7 @@
 
     (def factory-config (config/get-factory-config 21 ga-config))
 
-    (factory/run-factory factory-config)
+    (factory/run-factory-to-file factory-config)
    ))
 
 (comment

@@ -8,7 +8,8 @@
             [v0_2_X.hydrate :as hyd]
             [v0_2_X.strindicator :as strindy]
             [v0_2_X.plot :as plot]
-            [v0_2_X.streams :as streams]))
+            [v0_2_X.streams :as streams]
+            [env :as env]))
 
 (defn strindy-zip [strindy]
   (z/zipper
@@ -125,16 +126,16 @@
            best-score (apply max (map :fitness next-gen))
            average (let [fitnesses (take (get-in ga-config [:pop-config :num-parents]) (map :fitness next-gen))]
                      (/ (reduce + fitnesses) (count fitnesses)))]
-       (println "gen  " i " best score: " best-score
-                " avg parent score: " average)
-       (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams))
+       (when (env/get-env-data :GA_LOGGING?) (println "gen  " i " best score: " best-score
+                " avg parent score: " average))
+       (when (env/get-env-data :GA_PLOTTING?) (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams)))
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 (comment
   (def backtest-config (config/get-backtest-config-util
                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ["EUR_USD" "intention"]
-                        "binary" 1 2 3 100 "M1"))
+                        "long-only" 1 2 3 100 "M1"))
 
   (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 

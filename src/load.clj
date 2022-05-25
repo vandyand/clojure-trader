@@ -37,7 +37,7 @@
 
 (load "/v0_3_X/runner")
 
-(load "/v0_3_X/laboratory")
+(load "/v0_4_X/laboratory")
 
 
 (comment

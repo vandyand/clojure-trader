@@ -105,5 +105,8 @@
 - [x] (0.3.8) Added shift-data-points to streams for validation range
 - [x] (0.3.8) Redid streams data file saving stuff
 - [x] (0.3.8) run-arena working with multiple hyst files
+- [x] (0.4.0) added async file writing and backtesting
+- [x] (0.4.0) added laboratory
+- [x] (0.4.0) started on binance api integration
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

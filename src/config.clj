@@ -89,7 +89,7 @@
     (get-factory-config factory-num-produced ga-config)))
 
 (comment
-  (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "binary" 2 6 10 100 "H1"))
+  (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "long-only" 2 6 10 100 "H1"))
   
   (println (v0_2_X.strindicator/make-strindy (:strindy-config backtest-config)))
   

@@ -150,7 +150,8 @@
 (comment
   (get-open-trades)
 
-  (close-position "EUR_USD")
+  (close-long-position "USD_JPY")
+  (close-short-position "USD_JPY")
 
   (send-order-request-with-client-id "EUR_USD" 17 "id-17")
 
