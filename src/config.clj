@@ -3,7 +3,7 @@
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]
   (reduce (fn [acc args] (conj acc {:name (first args) :incint (last args) :id (count acc)}))
-          [{:name "default" :incint "inception" :id 0}] (partition 2 args)))
+          [] (partition 2 args)))
 
 (defn get-streams-info 
   ([streams-config incint] (get-streams-info streams-config incint :id))

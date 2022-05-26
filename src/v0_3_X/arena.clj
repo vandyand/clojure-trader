@@ -16,8 +16,11 @@
   (map :name (filter #(not= (get % :incint) "inception") (-> hyst :backtest-config :streams-config))))
 
 (defn get-robustness [hysts-file-name]
-  (let [gaunts (gaunt/run-gauntlet hysts-file-name)]
-  (double (/ (-> gaunts gaunt/get-best-gausts count) (count gaunts)))))
+  (let [gausts (gaunt/run-gauntlet hysts-file-name)
+        best-gausts (gaunt/get-best-gausts gausts)]
+    (println "num gausts: " (count gausts))
+    (println "num best gausts: " (count best-gausts))
+  (double (/ (-> best-gausts count) (count gausts)))))
 
 (defn post-hysts [hysts]
   (let [intention-instruments (get-intention-instruments-from-hyst (first hysts))

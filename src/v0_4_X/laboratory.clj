@@ -37,6 +37,23 @@
            (file/delete-file (str file/hyst-folder file-name)))
          (recur))))))
 
+(let [factory-config (config/get-factory-config-util
+                            [["AUD_JPY" "both"]
+                             "ternary" 1 4 6 500 500 "M15" "score-x"]
+                            [20 0.25 0.2 0.5]
+                            3 250)
+            file-name (util/config->file-name factory-config)
+            file-chan (async/chan)
+            watcher-atom (atom 0)]
+        (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+        (loop []
+          (Thread/sleep 1000)
+          (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+            (do
+              (arena/run-best-gausts file-name)
+              (file/delete-file (str file/hyst-folder file-name)))
+            (recur))))
+
 (comment
   "Async scheduled runner"
   (def schedule-chan (async/chan))
@@ -94,7 +111,45 @@
   )
 
 (comment
-  "Synchronus robustness check"
+  "Async robustness check oneshot"
+  (time
+   (let [factory-config (config/get-factory-config-util
+                        [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
+                          "GBP_USD" "inception"]
+                         "ternary" 1 4 6 500 50 "M15" "score-x"]
+                        [20 0.25 0.2 0.5]
+                        6 5)
+        file-name (util/config->file-name factory-config)
+        file-chan (async/chan)
+        watcher-atom (atom 0)]
+    (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+    (loop []
+      (Thread/sleep 500)
+      (println @watcher-atom)
+      (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+        (do
+          (println (arena/get-robustness file-name))
+          (file/delete-file (str file/hyst-folder file-name)))
+        (recur)))
+    ))
+  )
+
+(comment
+  "Synchronus robustness check oneshot"
+  (time
+   (let [factory-config (config/get-factory-config-util
+                         [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
+                           "GBP_USD" "inception"]
+                          "ternary" 1 4 6 500 50 "M15" "score-x"]
+                         [20 0.25 0.2 0.5]
+                         4 1)
+         file-name (util/config->file-name factory-config)]
+     (factory/run-factory-to-file factory-config)
+     (println (arena/get-robustness file-name))
+     (file/delete-file (str file/hyst-folder file-name)))))
+
+(comment
+  "Speed comparison"
   (time
    (let [factory-config (config/get-factory-config-util
                          [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
