@@ -82,22 +82,24 @@
         x (range num-data-points)]
     {:item (d :name) :x x :y ((d :fn) x)}))
 
-(def values (generate-plot-values))
+(comment
+  (def values (generate-plot-values))
 
-(def reduced-vals (for [x (range num-data-points)]
-                    {:item "reduced"
-                     :x x
-                     :y (reduce #(+ (get %2 :y) %1) 0
-                                (filter #(= (get % :x) x) values))}))
+  (def reduced-vals (for [x (range num-data-points)]
+                      {:item "reduced"
+                       :x x
+                       :y (reduce #(+ (get %2 :y) %1) 0
+                                  (filter #(= (get % :x) x) values))}))
 
-(def line-plot
-  {:data {:values (into reduced-vals values)}
-   :encoding {:x {:field "x" :type "quantitative"}
-              :y {:field "y" :type "quantitative"}
-              :color {:field "item" :type "nominal"}}
-   :mark {:type "line"}})
+  (def line-plot
+    {:data {:values (into reduced-vals values)}
+     :encoding {:x {:field "x" :type "quantitative"}
+                :y {:field "y" :type "quantitative"}
+                :color {:field "item" :type "nominal"}}
+     :mark {:type "line"}})
 
-(def viz
-  [:div [:vega-lite line-plot {:width 500}]])
+  (def viz
+    [:div [:vega-lite line-plot {:width 500}]])
 
-(oz/view! viz)
+  (oz/view! viz)
+  )
