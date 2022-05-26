@@ -17,19 +17,8 @@
     (factory/run-factory-to-file factory-config)
     (arena/get-robustness (util/config->file-name factory-config)))))
 
-;; (defn feed-forward-test []
-;;   (let [factory-config (config/get-factory-config-util
-;;                           [["AUD_JPY" "both"]
-;;                            "ternary" 1 2 3 250 500 "M15" "score-x"]
-;;                           [10 0.5 0.2 0.5]
-;;                           0 200)
-;;           file-name (util/config->file-name factory-config)]
-;;       (factory/run-factory-to-file factory-config)
-;;       (arena/run-best-gausts file-name)
-;;       (file/delete-file (str file/hyst-folder file-name)))
-;;   )
-
 (comment
+  "Timed Async Oneshot"
   (time
    (let [factory-config (config/get-factory-config-util
                          [["EUR_JPY" "both"]
@@ -49,7 +38,7 @@
          (recur))))))
 
 (comment
-  "Async factory runner"
+  "Async scheduled runner"
   (def schedule-chan (async/chan))
 
   (def future-times (util/get-future-unix-times-sec "M15" 24))
@@ -81,44 +70,46 @@
   )
 
 (comment
-  "Another async factory test"
+  "Async robustness check"
   (time
    (let [factory-config (config/get-factory-config-util
-                        [["EUR_JPY" "both"]
-                         "ternary" 1 4 6 500 500 "M15" "score-x"]
+                        [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
+                          "GBP_USD" "inception"]
+                         "ternary" 1 4 6 500 50 "M15" "score-x"]
                         [20 0.25 0.2 0.5]
-                        3 10)
+                        6 5)
         file-name (util/config->file-name factory-config)
         file-chan (async/chan)
         watcher-atom (atom 0)]
     (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
     (loop []
-      (Thread/sleep 1000)
+      (Thread/sleep 500)
       (println @watcher-atom)
       (if (>= @watcher-atom (-> factory-config :factory-num-produced))
         (do
-          (arena/run-best-gausts file-name)
+          (println (arena/get-robustness file-name))
           (file/delete-file (str file/hyst-folder file-name)))
         (recur)))
     ))
   )
 
 (comment
-  "Speed comparison"
+  "Synchronus robustness check"
   (time
    (let [factory-config (config/get-factory-config-util
-                            [["EUR_JPY" "both"]
-                             "ternary" 1 4 6 50 50 "M15" "score-x"]
-                            [10 0.25 0.2 0.5]
-                            3 200)
-            file-name (util/config->file-name factory-config)]
-        (factory/run-factory-to-file factory-config)
-        (arena/run-best-gausts file-name)
-        (file/delete-file (str file/hyst-folder file-name)))))
+                         [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
+                           "GBP_USD" "inception"]
+                          "ternary" 1 4 6 50 50 "M15" "score-x"]
+                         [20 0.25 0.2 0.5]
+                         4 1)
+         file-name (util/config->file-name factory-config)]
+     (factory/run-factory-to-file factory-config)
+     (println (arena/get-robustness file-name))
+     (file/delete-file (str file/hyst-folder file-name)))))
 
 
 (comment
-  "Scheduled runner (synchronous factory)"
+  "Synchronous Scheduled runner"
   (def schedule-chan (async/chan))
   
   (def future-times (util/get-future-unix-times-sec "M15" 26))
@@ -142,9 +133,21 @@
   (async/close! schedule-chan)
   )
 
+(comment
+  "Synchronous oneshot"
+  (let [factory-config (config/get-factory-config-util
+                        [["AUD_JPY" "both"]
+                         "ternary" 1 2 3 50 50 "M15" "score-x"]
+                        [10 0.5 0.2 0.5]
+                        0 20)
+        file-name (util/config->file-name factory-config)]
+    (factory/run-factory-to-file factory-config)
+    (arena/run-best-gausts file-name)
+    (file/delete-file (str file/hyst-folder file-name)))
+  )
 
 (comment
-  "This works"
+  "old-scheduled synchronous runner"
   (async/go-loop []
     (let [factory-config (config/get-factory-config-util
                           [["AUD_JPY" "both"]
@@ -160,7 +163,7 @@
   )
 
 (comment
-  "works for hysts (no fore robustness checking)"
+  "old-scheduled synchronous runner (no verification)"
   (async/go-loop []
     (let [factory-config  (config/get-factory-config-util
                            [["AUD_JPY" "both"]
@@ -173,24 +176,8 @@
     (recur))
   )
 
-
-
 (comment
-  (async/go-loop []
-    (let [factory-config (config/get-factory-config-util
-                          [["AUD_JPY" "both"]
-                           "ternary" 1 2 3 500 0 "M15" "sharpe-per-std"]
-                          [10 0.5 0.2 0.5]
-                          0 500)
-          robust-hysts (factory/run-checked-factory factory-config)]
-      (arena/post-gausts (gaunt/run-gauntlet robust-hysts)))
-    (Thread/sleep 900000)
-    (recur))
-  )
-
-
-(comment
-  "Testing robustness"
+  "Synchronous oneshot robustness test"
   (do
     (def factory-config (config/get-factory-config-util
                          [["AUD_JPY" "both"]
@@ -204,6 +191,7 @@
 
 
 (comment
+  "Original laboratory setup... not working"
 
   ( ["EUR_JPY" "AUD_CAD"] 
            [[["ternary" "long-only" "short-only"]
