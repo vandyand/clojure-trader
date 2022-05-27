@@ -41,6 +41,10 @@
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (util/get-oanda-api-data endpoint instrument-config))))
 
+(comment 
+  (get-candles {:name "AUD_JPY" :granularity "M1" :count 3})
+  )
+
 ;; GET OPEN POSITIONS
 
 (defn get-open-positions
@@ -148,6 +152,9 @@
     (close-trade trade-id)))
 
 (comment
+  
+  
+  
   (get-open-trades)
 
   (close-long-position "USD_JPY")

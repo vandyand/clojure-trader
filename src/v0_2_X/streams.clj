@@ -11,7 +11,9 @@
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
 
 (defn in-time-window? [time-stamp granularity]
-  (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
+  ;;TODO: UPDATE THIS LOGIC SO IT WORKS CORRECTLY
+  (< (util/current-time-sec) 
+     (+ time-stamp (* 0.5 (util/granularity->seconds granularity)))))
 
 (defn get-api-stream [instrument-config]
   (instruments/get-instrument-stream (assoc instrument-config :count 5000)))

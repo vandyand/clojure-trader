@@ -99,7 +99,7 @@
    ])
 
 (defn make-input [inception-ids]
-  {:id (rand-nth inception-ids) :shift (first (random-sample 0.5 (range)))})
+  {:id (rand-nth inception-ids) :shift (first (random-sample 0.1 (range)))})
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))

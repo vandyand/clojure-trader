@@ -4,20 +4,23 @@
    [v0_2_X.strindicator :as strindy]
    [config :as config]
    [v0_2_X.streams :as streams]
-   [stats :as stats]))
+   [stats :as stats]
+   [helpers :as hlp]))
 
 (defn hydrate-strindy 
-  ([strindy backtest-config] (hydrate-strindy strindy backtest-config nil))
-  ([strindy backtest-config fore?]
-  (let [streams (streams/fetch-formatted-streams backtest-config fore?)
+  ([strindy backtest-config streams] (hydrate-strindy strindy backtest-config streams nil))
+  ([strindy backtest-config streams fore?]
+  (let [
+        ;; foz (println backtest-config)
+        _streams (if streams streams (streams/fetch-formatted-streams backtest-config fore?))
         ;; foo (println "streams" streams)
-        stream-proxy (-> streams :inception-streams second (util/subvec-end 10)) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
-        sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
+        stream-proxy (-> _streams :inception-streams second (util/subvec-end 10)) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
+        sieve-stream (hlp/time-it "get sieve stream" strindy/get-sieve-stream strindy (get _streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
      :strindy strindy
      :sieve-stream sieve-stream
-     :return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))})))
+     :return-stream (strindy/sieve->return sieve-stream (get _streams :intention-streams))})))
 
 (defn is-sieve-unique? [test-stream sieve-streams]
   (not (some #(= % test-stream) sieve-streams)))
