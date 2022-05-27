@@ -12,7 +12,7 @@
     (let [stream-id (get strindy :id)
           target-inception-stream (get inception-streams stream-id)
           target-inception-stream-ind (pos-or-zero (- (- (count target-inception-stream) 1) (or (get strindy :shift) 0)))]
-      (get target-inception-stream target-inception-stream-ind))
+      (get-in target-inception-stream [target-inception-stream-ind (get strindy :key)]))
     (let [strind-fn (get-in strindy [:policy :fn])
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
@@ -34,7 +34,7 @@
             prev-sval (s (if (= ind 0) 0 (dec ind)))
             sval (s ind)
             rval (r (inc ind))
-            offset (if (not= prev-sval sval) -0.0001 0.0)
+            offset (if (not= prev-sval sval) -0.00001 0.0)
             res (+ offset (* sval rval))]
       (recur (conj v res)))
       v)))
@@ -71,7 +71,7 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn sieve->return [sieve-stream intention-streams]
-  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet intention-stream))
+  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet (map :o intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
                          (let [return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet)]
                            {:rivulet return-rivulet
@@ -99,7 +99,7 @@
    ])
 
 (defn make-input [inception-ids]
-  {:id (rand-nth inception-ids) :shift (first (random-sample 0.5 (range)))})
+  {:id (rand-nth inception-ids) :key (rand-nth '(:v :o :h :l :c)) :shift (first (random-sample 0.1 (range)))})
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))

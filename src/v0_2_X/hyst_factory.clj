@@ -29,6 +29,7 @@
   ([factory-config]
    (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
      (dotimes [n (-> factory-config :factory-num-produced)]
+      ;;  (println "factory num: " n)
        (let [best-pop (ga/run-epochs streams factory-config)
              candidate (first best-pop)] ;; Update to get multiple candidates from one GA?
          (file/save-hystrindy-to-file 

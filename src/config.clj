@@ -43,7 +43,7 @@
 
 ; Strindy tree shape config:
 (defn get-tree-config
-  "return-type is string of 'binary' | 'ternary' (long and short) | 'continuous'"
+  "return-type is string of 'long-only' | 'short-only' | 'ternary' (long and short) | 'continuous'"
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
