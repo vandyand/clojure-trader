@@ -88,7 +88,7 @@
         ;;  bas (clojure.pprint/pprint instruments-config)
          num-data-points (if (and fore? (get backtest-config :stream-proxy))
                              (util/get-fore-ind (get backtest-config :stream-proxy)
-                                              (get-whole-stream (first instruments-config)))
+                                              (mapv :o (get-whole-stream (first instruments-config))))
                            (get backtest-config :num-data-points))
          shift-data-points (if fore? 0 (-> backtest-config :shift-data-points))
         ;;  foo (println "num-data-points: " num-data-points)
@@ -96,9 +96,14 @@
      (for [instrument-config instruments-config]
        (let [whole-stream (get-whole-stream instrument-config)
              whole-stream-count (count whole-stream)
-            ;;  foo (println whole-stream-count num-data-points shift-data-points)
-            ;;  stream (util/subvec-end whole-stream num-data-points)
-             stream (subvec whole-stream (- whole-stream-count num-data-points shift-data-points) (- whole-stream-count shift-data-points))]
+            ;;  foo (println instrument-config whole-stream-count num-data-points)
+             stream (subvec 
+                     whole-stream 
+                     (- whole-stream-count 
+                        num-data-points 
+                        shift-data-points) 
+                     (- whole-stream-count 
+                        shift-data-points))]
          {:instrument (get instrument-config :name)
           :stream stream})))))
 

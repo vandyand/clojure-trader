@@ -73,10 +73,10 @@
   "Timed Async robustness check oneshot"
   (time
    (let [factory-config (apply config/get-factory-config-util
-                         [[["EUR_USD" "both"]
-                          "ternary" 1 2 3 250 25 "M15" "score-x"]
+                         [[["EUR_USD" "both" "GBP_USD" "inception" "EUR_GBP" "inception"]
+                          "ternary" 1 2 3 25 25 "M15" "score-x"]
                          [20 0.25 0.2 0.5]
-                         0 100])
+                         0 10])
         file-name (util/config->file-name factory-config)
         file-chan (async/chan)
         watcher-atom (atom 0)]
@@ -98,9 +98,9 @@
   (time
    (let [factory-config (apply config/get-factory-config-util
                                [[["EUR_USD" "both"]
-                                "ternary" 1 2 3 250 25 "M15" "sharpe"]
+                                "ternary" 1 2 3 25 25 "M15" "sharpe"]
                                 [20 0.25 0.2 0.5]
-                                0 2])
+                                0 10])
          file-name (util/config->file-name factory-config)]
      (factory/run-factory-to-file factory-config)
      (println (arena/get-robustness file-name))

@@ -71,7 +71,7 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn sieve->return [sieve-stream intention-streams]
-  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet (map :o intention-stream)))
+  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet (map :c intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
                          (let [return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet)]
                            {:rivulet return-rivulet

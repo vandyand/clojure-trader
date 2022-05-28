@@ -14,7 +14,7 @@
         ;; foz (println "streams: ")
         _streams (if streams streams (streams/fetch-formatted-streams backtest-config fore?))
         ;; foo (println "streams" streams)
-        stream-proxy (-> _streams :inception-streams second (util/subvec-end 10)) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
+        stream-proxy (mapv :o (-> _streams :inception-streams first (util/subvec-end 10))) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
         sieve-stream (strindy/get-sieve-stream strindy (get _streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (assoc backtest-config :stream-proxy stream-proxy)

@@ -30,7 +30,6 @@
     (oz/view! viz)))
 
 (defn zero-stream [stream]
-  (println "stream: " stream)
   (vec (for [price (map :o stream)] (- price (:o (first stream))))))
 
 (defn plot-gaustrindies [gaustrindies]

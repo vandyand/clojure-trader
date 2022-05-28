@@ -122,20 +122,20 @@
 
 ;; MUTATE AND CROSSOVER TREES FUNCTIONS
 
-(defn get-mutated-tree 
+(defn get-mutated-tree
   ([tree] (get-mutated-tree tree "long-only"))
   ([tree return-type]
-  (strat/ameliorate-tree
-   (let [n (rand-int 8)]
-     (cond
-       (= n 0) (-> tree (z/vector-zip) (replace-rand-branch-with-rand-val return-type) (z/root))
-       (= n 1) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-val return-type) (z/root))
-       (= n 2) (-> tree (z/vector-zip) (prune-rand-branch) (z/root))
-       (= n 3) (-> tree (z/vector-zip) (rand-branch) (prune-rand-branch) (z/root))
-       (= n 4) (-> tree (z/vector-zip) (new-rand-branch return-type) (z/root))
-       (= n 5) (-> tree (z/vector-zip) (rand-branch) (new-rand-branch return-type) (z/root))
-       (= n 6) (-> tree (z/vector-zip) (switch-branches) (z/root))
-       (= n 7) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root)))))))
+   (strat/ameliorate-tree
+    (let [n (rand-int 8)]
+      (cond
+        (= n 0) (-> tree (z/vector-zip) (replace-rand-branch-with-rand-val return-type) (z/root))
+        (= n 1) (-> tree (z/vector-zip) (rand-branch) (replace-rand-branch-with-rand-val return-type) (z/root))
+        (= n 2) (-> tree (z/vector-zip) (prune-rand-branch) (z/root))
+        (= n 3) (-> tree (z/vector-zip) (rand-branch) (prune-rand-branch) (z/root))
+        (= n 4) (-> tree (z/vector-zip) (new-rand-branch return-type) (z/root))
+        (= n 5) (-> tree (z/vector-zip) (rand-branch) (new-rand-branch return-type) (z/root))
+        (= n 6) (-> tree (z/vector-zip) (switch-branches) (z/root))
+        (= n 7) (-> tree (z/vector-zip) (rand-branch) (switch-branches) (z/root)))))))
 
 (defn get-rand-tree-branch [tree]
   (-> tree (z/vector-zip) (rand-branch) (z/node)))
@@ -143,7 +143,7 @@
 (defn get-crossover-tree [trees]
   (let [rand-trees (shuffle trees)
         tree1 (first rand-trees)
-        tree2 (last rand-trees) 
+        tree2 (last rand-trees)
         n (rand-int 4)]
     (strat/ameliorate-tree
      (cond
@@ -251,5 +251,4 @@
   (def best-pop (run-epochs ga-config))
   (plot-strats-and-inputs (take 5 best-pop)
                           (get ga-config :input-config))
-  (strat/get-strats-info (take 5 best-pop))
-  )
+  (strat/get-strats-info (take 5 best-pop)))
