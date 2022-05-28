@@ -112,14 +112,14 @@
        (hyd/get-hystrindies-fitnesses v))))
 
 (defn run-epoch
-  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config)) streams ga-config))
+  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config streams)) streams ga-config))
   ([population streams ga-config]
    (let [parents-pop (take (get-in ga-config [:pop-config :num-parents]) population)
          children-pop (get-unique-children-hystrindies parents-pop ga-config streams)]
      (sort-hystrindies (into parents-pop children-pop)))))
 
 (defn run-epochs
-  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config)) streams ga-config))
+  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config streams)) streams ga-config))
   ([population streams ga-config]
    (loop [i 0 pop population]
      (let [next-gen (run-epoch pop streams ga-config)

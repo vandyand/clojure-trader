@@ -108,5 +108,6 @@
 - [x] (0.4.0) added async file writing and backtesting
 - [x] (0.4.0) added laboratory
 - [x] (0.4.0) started on binance api integration
+- [x] (0.4.1) Use ohlc+v data instead of just open
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

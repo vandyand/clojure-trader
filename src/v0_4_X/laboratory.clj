@@ -72,23 +72,22 @@
 (comment
   "Timed Async robustness check oneshot"
   (time
-   (let [factory-config (config/get-factory-config-util
-                        [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
-                          "GBP_USD" "inception"]
-                         "ternary" 1 4 6 500 50 "M15" "score-x"]
-                        [20 0.25 0.2 0.5]
-                        6 5)
+   (let [factory-config (apply config/get-factory-config-util
+                         [[["EUR_USD" "both"]
+                          "ternary" 1 2 3 250 25 "M15" "score-x"]
+                         [20 0.25 0.2 0.5]
+                         0 100])
         file-name (util/config->file-name factory-config)
         file-chan (async/chan)
         watcher-atom (atom 0)]
     (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
     (loop []
       (Thread/sleep 500)
-      (println @watcher-atom)
+      ;; (println @watcher-atom)
       (if (>= @watcher-atom (-> factory-config :factory-num-produced))
         (do
           (println (arena/get-robustness file-name))
-          ;; (file/delete-file (str file/hyst-folder file-name))
+          (file/delete-file (str file/hyst-folder file-name))
           )
         (recur)))
     ))
@@ -97,16 +96,16 @@
 (comment
   "Timed Synchronus robustness check oneshot"
   (time
-   (let [factory-config (config/get-factory-config-util
-                         [["EUR_USD" "both" "AUD_USD" "inception" "USD_CHF" "inception"
-                           "GBP_USD" "inception"]
-                          "ternary" 1 4 6 500 50 "M15" "score-x"]
-                         [20 0.25 0.2 0.5]
-                         2 1)
+   (let [factory-config (apply config/get-factory-config-util
+                               [[["EUR_USD" "both"]
+                                "ternary" 1 2 3 250 25 "M15" "sharpe"]
+                                [20 0.25 0.2 0.5]
+                                0 2])
          file-name (util/config->file-name factory-config)]
      (factory/run-factory-to-file factory-config)
      (println (arena/get-robustness file-name))
-     (file/delete-file (str file/hyst-folder file-name)))))
+     (file/delete-file (str file/hyst-folder file-name))
+     )))
 
 (comment
   "Speed comparison"
@@ -213,7 +212,7 @@
              [1 2 3] [2 4 6]]
             [[250 500]]
             ["M15" "M30" "H1"]
-            ["balance" "sharpe" "sharpe-per-std" "inv-max-dd-period" "score-x"]
+            ["balance" "sharpe" "sharpe-per-std" "inv-dd-period" "score-x"]
             [[25 0.5 0.2 0.5] [25 0.2 0.6 0.2] [25 0.2 0.1 0.7] [25 0.8 0.8 0.1] [25 0.8 0.2 0.6]]
             [10 20]
             5])
