@@ -35,11 +35,15 @@
 
 ;; GET CANDLES
 
-(defn get-candles
-  ([instrument-config] (get-candles (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
+(defn get-api-candle-data
+  ([instrument-config] (get-api-candle-data (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
   ([account-id instrument-config]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (util/get-oanda-api-data endpoint instrument-config))))
+
+(comment 
+  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3})
+  )
 
 ;; GET OPEN POSITIONS
 
@@ -75,10 +79,24 @@
    candles))
 
 (defn get-open-prices [instrument-config]
-  (format-candles (get (get-candles instrument-config) :candles)))
+  (format-candles (get (get-api-candle-data instrument-config) :candles)))
+
+(defn get-instrument-stream-depreciated [instrument-config]
+  (vec (for [data (get-open-prices instrument-config)] (get data :open))))
 
 (defn get-instrument-stream [instrument-config]
-  (vec (for [data (get-open-prices instrument-config)] (get data :open))))
+  (let [api-data (get-api-candle-data instrument-config)]
+    (vec
+     (for [candle (get api-data :candles)]
+       {:v (get candle :volume)
+        :o (Double/parseDouble (get-in candle [:mid :o]))
+        :h (Double/parseDouble (get-in candle [:mid :h]))
+        :l (Double/parseDouble (get-in candle [:mid :l]))
+        :c (Double/parseDouble (get-in candle [:mid :c]))}))))
+
+(comment 
+  (get-instrument-stream {:name "AUD_JPY" :granularity "M1" :count 3})
+  )
 
 (defn get-instruments-streams [config]
  (let [instruments-config (util/get-instruments-config config)]
@@ -148,6 +166,9 @@
     (close-trade trade-id)))
 
 (comment
+  
+  
+  
   (get-open-trades)
 
   (close-long-position "USD_JPY")

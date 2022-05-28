@@ -5,7 +5,7 @@
    [clojure.data.json :as json]
    [api.headers :as headers]))
 
-(defn get-candles [instrument-config]
+(defn get-api-candle-data [instrument-config]
   (api-util/get-binance-api-data "klines" instrument-config))
 
 (defn format-candles [candles]
@@ -16,7 +16,7 @@
    candles))
 
 (defn get-open-prices [instrument-config]
-  (format-candles (get-candles instrument-config)))
+  (format-candles (get-api-candle-data instrument-config)))
 
 (defn get-instrument-stream [instrument-config]
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))
@@ -40,7 +40,7 @@
   )
 
 (comment
-  (get-candles (api-util/get-instrument-config "ETHBTC" "M30" 10))
+  (get-api-candle-data (api-util/get-instrument-config "ETHBTC" "M30" 10))
   )
 
 (comment

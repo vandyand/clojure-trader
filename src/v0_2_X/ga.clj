@@ -105,21 +105,21 @@
      (if (< (count v) (get-in ga-config [:pop-config :num-children]))
        (recur
         (let [new-strindy (get-child-strindy (map :strindy parents-pop) ga-config)
-              new-hystrindy (hyd/hydrate-strindy new-strindy (get ga-config :backtest-config))
+              new-hystrindy (hyd/hydrate-strindy new-strindy (get ga-config :backtest-config) streams)
               new-sieve (get new-hystrindy :sieve-stream)
               prior-sieves (map :sieve-stream (into parents-pop v))]
           (if (hyd/is-sieve-unique? new-sieve prior-sieves) (conj v new-hystrindy) v)))
        (hyd/get-hystrindies-fitnesses v))))
 
 (defn run-epoch
-  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config)) streams ga-config))
+  ([streams ga-config] (run-epoch (sort-hystrindies (hyd/get-init-pop ga-config streams)) streams ga-config))
   ([population streams ga-config]
    (let [parents-pop (take (get-in ga-config [:pop-config :num-parents]) population)
          children-pop (get-unique-children-hystrindies parents-pop ga-config streams)]
      (sort-hystrindies (into parents-pop children-pop)))))
 
 (defn run-epochs
-  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config))streams ga-config))
+  ([streams ga-config] (run-epochs (sort-hystrindies (hyd/get-init-pop ga-config streams)) streams ga-config))
   ([population streams ga-config]
    (loop [i 0 pop population]
      (let [next-gen (run-epoch pop streams ga-config)
@@ -127,7 +127,7 @@
            average (let [fitnesses (take (get-in ga-config [:pop-config :num-parents]) (map :fitness next-gen))]
                      (/ (reduce + fitnesses) (count fitnesses)))]
        (when (env/get-env-data :GA_LOGGING?) (println "gen  " i " best score: " best-score
-                " avg parent score: " average))
+                                                      " avg parent score: " average))
        (when (env/get-env-data :GA_PLOTTING?) (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams)))
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 

@@ -25,7 +25,7 @@
   "return-type is: long-only | short-only | ternary"
   ([min-depth max-depth num-inputs] (get-tree-config min-depth max-depth num-inputs "long-only"))
   ([min-depth max-depth num-inputs return-type]
-   (let [bintern (if (contains? #{"long-only" "ternary"} return-type) return-type "long-only")]
+   (let [bintern (if (contains? #{"long-only" "short-only" "ternary"} return-type) return-type "long-only")]
    {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs) :return-type bintern})))
 
 ;; MAKE TREE

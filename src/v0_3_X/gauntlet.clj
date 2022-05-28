@@ -16,7 +16,7 @@
   (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
 
 (defn get-fore-hystrindy [hystrindy]
-  (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) :fore)))
+  (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) nil :fore)))
 
 (defn get-fore-hystrindies [hystrindies]
   (for [hystrindy hystrindies]

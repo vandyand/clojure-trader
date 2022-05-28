@@ -78,12 +78,11 @@
     (str (clojure.string/join
         "-"
         (conj
-         (rest
           (map
            (fn [stream-conf] (if (= "inception" (get stream-conf :incint))
                                (get stream-conf :name)
                                (str "T_" (get stream-conf :name))))
-           (get backtest-config :streams-config)))
+           (get backtest-config :streams-config))
          (get backtest-config :num-data-points)
          (get backtest-config :granularity)))
        ".edn")))

@@ -12,7 +12,7 @@
     (let [stream-id (get strindy :id)
           target-inception-stream (get inception-streams stream-id)
           target-inception-stream-ind (pos-or-zero (- (- (count target-inception-stream) 1) (or (get strindy :shift) 0)))]
-      (get target-inception-stream target-inception-stream-ind))
+      (get-in target-inception-stream [target-inception-stream-ind (get strindy :key)]))
     (let [strind-fn (get-in strindy [:policy :fn])
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
@@ -24,6 +24,26 @@
 (defn sieve->rivulet [sieve intention-rivulet]
   (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) [])
   )
+
+(defn slippage-sieve->rivulet [s r]
+  "new sieve->rivulet
+   This penalizes opening and closing trades to simulate spread"
+  (loop [v [0.0]]
+    (if (< (count v) (count r))
+      (let [ind  (dec (count v))
+            prev-sval (s (if (= ind 0) 0 (dec ind)))
+            sval (s ind)
+            rval (r (inc ind))
+            offset (if (not= prev-sval sval) -0.00001 0.0)
+            res (+ offset (* sval rval))]
+      (recur (conj v res)))
+      v)))
+
+(comment 
+  (let [sieve [0      1       1      0       0      1      0        0      -1     -1     0      -1     1      1]
+        riv [0.001 0.0004 -0.0008 -0.0001 0.0004 0.0002 -0.0012 -0.0003 0.0002 -0.0007 0.0009 0.0001 0.0003 -0.001]]
+    (println (sieve->rivulet sieve riv))
+    (slippage-sieve->rivulet sieve riv)))
 
 (defn rivulet->beck [rivulet] 
   (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
@@ -51,9 +71,9 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn sieve->return [sieve-stream intention-streams]
-  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet intention-stream))
+  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet (map :o intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
-                         (let [return-rivulet (sieve->rivulet sieve-stream intention-rivulet)]
+                         (let [return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet)]
                            {:rivulet return-rivulet
                             :beck (rivulet->beck return-rivulet)}))]
     (get-sum-of-all-streams return-streams)))
@@ -79,7 +99,7 @@
    ])
 
 (defn make-input [inception-ids]
-  {:id (rand-nth inception-ids) :shift (first (random-sample 0.5 (range)))})
+  {:id (rand-nth inception-ids) :key (rand-nth '(:v :o :h :l :c)) :shift (first (random-sample 0.1 (range)))})
 
 (defn make-strindy-recur
   ([config] (make-strindy-recur config 0))

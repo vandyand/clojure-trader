@@ -11,7 +11,9 @@
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
 
 (defn in-time-window? [time-stamp granularity]
-  (< (util/current-time-sec) (+ time-stamp (util/granularity->seconds granularity))))
+  ;;TODO: UPDATE THIS LOGIC SO IT WORKS CORRECTLY
+  (< (util/current-time-sec) 
+     (+ time-stamp (* 0.5 (util/granularity->seconds granularity)))))
 
 (defn get-api-stream [instrument-config]
   (instruments/get-instrument-stream (assoc instrument-config :count 5000)))
@@ -49,14 +51,14 @@
   (let [file-name (get-instrument-file-name instrument-config)
         file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))]
     (if (not file-exists)
-       (create-stream-file file-name instrument-config)
+      (create-stream-file file-name instrument-config)
       (let [file-content (when file-exists (first (file/read-file file-name)))
             up-to-date?
             (when file-content
               (in-time-window? (get file-content :time-stamp)
                                (get instrument-config :granularity)))]
         (if up-to-date?
-            (vec (:stream file-content))
+          (vec (:stream file-content))
           (do (file/delete-file file-name)
               ;; (println "deleting file " file-name)
               ;; (Thread/sleep 1000)
@@ -101,7 +103,7 @@
           :stream stream})))))
 
 (defn get-incint-streams [backtest-config streams incint fore?]
-  (let [init-stream (if (= incint "inception")
+  (let [init-stream (if (and (->> backtest-config :streams-config (map :name) (some #(= % "default"))) (= incint "inception"))
                       [(if fore?
                          (vec (map #(+ % (get backtest-config :num-data-points)) (-> streams first :stream count range)))
                          (vec (range (get backtest-config :num-data-points))))]
@@ -129,7 +131,7 @@
   (def backtest-config (config/get-backtest-config-util
                         ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ;; ["EUR_USD" "intention"]
-                        "long-only" 1 2 3 100 "M15"))
+                        "long-only" 1 2 3 12 "M15"))
 
   (def streams (fetch-formatted-streams backtest-config))
 

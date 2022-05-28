@@ -156,7 +156,7 @@
               (recur (inc i) (nth beck i) max-period 0))
             (double (/ max-period (count vs))))))))
 
-(defn inv-max-dd-period [vs]
+(defn inv-dd-period [vs]
   (if (<= (count vs) 1) 0.0
        (/ 1 (max-dd-period vs))))
 

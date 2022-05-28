@@ -87,5 +87,5 @@
         (when-some [v (async/<! from-chan)]
           (with-open [wrtr (io/writer full-file-name :append true)]
             (.write wrtr (str v "\n"))
-            (swap! watcher-atom inc)))
+            (when watcher-atom (swap! watcher-atom inc))))
         (recur)))))

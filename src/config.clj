@@ -3,7 +3,7 @@
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]
   (reduce (fn [acc args] (conj acc {:name (first args) :incint (last args) :id (count acc)}))
-          [{:name "default" :incint "inception" :id 0}] (partition 2 args)))
+          [] (partition 2 args)))
 
 (defn get-streams-info 
   ([streams-config incint] (get-streams-info streams-config incint :id))
@@ -43,7 +43,7 @@
 
 ; Strindy tree shape config:
 (defn get-tree-config
-  "return-type is string of 'binary' | 'ternary' (long and short) | 'continuous'"
+  "return-type is string of 'long-only' | 'short-only' | 'ternary' (long and short) | 'continuous'"
   [return-type min-depth max-depth max-children]
   {:return-type return-type :min-depth min-depth :max-depth max-depth :max-children max-children})
 
