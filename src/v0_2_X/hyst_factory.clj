@@ -47,6 +47,18 @@
                                 (dissoc (get (first best-pop) :return-stream) :beck))]
              (recur (conj! v candidate))))))))
 
+(defn run-factory-async
+  "Returns vector of length :factory-num-produced of 'good' hysts"
+  ([factory-config factory-chan]
+   (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
+     (async/go-loop [v (transient [])]
+       (if (>= (count v) (:factory-num-produced factory-config))
+         (async/>! factory-chan (persistent! v))
+         (let [best-pop (ga/run-epochs streams factory-config)
+               candidate (assoc (first best-pop) :return-stream
+                                (dissoc (get (first best-pop) :return-stream) :beck))]
+             (recur (conj! v candidate))))))))
+
 (defn run-checked-factory
   "Returns vector of length :factory-num-produced of 'good' hysts"
   ([factory-config]

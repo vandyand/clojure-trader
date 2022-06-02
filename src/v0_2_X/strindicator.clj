@@ -34,7 +34,7 @@
             prev-sval (s (if (= ind 0) 0 (dec ind)))
             sval (s ind)
             rval (r (inc ind))
-            offset (if (not= prev-sval sval) -0.00001 0.0)
+            offset (if (not= prev-sval sval) -0.000025 0.0)
             res (+ offset (* sval rval))]
       (recur (conj v res)))
       v)))
@@ -81,9 +81,10 @@
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 (def strindy-funcs
-  [{:type "sin" :fn (fn [& args] (Math/sin (first args)))}
-   {:type "cos" :fn (fn [& args] (Math/cos (first args)))}
-   {:type "tan" :fn (fn [& args] (Math/tan (first args)))}
+  [
+  ;;  {:type "sin" :fn (fn [& args] (Math/sin (first args)))}
+  ;;  {:type "cos" :fn (fn [& args] (Math/cos (first args)))}
+  ;;  {:type "tan" :fn (fn [& args] (Math/tan (first args)))}
   ;;  {:type "mlog" :fn (fn [& args] (Math/log (Math/abs (+ Math/E (first args)))))}
   ;;  {:type "pow" :fn (fn [& args] (let [arg1 (first args) arg2 (if (= 1 (count args)) (first args) (second args))]
   ;;                                  (Math/pow arg1 arg2)))}

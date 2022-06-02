@@ -42,7 +42,7 @@
 
 ;; supports these types of granularities https://developer.oanda.com/rest-live-v20/instrument-df/#CandlestickGranularity
 (defn granularity->seconds [granularity]
-  (let [time-frame (subs granularity 0 1)
+  (let [time-frame (clojure.string/upper-case (subs granularity 0 1))
         amount-str (subs granularity 1 (count granularity))
         amount (if (= amount-str "") nil (Integer/parseInt amount-str))]
     (cond

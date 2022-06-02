@@ -6,7 +6,9 @@
    [v0_2_X.hyst_factory :as factory]
    [clojure.core.async :as async]
    [util :as util]
-   [v0_3_X.gauntlet :as gaunt]))
+   [v0_3_X.gauntlet :as gaunt]
+   [helpers :as hlp]
+   [env :as env]))
 
 (defn parse-config-arg-ranges [config-arg-ranges]
   )
@@ -21,10 +23,10 @@
   "Timed Async Run Oneshot"
   (time
    (let [factory-config (config/get-factory-config-util
-                         [["EUR_JPY" "both"]
-                          "ternary" 1 4 6 500 500 "H1" "score-x"]
-                         [20 0.25 0.2 0.5]
-                         3 1000)
+                              [["EUR_GBP" "both"]
+                               "ternary" 1 4 6 500 500 "H1" "score-x"]
+                              [20 0.25 0.2 0.5]
+                              3 250)
          file-name (util/config->file-name factory-config)
          file-chan (async/chan)
          watcher-atom (atom 0)]
@@ -37,56 +39,102 @@
            (file/delete-file (str file/hyst-folder file-name)))
          (recur))))))
 
+;; factory-config (config/get-factory-config-util
+;;                         [["EUR_USD" "both"]
+;;                          "ternary" 1 4 6 500 500 "H1" "score-x"]
+;;                         [20 0.25 0.2 0.5]
+;;                         3 250)
+
+(comment
+  "misc"
+  (time
+   (let [factory-config (apply config/get-factory-config-util
+                               [[["EUR_AUD" "both"]
+                                 "ternary" 1 4 6 250 25 "M1" "score-x"]
+                                [10 0.25 0.5 0.5]
+                                0 100])
+        ;; file-name (util/config->file-name factory-config)
+         factory-chan (async/chan)
+        ;; watcher-atom (atom 0)
+         ]
+     (factory/run-factory-async factory-config factory-chan)
+    ;;  (arena/run-best-gausts-async factory-chan)
+     (arena/get-robustness-async factory-chan)))
+
+  (arena/run-best-gausts "H1-500-T_EUR_USD.edn")
+  )
+
+
+(comment
+  "Fully Async scheduled runner"
+  (let [schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec "H1" 12)]
+
+    (util/put-future-times schedule-chan future-times)
+
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (let [factory-config (apply config/get-factory-config-util
+                                    [[["EUR_AUD" "both"]
+                                      "ternary" 1 2 3 250 250 "H1" "score-x"]
+                                     [10 0.25 0.2 0.5]
+                                     0 200])
+              factory-chan (async/chan)]
+          (factory/run-factory-async factory-config factory-chan)
+          (arena/run-best-gausts-async factory-chan)))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
+  )
+
+
 (comment
   "Async scheduled runner"
-  (def schedule-chan (async/chan))
+  (let [schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec "M1" 24)]
 
-  (def future-times (util/get-future-unix-times-sec "M15" 24))
+    (util/put-future-times schedule-chan future-times)
 
-  (util/put-future-times schedule-chan future-times)
-
-  (async/go-loop []
-    (when-some [val (async/<! schedule-chan)]
-      (let [factory-config (config/get-factory-config-util
-                            [["AUD_JPY" "both"]
-                             "ternary" 1 4 6 500 500 "M15" "score-x"]
-                            [20 0.25 0.2 0.5]
-                            3 250)
-            file-name (util/config->file-name factory-config)
-            file-chan (async/chan)
-            watcher-atom (atom 0)]
-        (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
-        (loop []
-          (Thread/sleep 1000)
-          (if (>= @watcher-atom (-> factory-config :factory-num-produced))
-            (do
-              (arena/run-best-gausts file-name)
-              (file/delete-file (str file/hyst-folder file-name)))
-            (recur)))))
-    (recur))
-
-  (async/close! schedule-chan)
-
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (let [factory-config (apply config/get-factory-config-util
+                         [[["EUR_AUD" "both"]
+                          "ternary" 1 2 3 250 25 "M1" "score-x"]
+                         [10 0.25 0.2 0.5]
+                         0 100])
+              file-name (util/config->file-name factory-config)
+              file-chan (async/chan)
+              watcher-atom (atom 0)]
+          (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
+          ;; (loop []
+            ;; (Thread/sleep 1000)
+            (if (>= @watcher-atom (-> factory-config :factory-num-produced))
+              (do
+                (arena/run-best-gausts file-name)
+                (file/delete-file (str file/hyst-folder file-name)))
+              (recur))
+          ;; )
+          ))
+      (recur)))
   )
 
 (comment
   "Timed Async robustness check oneshot"
   (time
    (let [factory-config (apply config/get-factory-config-util
-                         [[["EUR_USD" "both" "GBP_USD" "inception" "EUR_GBP" "inception"]
-                          "ternary" 1 2 3 25 25 "M15" "score-x"]
-                         [20 0.25 0.2 0.5]
-                         0 10])
+                         [[["EUR_USD" "both"]
+                          "ternary" 1 2 3 250 25 "M1" "score-x"]
+                         [10 0.25 0.2 0.5]
+                         0 100])
         file-name (util/config->file-name factory-config)
         file-chan (async/chan)
         watcher-atom (atom 0)]
     (factory/run-factory-to-file-async factory-config file-chan watcher-atom)
     (loop []
-      (Thread/sleep 500)
+      (Thread/sleep 100)
       ;; (println @watcher-atom)
       (if (>= @watcher-atom (-> factory-config :factory-num-produced))
         (do
-          (println (arena/get-robustness file-name))
+          ;; (println (arena/get-robustness file-name))
+          (println (arena/run-best-gausts file-name))
           (file/delete-file (str file/hyst-folder file-name))
           )
         (recur)))

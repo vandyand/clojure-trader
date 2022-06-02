@@ -8,26 +8,25 @@
    [helpers :as hlp]))
 
 (defn hydrate-strindy 
-  ([strindy backtest-config streams] (hydrate-strindy strindy backtest-config streams nil))
-  ([strindy backtest-config streams fore?]
+  ([strindy backtest-config streams]
   (let [
         ;; foz (println "streams: ")
-        _streams (if streams streams (streams/fetch-formatted-streams backtest-config fore?))
+        ;; _streams (if streams streams (streams/fetch-formatted-streams backtest-config fore?))
         ;; foo (println "streams" streams)
-        stream-proxy (mapv :o (-> _streams :inception-streams first (util/subvec-end 10))) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
-        sieve-stream (strindy/get-sieve-stream strindy (get _streams :inception-streams))]
+        stream-proxy (mapv :o (-> streams :inception-streams first (util/subvec-end 10))) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
+        sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
      :strindy strindy
      :sieve-stream sieve-stream
-     :return-stream (strindy/sieve->return sieve-stream (get _streams :intention-streams))})))
+     :return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))})))
 
 (defn is-sieve-unique? [test-stream sieve-streams]
   (not (some #(= % test-stream) sieve-streams)))
 
 (defn get-rand-hyst [backtest-config streams]
   (let [strindy (strindy/make-strindy (get backtest-config :strindy-config))]
-    (hydrate-strindy strindy backtest-config streams false)))
+    (hydrate-strindy strindy backtest-config streams)))
 
 (defn get-unique-hystrindies
   ([ga-config streams] (get-unique-hystrindies ga-config streams (get-in ga-config [:pop-config :pop-size])))

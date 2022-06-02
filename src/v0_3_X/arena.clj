@@ -2,12 +2,15 @@
   (:require
    [file :as file]
    [util :as util]
+   [helpers :as hlp]
    [config :as config]
    [v0_2_X.hydrate :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_2_X.streams :as streams]
    [api.oanda_api :as oa]
-   [stats :as stats]))
+   [stats :as stats]
+   [clojure.core.async :as async]
+   [env :as env]))
 
 (defn get-intention-instruments-from-gaust [gaust]
   (map :name (filter #(not= (get % :incint) "inception") (-> gaust :streams-config))))
@@ -21,6 +24,16 @@
     (println "num gausts: " (count gausts))
     (println "num best gausts: " (count best-gausts))
   (double (/ (-> best-gausts count) (count gausts)))))
+
+(defn get-robustness-async [hysts-chan]
+  (async/go-loop []
+    (when-some [hysts (async/<! hysts-chan)]
+      (let [gausts (gaunt/run-gauntlet hysts)
+            best-gausts (gaunt/get-best-gausts gausts)]
+        (println "num gausts: " (count gausts))
+        (println "num best gausts: " (count best-gausts))
+        (println (double (/ (-> best-gausts count) (count gausts))))))
+    (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
 
 (defn post-hysts [hysts]
   (let [intention-instruments (get-intention-instruments-from-hyst (first hysts))
@@ -51,9 +64,9 @@
         target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
         foo (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 100 
-                             (if (> (count target-dirs) 10) 10 (count target-dirs)) 
-                             (stats/mean target-dirs)))
+                     (int (* 25 (stats/mean target-dirs)
+                             (if (> (count target-dirs) 40) 40 (count target-dirs)) 
+                             ))
                      0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
@@ -86,8 +99,21 @@
         best-gausts (gaunt/get-best-gausts gausts)]
     (if (> (count best-gausts) 0)
       (post-gausts best-gausts)
-      (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "dummy-guast--zero-position")]]
+      (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
        (post-gausts dummy-gausts))))))
+
+(defn run-best-gausts-async
+  ([hysts-chan]
+  (async/go-loop []
+    (when-some [hysts (async/<! hysts-chan)]
+      (let [gausts (gaunt/run-gauntlet hysts)
+        ;; bar (println gausts)
+            best-gausts (gaunt/get-best-gausts gausts)]
+        (if (> (count best-gausts) 0)
+          (post-gausts best-gausts)
+          (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
+            (post-gausts dummy-gausts)))))
+    (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
 
 (defn run-arena 
   ([hysts-file-names] (run-arena hysts-file-names 0))

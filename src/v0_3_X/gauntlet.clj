@@ -3,7 +3,9 @@
    [file :as file]
    [v0_2_X.hydrate :as hyd]
    [v0_2_X.strindicator :as strindy]
+   [v0_2_X.streams :as streams]
    [stats :as stats]
+   [helpers :as hlp]
    ))
 
 (defn good-gaust? [gaust]
@@ -15,12 +17,12 @@
 (defn get-best-gaust [gausts]
   (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
 
-(defn get-fore-hystrindy [hystrindy]
-  (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) nil :fore)))
+(defn get-fore-hystrindy [hystrindy streams]
+  (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) streams)))
 
-(defn get-fore-hystrindies [hystrindies]
+(defn get-fore-hystrindies [hystrindies streams]
   (for [hystrindy hystrindies]
-    (get-fore-hystrindy hystrindy)))
+    (get-fore-hystrindy hystrindy streams)))
 
 (defn repopulate-return-stream [rivulet]
   {:rivulet rivulet
@@ -34,12 +36,13 @@
     {:id (get back-hystrindy :id)
      :strindy (get back-hystrindy :strindy)
      :streams-config (-> back-hystrindy :backtest-config :streams-config)
-     :return-stream (repopulate-return-stream (-> back-hystrindy :return-stream :rivulet))
+    ;;  :return-stream (repopulate-return-stream (-> back-hystrindy :return-stream :rivulet))
      :g-sieve-stream (get fore-hystrindy :sieve-stream)
-     :g-return-stream g-return-stream
+    ;;  :g-return-stream g-return-stream
      :g-fitness (-> g-return-stream :beck last)
      :z-score z-score
-     :g-score (* z-score (-> back-hystrindy :fitness))}))
+    ;;  :g-score (* z-score (-> back-hystrindy :fitness))
+     }))
 
 (defn get-gaustrindies [hystrindies fore-hystrindies]
   (for [n (range (count hystrindies))]
@@ -51,7 +54,8 @@
   "arg is either vector of hysts or string file-name of hysts file"
   [arg]
   (let [hysts (if (= (type arg) java.lang.String) (file/get-hystrindies-from-file arg) arg)
-        fysts (get-fore-hystrindies hysts)
+        streams (streams/fetch-formatted-streams (-> hysts first :backtest-config) :fore)
+        fysts (get-fore-hystrindies hysts streams)
         gausts (get-gaustrindies hysts fysts)]
     gausts))
 
