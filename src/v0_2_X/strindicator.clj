@@ -25,19 +25,23 @@
   (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) [])
   )
 
-(defn slippage-sieve->rivulet [s r]
-  "new sieve->rivulet
+(defn slippage-sieve->rivulet 
+  ([s i-r] (slippage-sieve->rivulet s i-r 0))
+  ([s i-r penalty]
+   "new sieve->rivulet
    This penalizes opening and closing trades to simulate spread"
-  (loop [v [0.0]]
-    (if (< (count v) (count r))
-      (let [ind  (dec (count v))
-            prev-sval (s (if (= ind 0) 0 (dec ind)))
-            sval (s ind)
-            rval (r (inc ind))
-            offset (if (not= prev-sval sval) -0.000025 0.0)
-            res (+ offset (* sval rval))]
-      (recur (conj v res)))
-      v)))
+  ;;  (println "penalty: " penalty)
+  ;;  (println (stats/mean i-r))
+   (loop [v [0.0]]
+     (if (< (count v) (count i-r))
+       (let [ind  (dec (count v))
+             prev-sval (s (if (= ind 0) 0 (dec ind)))
+             sval (s ind)
+             rval (i-r (inc ind))
+             offset (if (not= prev-sval sval) penalty 0.0)
+             res (+ offset (* sval rval))]
+         (recur (conj v res)))
+       v))))
 
 (comment 
   (let [sieve [0      1       1      0       0      1      0        0      -1     -1     0      -1     1      1]
@@ -71,9 +75,13 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn sieve->return [sieve-stream intention-streams]
-  (let [intention-streams-rivulet (for [intention-stream intention-streams] (stream->rivulet (map :c intention-stream)))
+  ;; (print (> 10 (:o (ffirst intention-streams))))
+  (let [intention-streams-rivulet 
+        (for [intention-stream intention-streams]
+          (stream->rivulet (map :c intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
-                         (let [return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet)]
+                         (let [slippage (if (> 10 (-> intention-streams ffirst :o)) -0.000025 -0.0025)
+                               return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet slippage)]
                            {:rivulet return-rivulet
                             :beck (rivulet->beck return-rivulet)}))]
     (get-sum-of-all-streams return-streams)))

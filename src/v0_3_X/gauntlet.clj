@@ -29,7 +29,8 @@
    :beck (strindy/rivulet->beck rivulet)})
 
 (defn get-gaustrindy [back-hystrindy fore-hystrindy] 
-  (let [g-return-stream (get fore-hystrindy :return-stream)
+  (let [
+        ;; g-return-stream (get fore-hystrindy :return-stream)
         z-score (stats/z-score
                  (-> back-hystrindy :return-stream :rivulet)
                  (-> fore-hystrindy :return-stream :rivulet))]
@@ -39,7 +40,9 @@
     ;;  :return-stream (repopulate-return-stream (-> back-hystrindy :return-stream :rivulet))
      :g-sieve-stream (get fore-hystrindy :sieve-stream)
     ;;  :g-return-stream g-return-stream
-     :g-fitness (-> g-return-stream :beck last)
+    ;;  :g-fitness (-> g-return-stream :beck last)
+     :back-fitness (:fitness back-hystrindy)
+     :fore-fitness (:fitness fore-hystrindy)
      :z-score z-score
     ;;  :g-score (* z-score (-> back-hystrindy :fitness))
      }))
@@ -51,9 +54,9 @@
       (get-gaustrindy back-hystrindy fore-hystrindy))))
 
 (defn run-gauntlet 
-  "arg is either vector of hysts or string file-name of hysts file"
-  [arg]
-  (let [hysts (if (= (type arg) java.lang.String) (file/get-hystrindies-from-file arg) arg)
+  "hysts-arg is either vector of hysts or string file-name of hysts file"
+  [hysts-arg]
+  (let [hysts (if (= (type hysts-arg) java.lang.String) (file/get-hystrindies-from-file hysts-arg) hysts-arg)
         streams (streams/fetch-formatted-streams (-> hysts first :backtest-config) :fore)
         fysts (get-fore-hystrindies hysts streams)
         gausts (get-gaustrindies hysts fysts)]

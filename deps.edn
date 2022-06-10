@@ -4,6 +4,7 @@
         org.clojure/data.json {:mvn/version "2.4.0"}
         clj-http/clj-http {:mvn/version "3.12.3"}
         cheshire/cheshire {:mvn/version "5.10.2"}
-        cljfmt {:mvn/version "0.8.0"}
-        buddy/buddy-core {:mvn/version "1.7.1"}}
+        cljfmt/cljfmt {:mvn/version "0.8.0"}
+        buddy/buddy-core {:mvn/version "1.7.1"}
+        uncomplicate/clojurecuda {:mvn/version "0.15.0"}}
  :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}}}}}

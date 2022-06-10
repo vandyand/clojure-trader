@@ -49,39 +49,69 @@
   "misc"
   (time
    (let [factory-config (apply config/get-factory-config-util
-                               [[["EUR_AUD" "both"]
-                                 "ternary" 1 4 6 250 25 "M1" "score-x"]
-                                [10 0.25 0.5 0.5]
-                                0 100])
+                                    [[["AUD_USD" "both" "EUR_USD" "both" "EUR_AUD" "both"]
+                                      "ternary" 1 2 3 50 500 "H1" "score-x"]
+                                     [10 0.1 0.2 0.5]
+                                     0 100])
         ;; file-name (util/config->file-name factory-config)
          factory-chan (async/chan)
         ;; watcher-atom (atom 0)
          ]
      (factory/run-factory-async factory-config factory-chan)
     ;;  (arena/run-best-gausts-async factory-chan)
-     (arena/get-robustness-async factory-chan)))
+     (arena/get-robustness-async factory-chan)
+     ))
 
-  (arena/run-best-gausts "H1-500-T_EUR_USD.edn")
+  (arena/get-robustness "H1-500-T_AUD_USD.edn")
+  (arena/run-best-gausts "H1-500-T_AUD_USD.edn")
   )
 
 
 (comment
   "Fully Async scheduled runner"
   (let [schedule-chan (async/chan)
-        future-times (util/get-future-unix-times-sec "H1" 12)]
+        future-times (util/get-future-unix-times-sec "H1")]
 
     (util/put-future-times schedule-chan future-times)
 
     (async/go-loop []
       (when-some [val (async/<! schedule-chan)]
         (let [factory-config (apply config/get-factory-config-util
-                                    [[["EUR_AUD" "both"]
-                                      "ternary" 1 2 3 250 250 "H1" "score-x"]
+                                    [[["AUD_USD" "both"]
+                                      "ternary" 1 2 3 250 750 "H1" "score-x"]
                                      [10 0.25 0.2 0.5]
                                      0 200])
               factory-chan (async/chan)]
           (factory/run-factory-async factory-config factory-chan)
           (arena/run-best-gausts-async factory-chan)))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
+  )
+
+
+(comment
+  "Fully Async Multi-currency scheduled runner"
+  (let [schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec "H1")]
+
+    (util/put-future-times schedule-chan future-times)
+
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (doseq [instrument ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY" "GBP_USD"
+                            "USD_CHF" "AUD_JPY" "USD_CAD" "ZAR_JPY" "CHF_JPY" "EUR_CHF"
+                            "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_JPY" "CAD_CHF"]]
+        ;; (doseq [instrument ["AUD_USD" "EUR_USD" "EUR_AUD"]]
+          (async/go
+            (let [factory-config (apply config/get-factory-config-util
+                                        [[[instrument "both"]
+                                          "ternary" 1 2 3 250 1750 "H1" "score-x"]
+                                         [20 0.25 0.2 0.5]
+                                         0 200])
+                  factory-chan (async/chan)]
+              (factory/run-factory-async factory-config factory-chan)
+              (arena/run-best-gausts-async factory-chan)
+              ;; (arena/get-robustness-async factory-chan)
+              ))))
       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
   )
 

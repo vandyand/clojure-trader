@@ -64,7 +64,7 @@
         target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
         foo (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 25 (stats/mean target-dirs)
+                     (int (* 250 (stats/mean target-dirs)
                              (if (> (count target-dirs) 40) 40 (count target-dirs)) 
                              ))
                      0)]
@@ -76,6 +76,8 @@
             pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
         (println "best gausts ids: " (map :id gausts))
         (println "best gausts z-score: " (map :z-score gausts))
+        (println "best gausts back fitnesses: " (map :back-fitness gausts))
+        (println "best gausts fore fitnesses: " (map :fore-fitness gausts))
         (if (not= pos-change 0)
           (do (oa/send-order-request instrument pos-change)
               (println instrument ": position changed")

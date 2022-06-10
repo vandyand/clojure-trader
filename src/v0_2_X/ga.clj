@@ -132,16 +132,17 @@
        (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
 
 (comment
-  (def backtest-config (config/get-backtest-config-util
+  (do
+    (def backtest-config (config/get-backtest-config-util
                       ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
-                        ["EUR_USD" "intention"]
-                        "long-only" 1 2 3 100 "M1"))
+                          ["EUR_USD" "both"]
+                          "long-only" 1 2 3 10 "H1"))
 
-  (def ga-config (config/get-ga-config 10 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
+    (def ga-config (config/get-ga-config 0 backtest-config (config/get-pop-config 20 0.4 0.1 0.2)))
 
-  (def streams (streams/fetch-formatted-streams (get ga-config :backtest-config)))
+    (def streams (streams/fetch-formatted-streams (get ga-config :backtest-config)))
 
 ;; (def init-pop (hyd/get-init-pop ga-config))
-  
-  (def best-pop (run-epochs streams ga-config))
+
+    (def best-pop (run-epochs streams ga-config)))
   )
