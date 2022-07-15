@@ -19,7 +19,7 @@
 
 
 (do
-  (def sig-key (env/get-sensative-data :BINANCE_API_SECRET))
+  (def sig-key (env/get-sensitive-data :BINANCE_API_SECRET))
   
   (def instrument-config {:symbol "BTCUSD"
                           :side "BUY"

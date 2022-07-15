@@ -3,5 +3,5 @@
 .cpcache/
 .lsp/
 .nrepl-port
-.sensative.json
+.sensitive.json
 data/**

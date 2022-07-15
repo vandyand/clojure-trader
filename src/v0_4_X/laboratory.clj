@@ -131,7 +131,6 @@
                                           "ternary" 1 2 4 150 3000 "H2" "score-x"]
                                          [10 0.4 0.1 0.5]
                                          1 200])
-                  foo (println factory-config)
                   factory-chan (async/chan)]
               (factory/run-factory-async factory-config factory-chan)
               (arena/run-best-gausts-async factory-chan)

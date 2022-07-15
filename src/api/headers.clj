@@ -5,8 +5,8 @@
 ;; HEADER FUNCTIONS
 
 (defn get-oanda-headers 
-  [] {:Authorization (str "Bearer " (env/get-sensative-data :OANDA_API_KEY)) 
+  [] {:Authorization (str "Bearer " (env/get-oanda-api-key)) 
       :Accept-Datetime-Format "UNIX"})
 
 (defn get-binance-headers 
-  [] {:X-MBX-APIKEY  (env/get-sensative-data :BINANCE_API_KEY)})
+  [] {:X-MBX-APIKEY  (env/get-sensitive-data :BINANCE_API_KEY)})

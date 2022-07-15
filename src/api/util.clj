@@ -72,7 +72,8 @@
       (str (name (key kv)) "=" (val kv)))))
 
 (defn build-url [target endpoint instrument-config]
-  (let [url-keywd (cond (= target "oanda") :OANDA_API_URL
+  (let [account-type (env/get-env-data :OANDA_LIVE_OR_DEMO)
+        url-keywd (cond (= target "oanda") (if (= account-type "LIVE") :OANDA_LIVE_URL :OANDA_DEMO_URL)
                         (= target "binance") :BINANCE_API_URL)]
     (str (env/get-env-data url-keywd)
          endpoint
