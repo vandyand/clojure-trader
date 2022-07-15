@@ -9,7 +9,7 @@
 ;; UTILITY FUNCTIONS 
 
 (defn get-account-endpoint
-  ([end] (get-account-endpoint (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) end))
+  ([end] (get-account-endpoint (env/get-account-id) end))
   ([account-id end]
    (str "accounts/" account-id "/" end)))
 
@@ -18,12 +18,12 @@
 (defn get-accounts [] (util/get-oanda-api-data "accounts"))
 
 (defn get-account-summary
-  ([] (get-account-summary (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([] (get-account-summary (env/get-account-id)))
   ([account-id]
    (util/get-oanda-api-data (get-account-endpoint account-id "summary"))))
 
 (defn get-account-instruments
-  ([] (get-account-instruments (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
    (util/get-oanda-api-data (get-account-endpoint account-id "instruments"))))
 
@@ -36,7 +36,7 @@
 ;; GET CANDLES
 
 (defn get-api-candle-data
-  ([instrument-config] (get-api-candle-data (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument-config))
+  ([instrument-config] (get-api-candle-data (env/get-account-id) instrument-config))
   ([account-id instrument-config]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (util/get-oanda-api-data endpoint instrument-config))))
@@ -48,13 +48,40 @@
 ;; GET OPEN POSITIONS
 
 (defn get-open-positions
-  ([] (get-open-positions (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID)))
+  ([] (get-open-positions (env/get-account-id)))
   ([account-id] (util/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
 
 ;; SEND ORDER FUNCTIONS
 
-(defn make-post-order-body [instrument units]
-  {:order {:instrument instrument :units units :timeInForce "FOK" :type "MARKET" :positionFill "DEFAULT"}})
+(defn make-market-order-body [instrument units]
+  {:order {:instrument instrument 
+           :units units 
+           :timeInForce "FOK" 
+           :type "MARKET" 
+           :positionFill "DEFAULT"}})
+
+(defn make-market-price-order-body [instrument units price-bound]
+  {:order {:instrument instrument 
+           :units units 
+           :timeInForce "FOK" 
+           :type "MARKET" 
+           :positionFill "DEFAULT"
+           :priceBound price-bound}})
+
+(defn make-limit-sltp-order-body [instrument units details]
+  {:order {:instrument instrument
+           :units units
+           :price (details :price)
+           :timeInForce "GTD"
+           :gtdTime (details :cancel-time) 
+           :triggerCondition "DEFAULT"
+           :type "LIMIT"
+           :positionFill "DEFAULT"
+           :stopLossOnFill {:price (details :sl-price)}
+           :takeProfitOnFill {:price (details :tp-price)}}})
+
+(defn make-limit-order-details [cancel-time price tp-price sl-price]
+  {:order-type "LIMIT" :cancel-time (str cancel-time) :price (str price) :tp-price (str tp-price) :sl-price (str sl-price)})
 
 (defn make-request-options [body]
   {:headers (headers/get-oanda-headers)
@@ -63,11 +90,22 @@
    :as :json})
 
 (defn send-order-request
-  ([instrument units] (send-order-request (env/get-env-data :OANDA_DEFAULT_ACCOUNT_ID) instrument units))
-  ([account-id instrument units]
+  ([instrument units] (send-order-request instrument units "MARKET" 0))
+  ([instrument units  order-type sltp-distance] (send-order-request instrument units order-type sltp-distance (env/get-account-id)))
+  ([instrument units order-type sltp-distance account-id]
    (util/send-api-post-request 
     (util/build-oanda-url (get-account-endpoint account-id "orders")) 
-    (make-request-options (make-post-order-body instrument units)))))
+    (make-request-options (if (= order-type "MARKET")
+                            (make-market-order-body instrument units)
+                            (make-limit-sltp-order-body instrument units sltp-distance))))))
+
+(comment
+  ;; 2022-07-06T18:51:00Z
+  (send-order-request "EUR_USD" 100 {:order-type "LIMIT" :cancel-time "1657133757" 
+                                     :price "1.0181" :tp-price "1.0201" :sl-price "1.0161"})
+  
+  (send-order-request "EUR_USD" 100 {:order-type "MARKET"})
+  )
 
 ;; OANDA STRINDICATOR STUFF
 
@@ -106,9 +144,6 @@
 
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
-
-;; For our uses, we're going to rely heavily on close-trade function below and not close out entire positions.
-;; The close-position functions are here in case they are needed at some point in the future
 
 (defn close-position 
   ([instrument] (close-position instrument true))

@@ -27,7 +27,7 @@
 ;;   ([account-id instrument units]
 ;;    (api-util/send-api-post-request 
 ;;     (api-util/build-oanda-url (get-account-endpoint account-id "orders")) 
-;;     (make-request-options (make-post-order-body instrument units)))))
+;;     (make-request-options (make-market-order-body instrument units)))))
 
 
 (comment

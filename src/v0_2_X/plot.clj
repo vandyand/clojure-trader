@@ -29,19 +29,25 @@
            :mark {:type "line"}} {:width 500}]]]
     (oz/view! viz)))
 
-(defn zero-stream [stream]
-  (vec (for [price (map :o stream)] (- price (:o (first stream))))))
+(defn zero-instrument [instrument]
+  (vec (for [price (map :o instrument)] (- price (:o (first instrument))))))
 
 (defn plot-gaustrindies [gaustrindies]
-  (let [streams (map #(-> % :g-return-stream :beck) gaustrindies)
+  (let [streams (map #(-> % :fore-return-stream :beck) gaustrindies)
         values (format-streams-for-view streams)]
   (generate-and-view-plot values)))
+
+(defn plot-stream [stream]
+  (-> stream format-stream-for-view generate-and-view-plot))
+
+(defn plot-streams [streams]
+  (-> streams format-streams-for-view generate-and-view-plot))
 
 (defn plot-with-intentions 
   ([plotee intention-streams] (plot-with-intentions plotee intention-streams :return-stream))
   ([plotee intention-streams return-key]
   (let [return-streams (map #(-> % return-key :beck) plotee)
-        zeroed-intention-streams (map zero-stream intention-streams)
+        zeroed-intention-streams (map zero-instrument intention-streams)
         all-streams (into return-streams zeroed-intention-streams)
         values (format-streams-for-view all-streams)]
     (generate-and-view-plot values))))

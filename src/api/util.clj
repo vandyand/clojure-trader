@@ -45,6 +45,7 @@
   (client/put url options))
 
 (defn send-api-post-request [url options]
+  ;; (client/post url (assoc options :debug true))
   (client/post url options))
 
 ;; (defn send-api-post-request [url options]

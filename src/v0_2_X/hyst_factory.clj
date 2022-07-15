@@ -69,7 +69,7 @@
          (let [best-pop (ga/run-epochs streams factory-config)
                candidate (assoc (first best-pop) :return-stream
                                 (dissoc (get (first best-pop) :return-stream) :beck))
-               checked-candidate (when (gaunt/good-gaust? (gaunt/run-guantlet-single candidate)) candidate)]
+               checked-candidate (when (gaunt/good-gaust? (gaunt/run-gauntlet-single candidate)) candidate)]
            (if checked-candidate
              (recur (conj! v checked-candidate))
              (recur v))))))))

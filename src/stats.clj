@@ -31,6 +31,7 @@
   ([vs]
    (stdev vs (count vs) (mean vs)))
   ([vs sz u]
+  ;;  (println vs sz u)
    (Math/sqrt (/ (reduce + (map #(Math/pow (- % u) 2) vs))
                  sz))))
 

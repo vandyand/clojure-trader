@@ -13,7 +13,7 @@
    [env :as env]))
 
 (defn get-intention-instruments-from-gaust [gaust]
-  (map :name (filter #(not= (get % :incint) "inception") (-> gaust :streams-config))))
+  (map :name (filter #(not= (get % :incint) "inception") (-> gaust :backtest-config :streams-config))))
 
 (defn get-intention-instruments-from-hyst [hyst]
   (map :name (filter #(not= (get % :incint) "inception") (-> hyst :backtest-config :streams-config))))
@@ -59,32 +59,35 @@
               (println "pos-change: " pos-change))
           (println "nothing happened"))))))
 
-(defn post-gausts [gausts]
+(defn post-gausts 
+  ([gausts] (post-gausts gausts {:order-type "MARKET"}))
+  ([gausts order-details]
+  ;; (println gausts)
   (let [intention-instruments (get-intention-instruments-from-gaust (first gausts))
-        target-dirs (mapv #(-> % :g-sieve-stream last) gausts)
+        ;; foo (println intention-instruments)
+        target-dirs (mapv #(-> % :fore-sieve-stream last) gausts)
         foo (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 250 (stats/mean target-dirs)
-                             (if (> (count target-dirs) 40) 40 (count target-dirs)) 
-                             ))
+                     (int (* 25 (stats/mean target-dirs)
+                             (if (> (count target-dirs) 40) 40 (count target-dirs))))
                      0)]
     (doseq [instrument intention-instruments]
       (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
             short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
             current-pos (when current-pos-data (+ long-pos short-pos))
-            pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
+            units (if current-pos-data (- target-pos current-pos) target-pos)]
         (println "best gausts ids: " (map :id gausts))
         (println "best gausts z-score: " (map :z-score gausts))
         (println "best gausts back fitnesses: " (map :back-fitness gausts))
         (println "best gausts fore fitnesses: " (map :fore-fitness gausts))
-        (if (not= pos-change 0)
-          (do (oa/send-order-request instrument pos-change)
+        (if (not= units 0)
+          (do (oa/send-order-request instrument units) ;; TODO: NEED POS-CHANGE INFO IN ORDER TO DEFINE ORDER-DETAILS. REFACTOR.
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
-              (println "pos-change: " pos-change))
-          (println "nothing happened"))))))
+              (println "pos-change: " units))
+          (println "nothing happened")))))))
 
 (defn run-best-gaust 
   ([] (run-best-gaust "hystrindies.edn"))
@@ -101,19 +104,20 @@
         best-gausts (gaunt/get-best-gausts gausts)]
     (if (> (count best-gausts) 0)
       (post-gausts best-gausts)
-      (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
+      (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
        (post-gausts dummy-gausts))))))
 
 (defn run-best-gausts-async
-  ([hysts-chan]
+  ([hysts-chan] (run-best-gausts-async hysts-chan {:order-type "MARKET"}))
+  ([hysts-chan order-details]
   (async/go-loop []
     (when-some [hysts (async/<! hysts-chan)]
       (let [gausts (gaunt/run-gauntlet hysts)
         ;; bar (println gausts)
             best-gausts (gaunt/get-best-gausts gausts)]
         (if (> (count best-gausts) 0)
-          (post-gausts best-gausts)
-          (let [dummy-gausts [(assoc (first gausts) :g-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
+          (post-gausts best-gausts order-details)
+          (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
             (post-gausts dummy-gausts)))))
     (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
 
@@ -137,7 +141,7 @@
     (get-intention-instruments-from-gaust best-gaust)
 
     (let [intention-instruments (get-intention-instruments-from-gaust best-gaust)
-          target-pos? (= 1 (-> best-gaust :g-sieve-stream last))]
+          target-pos? (= 1 (-> best-gaust :fore-sieve-stream last))]
       (doseq [instrument intention-instruments]
         (let [current-pos? (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))]
           (cond
@@ -188,7 +192,7 @@
 
 ;;       (doseq [updated-gaust updated-gausts]
 ;;         (let [intention-instruments (get-intention-instruments-from-gaust updated-gaust)
-;;               target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
+;;               target-pos? (= 1 (-> updated-gaust :fore-sieve-stream last))
 ;;               current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
 ;;       ;; (println "target-pos?: " target-pos?)
 ;;       ;; (println "current-pos?: " current-pos?)
@@ -218,7 +222,7 @@
 
 ;;     (doseq [updated-gaust updated-gausts]
 ;;       (let [intention-instruments (get-intention-instruments-from-gaust updated-gaust)
-;;             target-pos? (= 1 (-> updated-gaust :g-sieve-stream last))
+;;             target-pos? (= 1 (-> updated-gaust :fore-sieve-stream last))
 ;;             current-pos? (> (-> (oa/get-open-positions) :positions count) 0)]
 ;;         (println "target-pos?: " target-pos?)
 ;;         (println "current-pos?: " current-pos?)

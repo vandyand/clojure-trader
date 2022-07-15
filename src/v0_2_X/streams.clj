@@ -7,8 +7,9 @@
    [api.util :as api_util]
    [api.instruments :as instruments]))
 
-(defn get-instrument-file-name [instrument-config]
+(defn get-instrument-file-name ([instrument-config]
   (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
+  ([name granularity] (str "streams/" name "-" granularity ".edn")))
 
 (defn in-time-window? [time-stamp granularity]
   ;;TODO: UPDATE THIS LOGIC SO IT WORKS CORRECTLY
@@ -64,6 +65,13 @@
               ;; (Thread/sleep 1000)
               (get-whole-stream instrument-config)))))))
 
+
+(defn get-latest-price-from-file [file-name]
+  (let [file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))
+        file-content (when file-exists (first (file/read-file file-name)))]
+    (when file-content (last (file-content :stream)))))
+
+
 ;; (defn get-whole-stream-from-file-or-api
 ;;   [instrument-config]
 ;;   (let [file-name (get-instrument-file-name instrument-config)
@@ -83,6 +91,7 @@
 (defn fetch-streams
   ([backtest-config] (fetch-streams backtest-config false))
   ([backtest-config fore?]
+  ;;  (println "fetch-streams: " backtest-config fore?)
    (let [instruments-config (api_util/get-instruments-config backtest-config)
         ;;  baz (clojure.pprint/pprint backtest-config)
         ;;  bas (clojure.pprint/pprint instruments-config)

@@ -1,3 +1,6 @@
+### Thurs, July 7, 22
+Market orders, limit orders, stop loss, take profit, time in force, if time in force is "GTD" need a cancel time. If limit order, need a price. If stop loss, take profit, need a price and direction and distance.
+
 ### Tues, May 10, 22
 We should make a testing framework to validate design decisions such as "are limit orders better than market orders" and such.
 
