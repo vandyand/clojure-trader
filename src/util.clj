@@ -38,6 +38,12 @@
 (defn current-time-msec []
   (System/currentTimeMillis))
 
+(defn round-dub
+  "Round a double to the given precision (number of significant digits)"
+  [dub precision]
+  (let [factor (Math/pow 10 precision)]
+    (/ (Math/round (* dub factor)) factor)))
+
 ;; supports these types of granularities https://developer.oanda.com/rest-live-v20/instrument-df/#CandlestickGranularity
 (defn granularity->seconds [granularity]
   (let [time-frame (clojure.string/upper-case (subs granularity 0 1))

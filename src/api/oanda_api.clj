@@ -4,7 +4,8 @@
             [clojure.data.json :as json]
             [env :as env]
             [api.util :as util]
-            [api.headers :as headers]))
+            [api.headers :as headers]
+            [api.order_types :as ot]))
 
 ;; UTILITY FUNCTIONS 
 
@@ -35,7 +36,14 @@
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
-   (util/get-oanda-api-data (get-account-endpoint account-id "instruments"))))
+   (-> account-id (get-account-endpoint "instruments") util/get-oanda-api-data :instruments)))
+
+(defn get-account-instrument [instrument]
+  (let [instruments (get-account-instruments)]
+    (first (filter #(= instrument (% :name)) instruments))))
+
+(defn get-instrument-precision [instrument]
+  (-> instrument get-account-instrument :displayPrecision))
 
 (defn account-instruments->names [account-instruments]
   (map (fn [instrument] (:name instrument)) (:instruments account-instruments)))
@@ -63,35 +71,35 @@
 
 ;; SEND ORDER FUNCTIONS
 
-(defn make-market-order-body [instrument units]
-  {:order {:instrument instrument 
-           :units units 
-           :timeInForce "FOK" 
-           :type "MARKET" 
-           :positionFill "DEFAULT"}})
+;; (defn make-market-order-body [instrument units]
+;;   {:order {:instrument instrument 
+;;            :units units 
+;;            :timeInForce "FOK" 
+;;            :type "MARKET" 
+;;            :positionFill "DEFAULT"}})
 
-(defn make-market-price-order-body [instrument units price-bound]
-  {:order {:instrument instrument 
-           :units units 
-           :timeInForce "FOK" 
-           :type "MARKET" 
-           :positionFill "DEFAULT"
-           :priceBound price-bound}})
+;; (defn make-market-price-order-body [instrument units price-bound]
+;;   {:order {:instrument instrument 
+;;            :units units 
+;;            :timeInForce "FOK" 
+;;            :type "MARKET" 
+;;            :positionFill "DEFAULT"
+;;            :priceBound price-bound}})
 
-(defn make-limit-sltp-order-body [instrument units details]
-  {:order {:instrument instrument
-           :units units
-           :price (details :price)
-           :timeInForce "GTD"
-           :gtdTime (details :cancel-time) 
-           :triggerCondition "DEFAULT"
-           :type "LIMIT"
-           :positionFill "DEFAULT"
-           :stopLossOnFill {:price (details :sl-price)}
-           :takeProfitOnFill {:price (details :tp-price)}}})
+;; (defn make-limit-sltp-order-body [instrument units details]
+;;   {:order {:instrument instrument
+;;            :units units
+;;            :price (details :price)
+;;            :timeInForce "GTD"
+;;            :gtdTime (details :cancel-time) 
+;;            :triggerCondition "DEFAULT"
+;;            :type "LIMIT"
+;;            :positionFill "DEFAULT"
+;;            :stopLossOnFill {:price (details :sl-price)}
+;;            :takeProfitOnFill {:price (details :tp-price)}}})
 
-(defn make-limit-order-details [cancel-time price tp-price sl-price]
-  {:order-type "LIMIT" :cancel-time (str cancel-time) :price (str price) :tp-price (str tp-price) :sl-price (str sl-price)})
+;; (defn make-limit-order-details [cancel-time price tp-price sl-price]
+;;   {:order-type "LIMIT" :cancel-time (str cancel-time) :price (str price) :tp-price (str tp-price) :sl-price (str sl-price)})
 
 (defn make-request-options [body]
   {:headers (headers/get-oanda-headers)
@@ -100,21 +108,20 @@
    :as :json})
 
 (defn send-order-request
-  ([instrument units] (send-order-request instrument units "MARKET" 0))
-  ([instrument units  order-type sltp-distance] (send-order-request instrument units order-type sltp-distance (env/get-account-id)))
-  ([instrument units order-type sltp-distance account-id]
+  "order-options can be made by order_types/make-order-options-util function"
+  ([order-options] (send-order-request order-options (env/get-account-id)))
+  ([order-options account-id]
    (util/send-api-post-request 
     (util/build-oanda-url (get-account-endpoint account-id "orders")) 
-    (make-request-options (if (= order-type "MARKET")
-                            (make-market-order-body instrument units)
-                            (make-limit-sltp-order-body instrument units sltp-distance))))))
+    (make-request-options order-options))))
 
 (comment
-  ;; 2022-07-06T18:51:00Z
-  (send-order-request "EUR_USD" 100 {:order-type "LIMIT" :cancel-time "1657133757" 
-                                     :price "1.0181" :tp-price "1.0201" :sl-price "1.0161"})
   
-  (send-order-request "EUR_USD" 100 {:order-type "MARKET"})
+  (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
+  
+  (send-order-request (ot/make-order-options-util "EUR_USD" 5))
+  
+  (send-order-request (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)) 
   )
 
 ;; OANDA STRINDICATOR STUFF
@@ -128,6 +135,23 @@
 
 (defn get-open-prices [instrument-config]
   (format-candles (get (get-api-candle-data instrument-config) :candles)))
+
+(defn get-instrument-last-candle [instrument granularity]
+  (-> instrument (util/get-instrument-config granularity 1) get-api-candle-data :candles last))
+
+(defn get-current-candle-open-time [granularity]
+  (-> "EUR_USD" (get-instrument-last-candle granularity) :time Double/parseDouble))
+
+(defn get-instrument-current-price-by-ohlc 
+  ([instrument ohlc-key] (get-instrument-current-price-by-ohlc instrument ohlc-key "M1"))
+  ([instrument ohlc-key granularity]
+  (-> instrument (get-instrument-last-candle granularity) :mid ohlc-key Double/parseDouble)))
+
+(defn get-instrument-current-price [instrument]
+  (get-instrument-current-price-by-ohlc instrument :c))
+
+(defn get-instrument-current-candle-open [instrument granularity]
+  (get-instrument-current-price-by-ohlc instrument :o granularity))
 
 (defn get-instrument-stream-depreciated [instrument-config]
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))
@@ -201,7 +225,7 @@
     (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
 
 (defn send-order-request-with-client-id [instrument units client-id]
-  (let [trade-id (-> (send-order-request instrument units) :body :orderFillTransaction :id)]
+  (let [trade-id (-> (send-order-request (ot/make-order-options-util instrument units)) :body :orderFillTransaction :id)]
     (Thread/sleep 100)
     (update-trade-with-id trade-id client-id)))
 

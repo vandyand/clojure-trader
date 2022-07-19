@@ -10,7 +10,8 @@
    [api.oanda_api :as oa]
    [stats :as stats]
    [clojure.core.async :as async]
-   [env :as env]))
+   [env :as env]
+   [api.order_types :as ot]))
 
 (defn get-intention-instruments-from-gaust [gaust]
   (map :name (filter #(not= (get % :incint) "inception") (-> gaust :backtest-config :streams-config))))
@@ -49,10 +50,11 @@
             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
             short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
             current-pos (when current-pos-data (+ long-pos short-pos))
-            pos-change (if current-pos-data (- target-pos current-pos) target-pos)]
+            pos-change (if current-pos-data (- target-pos current-pos) target-pos)
+            order-options (ot/make-order-options-util instrument pos-change)]
         (println "best hyst ids: " (map :id hysts))
         (if (not= pos-change 0)
-          (do (oa/send-order-request instrument pos-change)
+          (do (oa/send-order-request order-options)
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
@@ -60,8 +62,7 @@
           (println "nothing happened"))))))
 
 (defn post-gausts 
-  ([gausts] (post-gausts gausts {:order-type "MARKET"}))
-  ([gausts order-details]
+  [gausts]
   (let [intention-instruments (get-intention-instruments-from-gaust (first gausts))
         target-dirs (mapv #(-> % :fore-sieve-stream last) gausts)
         print-this (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
@@ -81,7 +82,7 @@
         (println "best gausts back fitnesses: " (map :back-fitness gausts))
         (println "best gausts fore fitnesses: " (map :fore-fitness gausts))
         (if (not= units 0)
-          (do (oa/send-order-request instrument units) ;; TODO: NEED POS-CHANGE INFO IN ORDER TO DEFINE ORDER-DETAILS. REFACTOR.
+          (do (oa/send-order-request (ot/make-order-options-util instrument units))
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
@@ -107,18 +108,16 @@
        (post-gausts dummy-gausts))))))
 
 (defn run-best-gausts-async
-  ([hysts-chan] (run-best-gausts-async hysts-chan {:order-type "MARKET"}))
-  ([hysts-chan order-details]
+  [hysts-chan]
   (async/go-loop []
     (when-some [hysts (async/<! hysts-chan)]
       (let [gausts (gaunt/run-gauntlet hysts)
-        ;; bar (println gausts)
             best-gausts (gaunt/get-best-gausts gausts)]
         (if (> (count best-gausts) 0)
-          (post-gausts best-gausts order-details)
+          (post-gausts best-gausts)
           (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
             (post-gausts dummy-gausts)))))
-    (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
+    (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
 
 (defn run-arena 
   ([hysts-file-names] (run-arena hysts-file-names 0))
