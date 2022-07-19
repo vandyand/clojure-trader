@@ -22,6 +22,16 @@
   ([account-id]
    (util/get-oanda-api-data (get-account-endpoint account-id "summary"))))
 
+(defn get-account-balance
+  ([] (get-account-balance (env/get-account-id)))
+  ([account-id]
+   (-> (get-account-summary account-id) :account :balance Double/parseDouble)))
+
+(defn get-account-nav
+  ([] (get-account-balance (env/get-account-id)))
+  ([account-id]
+   (-> (get-account-summary account-id) :account :NAV Double/parseDouble)))
+
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
@@ -202,7 +212,9 @@
 
 (comment
   
+  (get-account-summary)
   
+  (get-account-balance)
   
   (get-open-trades)
 

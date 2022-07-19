@@ -67,8 +67,9 @@
         ;; foo (println intention-instruments)
         target-dirs (mapv #(-> % :fore-sieve-stream last) gausts)
         foo (println (get-intention-instruments-from-gaust (first gausts)) " target directions:" target-dirs)
+        account-balance (oa/get-account-balance)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 25 (stats/mean target-dirs)
+                     (int (* (/ account-balance 8) (stats/mean target-dirs)
                              (if (> (count target-dirs) 40) 40 (count target-dirs))))
                      0)]
     (doseq [instrument intention-instruments]
