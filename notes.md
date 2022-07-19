@@ -1,3 +1,12 @@
+### Tues, July 19, 22
+Time for cleanup! Unfinished projects:
+ - limit/market orders with sl/tp
+ - Binance API
+ - GPU programming
+ - Multiple instances
+In order to complete these tasks we need a clean (loved) code base. Dig in and clean up.
+Being able to generate data structures (like gausts or hysts) would be great. This can be done using spec.
+
 ### Fri, July 15, 22
 Need to be faster. Use the GPU. The results (how many "hits" you get for 100 backtests for example) has high variance. This is essentially noise that degrades(?) performance. A less noisy signal will be found by running more backtests to get more gausts and finding the robust ones. Another option is to just run one instrument instead of 20 and get lots more results for that one but this is dumb. The idea is ubiquty. At some point we'll need more compute and that point is arguably right now...
 

@@ -10,8 +10,6 @@
 
 ;; CONFIG FUNCTIONS
 
-;; You apply a strategy to source and target inputs to produce a return stream
-
 (defn get-index-pairs
   "returns set of sets"
   [num-inputs]
@@ -56,10 +54,6 @@
    #(if (and
          (= (type %) clojure.lang.PersistentVector)
          (= (nth % 1) (nth % 2)))
-      ;; Make sure to only potentially inlude -1 if tree-config return-type is "ternary", if "long-only" values are only 0 and 1
-      ;[(first %) (- (mod (+ (last %) 2) 3) 1) (last %)] ;; This makes [cond 1 1] -> [cond -1 1] with 1 -> -1, 0 -> 1, -1 -> 0 for middle leaf
-      
-      ;; This is easier for now...
       (last %)
       %)
    tree))

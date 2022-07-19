@@ -53,9 +53,6 @@
   :args :sine/args
   :ret number?)
 
-(comment
-  (s/exercise-fn `sine))
-
 (defn get-sine-fn-name [args]
   (format "y=%.3f*sin(%.4fx-%.0f)+%.2f" (args :amp) (args :freq) (args :h-shift) (args :v-shift)))
 

@@ -1,8 +1,6 @@
 # Roadmap and Such and So
 
 ### Todo - short term
-- [ ] Go long and short - test with one intention instrument
-- [ ] (0.3.X) Make hystrindies into separate files as we did with streams
 
 ### Todo - longer term
 
@@ -26,16 +24,12 @@
 - [ ] Spec all functions
 - [ ] Fuzz test all functions with spec generators
 - [ ] Use clojure.edn for config data
-- [ ] Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
-- [ ] Make strategy configurable to go long or short (return -1, 0 or 1 instead of booleans. Make this configurable (:return-type "ternary" | "binary" | "continuous"))
 - [ ] Make latex formula generator for strindies (and strategies? (logical latex notation)[https://www.geeksforgeeks.org/logic-notations-in-latex/])
 - [ ] Update strindy ga crossover function to make it crossover branches further down than second level (so that potentially whole strindy2 tree could be grafted in to a low branch of strindy1). Same could be said for strat trees.
-- [ ] Cleanup hydrate file names to be more idomatic
 - [ ] Make strat tree solver (strat/solve-tree) drier (currently used in multiple files including v0.2 ga and edn)
 - [ ] Get rid of :policy in strindicators, just put the key values on the first level with :inputs. There's no benefit to having these values in a lower level.
-- [ ] Shorting ability (make sieve-stream ternary or just inverse intention stream or sieve stream or delta stream)
-- [ ] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
-- [ ] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, gaustrindies... etc) (yet to be seen if this is necessary though probably will be)
+- [O] Write actual functions to edn and decode them when reading instead of omitting them as we currently do
+- [O] Make edn file read/write ubiquitous that is, able to read/write objects of different types (hystrindies, gaustrindies... etc) (yet to be seen if this is necessary though probably will be)
 - [ ] Cleanup backtest-config. inception-ids and intention-ids in strindy-config is derived data... Make more elegant somehow. Strindy config shouldn't be necessary in streams.edn
 - [ ] Feat: Get more than 5000 count of backtest data from api for input streams
 - [ ] GA logging to see what mutations cause most success and success of mutations vs crossovers vs random
@@ -109,5 +103,8 @@
 - [x] (0.4.0) added laboratory
 - [x] (0.4.0) started on binance api integration
 - [x] (0.4.1) Use ohlc+v data instead of just open
+- [x] (0.3.?) Go long and short - test with one intention instrument
+- [x] (0.4.?) Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
+
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data

@@ -9,11 +9,7 @@
 
 (defn hydrate-strindy 
   ([strindy backtest-config streams]
-  (let [
-        ;; foz (println "streams: ")
-        ;; _streams (if streams streams (streams/fetch-formatted-streams backtest-config fore?))
-        ;; foo (println "streams" streams)
-        stream-proxy (mapv :o (-> streams :inception-streams first (util/subvec-end 10))) ;; "second" is data dependant. potential tech debt change (which we'll probably never change lol)
+  (let [stream-proxy (mapv :o (-> streams :inception-streams first (util/subvec-end 10)))
         sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
@@ -60,7 +56,6 @@
 
 (comment
   (def backtest-config (config/get-backtest-config-util
-                      ;; ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception" "USD_JPY" "inception"]
                         ["EUR_USD" "both"]
                         "ternary" 1 2 3 12 "H4"))
 

@@ -85,14 +85,6 @@
             factory-config (apply config/get-factory-config-util factory-config-args)]
         (run-factory-to-file factory-config)))))
 
-(comment
-  (def pairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
-              "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
-              "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
-              "EUR_AUD" "GBP_CAD"]))
-
-
-
 
 (comment
   (do
@@ -140,7 +132,7 @@
     (do
       (def backtest-config (config/get-backtest-config-util
                             stream-arg
-                            "long-only" 2 4 6 1200 "M1"))
+                            "long-only" 2 4 6 1200 "H2"))
 
       (def ga-config (config/get-ga-config 25 backtest-config (config/get-pop-config 40 0.4 0.3 0.5)))
 

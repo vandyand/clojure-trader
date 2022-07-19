@@ -30,8 +30,6 @@
   ([s i-r penalty]
    "new sieve->rivulet
    This penalizes opening and closing trades to simulate spread"
-  ;;  (println "penalty: " penalty)
-  ;;  (println (stats/mean i-r))
    (loop [v [0.0]]
      (if (< (count v) (count i-r))
        (let [ind  (dec (count v))
@@ -75,7 +73,6 @@
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
 (defn sieve->return [sieve-stream intention-streams]
-  ;; (print (> 10 (:o (ffirst intention-streams))))
   (let [intention-streams-rivulet 
         (for [intention-stream intention-streams]
           (stream->rivulet (map :c intention-stream)))
@@ -99,8 +96,8 @@
   ;;  {:type "binary" :fn (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0)))}
    {:type "+" :fn (fn [& args] (apply + args))}
    {:type "-" :fn (fn [& args] (apply - args))}
-  ;;  {:type "*" :fn (fn [& args] (apply * args))}
-  ;;  {:type "/" :fn (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args))}
+   {:type "*" :fn (fn [& args] (apply * args))}
+   {:type "/" :fn (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args))}
   ;;  {:type "max" :fn (fn [& args] (apply max args))}
   ;;  {:type "min" :fn (fn [& args] (apply min args))}
   ;;  {:type "mean" :fn (fn [& args] (stats/mean args))}

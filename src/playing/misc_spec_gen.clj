@@ -1,4 +1,4 @@
-(ns v0_1_X.misc_spec_gen
+(ns playing.misc_spec_gen
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as sgen]

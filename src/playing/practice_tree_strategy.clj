@@ -1,4 +1,4 @@
-(ns v0_1_X.practice_tree_strategy
+(ns playing.practice_tree_strategy
   (:require
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen]))

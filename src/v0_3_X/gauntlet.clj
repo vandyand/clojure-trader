@@ -18,7 +18,6 @@
   (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
 
 (defn get-fore-hystrindy [hystrindy streams]
-  ;; (println "get-fore-hyst: " hystrindy streams)
   (hyd/get-hystrindy-fitness (hyd/hydrate-strindy (:strindy hystrindy) (:backtest-config hystrindy) streams)))
 
 (defn get-fore-hystrindies [hystrindies streams]
@@ -30,12 +29,8 @@
    :beck (strindy/rivulet->beck rivulet)})
 
 (defn get-gaustrindy [back-hystrindy fore-hystrindy] 
-  ;; (println "get-gaustrindy")
-  ;; (println "back-hyst: " back-hystrindy)
-  ;; (println "fore-hyst: " fore-hystrindy)
   (let [fore-beck (-> fore-hystrindy :return-stream :beck)
         back-beck ((repopulate-return-stream (-> back-hystrindy :return-stream :rivulet)) :beck)
-        ;; foo (println "fore-hystrindy: " fore-hystrindy)
         z-score (stats/z-score
                  (-> back-hystrindy :return-stream :rivulet)
                  (-> fore-hystrindy :return-stream :rivulet))]
@@ -43,8 +38,6 @@
      :strindy (get back-hystrindy :strindy)
      :backtest-config (-> back-hystrindy :backtest-config)
      :fore-sieve-stream (get fore-hystrindy :sieve-stream)
-    ;;  :fore-beck fore-beck
-    ;;  :back-beck back-beck
      :g-beck (vec (concat back-beck fore-beck))
      :back-fitness (:fitness back-hystrindy)
      :fore-fitness (:fitness fore-hystrindy)
@@ -75,13 +68,3 @@
         fyst (hlp/time-it "GAUNTLET get-fore-hystrindy^ " get-fore-hystrindy hyst streams)
         gaust (hlp/time-it "GAUNTLET get-gaustrindy^ " get-gaustrindy hyst fyst)]
     gaust))
-
-(comment
-  (def hysts (file/get-hystrindies-from-file))
-
-  (def fysts (get-fore-hystrindies hysts))
-
-  (def gausts (get-gaustrindies hysts fysts))
-
-  (file/save-hystrindies-to-file gausts)
-  )

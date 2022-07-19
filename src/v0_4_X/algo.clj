@@ -27,10 +27,7 @@
                               [20 0.4 0.1 0.5]
                               0 1])
        hyst (hlp/time-it "ALGO run factory^ " first (factory/run-factory factory-config))
-    ;;   foo (println "here" hyst)
-       _gaunt (hlp/time-it "ALGO run-gauntlet single^ " gaunt/run-gauntlet-single hyst)
-    ;;   bar (println "here 2")
-       ]
+       _gaunt (hlp/time-it "ALGO run-gauntlet single^ " gaunt/run-gauntlet-single hyst)]
    (println (count gaunts))
    (println "back-fitness: " (_gaunt :back-fitness))
    (println "fore-fitness: " (_gaunt :fore-fitness))
@@ -47,11 +44,6 @@
                            streams/fetch-formatted-streams :intention-streams first plot/zero-instrument))
 
 (plot/plot-streams [(-> gausts (nth 0) :g-beck) zeroed-instrument])
-
-
-
-
-
 
 (defn get-gausts-means [gausts]
   {:m-b-fit (stats/mean (map :back-fitness gausts))

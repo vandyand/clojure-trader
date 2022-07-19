@@ -39,10 +39,6 @@
   (apply strat/plot-strats-and-inputs input-config strats)
   strats)
 
-(defn plot-strats [strats]
-  (apply strat/plot-strats strats)
-  strats)
-
 ;; MAKE A BUNCH OF POPULATED STRATEGIES
 
 (defn get-populated-strats [ga-config]

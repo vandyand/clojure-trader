@@ -1,4 +1,4 @@
-(ns v0_1_X.practice_elementary_strategy
+(ns playing.practice_elementary_strategy
   (:require [oz.core :as oz]))
 
 (comment
