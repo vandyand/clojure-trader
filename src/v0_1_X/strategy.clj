@@ -6,7 +6,8 @@
    [oz.core :as oz]
    [clojure.set :as set]
    [v0_1_X.inputs :as inputs]
-   [helpers :as helpers]))
+   [helpers :as helpers]
+   [util :as util]))
 
 ;; CONFIG FUNCTIONS
 
@@ -83,11 +84,8 @@
 
 ;; CODIFY INPUT DATA FUNCTIONS
 
-(defn rand-caps-str [len]
-  (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))
-
 (defn rand-suffix [input-str]
-  (str input-str "-" (rand-caps-str 10)))
+  (str input-str "-" (util/rand-caps-str 10)))
 
 (defn get-stream-from-fn
   ([fn num-data-points]
@@ -144,7 +142,7 @@
 
 (defn get-return-streams [sieve-stream intention-streams-delta]
   (for [intention-stream-delta intention-streams-delta]
-    (with-meta (vec (get-return-stream sieve-stream intention-stream-delta)) {:name (str "return stream " (rand-caps-str 5))})))
+    (with-meta (vec (get-return-stream sieve-stream intention-stream-delta)) {:name (str "return stream " (util/rand-caps-str 5))})))
 
 (defn get-populated-strat-from-tree
   ([tree input-config] (get-populated-strat-from-tree tree input-config solve-tree))

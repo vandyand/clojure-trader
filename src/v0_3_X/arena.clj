@@ -87,7 +87,7 @@
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
               (println "pos-change: " units))
-          (println "nothing happened")))))))
+          (println "nothing happened"))))))
 
 (defn run-best-gaust 
   ([] (run-best-gaust "hystrindies.edn"))

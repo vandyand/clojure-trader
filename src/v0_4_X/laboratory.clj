@@ -103,7 +103,6 @@
               ;; (arena/get-robustness-async factory-chan)
               ))))
 
-
 (comment
   "Fully Async Multi-currency scheduled runner"
   (let [schedule-chan (async/chan)

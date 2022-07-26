@@ -25,11 +25,18 @@
   (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) [])
   )
 
+;; (defn gpu-sieve->rivulet [sieve intention-rivulet]
+;;   (if (not= 0 (count sieve)) 
+;;     (gpu/mult (cons (first sieve) sieve) intention-rivulet)
+;;     []
+;;     ))
+
 (defn slippage-sieve->rivulet 
   ([s i-r] (slippage-sieve->rivulet s i-r 0))
   ([s i-r penalty]
    "new sieve->rivulet
-   This penalizes opening and closing trades to simulate spread"
+   This penalizes opening and closing trades to simulate spread
+    s = sieve, i-r = intention rivulet"
    (loop [v [0.0]]
      (if (< (count v) (count i-r))
        (let [ind  (dec (count v))
@@ -95,9 +102,9 @@
   ;;                                  (Math/pow arg1 arg2)))}
   ;;  {:type "binary" :fn (fn [& args] (if (= 1 (count args)) 0 (if (> (first args) (second args)) 1 0)))}
    {:type "+" :fn (fn [& args] (apply + args))}
-   {:type "-" :fn (fn [& args] (apply - args))}
-   {:type "*" :fn (fn [& args] (apply * args))}
-   {:type "/" :fn (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args))}
+  ;;  {:type "-" :fn (fn [& args] (apply - args))}
+  ;;  {:type "*" :fn (fn [& args] (apply * args))}
+  ;;  {:type "/" :fn (fn [& args] (reduce (fn [acc newVal] (if (= 0.0 (double newVal)) 0.0 (/ acc newVal))) args))}
   ;;  {:type "max" :fn (fn [& args] (apply max args))}
   ;;  {:type "min" :fn (fn [& args] (apply min args))}
   ;;  {:type "mean" :fn (fn [& args] (stats/mean args))}

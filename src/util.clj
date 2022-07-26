@@ -57,20 +57,16 @@
       (= "W" time-frame) (* 60 60 24 7)
       (= "M" time-frame) (* 60 60 24 7 31))))
 
-(defn get-future-unix-times-sec 
+(defn get-future-unix-times-sec
   ([granularity] (get-future-unix-times-sec granularity 1000))
   ([granularity _count]
-  (let [start-midnight 1653278400]
-    (loop [check-time start-midnight v (transient [])]
-      (if (>= (count v) _count) (persistent! v)
-          (let [new-time (+ check-time (granularity->seconds granularity))]
-            (if (> check-time (current-time-sec))
-              (recur new-time (conj! v check-time))
-              (recur new-time v))))))))
-
-(defn future-times-ons [chan granularity]
-  )
-
+   (let [start-midnight 1653278400]
+     (loop [check-time start-midnight v (transient [])]
+       (if (>= (count v) _count) (persistent! v)
+           (let [new-time (+ check-time (granularity->seconds granularity))]
+             (if (> check-time (current-time-sec))
+               (recur new-time (conj! v check-time))
+               (recur new-time v))))))))
 
 (defn find-nested
   [m k]
@@ -92,6 +88,11 @@
          (get backtest-config :num-data-points)
          (get backtest-config :granularity)))
        ".edn")))
+
+(defn rand-caps-str 
+  ([] (rand-caps-str 4))
+  ([len]
+  (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
 
 ;------------------------------------;------------------------------------;------------------------------------
 

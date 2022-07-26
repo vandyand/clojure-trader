@@ -4,8 +4,7 @@
             [clojure.data.json :as json]
             [env :as env]
             [api.util :as util]
-            [api.headers :as headers]
-            [api.order_types :as ot]))
+            [api.headers :as headers]))
 
 ;; UTILITY FUNCTIONS 
 
@@ -117,11 +116,11 @@
 
 (comment
   
-  (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
+  ;; (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
   
-  (send-order-request (ot/make-order-options-util "EUR_USD" 5))
+  ;; (send-order-request (ot/make-order-options-util "EUR_USD" 5))
   
-  (send-order-request (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)) 
+  ;; (send-order-request (ot/make-order-options-util "EUR_USD" -50 "GTD" "H1" 0.005 0.005)) 
   )
 
 ;; OANDA STRINDICATOR STUFF
@@ -224,15 +223,15 @@
   (let [trades (:trades (get-open-trades))]
     (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
 
-(defn send-order-request-with-client-id [instrument units client-id]
-  (let [trade-id (-> (send-order-request (ot/make-order-options-util instrument units)) :body :orderFillTransaction :id)]
-    (Thread/sleep 100)
-    (update-trade-with-id trade-id client-id)))
+;; (defn send-order-request-with-client-id [instrument units client-id]
+;;   (let [trade-id (-> (send-order-request (ot/make-order-options-util instrument units)) :body :orderFillTransaction :id)]
+;;     (Thread/sleep 100)
+;;     (update-trade-with-id trade-id client-id)))
 
-(defn close-trade-by-client-id [client-id]
-  (let [trade-id (-> (get-trade-by-client-id client-id) first :id)]
-    (Thread/sleep 100)
-    (close-trade trade-id)))
+;; (defn close-trade-by-client-id [client-id]
+;;   (let [trade-id (-> (get-trade-by-client-id client-id) first :id)]
+;;     (Thread/sleep 100)
+;;     (close-trade trade-id)))
 
 (comment
   
@@ -245,17 +244,17 @@
   (close-long-position "USD_JPY")
   (close-short-position "USD_JPY")
 
-  (send-order-request-with-client-id "EUR_USD" 17 "id-17")
+  ;; (send-order-request-with-client-id "EUR_USD" 17 "id-17")
 
-  (get-trade-by-client-id "id-17")
+  ;; (get-trade-by-client-id "id-17")
 
-  (for [n (range 1 10)]
-    (send-order-request-with-client-id "EUR_USD" n (str "id-" n)))
+  ;; (for [n (range 1 10)]
+  ;;   (send-order-request-with-client-id "EUR_USD" n (str "id-" n)))
 
-  (close-trade-by-client-id "id-1")
+  ;; (close-trade-by-client-id "id-1")
 
-  (for [n (range 2 10)]
-    (close-trade-by-client-id (str "id-" n)))
+  ;; (for [n (range 2 10)]
+  ;;   (close-trade-by-client-id (str "id-" n)))
   )
 
 (comment
