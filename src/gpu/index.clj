@@ -38,7 +38,6 @@
 (defn mult [xs ys]
   (let [kernel "extern \"C\"
          __global__ void mult (int width, double *a, double *b) {
-      
            int col = blockIdx.x * blockDim.x + threadIdx.x;
            int row = blockIdx.y * blockDim.y + threadIdx.y;
            int i = col + row * width;

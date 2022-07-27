@@ -2,6 +2,11 @@
   (:require
    [clojure.core.async :as async]))
 
+(defn pos-or-zero [num] (if (pos? num) num 0))
+
+(defn bool->binary [bool]
+  (get {true 1 false 0} bool))
+
 (defn find-in [coll _key _val]
   (reduce (fn [_ cur-val] (when (= (_key cur-val) _val) (reduced cur-val)))
           nil coll))

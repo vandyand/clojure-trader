@@ -1,3 +1,13 @@
+### Wed, July 27, 22
+How to use the GPU? We need transformations to occur in the gpu - that is transforming time series. When converting sieve to rivulet a simple multiplication is sufficient. However, when hydrating a strindy, in order to accomplish this on the gpu, the gpu must have access to the strindy solver. This means we must re-write the strindy solver in c/c++ so the gpu can use it.
+
+It may make sense to start small and build up from there. The smallest strindy solver would be... a two variable, one depth strindy where the output is branchA > branchB, each branch just being a simple lookback on the one inception/intention instrument.
+
+On the other hand, GPUs shine when doing a ton of work in parallel. But how do we do a ton of work in parallel? Each strindy needs its own solver right? Can we make a generic strindy solver in c/c++? I think we can. How though? Well, we've already made a generic one in clojure, just do the same thing in c (which will hopefully be straightforward). Start there and see what happens.
+
+Goal for the day: Have a generic strindy solver working on the gpu - that is, create several unique hysts from the gpu. It may be helpful to prototype this in visual studio.
+
+
 ### Tues, July 19, 22
 Time for cleanup! Unfinished projects:
  - limit/market orders with sl/tp

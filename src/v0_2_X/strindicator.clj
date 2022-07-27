@@ -3,27 +3,33 @@
             [clojure.pprint :as pp]
             [clojure.walk :as w]
             [v0_1_X.strategy :as strat]
-            [oz.core :as oz]))
-
-(defn pos-or-zero [num] (if (pos? num) num 0))
+            [oz.core :as oz]
+            [util :as util]
+            [config :as config]
+            [v0_2_X.solver :as solver]))
 
 (defn solve-strindy-for-inst-incep [strindy inception-streams]
   (if (contains? strindy :id)
     (let [stream-id (get strindy :id)
           target-inception-stream (get inception-streams stream-id)
-          target-inception-stream-ind (pos-or-zero (- (- (count target-inception-stream) 1) (or (get strindy :shift) 0)))]
+          target-inception-stream-ind (util/pos-or-zero (- (- (count target-inception-stream) 1) 
+                                                           (or (get strindy :shift) 0)))]
       (get-in target-inception-stream [target-inception-stream-ind (get strindy :key)]))
     (let [strind-fn (get-in strindy [:policy :fn])
           strind-inputs (get strindy :inputs)]
       (if (number? strind-fn) strind-fn
-          (let [solution (apply strind-fn (mapv #(solve-strindy-for-inst-incep % inception-streams) strind-inputs))]
+          (let [solution
+                (apply
+                 strind-fn
+                 (mapv
+                  #(solve-strindy-for-inst-incep % inception-streams)
+                  strind-inputs))]
             (if (Double/isNaN solution) 0.0 solution))))))
 
 (defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
 
 (defn sieve->rivulet [sieve intention-rivulet]
-  (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) [])
-  )
+  (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) []))
 
 ;; (defn gpu-sieve->rivulet [sieve intention-rivulet]
 ;;   (if (not= 0 (count sieve)) 
@@ -31,7 +37,7 @@
 ;;     []
 ;;     ))
 
-(defn slippage-sieve->rivulet 
+(defn slippage-sieve->rivulet
   ([s i-r] (slippage-sieve->rivulet s i-r 0))
   ([s i-r penalty]
    "new sieve->rivulet
@@ -48,13 +54,13 @@
          (recur (conj v res)))
        v))))
 
-(comment 
+(comment
   (let [sieve [0      1       1      0       0      1      0        0      -1     -1     0      -1     1      1]
         riv [0.001 0.0004 -0.0008 -0.0001 0.0004 0.0002 -0.0012 -0.0003 0.0002 -0.0007 0.0009 0.0001 0.0003 -0.001]]
     (println (sieve->rivulet sieve riv))
     (slippage-sieve->rivulet sieve riv)))
 
-(defn rivulet->beck [rivulet] 
+(defn rivulet->beck [rivulet]
   (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
 ;; TODO - make this performant? or get rid of it...
@@ -75,12 +81,15 @@
                (reduce + (for [return-stream return-streams] (get-in return-stream [:beck n])))))]
     {:rivulet sum-rivulet :beck sum-beck}))
 
-(defn get-sieve-stream [strindy inception-streams]
+(defn get-sieve-stream_old [strindy inception-streams]
   (let [inception-streams-walker (get-streams-walker inception-streams)]
     (mapv #(solve-strindy-for-inst-incep strindy %) inception-streams-walker)))
 
+(defn get-sieve-stream [strindy inception-streams]
+  (solver/strindy->sieve strindy inception-streams))
+
 (defn sieve->return [sieve-stream intention-streams]
-  (let [intention-streams-rivulet 
+  (let [intention-streams-rivulet
         (for [intention-stream intention-streams]
           (stream->rivulet (map :c intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
@@ -93,8 +102,7 @@
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------
 
 (def strindy-funcs
-  [
-  ;;  {:type "sin" :fn (fn [& args] (Math/sin (first args)))}
+  [;;  {:type "sin" :fn (fn [& args] (Math/sin (first args)))}
   ;;  {:type "cos" :fn (fn [& args] (Math/cos (first args)))}
   ;;  {:type "tan" :fn (fn [& args] (Math/tan (first args)))}
   ;;  {:type "mlog" :fn (fn [& args] (Math/log (Math/abs (+ Math/E (first args)))))}
@@ -123,7 +131,7 @@
      (let [parent-node? (= current-depth 0)
            max-children (get config :max-children)
            num-inputs (or (first (random-sample 0.4 (range (if parent-node? 2 1) max-children))) max-children)
-           tree-node? (or (and parent-node? (contains? #{"long-only" "short-only" "ternary"} (get config :return-type))) 
+           tree-node? (or (and parent-node? (contains? #{"long-only" "short-only" "ternary"} (get config :return-type)))
                           (and (>= num-inputs 2) (< (rand) 0.1)))
            strat-tree (when tree-node? (strat/make-tree (strat/get-tree-config 2 5 num-inputs (get config :return-type))))
            inputs (vec (repeatedly num-inputs #(make-strindy-recur config (inc current-depth))))
@@ -165,6 +173,22 @@
    (w/postwalk
     (fn [form]
       (if (and (map? form) (some #(= % :policy) (keys form)))
-        {:type (get-in form [:policy :type]) :inputs (form :inputs)}
+        (let [base {:type (get-in form [:policy :type]) :inputs (form :inputs)}]
+          (if (get-in form [:policy :tree]) (assoc base :tree (get-in form [:policy :tree])) base))
         form))
     strindy)))
+
+(comment
+  
+  (config/get-strindy-config "ternary" 1 2 4 [0] [0])
+  
+  (def tree (make-strindy (config/get-strindy-config "ternary" 1 2 4 [0] [0])) )
+  
+  tree
+  
+  (print-strindy tree)
+  
+  (print-strindy (make-strindy (config/get-strindy-config "ternary" 1 2 4 [0] [0])))
+  
+  (make-strindy (config/get-strindy-config "ternary" 1 2 4 [0] [0]))
+  )
