@@ -82,12 +82,16 @@
         (println "best gausts back fitnesses: " (map :back-fitness gausts))
         (println "best gausts fore fitnesses: " (map :fore-fitness gausts))
         (if (not= units 0)
-          (do (oa/send-order-request (ot/make-order-options-util instrument units))
+          (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET" 0.001 0.001))
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
               (println "pos-change: " units))
           (println "nothing happened"))))))
+
+(comment
+  (oa/send-order-request (ot/make-order-options-util "EUR_JPY" -11 "MARKET" 0.001 0.001))
+  )
 
 (defn run-best-gaust 
   ([] (run-best-gaust "hystrindies.edn"))

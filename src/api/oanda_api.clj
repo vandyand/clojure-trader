@@ -139,7 +139,7 @@
   (-> instrument (util/get-instrument-config granularity 1) get-api-candle-data :candles last))
 
 (defn get-current-candle-open-time [granularity]
-  (-> "EUR_USD" (get-instrument-last-candle granularity) :time Double/parseDouble))
+  (-> "EUR_USD" (get-instrument-last-candle (or granularity "H1")) :time Double/parseDouble))
 
 (defn get-instrument-current-price-by-ohlc 
   ([instrument ohlc-key] (get-instrument-current-price-by-ohlc instrument ohlc-key "M1"))
@@ -149,8 +149,8 @@
 (defn get-instrument-current-price [instrument]
   (get-instrument-current-price-by-ohlc instrument :c))
 
-(defn get-instrument-current-candle-open [instrument granularity]
-  (get-instrument-current-price-by-ohlc instrument :o granularity))
+(defn get-instrument-current-candle-ohlc [instrument granularity ohlc]
+  (get-instrument-current-price-by-ohlc instrument ohlc (or granularity "H1")))
 
 (defn get-instrument-stream-depreciated [instrument-config]
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))

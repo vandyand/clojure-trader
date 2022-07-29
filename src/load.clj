@@ -22,6 +22,8 @@
 
 (load "/config")
 
+(load "/v0_2_X/solver")
+
 (load "/v0_2_X/strindicator")
 
 (load "/v0_2_X/streams")

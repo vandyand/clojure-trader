@@ -38,14 +38,15 @@
 
 (defn send-api-get-request
   ([url headers]
-  ;;  (println url headers)
-   (client/get url {:headers headers :content-type :json})))
+   (client/get url {:headers headers :content-type :json})
+  ;;  (client/get url {:headers headers :content-type :json :debug true})
+   ))
 
 (defn send-api-put-request [url options]
   (client/put url options))
 
 (defn send-api-post-request [url options]
-  ;; (client/post url (assoc options :debug true))
+  ;; (client/post url (assoc options :debug false))
   (client/post url options)
   )
 
