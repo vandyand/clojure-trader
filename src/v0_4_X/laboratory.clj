@@ -106,6 +106,31 @@
 (comment
   "Fully Async Multi-currency scheduled runner"
   (let [schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec "M5")]
+
+    (util/put-future-times schedule-chan future-times)
+
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (doseq [instrument ["EUR_USD"]]
+          (async/go
+            (let [factory-config (apply config/get-factory-config-util
+                                        [[[instrument "both"]
+                                          "ternary" 1 2 3 150 1500 "M5" "score-x"]
+                                         [20 0.4 0.1 0.5]
+                                         0 600]) ;; SOLUTION: Make each of these 600 (or however many) run in parallel (that is, on the gpu)
+                  ;; This would mean a rewrite of almost everything... including the GA... This is the idea though isn't it?
+                  ;; REDESIGN from ground up for massive parallelization.
+                  factory-chan (async/chan)]
+              (factory/run-factory-async factory-config factory-chan)
+              (arena/run-best-gausts-async factory-chan)
+              ;; (arena/get-robustness-async factory-chan)
+              ))))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
+
+(comment
+  "Fully Async Multi-currency scheduled runner"
+  (let [schedule-chan (async/chan)
         future-times (util/get-future-unix-times-sec "H4")]
 
     (util/put-future-times schedule-chan future-times)
@@ -127,8 +152,7 @@
               (arena/run-best-gausts-async factory-chan)
               ;; (arena/get-robustness-async factory-chan)
               ))))
-      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
-  )
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
 
 (comment
   "Async scheduled runner"

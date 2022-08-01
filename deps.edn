@@ -6,5 +6,10 @@
         cheshire/cheshire {:mvn/version "5.10.2"}
         cljfmt/cljfmt {:mvn/version "0.8.0"}
         buddy/buddy-core {:mvn/version "1.7.1"}
-        uncomplicate/clojurecuda {:mvn/version "0.15.0"}}
+        uncomplicate/clojurecuda {:mvn/version "0.15.0"}
+        uncomplicate/neanderthal {:mvn/version "0.44.1"}
+        uncomplicate/fluokitten {:mvn/version "0.9.1"}
+        org.bytedeco/mkl-platform-redist {:mvn/version "2020.3-1.5.4"}
+        criterium/criterium {:mvn/version "0.4.6"}
+        midje/midje {:mvn/version "1.10.5"}}
  :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}}}}}
