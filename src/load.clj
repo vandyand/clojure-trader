@@ -28,7 +28,7 @@
 
 (load "/v0_2_X/streams")
 
-(load "/v0_2_X/hydrate")
+(load "/v0_2_X/hystrindy")
 
 (load "/v0_2_X/ga")
 
@@ -41,6 +41,8 @@
 (load "/v0_3_X/runner")
 
 (load "/v0_4_X/laboratory")
+
+(load "/v0_4_X/algo")
 
 
 (comment

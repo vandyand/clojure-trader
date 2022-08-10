@@ -4,7 +4,9 @@
    [uncomplicate.neanderthal.native :as nat]
    [uncomplicate.fluokitten.core :refer [fmap fmap! fold foldmap]]
    [criterium.core :refer [quick-bench with-progress-reporting]]
-   [midje.sweet :as mj]))
+   [midje.sweet :as mj]
+   [config :as config]
+   [v0_2_X.streams :as streams]))
 
 (time
  (do
@@ -52,11 +54,60 @@ accumulate values with fold, or fold the entries."
    (fold c) mj/=> 1500.0
    (fold primitive-multiply 1.0 a) mj/=> 2.06397368128E12))
 
+;;---------------------------------------------------------------------------------------------------
 
-(let [grt (fn ^double [^double x ^double y] (> x y))
+(let [bin (fn ^double [^double x ^double y] ((comp #(+ 0.5 %) #(/ % 2) #(Math/tanh (* 1000 %)) -) x y))
+      grt (fn ^double [^double x ^double y] (->> (- x y) (* -1E10) Math/exp (+ 1) (/ 1)))
+      func (fn ^double [^double x ^double y] (- x y))
+      rand-comp (fn ^double [^double x ^double y] )
       a (nat/dv (-> 1000 range))
       b (nat/dv (->> #(rand) repeatedly (take 1000) (map #(* % 1000))))]
    (fmap! grt a b))
+
+
+(defn vec-add [xs ys] (mapv + xs ys))
+(defn vec-sub [xs ys] (mapv - xs ys))
+(defn vec-mult [xs ys] (mapv * xs ys))
+(defn vec-div [xs ys] (mapv / xs ys))
+(defn vec-grt [xs ys] (mapv (fn ^double [^double x ^double y] (->> (- x y) (* -1E10) Math/exp (+ 1) (/ 1)))xs ys))
+
+(let [a [1 2 3 4]
+      b [5 6 7 8]
+      c [100 101 102 103]
+      d [20 40 60 80]]
+  (->> a (mapv + b) (mapv - d) (mapv / c) (mapv + c) (mapv double) (vec-grt c)))
+
+
+(def backtest-config (config/get-backtest-config-util
+                      ["EUR_USD" "both"]
+                      "ternary" 1 2 3 1050 "M15"))
+
+(def streams (streams/fetch-formatted-streams backtest-config))
+
+(def open (->> streams :inception-streams first (mapv :o)))
+(def close (->> streams :inception-streams first (mapv :c)))
+
+(let [o (nat/dv open)
+      c (nat/dv close)
+      grt (fn ^double [^double x ^double y] (->> (- x y) (* -1E10) Math/exp (+ 1) (/ 1)))
+      func (fn ^double [^double x ^double y] (- x y))
+]
+  (fmap! func o c))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

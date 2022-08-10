@@ -1,7 +1,7 @@
 (ns v0_3_X.gauntlet
   (:require
    [file :as file]
-   [v0_2_X.hydrate :as hyd]
+   [v0_2_X.hystrindy :as hyd]
    [v0_2_X.strindicator :as strindy]
    [v0_2_X.streams :as streams]
    [stats :as stats]

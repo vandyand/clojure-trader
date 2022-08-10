@@ -5,7 +5,7 @@
             [v0_1_X.ga :as iga]
             [v0_1_X.strategy :as strat]
             [config :as config]
-            [v0_2_X.hydrate :as hyd]
+            [v0_2_X.hystrindy :as hyd]
             [v0_2_X.strindicator :as strindy]
             [v0_2_X.plot :as plot]
             [v0_2_X.streams :as streams]
@@ -129,7 +129,7 @@
        (when (env/get-env-data :GA_LOGGING?) (println "gen  " i " best score: " best-score
                                                       " avg parent score: " average))
        (when (env/get-env-data :GA_PLOTTING?) (plot/plot-with-intentions (take 5 next-gen) (streams :intention-streams)))
-       (if (< i (get ga-config :num-epochs)) (recur (inc i) next-gen) next-gen)))))
+       (if (< i (-> ga-config :num-epochs dec)) (recur (inc i) next-gen) next-gen)))))
 
 (comment
   (do

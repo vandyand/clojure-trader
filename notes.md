@@ -1,3 +1,17 @@
+### Tues, Aug 9, 22
+Ok, so we need better performance which is why we're using neanderthal. This should speed up our computations by several orders of magnitude. Unfortunately, to use neanderthal we need to redesign our strindies. Since neanderthal does matrix and vector operations we need to write strindies in such a way as to be able to be applied to several vectors of input and solved simultaniously for each value of said inputs. In the simplest case this will just be different shifts of one time series. Here's what we need to do:
+
+1. Get input data
+2. Build new neanderthal strindy
+3. Solve new strindy
+4. Repeat
+
+It would be nice if the new strindies were better at crossover in the GA but how? Or else just don't use the GA? Or use only mutation? This is basically what's being done now... I suppose mutation alone is better than nothing right? I mean, we can do crossover as well, it just probably won't be an improvement very often... to say the least. 
+
+I guess for now the important thing is getting it working. The question remains though, how do we create a neanderthal compatible strindy? We have the basic functions that can be applied to a vector such as math functions and our own constructed greater than and less than. Just build a strindy with these functions. We could still use recursion I think... Though maybe not ideal... 
+
+The problem is, with traditional strindies the solution can be solved esentially from the bottom up using recursion. With neanderthal, they must be solved more or less linearly from the top down. Basically neanderthal will run a predetermined series of transformations to a price vector. I know in theory this is the same as a traditional strindy does
+
 ### Wed, July 27, 22
 How to use the GPU? We need transformations to occur in the gpu - that is transforming time series. When converting sieve to rivulet a simple multiplication is sufficient. However, when hydrating a strindy, in order to accomplish this on the gpu, the gpu must have access to the strindy solver. This means we must re-write the strindy solver in c/c++ so the gpu can use it.
 

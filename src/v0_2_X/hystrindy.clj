@@ -1,4 +1,4 @@
-(ns v0_2_X.hydrate
+(ns v0_2_X.hystrindy
   (:require
    [util :as util]
    [v0_2_X.strindicator :as strindy]

@@ -4,7 +4,7 @@
    [util :as util]
    [helpers :as hlp]
    [config :as config]
-   [v0_2_X.hydrate :as hyd]
+   [v0_2_X.hystrindy :as hyd]
    [v0_3_X.gauntlet :as gaunt]
    [v0_2_X.streams :as streams]
    [api.oanda_api :as oa]
@@ -82,7 +82,7 @@
         (println "best gausts back fitnesses: " (map :back-fitness gausts))
         (println "best gausts fore fitnesses: " (map :fore-fitness gausts))
         (if (not= units 0)
-          (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET" 0.0005 0.0005))
+          (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET"))
               (println instrument ": position changed")
               (println "prev-pos: "  current-pos)
               (println "target-pos: " target-pos)
@@ -94,24 +94,37 @@
   )
 
 (defn run-best-gaust 
+  "hysts-arg is either vector of hysts or string file-name of hysts file"
   ([] (run-best-gaust "hystrindies.edn"))
-  ([hysts-file-name]
-  (let [gausts (gaunt/run-gauntlet hysts-file-name)
-        best-gaust (gaunt/get-best-gaust gausts)]
+  ([hysts-arg]
+  (let [gausts (gaunt/run-gauntlet hysts-arg)
+        best-gaust [(gaunt/get-best-gaust gausts)]]
       (post-gausts best-gaust))))
 
-(defn run-best-gausts 
+(defn run-best-gausts
+  "hysts-arg is either vector of hysts or string file-name of hysts file"
   ([] (run-best-gausts "hystrindies.edn"))
-  ([hysts-file-name]
-  (let [gausts (gaunt/run-gauntlet hysts-file-name)
+  ([hysts-arg]
+   (let [gausts (gaunt/run-gauntlet hysts-arg)
         ;; bar (println gausts)
-        best-gausts (gaunt/get-best-gausts gausts)]
-    (if (> (count best-gausts) 0)
-      (post-gausts best-gausts)
-      (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
-       (post-gausts dummy-gausts))))))
+         best-gausts (gaunt/get-best-gausts gausts)]
+     (if (> (count best-gausts) 0)
+       (post-gausts best-gausts)
+       (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
+         (post-gausts dummy-gausts))))))
+
+(defn run-gausts
+  "hysts-arg is either vector of hysts or string file-name of hysts file"
+  ([] (run-gausts "hystrindies.edn"))
+  ([hysts-arg]
+   (let [gausts (gaunt/run-gauntlet hysts-arg)]
+     (if (> (count gausts) 0)
+       (post-gausts gausts)
+       (let [dummy-gausts [(assoc (first gausts) :fore-sieve-stream [0] :id "DUMMY-GAUST--ZERO-POSITION")]]
+         (post-gausts dummy-gausts))))))
 
 (defn run-best-gausts-async
+  "hysts-arg is either vector of hysts or string file-name of hysts file"
   [hysts-chan]
   (async/go-loop []
     (when-some [hysts (async/<! hysts-chan)]

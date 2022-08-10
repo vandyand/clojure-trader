@@ -13,44 +13,59 @@
    [env :as env]
    ))
 
-(def gausts
- (time
-  (loop [gaunts []]
-  (if (>= (count gaunts) 2)
-    gaunts
-    
- (let [num-data-points 2000
-       shift-data-points 2000
-       factory-config (apply config/get-factory-config-util
-                             [[["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception"]
-                               "ternary" 1 2 4 num-data-points shift-data-points "H2" "score-x"]
-                              [20 0.4 0.1 0.5]
-                              0 1])
-       hyst (hlp/time-it "ALGO run factory^ " first (factory/run-factory factory-config))
-       _gaunt (hlp/time-it "ALGO run-gauntlet single^ " gaunt/run-gauntlet-single hyst)]
-   (println (count gaunts))
-   (println "back-fitness: " (_gaunt :back-fitness))
-   (println "fore-fitness: " (_gaunt :fore-fitness))
-   (println "z-score: " (_gaunt :z-score))
-   (println "g-score: " (_gaunt :g-score))
-   (println "-------------------------------------------------")
-   (recur (conj gaunts _gaunt)))))))
-
-(defn back-fore-backtest-config [backtest-config]
+(defn back-foretest-config [backtest-config]
   (assoc backtest-config :num-data-points (+ (backtest-config :shift-data-points) (backtest-config :num-data-points))
          :shift-data-points 0))
 
-(def zeroed-instrument (-> (back-fore-backtest-config (-> gausts first :backtest-config)) 
-                           streams/fetch-formatted-streams :intention-streams first plot/zero-instrument))
+(defn get-robust-gahystrindy []
+   (loop [result nil]
+     (if result result
+         (let [abcd (-> (rand) (* 190) (+ 160) int)
+               foo (println "abcd: " abcd)
+               num-data-points abcd
+               shift-data-points abcd
+               factory-config (apply config/get-factory-config-util
+                                     [[["EUR_GBP" "both"]
+                                       "ternary" 2 4 6 num-data-points shift-data-points "M1" "score-x"]
+                                      [100 0.5 0.1 0.9]
+                                      2 1])
+               hyst (hlp/time-it "ALGO run factory^ " first (factory/run-factory factory-config))
+               gaust (hlp/time-it "ALGO run-gauntlet single^ " gaunt/run-gauntlet-single hyst)
+               zeroed-instrument (-> (back-foretest-config (-> gaust :backtest-config))
+                                     streams/fetch-formatted-streams :intention-streams first plot/zero-instrument)
+               plotter (when (env/get-env-data :GA_PLOTTING?) (plot/plot-streams [(-> gaust :g-beck) zeroed-instrument]))]
+           (println "back-fitness: " (gaust :back-fitness))
+           (println "fore-fitness: " (gaust :fore-fitness))
+           (println "z-score: " (gaust :z-score))
+           (println "g-score: " (gaust :g-score))
+           (println "-------------------------------------------------")
+           (recur (when (or (> (gaust :fore-fitness) (gaust :back-fitness)) (> (gaust :z-score) -0.25)) hyst))))))
 
-(plot/plot-streams [(-> gausts (nth 0) :g-beck) zeroed-instrument])
+(defn get-robust-gahys [number]
+  (loop [gahys []]
+    (if (>= (count gahys) number)
+      gahys
+      (do
+        (println "num gahys so far:" (count gahys))
+        (recur (conj gahys (get-robust-gahystrindy)))))))
 
-(defn get-gausts-means [gausts]
-  {:m-b-fit (stats/mean (map :back-fitness gausts))
-   :m-f-fit (stats/mean (map :fore-fitness gausts))
-   :m-z-score (stats/mean (map :z-score gausts))
-   :m-g-score (stats/mean (map :g-score gausts))})
 
-(clojure.pprint/pprint (get-gausts-means gausts))
+
+(comment 
+
+  (def robust-hysts (get-robust-gahys 10))
+
+  ;; (arena/run-best-gaust [(-> gahy :hyst)])
+
+  (let [schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec "M1")]
+
+    (util/put-future-times schedule-chan future-times)
+
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (arena/run-gausts robust-hysts))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
+  )
 
 

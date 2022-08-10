@@ -40,7 +40,7 @@
   ([factory-config]
    (let [streams (streams/fetch-formatted-streams (-> factory-config :backtest-config))]
      (loop [v (transient [])]
-       (if (>= (count v) (:factory-num-produced factory-config))
+       (if (>= (count v) (-> factory-config :factory-num-produced))
          (persistent! v)
          (let [best-pop (ga/run-epochs streams factory-config)
                candidate (assoc (first best-pop) :return-stream

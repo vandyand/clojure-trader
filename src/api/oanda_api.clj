@@ -242,7 +242,7 @@
   (get-open-trades)
 
   (close-long-position "USD_JPY")
-  (close-short-position "USD_JPY")
+  (close-short-position "EUR_GBP")
 
   ;; (send-order-request-with-client-id "EUR_USD" 17 "id-17")
 

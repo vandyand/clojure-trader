@@ -7,6 +7,8 @@
     (= return-type "ternary") [-1 1 0 0 0 0 0 0 0]))
 
 (defn time-it [msg f & args]
+  ;; (apply f args)
   (let [t (time (apply f args))]
     (println msg)
-    t))
+    t)
+  )
