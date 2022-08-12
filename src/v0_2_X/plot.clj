@@ -29,6 +29,10 @@
            :mark {:type "line"}} {:width 500}]]]
     (oz/view! viz)))
 
+(defn zero-stream [stream]
+  (let [first-val (first stream)]
+    (mapv (fn [item] (- item first-val)) stream)))
+
 (defn zero-instrument [instrument]
   (vec (for [price (map :o instrument)] (- price (:o (first instrument))))))
 

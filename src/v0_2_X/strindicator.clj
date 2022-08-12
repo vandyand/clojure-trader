@@ -60,9 +60,6 @@
     (println (sieve->rivulet sieve riv))
     (slippage-sieve->rivulet sieve riv)))
 
-(defn rivulet->beck [rivulet]
-  (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
-
 ;; TODO - make this performant? or get rid of it...
 (defn get-streams-walker [streams]
   (mapv (fn [ind]
@@ -96,7 +93,7 @@
                          (let [slippage (if (> 10 (-> intention-streams ffirst :o)) -0.000025 -0.0025)
                                return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet slippage)]
                            {:rivulet return-rivulet
-                            :beck (rivulet->beck return-rivulet)}))]
+                            :beck (util/rivulet->beck return-rivulet)}))]
     (get-sum-of-all-streams return-streams)))
 
 ;;---------------------------------------;;---------------------------------------;;---------------------------------------;;---------------------------------------

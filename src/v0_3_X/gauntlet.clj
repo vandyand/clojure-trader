@@ -2,10 +2,10 @@
   (:require
    [file :as file]
    [v0_2_X.hystrindy :as hyd]
-   [v0_2_X.strindicator :as strindy]
    [v0_2_X.streams :as streams]
    [stats :as stats]
    [helpers :as hlp]
+   [util :as util]
    ))
 
 (defn good-gaust? [gaust]
@@ -26,7 +26,7 @@
 
 (defn repopulate-return-stream [rivulet]
   {:rivulet rivulet
-   :beck (strindy/rivulet->beck rivulet)})
+   :beck (util/rivulet->beck rivulet)})
 
 (defn get-gaustrindy [back-hystrindy fore-hystrindy] 
   (let [fore-beck (-> fore-hystrindy :return-stream :beck)

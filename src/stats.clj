@@ -1,4 +1,5 @@
-(ns stats)
+(ns stats
+  (:require [util :as util]))
 
 (defn mode [vs]
   (let [fs (frequencies vs)]
@@ -144,11 +145,9 @@
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ)))))
 
-(defn rivulet->beck [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
-
 (defn max-dd-period [vs]
   (if (<= (count vs) 1) 0.0
-      (let [beck (rivulet->beck vs)]
+      (let [beck (util/rivulet->beck vs)]
         (loop [i 0 last-best 0 max-period 0 cur-period 0]
           (if (< i (count beck))
             (if (>= last-best (nth beck i))

@@ -99,6 +99,11 @@
   ([len]
   (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
 
+(defn rivulet->beck [rivulet]
+  (vec (reductions + rivulet))
+  ;; (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet)
+  )
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]
