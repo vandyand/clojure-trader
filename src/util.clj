@@ -104,6 +104,9 @@
   ;; (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet)
   )
 
+(defn bounded-rand [low high]
+  (-> (rand) (* (- high low)) (+ low)))
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]

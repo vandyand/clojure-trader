@@ -2,6 +2,7 @@
   (:require
    [util :as util]
    [v0_2_X.strindicator :as strindy]
+   [v0_2_X.nean_strindy :as nindy]
    [config :as config]
    [v0_2_X.streams :as streams]
    [stats :as stats]
@@ -10,12 +11,12 @@
 (defn hydrate-strindy 
   ([strindy backtest-config streams]
   (let [stream-proxy (mapv :o (-> streams :inception-streams first (util/subvec-end 10)))
-        sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams))]
+        sieve-stream (nindy/get-sieve-stream strindy (get streams :inception-streams))]
     {:id (.toString (java.util.UUID/randomUUID))
      :backtest-config (assoc backtest-config :stream-proxy stream-proxy)
      :strindy strindy
      :sieve-stream sieve-stream
-     :return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams))})))
+     :return-stream (nindy/sieve->return sieve-stream (get streams :intention-streams))})))
 
 (defn is-sieve-unique? [test-stream sieve-streams]
   (not (some #(= % test-stream) sieve-streams)))

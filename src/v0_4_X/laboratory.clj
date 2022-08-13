@@ -107,8 +107,9 @@
 
 (comment 
   "Fully Async Multi-currency scheduled runner"
-  (let [schedule-chan (async/chan)
-        future-times (util/get-future-unix-times-sec "H2")]
+  (let [gran "M5"
+        schedule-chan (async/chan)
+        future-times (util/get-future-unix-times-sec gran)]
 
     (util/put-future-times schedule-chan future-times)
 
@@ -121,9 +122,9 @@
           (async/go
             (let [factory-config (apply config/get-factory-config-util
                                         [[[instrument "both"]
-                                          "ternary" 1 2 3 454 4545 "H2" "score-x"]
+                                          "ternary" 1 2 3 100 1000 gran "score-x"]
                                          [10 0.4 0.1 0.5]
-                                         2 200])
+                                         2 400])
                   factory-chan (async/chan)]
               (factory/run-factory-async factory-config factory-chan)
               (arena/run-best-gausts-async factory-chan)
