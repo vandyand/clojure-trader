@@ -63,9 +63,6 @@
 
 ;; MUTATE ZIPPERS FUNCTIONS
 
-(defn rand-bool []
-  (> 0.5 (rand)))
-
 (defn branchA [loc]
   (if (z/branch? loc) (-> loc (z/down) (z/right)) loc))
 (defn branchB [loc]
@@ -74,7 +71,7 @@
   (if
    (z/branch? loc)
     (if
-     (rand-bool)
+     (helpers/rand-bool)
       (branchA loc)
       (branchB loc))
     loc))

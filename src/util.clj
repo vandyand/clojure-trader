@@ -107,6 +107,9 @@
 (defn bounded-rand [low high]
   (-> (rand) (* (- high low)) (+ low)))
 
+(defn mapv-indexed [f coll]
+  (vec (map-indexed f coll)))
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]

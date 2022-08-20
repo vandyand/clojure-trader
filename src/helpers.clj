@@ -12,3 +12,6 @@
     (println msg)
     t)
   )
+
+(defn rand-bool []
+  (> 0.5 (rand)))
