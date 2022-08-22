@@ -26,7 +26,7 @@
                   strind-inputs))]
             (if (Double/isNaN solution) 0.0 solution))))))
 
-(defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
+(defn stream->delta-stream [stream] (mapv - stream (cons (first stream) stream)))
 
 (defn sieve->rivulet [sieve intention-rivulet]
   (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) []))
@@ -88,7 +88,7 @@
 (defn sieve->return [sieve-stream intention-streams]
   (let [intention-streams-rivulet
         (for [intention-stream intention-streams]
-          (stream->rivulet (map :c intention-stream)))
+          (stream->delta-stream (map :c intention-stream)))
         return-streams (for [intention-rivulet intention-streams-rivulet]
                          (let [slippage (if (> 10 (-> intention-streams ffirst :o)) -0.000025 -0.0025)
                                return-rivulet (slippage-sieve->rivulet sieve-stream intention-rivulet slippage)]

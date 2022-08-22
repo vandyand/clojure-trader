@@ -141,11 +141,11 @@ accumulate values with fold, or fold the entries."
 
 (time (fmap (fn [val prev-val] (- val prev-val)) i1 i1-1))
 
-(defn stream->rivulet [stream] (mapv - stream (cons (first stream) stream)))
+(defn stream->delta-stream [stream] (mapv - stream (cons (first stream) stream)))
 (defn rivulet->stream [rivulet] (vec (reductions + rivulet))) 
 (defn rivulet->stream2 [rivulet] (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet))
 
-(def open-deltas (stream->rivulet open))
+(def open-deltas (stream->delta-stream open))
 
 (def return-rivulet (seq (fmap nean-mult open-deltas (fmap nean-grt (nean/axpy -1.0 i2 i1 i3) (nean/axpy -1.0 i3 i4 1.01 i2)))))
 

@@ -165,7 +165,9 @@
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ σ)))))
 
-(defn score-x [vs]
+(defn score-x 
+  "values vs should be rivulet"
+  [vs]
   (if (<= (count vs) 1) 0.0
       (let [_sharpe (sharpe vs)
             _max-dd-period (max-dd-period vs)]
