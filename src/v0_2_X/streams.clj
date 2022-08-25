@@ -8,12 +8,12 @@
    [api.instruments :as instruments]))
 
 (defn get-instrument-file-name ([instrument-config]
-  (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
+                                (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
   ([name granularity] (str "streams/" name "-" granularity ".edn")))
 
 (defn in-time-window? [time-stamp granularity]
   ;;TODO: UPDATE THIS LOGIC SO IT WORKS CORRECTLY
-  (< (util/current-time-sec) 
+  (< (util/current-time-sec)
      (+ time-stamp (* 0.5 (util/granularity->seconds granularity)))))
 
 (defn get-api-stream [instrument-config]
@@ -26,13 +26,13 @@
 ;;        delete the file.
 ;;        recur.
 
-(defn create-stream-file [file-name instrument-config] 
+(defn create-stream-file [file-name instrument-config]
   (let [api-stream (get-api-stream instrument-config)]
-      (file/write-file
-       (str file/data-folder file-name)
-       {:time-stamp (util/current-time-sec)
-        :stream api-stream})
-      api-stream))
+    (file/write-file
+     (str file/data-folder file-name)
+     {:time-stamp (util/current-time-sec)
+      :stream api-stream})
+    api-stream))
 
 (defn get-whole-stream
   [instrument-config]
@@ -57,20 +57,19 @@
   ([backtest-config fore?]
    (let [instruments-config (api_util/get-instruments-config backtest-config)
          num-data-points (if (and fore? (get backtest-config :stream-proxy))
-                             (util/get-fore-ind (get backtest-config :stream-proxy)
+                           (util/get-fore-ind (get backtest-config :stream-proxy)
                                               (mapv :o (get-whole-stream (first instruments-config))))
                            (get backtest-config :num-data-points))
-         shift-data-points (if fore? 0 (-> backtest-config :shift-data-points))
-         ]
+         shift-data-points (if fore? 0 (-> backtest-config :shift-data-points))]
      (for [instrument-config instruments-config]
        (let [whole-stream (get-whole-stream instrument-config)
              whole-stream-count (count whole-stream)
-             stream (subvec 
-                     whole-stream 
-                     (- whole-stream-count 
-                        num-data-points 
-                        shift-data-points) 
-                     (- whole-stream-count 
+             stream (subvec
+                     whole-stream
+                     (- whole-stream-count
+                        num-data-points
+                        shift-data-points)
+                     (- whole-stream-count
                         shift-data-points))]
          {:instrument (get instrument-config :name)
           :stream stream})))))
@@ -100,10 +99,40 @@
      {:inception-streams (get-incint-streams backtest-config streams "inception" fore?)
       :intention-streams (get-incint-streams backtest-config streams "intention" fore?)})))
 
+(defn get-from-to-times
+  ([granularity _count] (get-from-to-times granularity _count 5000))
+  ([granularity _count span]
+   (let [from-time (util/get-past-unix-time granularity _count)
+         to-time (util/current-time-sec)
+         time-span (* span (util/granularity->seconds granularity))]
+     (reverse
+      (map reverse
+           (partition
+            2 1
+            (loop [val to-time vals []]
+              (if (<= val from-time)
+                (conj vals from-time)
+                (recur (- val time-span) (conj vals
+                                               val))))))))))
+
+(defn get-big-stream
+  ([instrument granularity _count] (get-big-stream instrument granularity _count 5000))
+  ([instrument granularity _count span]
+   (let [from-to-times (get-from-to-times granularity _count span)
+        ;;  foo (println "from-to-times" from-to-times)
+         ]
+     (mapv
+      :o
+      (flatten
+       (for [from-to-time from-to-times]
+         (let [from-time (first from-to-time)
+               to-time (second from-to-time)]
+           (instruments/get-instrument-stream {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
+
 (comment
   (def backtest-config (config/get-backtest-config-util
                         ["EUR_USD" "both" "AUD_USD" "both" "GBP_USD" "inception" "USD_JPY" "inception"]
-                        "long-only" 1 2 3 12 "M15"))
+                        "long-only" 1 2 3 12000 "M15"))
 
   (def streams (fetch-formatted-streams backtest-config))
 
@@ -112,4 +141,7 @@
   (def sieve-stream (strindy/get-sieve-stream strindy (get streams :inception-streams)))
 
   (def return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams)))
-  )
+
+  (def big-stream (get-big-stream "EUR_USD" "H1" 20000))
+
+  (count big-stream))

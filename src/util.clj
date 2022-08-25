@@ -73,6 +73,11 @@
                (recur new-time (conj! v check-time))
                (recur new-time v))))))))
 
+(defn get-past-unix-time [granularity _count]
+  (let [cur-time (current-time-sec)
+        seconds-per-gran (granularity->seconds granularity)]
+    (- cur-time (* seconds-per-gran _count))))
+
 (defn find-nested
   [m k]
   (let [rtn-val (->> (tree-seq map? vals m)

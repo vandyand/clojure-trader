@@ -28,6 +28,9 @@
   ([vs] (mean (reduce + vs) (count vs)))
   ([vs sz] (if (not= 0 sz) (double (/ vs sz)) 0.0)))
 
+(defn mean-int [vs]
+  (int (+ 0.5 (mean vs))))
+
 (defn stdev
   ([vs]
    (stdev vs (count vs) (mean vs)))
@@ -154,7 +157,7 @@
               (recur (inc i) last-best
                      (if (> (inc cur-period) max-period) (inc cur-period) max-period) (inc cur-period))
               (recur (inc i) (nth beck i) max-period 0))
-            (double (/ max-period (count vs))))))))
+            (double (/ (count vs) max-period)))))))
 
 (defn inv-dd-period [vs]
   (if (<= (count vs) 1) 0.0
@@ -171,7 +174,7 @@
   (if (<= (count vs) 1) 0.0
       (let [_sharpe (sharpe vs)
             _max-dd-period (max-dd-period vs)]
-        (/ _sharpe _max-dd-period))))
+        (* _sharpe _max-dd-period))))
 
 (defn sum [vs]
   (if (= 0 (count vs))

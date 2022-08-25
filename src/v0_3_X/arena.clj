@@ -24,7 +24,7 @@
         best-gausts (gaunt/get-best-gausts gausts)]
     (println "num gausts: " (count gausts))
     (println "num best gausts: " (count best-gausts))
-  (double (/ (-> best-gausts count) (count gausts)))))
+    (double (/ (-> best-gausts count) (count gausts)))))
 
 (defn get-robustness-async [hysts-chan]
   (async/go-loop []
@@ -41,8 +41,8 @@
         target-dirs (mapv #(-> % :sieve-stream last) hysts)
         foo (println intention-instruments " target directions:" target-dirs)
         target-pos (if (> (count target-dirs) 0)
-                     (int (* 100 
-                             (if (> (count target-dirs) 10) 10 (count target-dirs)) 
+                     (int (* 100
+                             (if (> (count target-dirs) 10) 10 (count target-dirs))
                              (stats/mean target-dirs)))
                      0)]
     (doseq [instrument intention-instruments]
@@ -61,7 +61,27 @@
               (println "pos-change: " pos-change))
           (println "nothing happened"))))))
 
-(defn post-gausts 
+(defn post-target-pos [instrument target-pos]
+  (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
+        long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
+        short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
+        current-pos (when current-pos-data (+ long-pos short-pos))
+        units (if current-pos-data (- target-pos current-pos) target-pos)]
+    (if (not= units 0)
+      (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET"))
+          (println instrument ": position changed")
+          (println "prev-pos: "  current-pos)
+          (println "target-pos: " target-pos)
+          (println "pos-change: " units))
+      (println instrument ": nothing happened"))))
+
+(defn post-hyxs [hyxs]
+  (let [instrument (:instrument (first hyxs))
+        account-balance (oa/get-account-balance)
+        target-pos (int (* account-balance (stats/mean (mapv #(-> % :fore :sieve last) hyxs))))]
+    (post-target-pos instrument target-pos)))
+
+(defn post-gausts
   [gausts]
   (let [intention-instruments (get-intention-instruments-from-gaust (first gausts))
         target-dirs (mapv #(-> % :fore-sieve-stream last) gausts)
@@ -90,16 +110,15 @@
           (println "nothing happened"))))))
 
 (comment
-  (oa/send-order-request (ot/make-order-options-util "EUR_JPY" -11 "MARKET" 0.001 0.001))
-  )
+  (oa/send-order-request (ot/make-order-options-util "EUR_JPY" -11 "MARKET" 0.001 0.001)))
 
-(defn run-best-gaust 
+(defn run-best-gaust
   "hysts-arg is either vector of hysts or string file-name of hysts file"
   ([] (run-best-gaust "hystrindies.edn"))
   ([hysts-arg]
-  (let [gausts (gaunt/run-gauntlet hysts-arg)
-        best-gaust [(gaunt/get-best-gaust gausts)]]
-      (post-gausts best-gaust))))
+   (let [gausts (gaunt/run-gauntlet hysts-arg)
+         best-gaust [(gaunt/get-best-gaust gausts)]]
+     (post-gausts best-gaust))))
 
 (defn run-best-gausts
   "hysts-arg is either vector of hysts or string file-name of hysts file"
@@ -136,11 +155,10 @@
             (post-gausts dummy-gausts)))))
     (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
 
-(defn run-arena 
+(defn run-arena
   ([hysts-file-names] (run-arena hysts-file-names 0))
   ([hysts-file-names n]
-  (when (< n (count hysts-file-names))
-   (let [hysts-file-name (nth hysts-file-names n)]
-    (run-best-gausts hysts-file-name)
-    (run-arena hysts-file-names (inc n))
-    ))))
+   (when (< n (count hysts-file-names))
+     (let [hysts-file-name (nth hysts-file-names n)]
+       (run-best-gausts hysts-file-name)
+       (run-arena hysts-file-names (inc n))))))

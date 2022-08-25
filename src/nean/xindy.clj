@@ -1,6 +1,9 @@
 (ns nean.xindy
-  (:require [clojure.core.async :as async]
+  (:require [api.oanda_api :as oa]
+            [api.order_types :as ot]
+            [clojure.core.async :as async]
             [config :as config]
+            [env :as env]
             [helpers :as hlp]
             [stats :as stats]
             [uncomplicate.fluokitten.core :refer [fmap]]
@@ -8,7 +11,8 @@
             [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
             [v0_2_X.plot :as plot]
-            [v0_2_X.streams :as streams]))
+            [v0_2_X.streams :as streams]
+            [v0_3_X.arena :as arena]))
 
 (defn br []
   (util/bounded-rand 1 -1))
@@ -69,15 +73,15 @@
 (defn get-rand-shifts [_num max-shift]
   (vec (take _num (repeatedly #(rand-int max-shift)))))
 
-(defn get-populated-xindy [input-shifts stream-name stream-len]
+(defn get-populated-xindy [input-shifts stream-name stream-len jpy?]
   (let [num-inputs-per (int (/ (count input-shifts) 2))
         input-chars (util/mapv-indexed (fn [ind _] (-> ind (+ 97) char str symbol)) input-shifts)
         form `(let [~input-chars
                     [~@(map
                         (fn [shift] `(subvector ~stream-name ~shift ~stream-len))
                         input-shifts)]]
-                (axpy 100 ~(get-simple-xindy (subvec input-chars 0 num-inputs-per))
-                      -100 ~(get-simple-xindy (subvec input-chars num-inputs-per))))]
+                (axpy (if ~jpy? 1 100) ~(get-simple-xindy (subvec input-chars 0 num-inputs-per))
+                      (if ~jpy? -1 -100) ~(get-simple-xindy (subvec input-chars num-inputs-per))))]
     {:input-shifts input-shifts :form form :sieve (-> form eval)}))
 
 (defn dv-stream>delta [stream]
@@ -107,64 +111,93 @@
    input-shifts))
 
 (defn improve-hyxindy
-  ([hyxindy stream-dv stream-name max-shift] (improve-hyxindy hyxindy stream-dv stream-name max-shift false))
-  ([hyxindy stream-dv stream-name max-shift with-plotting?]
+  ([hyxindy stream-dv stream-name max-shift jpy?] (improve-hyxindy hyxindy stream-dv stream-name max-shift jpy? false))
+  ([hyxindy stream-dv stream-name max-shift jpy? with-plotting?]
    (let [stream-len (dim stream-dv)
          new-shifts (modify-input-shifts (:input-shifts hyxindy) max-shift)
-         new-hyxindy (get-hyxindy (get-populated-xindy new-shifts stream-name (- stream-len max-shift)) (subvector stream-dv max-shift (- stream-len max-shift)))]
+         new-hyxindy (get-hyxindy (get-populated-xindy new-shifts stream-name (- stream-len max-shift) jpy?) (subvector stream-dv max-shift (- stream-len max-shift)))]
      (if (> (:score new-hyxindy) (:score hyxindy))
        (do
          (when with-plotting? (plot/plot-streams [(:beck new-hyxindy) (plot/zero-stream (subvec (vec (seq stream-dv)) max-shift))]))
          new-hyxindy)
        hyxindy))))
 
-(defn get-fore-hyx [hyxindy fore-stream-dv fore-stream-name max-shift]
+(defn get-fore-hyx [hyxindy fore-stream-dv fore-stream-name max-shift jpy?]
   (let [populated-fore-xindy (get-populated-xindy
                               (:input-shifts hyxindy)
                               fore-stream-name
-                              (- (dim fore-stream-dv) max-shift))]
+                              (- (dim fore-stream-dv) max-shift)
+                              jpy?)]
     (get-hyxindy populated-fore-xindy (subvector fore-stream-dv max-shift (- (dim fore-stream-dv) max-shift)))))
 
 (defn get-robustness [back-hyx fore-hyx]
   (stats/z-score (:rivulet back-hyx) (:rivulet fore-hyx)))
 
-(defn combine-back-fore-hyxs [back-hyx fore-hyx]
+(defn combine-back-fore-hyxs [back-hyx fore-hyx instrument]
   (assoc
    (dissoc back-hyx :sieve :rivulet :beck :score)
    :back (dissoc back-hyx :input-shifts :form)
-   :fore (dissoc fore-hyx :input-shifts :form)))
+   :fore (dissoc fore-hyx :input-shifts :form)
+   :instrument instrument))
 
-(defn big-thing []
-  '(do
+(defn big-thing [instrument granularity]
+  `(do
+     (def jpy? (clojure.string/includes? (clojure.string/trim \"~instrument\") "JPY"))
      (def stream-len 4000)
      (def half-stream-len (int (/ stream-len 2)))
      (def max-shift 100)
      (def backtest-config (config/get-backtest-config-util
-                           ["EUR_USD" "both"]
-                           "ternary" 1 2 3 stream-len "H1"))
+                           [~instrument "both"]
+                           "ternary" 1 2 3 stream-len ~granularity))
      (def open-stream (streams->open-stream (streams/fetch-formatted-streams backtest-config)))
-     (def back-open-stream (subvec open-stream 0 half-stream-len))
-     (def fore-open-stream (subvec open-stream (- half-stream-len max-shift)))
      (def open-stream-dv (dv open-stream))
-     (def back-open-stream-dv (dv back-open-stream))
-     (def fore-open-stream-dv (dv fore-open-stream))
-     (loop [i 0 robust-hyxs []]
-       (let [input-shifts (get-rand-shifts 8 max-shift)
-             populated-xindy (get-populated-xindy input-shifts 'back-open-stream-dv (- half-stream-len max-shift))
-             hyxindy (get-hyxindy populated-xindy (subvector back-open-stream-dv max-shift (- (dim back-open-stream-dv) max-shift)))
-             best-hyx (loop [j 0 hyx hyxindy]
-                        (if (>= j 50) hyx
-                            (recur (inc j)
-                                   (improve-hyxindy hyx back-open-stream-dv 'back-open-stream-dv max-shift))))
-             fore-hyx (get-fore-hyx best-hyx fore-open-stream-dv 'fore-open-stream-dv max-shift)
-             robustness (stats/z-score (seq (:rivulet best-hyx)) (seq (:rivulet fore-hyx)))
-             foo (println i robustness)]
-         (if (>= i 100) robust-hyxs
-             (recur (inc i) (if (> robustness 0) (conj robust-hyxs (combine-back-fore-hyxs best-hyx fore-hyx)) robust-hyxs)))))))
+     (def back-open-stream-dv (subvector open-stream-dv 0 half-stream-len))
+     (def fore-open-stream-dv (subvector open-stream-dv (- half-stream-len max-shift) (+ half-stream-len max-shift)))
+     (loop [~(qualified->simple 'i) 0 ~(qualified->simple 'robust-hyxs) []]
+       (let [~(qualified->simple 'input-shifts) (get-rand-shifts 8 max-shift)
+             ~(qualified->simple 'populated-xindy) (get-populated-xindy ~(qualified->simple 'input-shifts) 'back-open-stream-dv (- half-stream-len max-shift) jpy?)
+             ~(qualified->simple 'hyxindy) (get-hyxindy ~(qualified->simple 'populated-xindy) (subvector back-open-stream-dv max-shift (- (dim back-open-stream-dv) max-shift)))
+             ~(qualified->simple 'best-hyx) (loop [~(qualified->simple 'j) 0 ~(qualified->simple 'hyx) ~(qualified->simple 'hyxindy)]
+                                              (if (>= ~(qualified->simple 'j) 15) ~(qualified->simple 'hyx)
+                                                  (recur (inc ~(qualified->simple 'j))
+                                                         (improve-hyxindy ~(qualified->simple 'hyx) back-open-stream-dv 'back-open-stream-dv max-shift jpy?))))
+             ~(qualified->simple 'fore-hyx) (get-fore-hyx ~(qualified->simple 'best-hyx) fore-open-stream-dv 'fore-open-stream-dv max-shift jpy?)
+             ~(qualified->simple 'robustness) (stats/z-score (seq (:rivulet ~(qualified->simple 'best-hyx))) (seq (:rivulet ~(qualified->simple 'fore-hyx))))
+             ~(qualified->simple 'foo) (when (env/get-env-data :GA_LOGGING?) (println ~(qualified->simple 'i) ~(qualified->simple 'robustness)))]
+         (if (>= ~(qualified->simple 'i) 2000) ~(qualified->simple 'robust-hyxs)
+             (recur (inc ~(qualified->simple 'i))
+                    (if (and (> ~(qualified->simple 'robustness) 0) 
+                             (> (:score ~(qualified->simple 'best-hyx)) 0) 
+                             (> (:score ~(qualified->simple 'fore-hyx)) 0))
+                      (conj ~(qualified->simple 'robust-hyxs)
+                            (combine-back-fore-hyxs ~(qualified->simple 'best-hyx)
+                                                    ~(qualified->simple 'fore-hyx)
+                                                    ~instrument))
+                      ~(qualified->simple 'robust-hyxs))))))))
+
 
 (comment
 
-  (def hyxs (eval (big-thing)))
+  (do
+    (def hyxs (eval (big-thing "USD_JPY" "H1")))
+
+    (println (count hyxs))
+    (stats/mean (map #(-> % :fore :sieve last) hyxs)))
+  
+  (doseq [instrument ["EUR_USD" "USD_JPY" "AUD_USD"]]
+    (do
+      (println instrument "...")
+      (let [hyxs (big-thing instrument "H1")]
+        (println hyxs)
+        )))
+  
+  (doseq [instrument ["EUR_USD" "USD_JPY" "AUD_USD"]]
+    (do
+      (println instrument "...")
+      (let [hyxs (eval (big-thing instrument "H1"))]
+        (println (count hyxs))
+        (println (stats/mean (map #(-> % :fore :sieve last) hyxs)))
+        (arena/post-hyxs hyxs))))
 
   (plot/plot-streams [(vec (concat (:beck (:back (first hyxs))) (:beck (:fore (first hyxs)))))])
   (plot/plot-streams (mapv
@@ -172,33 +205,56 @@
                                              (reductions + (vec (seq (:rivulet (:fore (nth hyxs ind)))))))))
                       (range (count hyxs))))
 
+  )
+  
 
-  "Fully Async Multi-currency scheduled runner"
-  (let [gran "M5"
-        schedule-chan (async/chan)
-        future-times (util/get-future-unix-times-sec gran)]
 
-    (util/put-future-times schedule-chan future-times)
+(comment
+  
+  ;; "Fully Async Multi-currency scheduled runner"
+  ;; (let [gran "M5"
+  ;;       schedule-chan (async/chan)
+  ;;       future-times (util/get-future-unix-times-sec gran)]
 
-    (async/go-loop []
-      (when-some [val (async/<! schedule-chan)]
-        (doseq [instrument ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY" "GBP_USD"
-                            "USD_CHF" "AUD_JPY" "USD_CAD" "ZAR_JPY" "CHF_JPY" "EUR_CHF"
-                            "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_JPY" "CAD_CHF"]]
-        ;; (doseq [instrument ["AUD_USD" "EUR_USD" "EUR_AUD"]]
-          (async/go
-            (let [factory-config (apply config/get-factory-config-util
-                                        [[[instrument "both"]
-                                          "ternary" 1 2 3 100 1000 gran "score-x"]
-                                         [10 0.4 0.1 0.5]
-                                         2 400])
-                  factory-chan (async/chan)]
-              (factory/run-factory-async factory-config factory-chan)
-              (arena/run-best-gausts-async factory-chan)
-              ;; (arena/get-robustness-async factory-chan)
-              ))))
-      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
+  ;;   (util/put-future-times schedule-chan future-times)
 
+  ;;   (async/go-loop []
+  ;;     (when-some [val (async/<! schedule-chan)]
+  ;;       (doseq [instrument ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY" "GBP_USD"
+  ;;                           "USD_CHF" "AUD_JPY" "USD_CAD" "ZAR_JPY" "CHF_JPY" "EUR_CHF"
+  ;;                           "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_JPY" "CAD_CHF"]]
+  ;;       ;; (doseq [instrument ["AUD_USD" "EUR_USD" "EUR_AUD"]]
+  ;;         (async/go
+  ;;           (let [hyxs (eval (big-thing instrument gran))
+  ;;                 postable-hyxs (if (> (count hyxs) 0) hyxs [{:instrument instrument :fore {:sieve [0]}}])]
+  ;;             (arena/post-hyxs postable-hyxs)))))
+  ;;     (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))
+
+  ;; (doseq [instrument ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY" "GBP_USD"
+  ;;                     "USD_CHF" "AUD_JPY" "USD_CAD" "ZAR_JPY" "CHF_JPY" "EUR_CHF"
+  ;;                     "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_JPY" "CAD_CHF"]]
+  ;;   (async/go
+  ;;     (let [hyxs (eval (big-thing instrument "H1"))
+  ;;           postable-hyxs (if (> (count hyxs) 0) hyxs [{:instrument instrument :fore {:sieve [0]}}])]
+  ;;       ;; (arena/post-hyxs postable-hyxs)
+  ;;       (let [instrument (:instrument (first postable-hyxs))
+  ;;             ;; foo (println instrument)
+  ;;             account-balance (oa/get-account-balance)
+  ;;             target-pos (int (* account-balance (stats/mean (mapv #(-> % :fore :sieve seq vec last) postable-hyxs))))
+  ;;             current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
+  ;;             long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
+  ;;             short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
+  ;;             current-pos (when current-pos-data (+ long-pos short-pos))
+  ;;             units (if current-pos-data (- target-pos current-pos) target-pos)]
+  ;;         (if (not= units 0)
+  ;;           (do 
+  ;;             (oa/send-order-request (ot/make-order-options-util instrument units "MARKET"))
+  ;;               ;; (println instrument ": position changed")
+  ;;               ;; (println "prev-pos: "  current-pos)
+  ;;               ;; (println "target-pos: " target-pos)
+  ;;               (println instrument "pos-change: " units))
+  ;;           (println instrument ": nothing happened")))
+  ;;       )))
 
   ;; comment end 
   )

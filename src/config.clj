@@ -88,6 +88,9 @@
         ga-config (get-ga-config ga-num-epochs backtest-config pop-config)]
     (get-factory-config factory-num-produced ga-config)))
 
+(defn get-xindy-config [num-shifts max-shift]
+  {:num-shifts num-shifts :max-shift max-shift})
+
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "long-only" 2 6 10 100 "H1"))
   

@@ -44,6 +44,9 @@
 
 (load "/v0_4_X/algo")
 
+(load "/nean/xindy2")
+(load "/nean/ga")
+(load "/nean/arena")
 
 (comment
   (do
