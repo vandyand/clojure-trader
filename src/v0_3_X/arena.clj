@@ -61,19 +61,21 @@
               (println "pos-change: " pos-change))
           (println "nothing happened"))))))
 
-(defn post-target-pos [instrument target-pos]
+(defn post-target-pos 
+  ([instrument target-pos] (post-target-pos instrument target-pos (env/get-account-id)))
+  ([instrument target-pos account-id]
   (let [current-pos-data (-> (oa/get-open-positions) :positions (util/find-in :instrument instrument))
         long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
         short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
         current-pos (when current-pos-data (+ long-pos short-pos))
         units (if current-pos-data (- target-pos current-pos) target-pos)]
     (if (not= units 0)
-      (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET"))
+      (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
           (println instrument ": position changed")
           (println "prev-pos: "  current-pos)
           (println "target-pos: " target-pos)
           (println "pos-change: " units))
-      (println instrument ": nothing happened"))))
+      (println instrument ": nothing happened")))))
 
 (defn post-hyxs [hyxs]
   (let [instrument (:instrument (first hyxs))

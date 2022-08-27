@@ -43,7 +43,7 @@
 (defn get-wrapped-rindieses [instruments xindy-config pop-config granularity num-generations big-stream-count back-len-pct]
   (vec
    (for [instrument instruments]
-     (get-wrapped-rindies instrument xindy-config pop-config granularity num-generations big-stream-count back-len-pct))))
+       (get-wrapped-rindies instrument xindy-config pop-config granularity num-generations big-stream-count back-len-pct))))
 
 (defn num-weekend-bars [granularity]
   (let [secs-per-bar (util/granularity->seconds granularity)
@@ -58,7 +58,9 @@
 (defn get-position-from-xindies [xindies]
   (int (* (get-account-balance) (stats/mean (map #(-> % :sieve seq last) xindies)))))
 
-(defn run-wrapped-rindieses [wrapped-rindieses xindy-config granularity]
+(defn run-wrapped-rindieses 
+  ([wr xc g] (run-wrapped-rindieses wr xc g (env/get-account-id)))
+  ([wrapped-rindieses xindy-config granularity account-id]
   (let [schedule-chan (async/chan)]
     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
     (async/go-loop []
@@ -71,24 +73,28 @@
               (get-new-xindies-from-wrapped-rindies
                wrapped-rindies
                xindy-config
-               granularity))))))
-      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
+               granularity))
+             account-id))))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))))
 
 (comment
-  (def xindy-config (config/get-xindy-config 8 1000))
-  (def pop-config (ga/xindy-pop-config 200 80 0.4 0.45))
+  (def xindy-config (config/get-xindy-config 16 1000))
+  (def pop-config (ga/xindy-pop-config 300 80 0.5 0.5))
   (def granularity "H2")
 
   (def wrapped-rindieses (get-wrapped-rindieses
-                          ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY" "GBP_USD"
-                           "USD_CHF" "AUD_JPY" "USD_CAD" "CHF_JPY" "EUR_CHF" "CAD_CHF"
-                           "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_JPY"]
-                          xindy-config pop-config granularity 20 100000 0.95))
+                          ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY"
+                           "GBP_USD" "USD_CHF" "AUD_JPY" "USD_CAD" "CHF_JPY"
+                           "EUR_CHF" "CAD_CHF" "NZD_USD" "EUR_CAD" "AUD_CHF" "CAD_JPY"]
+                          xindy-config pop-config granularity 25 100000 0.95))
 
-  (map #(-> wrapped-rindieses (nth %) :rindies count) (range (count wrapped-rindieses)))
+  (map #(list (-> wrapped-rindieses (nth %) :instrument) (-> wrapped-rindieses (nth %) :rindies count)) (range (count wrapped-rindieses)))
 
-  (run-wrapped-rindieses wrapped-rindieses xindy-config granularity)
-)
+  (def filtered-rindieses (filter #(> (-> % :rindies count) 0) wrapped-rindieses))
+
+  (map #(list (-> filtered-rindieses (nth %) :instrument) (-> filtered-rindieses (nth %) :rindies count)) (range (count filtered-rindieses)))
+
+  (run-wrapped-rindieses filtered-rindieses xindy-config granularity "101-001-5729740-002"))
 
 (comment
 
