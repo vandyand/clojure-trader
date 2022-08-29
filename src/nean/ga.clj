@@ -49,6 +49,9 @@
     {:pop-size pop-size :num-parents num-parents :num-children num-children
      :crossover-pct crossover-pct :mutate-pct mutate-pct}))
 
+(defn xindy-ga-config [num-generations stream-count back-pct]
+  {:num-generations num-generations :stream-count stream-count :back-pct back-pct})
+
 (defn get-parents [pop pop-config]
   (take (:num-parents pop-config) pop))
 
