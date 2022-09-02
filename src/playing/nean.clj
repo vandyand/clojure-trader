@@ -7,7 +7,7 @@
    [midje.sweet :as mj]
    [config :as config]
    [v0_2_X.streams :as streams]
-   [v0_2_X.plot :as plot]))
+   [plot :as plot]))
 
 (time
  (do

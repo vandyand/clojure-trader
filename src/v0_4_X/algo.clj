@@ -1,6 +1,6 @@
 (ns v0_4_X.algo
   (:require
-   [v0_2_X.plot :as plot]
+   [plot :as plot]
    [v0_2_X.streams :as streams]
    [v0_3_X.arena :as arena]
    [config :as config]

@@ -10,7 +10,7 @@
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
-            [v0_2_X.plot :as plot]
+            [plot :as plot]
             [v0_2_X.streams :as streams]
             [v0_3_X.arena :as arena]))
 

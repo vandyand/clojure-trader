@@ -20,13 +20,15 @@
        form))
    strindy))
 
-(defn read-file [file-name]
-  (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") #"\n" "")))
+(defn read-data-file 
+  ([file-name] (read-data-file file-name #"\n"))
+  ([file-name newline-regex]
+  (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") newline-regex " "))))
 
-(defn write-file 
+(defn write-file
   ([file-name contents] (write-file file-name contents false))
   ([file-name contents append?]
-  (spit file-name (prn-str contents) :append append?)))
+   (spit file-name (prn-str contents) :append append?)))
 
 (defn clear-file [file-name]
   (spit (str data-folder file-name) ""))
@@ -35,14 +37,14 @@
   (clojure.java.io/delete-file (str data-folder file-name)))
 
 (defn delete-by-id [file-name id]
-  (let [contents (read-file file-name)
+  (let [contents (read-data-file file-name)
         new-contents (filter #(not= (:id %) id) contents)]
     (clear-file file-name)
     (for [new-content new-contents]
       (write-file file-name new-content))))
 
 (defn get-by-id [file-name id]
-  (util/find-in (read-file file-name) :id id))
+  (util/find-in (read-data-file file-name) :id id))
 
 (defn format-hyst-for-edn [hyst]
   (assoc hyst :strindy (format-strindy-for-edn (get hyst :strindy))))
@@ -54,10 +56,10 @@
          file-name (util/config->file-name hystrindy)]
      (write-file (str data-folder folder file-name) formatted-hystrindy true))))
 
-(defn save-hystrindies-to-file 
+(defn save-hystrindies-to-file
   ([hystrindies]
-  (for [hyst hystrindies]
-    (save-hystrindy-to-file hyst))))
+   (for [hyst hystrindies]
+     (save-hystrindy-to-file hyst))))
 
 (defn deformat-hystrindy [formatted-hystrindy]
   (clojure.walk/postwalk
@@ -76,7 +78,7 @@
 (defn get-hystrindies-from-file
   ([] (get-hystrindies-from-file "hystrindies.edn"))
   ([file-name]
-   (let [formatted-hystrindies (read-file (str hyst-folder file-name))]
+   (let [formatted-hystrindies (read-data-file (str hyst-folder file-name))]
      (for [formatted-hystrindy formatted-hystrindies]
        (deformat-hystrindy formatted-hystrindy)))))
 

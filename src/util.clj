@@ -63,12 +63,13 @@
       (= "M" time-frame) (* 60 60 24 7 31))))
 
 (defn get-future-unix-times-sec
-  ([granularity] (get-future-unix-times-sec granularity 1000))
-  ([granularity _count]
+  ([granularity] (get-future-unix-times-sec granularity 0))
+  ([granularity offset] (get-future-unix-times-sec granularity offset 10000))
+  ([granularity offset _count]
    (let [start-midnight 1653278400]
      (loop [check-time start-midnight v (transient [])]
        (if (>= (count v) _count) (persistent! v)
-           (let [new-time (+ check-time (granularity->seconds granularity))]
+           (let [new-time (+ check-time (granularity->seconds granularity) offset)]
              (if (> check-time (current-time-sec))
                (recur new-time (conj! v check-time))
                (recur new-time v))))))))
@@ -81,28 +82,28 @@
 (defn find-nested
   [m k]
   (let [rtn-val (->> (tree-seq map? vals m)
-       (filter map?)
-       (some k))]
+                     (filter map?)
+                     (some k))]
     (if rtn-val rtn-val m)))
 
 (defn config->file-name [config]
   (let [backtest-config (find-nested config :backtest-config)]
     (str (clojure.string/join
-        "-"
-        (conj
-          (map
-           (fn [stream-conf] (if (= "inception" (get stream-conf :incint))
-                               (get stream-conf :name)
-                               (str "T_" (get stream-conf :name))))
-           (get backtest-config :streams-config))
-         (get backtest-config :num-data-points)
-         (get backtest-config :granularity)))
-       ".edn")))
+          "-"
+          (conj
+           (map
+            (fn [stream-conf] (if (= "inception" (get stream-conf :incint))
+                                (get stream-conf :name)
+                                (str "T_" (get stream-conf :name))))
+            (get backtest-config :streams-config))
+           (get backtest-config :num-data-points)
+           (get backtest-config :granularity)))
+         ".edn")))
 
-(defn rand-caps-str 
+(defn rand-caps-str
   ([] (rand-caps-str 4))
   ([len]
-  (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
+   (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
 
 (defn rivulet->beck [rivulet]
   (vec (reductions + rivulet))
@@ -115,18 +116,22 @@
 (defn mapv-indexed [f coll]
   (vec (map-indexed f coll)))
 
+(defn print-return [arg]
+  (println arg)
+  arg)
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]
   (async/go-loop
    [v future-times]
     (if (= (count v) 0) nil
-     (if (< (first v) (util/current-time-sec))
-      (do
-        (println "put val on channel: " (first v))
-        (async/>! chan (first v))
-        (recur (rest v)))
-      (recur v)))))
+        (if (< (first v) (util/current-time-sec))
+          (do
+            (println "put val on channel: " (first v))
+            (async/>! chan (first v))
+            (recur (rest v)))
+          (recur v)))))
 
 (defn future-times-ons [chan]
   (async/go-loop []
@@ -144,5 +149,4 @@
 
     (future-times-ons times-chan))
 
-  (async/close! times-chan)
-  )
+  (async/close! times-chan))

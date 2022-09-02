@@ -7,7 +7,7 @@
             [config :as config]
             [v0_2_X.hystrindy :as hyd]
             [v0_2_X.strindicator :as strindy]
-            [v0_2_X.plot :as plot]
+            [plot :as plot]
             [v0_2_X.streams :as streams]
             [env :as env]))
 

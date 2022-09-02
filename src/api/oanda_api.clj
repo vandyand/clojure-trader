@@ -3,10 +3,11 @@
             ;; [clojure.pprint :as pp]
             [clojure.data.json :as json]
             [env :as env]
-            [api.util :as util]
+            [api.util :as autil]
+            [util :as util]
             [api.headers :as headers]))
 
-;; UTILITY FUNCTIONS 
+;; autilITY FUNCTIONS 
 
 (defn get-account-endpoint
   ([end] (get-account-endpoint (env/get-account-id) end))
@@ -15,12 +16,12 @@
 
 ;; ACCOUNT DATA FUNCTIONS
 
-(defn get-accounts [] (util/get-oanda-api-data "accounts"))
+(defn get-accounts [] (autil/get-oanda-api-data "accounts"))
 
 (defn get-account-summary
   ([] (get-account-summary (env/get-account-id)))
   ([account-id]
-   (util/get-oanda-api-data (get-account-endpoint account-id "summary"))))
+   (autil/get-oanda-api-data (get-account-endpoint account-id "summary"))))
 
 (defn get-account-balance
   ([] (get-account-balance (env/get-account-id)))
@@ -35,7 +36,7 @@
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
-   (-> account-id (get-account-endpoint "instruments") util/get-oanda-api-data :instruments)))
+   (-> account-id (get-account-endpoint "instruments") autil/get-oanda-api-data :instruments)))
 
 (defn get-account-instrument [instrument]
   (let [instruments (get-account-instruments)]
@@ -56,17 +57,26 @@
   ([instrument-config] (get-api-candle-data (env/get-account-id) instrument-config))
   ([account-id instrument-config]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
-     (util/get-oanda-api-data endpoint instrument-config))))
+     (autil/get-oanda-api-data endpoint instrument-config))))
 
-(comment 
-  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3})
-  )
+(comment
+  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3}))
 
 ;; GET OPEN POSITIONS
 
 (defn get-open-positions
   ([] (get-open-positions (env/get-account-id)))
-  ([account-id] (util/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
+  ([account-id] (autil/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
+
+(defn get-formatted-open-positions
+  ([] (get-formatted-open-positions (env/get-account-id)))
+  ([account-id]
+   (let [cur-poss-data (-> (get-open-positions account-id) :positions)] 
+    (for [current-position-data cur-poss-data]
+     (let [instrument (-> current-position-data :instrument)
+           long-pos (-> current-position-data :long :units Integer/parseInt)
+           short-pos (-> current-position-data :short :units Integer/parseInt)]
+       {:instrument instrument :units (+ long-pos short-pos)})))))
 
 ;; SEND ORDER FUNCTIONS
 
@@ -107,20 +117,20 @@
    :as :json})
 
 (defn send-order-request
-  "order-options can be made by order_types/make-order-options-util function"
+  "order-options can be made by order_types/make-order-options-autil function"
   ([order-options] (send-order-request order-options (env/get-account-id)))
   ([order-options account-id]
-   (util/send-api-post-request 
-    (util/build-oanda-url (get-account-endpoint account-id "orders")) 
+   (autil/send-api-post-request
+    (autil/build-oanda-url (get-account-endpoint account-id "orders"))
     (make-request-options order-options))))
 
 (comment
-  
-  ;; (ot/make-order-options-util "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
-  
-  ;; (send-order-request (ot/make-order-options-util "EUR_USD" 5))
-  
-  ;; (send-order-request (ot/make-order-options-util "EUR_USD" -50 "GTD" "H1" 0.005 0.005)) 
+
+  ;; (ot/make-order-options-autil "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
+
+  ;; (send-order-request (ot/make-order-options-autil "EUR_USD" 5))
+
+  ;; (send-order-request (ot/make-order-options-autil "EUR_USD" -50 "GTD" "H1" 0.005 0.005)) 
   )
 
 ;; OANDA STRINDICATOR STUFF
@@ -136,15 +146,15 @@
   (format-candles (get (get-api-candle-data instrument-config) :candles)))
 
 (defn get-instrument-last-candle [instrument granularity]
-  (-> instrument (util/get-instrument-config granularity 1) get-api-candle-data :candles last))
+  (-> instrument (autil/get-instrument-config granularity 1) get-api-candle-data :candles last))
 
 (defn get-current-candle-open-time [granularity]
   (-> "EUR_USD" (get-instrument-last-candle (or granularity "H1")) :time Double/parseDouble))
 
-(defn get-instrument-current-price-by-ohlc 
+(defn get-instrument-current-price-by-ohlc
   ([instrument ohlc-key] (get-instrument-current-price-by-ohlc instrument ohlc-key "M1"))
   ([instrument ohlc-key granularity]
-  (-> instrument (get-instrument-last-candle granularity) :mid ohlc-key Double/parseDouble)))
+   (-> instrument (get-instrument-last-candle granularity) :mid ohlc-key Double/parseDouble)))
 
 (defn get-instrument-current-price [instrument]
   (get-instrument-current-price-by-ohlc instrument :c))
@@ -165,51 +175,69 @@
         :l (Double/parseDouble (get-in candle [:mid :l]))
         :c (Double/parseDouble (get-in candle [:mid :c]))}))))
 
-(comment 
-  (get-instrument-stream {:name "AUD_JPY" :granularity "M1" :count 3})
-  )
+(comment
+  (get-instrument-stream {:name "AUD_JPY" :granularity "M1" :count 3}))
 
 (defn get-instruments-streams [config]
- (let [instruments-config (util/get-instruments-config config)]
-  (for [instrument-config instruments-config] 
-    (get-instrument-stream instrument-config))))
+  (let [instruments-config (autil/get-instruments-config config)]
+    (for [instrument-config instruments-config]
+      (get-instrument-stream instrument-config))))
 
 
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
-(defn close-position 
-  ([instrument] (close-position instrument true))
-  ([instrument long-pos?]
-  (util/send-api-put-request
-   (util/build-oanda-url
-    (get-account-endpoint (str "positions/" instrument "/close")))
-   (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))))
+(defn close-position
+  ([instrument] (close-position (env/get-account-id) instrument))
+  ([account-id instrument] (close-position account-id instrument true))
+  ([account-id instrument long-pos?]
+   (do
+     (autil/send-api-put-request
+      (autil/build-oanda-url
+       (get-account-endpoint account-id (str "positions/" instrument "/close")))
+      (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))
+     nil)))
 
-(defn close-long-position [instrument]
-  (close-position instrument true))
+(defn close-all-positions
+  ([] (close-all-positions (env/get-account-id)))
+  ([account-id]
+   (let [positions (get-formatted-open-positions account-id)]
+     (for [position positions] 
+        (close-position account-id (:instrument position) (> (:units position) 0))))))
 
-(defn close-short-position [instrument]
-  (close-position instrument false))
+(defn close-alll-positions
+  [account-ids]
+  (for [account-id account-ids]
+    (close-all-positions account-id)))
+
+(comment
+  (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
+                    "101-001-5729740-004" "101-001-5729740-005" "101-001-5729740-006"
+                    "101-001-5729740-007"])
+  
+  (close-alll-positions account-ids)
+  
+  ;; end comment
+  )
 
 ;; TRADES FUNCTIONS
 
 (defn get-open-trades []
-  (util/get-oanda-api-data  (get-account-endpoint "openTrades")))
+  (autil/get-oanda-api-data  (get-account-endpoint "openTrades")))
 
 (defn get-open-trade [trade-id]
-  (util/get-oanda-api-data  (get-account-endpoint (str "trades/" trade-id))))
+  (autil/get-oanda-api-data  (get-account-endpoint (str "trades/" trade-id))))
 
 (defn close-trade [trade-id]
-  (util/send-api-put-request
-   (util/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/close")))
+  (autil/send-api-put-request
+   (autil/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/close")))
    (make-request-options {:units "ALL"})))
 
 ;; CLIENT ID STUFF
 
 (defn update-trade-with-id [trade-id client-id]
-  (util/send-api-put-request
-   (util/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
+  (autil/send-api-put-request
+   (autil/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
    (make-request-options {:clientExtensions {:id client-id}})))
 
 (defn get-trade-client-id [trade-id]
@@ -224,7 +252,7 @@
     (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
 
 ;; (defn send-order-request-with-client-id [instrument units client-id]
-;;   (let [trade-id (-> (send-order-request (ot/make-order-options-util instrument units)) :body :orderFillTransaction :id)]
+;;   (let [trade-id (-> (send-order-request (ot/make-order-options-autil instrument units)) :body :orderFillTransaction :id)]
 ;;     (Thread/sleep 100)
 ;;     (update-trade-with-id trade-id client-id)))
 
@@ -234,11 +262,11 @@
 ;;     (close-trade trade-id)))
 
 (comment
-  
+
   (get-account-summary)
-  
+
   (get-account-balance)
-  
+
   (get-open-trades)
 
   (close-long-position "USD_JPY")
@@ -258,6 +286,4 @@
   )
 
 (comment
-  (account-instruments->names (get-account-instruments))
-  )
-  
+  (account-instruments->names (get-account-instruments)))

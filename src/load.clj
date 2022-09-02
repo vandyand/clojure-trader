@@ -9,8 +9,8 @@
 (load "/api/order_types")
 (load "/api/instruments")
 
+(load "plot")
 (load "/v0_1_X/inputs")
-(load "/v0_2_X/plot")
 (load "/v0_1_X/strategy")
 (load "/v0_1_X/ga")
 
@@ -47,6 +47,8 @@
 (load "/nean/xindy2")
 (load "/nean/ga")
 (load "/nean/arena")
+
+(load "/monitor/monitor")
 
 (comment
   (do

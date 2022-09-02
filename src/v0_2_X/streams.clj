@@ -40,7 +40,7 @@
         file-exists (.exists (clojure.java.io/file (str file/data-folder file-name)))]
     (if (not file-exists)
       (create-stream-file file-name instrument-config)
-      (let [file-content (when file-exists (first (file/read-file file-name)))
+      (let [file-content (when file-exists (first (file/read-data-file file-name)))
             up-to-date?
             (when file-content
               (in-time-window? (get file-content :time-stamp)
