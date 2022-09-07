@@ -36,13 +36,15 @@
          foo (when pprint? (clojure.pprint/pprint perf))]
      (file/write-file file-name perf true))))
 
-(defn scheduled-perf-writer [account-ids granularity]
-  (let [schedule-chan (async/chan)]
-    (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
-    (async/go-loop []
-      (when-some [val (async/<! schedule-chan)]
-        (get-and-write-performance account-ids))
-      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
+(defn scheduled-perf-writer
+  ([ai g] (scheduled-perf-writer ai g "data/performance.edn"))
+  ([account-ids granularity file-name]
+   (let [schedule-chan (async/chan)]
+     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
+     (async/go-loop []
+       (when-some [val (async/<! schedule-chan)]
+         (get-and-write-performance account-ids file-name))
+       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur))))))
 
 (defn plot-perf
   ([] (plot-perf "performance.edn"))
@@ -60,71 +62,47 @@
        (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
      schedule-chan)))
 
+(defn print-account-navs [account-ids]
+  (println
+   (reduce
+    +
+    (util/print-return
+     (map
+      #(- % 1000)
+      (util/print-return
+       (for [account-id account-ids]
+         (oapi/get-account-nav account-id))))))))
+
+(defn print-cumulative-positions [account-ids]
+  (let [positions (map oapi/get-formatted-open-positions account-ids)
+        empty-instus (->> positions flatten (map :instrument) set (map (fn [x] {:instrument x :units 0})))]
+    (reduce
+     (fn [acc-instus new-instus]
+       (for [instu acc-instus]
+         (let [potential-instu (first (filter #(= (:instrument %) (:instrument instu)) new-instus))
+               new-instu (if potential-instu potential-instu {:instrument (:instrument instu) :units 0})]
+           {:instrument (:instrument instu) :units (+ (:units new-instu) (:units instu))})))
+     empty-instus
+     positions)))
+
 (comment
 
   (plot-perf)
   (def plot-chan (scheduled-perf-plotter))
 
   (async/close! plot-chan)
-  
+
   ;; end comment
   )
 
 (comment
-
-  (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
-                    "101-001-5729740-004" "101-001-5729740-005"])
-
-  (get-and-write-performance account-ids)
-
-  (scheduled-perf-writer account-ids "M5")
-
+  (def account-ids ["101-001-5729740-007" "101-001-5729740-008" "101-001-5729740-009"])
+  (scheduled-perf-writer account-ids "M5" "data/performance3.edn")
   ;; end comment
   )
 
 (comment
   (do
-    (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
-                      "101-001-5729740-004" "101-001-5729740-005" "101-001-5729740-006"
-                      "101-001-5729740-007"])
-
-    (println
-     (reduce
-      +
-      (util/print-return
-       (map
-        #(- % 1000)
-        (util/print-return
-         (for [account-id account-ids]
-           (oapi/get-account-nav account-id)))))))
-
-
-    (def instruments ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY"
-                      "GBP_USD" "USD_CHF" "AUD_JPY" "USD_CAD" "CHF_JPY"
-                      "EUR_CHF" "CAD_CHF" "NZD_USD" "EUR_CAD" "AUD_CHF" "CAD_JPY"])
-
-    (def
-      empty-instus
-      (sort-by
-       :instrument
-       (for [inst instruments]
-         {:instrument inst :units 0})))
-
-    (def positions
-      (for [account-id account-ids]
-        (sort-by :instrument
-                 (oapi/get-formatted-open-positions account-id))))
-
-    (reduce
-     (fn [acc-instus new-instus]
-       (for [instu acc-instus]
-         (let [new-instu (let [potential-instu
-                               (filter #(= (:instrument %) (:instrument instu)) new-instus)]
-                           (if (empty? potential-instu) {:instrument instu :units 0}
-                               (first potential-instu)))]
-           {:instrument (:instrument instu) :units (+ (:units new-instu) (:units instu))})))
-     empty-instus
-     positions))
-
-  ;; end of comment
-  )
+    (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"])
+    (print-account-navs account-ids)
+    (print-cumulative-positions account-ids)))

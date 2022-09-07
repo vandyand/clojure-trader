@@ -32,7 +32,7 @@
 (defn crossover-shifts [shifts]
   (mapv stats/mean-int (apply (partial map list) shifts)))
 
-(defn crossover-xindies [stream xindy-config xindies]
+(defn crossover-xindies [xindies xindy-config stream]
   (let [new-shifts (crossover-shifts (map :shifts xindies))]
     (x2/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
 
@@ -44,10 +44,9 @@
    (for [i (range (:pop-size pop-config))]
      (x2/get-rand-xindy xindy-config stream))))
 
-(defn xindy-pop-config [pop-size num-parents crossover-pct mutate-pct]
+(defn xindy-pop-config [pop-size num-parents]
   (let [num-children (- pop-size num-parents)]
-    {:pop-size pop-size :num-parents num-parents :num-children num-children
-     :crossover-pct crossover-pct :mutate-pct mutate-pct}))
+    {:pop-size pop-size :num-parents num-parents :num-children num-children}))
 
 (defn xindy-ga-config [num-generations stream-count back-pct]
   {:num-generations num-generations :stream-count stream-count :back-pct back-pct})
@@ -55,19 +54,23 @@
 (defn get-parents [pop pop-config]
   (take (:num-parents pop-config) pop))
 
+(defn get-child [parents xindy-config stream]
+  (if (= 1 (count parents))
+    (mutate-xindy (first parents) xindy-config stream)
+    (crossover-xindies parents xindy-config stream)))
+
 (defn get-children [parents pop-config xindy-config stream]
   (vec
    (for [i (range (:num-children pop-config))]
-     (let [rando (rand)]
-       (cond
-         (< rando (:mutate-pct pop-config)) (mutate-xindy (rand-nth parents) xindy-config stream)
-         (< rando (+ (:mutate-pct pop-config)
-                     (:crossover-pct pop-config)))
-         (crossover-xindies
-          stream
-          xindy-config
-          (for [j (range (+ 2 (rand-int (- (:num-parents pop-config) 2))))] (rand-nth parents)))
-         :else (x2/get-rand-xindy xindy-config stream))))))
+     (let [child-num-parents (->> (range) (random-sample 0.5) first (+ 1))
+          ;;  child-parents (repeatedly
+          ;;                 child-num-parents
+          ;;                 #(->> (range (:num-parents pop-config)) cycle
+          ;;                       (random-sample 0.01) first (nth parents)))
+           child-parents (repeatedly
+                          child-num-parents
+                          #(nth parents (util/rand-lin-dist 2 (:num-parents pop-config))))]
+       (get-child child-parents xindy-config stream)))))
 
 (defn run-generation [pop pop-config xindy-config stream]
   (let [_parents (get-parents pop pop-config)
@@ -78,7 +81,7 @@
   ([num-generations pop-config xindy-config stream] (run-generations (get-init-pop pop-config xindy-config stream) num-generations pop-config xindy-config stream))
   ([starting-pop num-generations pop-config xindy-config stream]
    (loop [i 1 pop starting-pop]
-     (println i (-> pop first :score) (stats/mean (map :score pop)))
+     (when (env/get-env-data :GA_LOGGING?) (println i (-> pop first :score) (stats/mean (map :score pop))))
     ;;  (plot/plot-streams [(->> pop first :rivulet seq vec (reductions +) vec)
     ;;                      (->> pop second :rivulet seq vec (reductions +) vec)
     ;;                      (plot/zero-stream (-> stream seq vec (subvec (:max-shift xindy-config))))])
@@ -87,20 +90,21 @@
        pop))))
 
 (comment
+  (clojure.pprint/pprint (sort (frequencies (take 10000 (repeatedly (fn [] (first (random-sample (/ 1.0 5000) (->> (range) (map #(mod % 5000)))))))))))
 
   (def xindy-config (config/get-xindy-config 8 100))
-  (def pop-config (xindy-pop-config 200 80 0.5 0.5))
+  (def pop-config (xindy-pop-config 200 80))
 
   (def natural-big-stream (streams/get-big-stream "EUR_USD" "H1" 100000))
 
-  (def big-stream (dv natural-big-stream)) 
-  
+  (def big-stream (dv natural-big-stream))
+
   (def best-pop (run-generations 100 pop-config xindy-config big-stream))
 
-  (def best-xindy (first best-pop)) 
-  
+  (def best-xindy (first best-pop))
+
   (plot/plot-streams [(vec (reductions + (-> best-xindy :rivulet seq))) (plot/zero-stream natural-big-stream)])
   (plot/plot-streams [(plot/zero-stream natural-big-stream)])
-  
+
   ;; end comment
   )

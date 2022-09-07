@@ -63,13 +63,12 @@
       (= "M" time-frame) (* 60 60 24 7 31))))
 
 (defn get-future-unix-times-sec
-  ([granularity] (get-future-unix-times-sec granularity 0))
-  ([granularity offset] (get-future-unix-times-sec granularity offset 10000))
-  ([granularity offset _count]
+  ([granularity] (get-future-unix-times-sec granularity 10000))
+  ([granularity _count]
    (let [start-midnight 1653278400]
      (loop [check-time start-midnight v (transient [])]
        (if (>= (count v) _count) (persistent! v)
-           (let [new-time (+ check-time (granularity->seconds granularity) offset)]
+           (let [new-time (+ check-time (granularity->seconds granularity))]
              (if (> check-time (current-time-sec))
                (recur new-time (conj! v check-time))
                (recur new-time v))))))))
@@ -120,13 +119,35 @@
   (println arg)
   arg)
 
+(defmacro for-do
+  "(for seq-exprs (do body-exprs-1 body-exprs-2 etc))"
+  [seq-exprs & body-exprs]
+  (list 'for seq-exprs (cons 'do body-exprs)))
+
+(defn rand-lin-dist
+  "Define a line with x0 (defined as 0), y0; x1, y1
+   Function returns random x int value under
+   this line, in [x0, x1)"
+  ([y0 x1] (rand-lin-dist y0 x1 1))
+  ([y0 x1 y1]
+   (let [x (rand x1)
+         y (rand (if (> y0 y1) y0 y1))
+         m (/ (- y1 y0) x1)]
+     (if (< y (-> x (* m) (+ y0)))
+       (int x)
+       (rand-lin-dist y0 x1 y1)))))
+
+(comment
+  (->> #(rand-lin-dist -2 10 2) (repeatedly 100000) frequencies sort))
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]
   (async/go-loop
    [v future-times]
-    (if (= (count v) 0) nil
-        (if (< (first v) (util/current-time-sec))
+    (async/<! (async/timeout 1000))
+    (if (= (count v) 0) (async/close! chan)
+        (if (< (first v) (current-time-sec))
           (do
             (println "put val on channel: " (first v))
             (async/>! chan (first v))
@@ -135,7 +156,8 @@
 
 (defn future-times-ons [chan]
   (async/go-loop []
-    (when-some [val (async/<! chan)]
+    (async/<! (async/timeout 1000))
+    (when-some [val (async/poll! chan)]
       (println "took val from channel: " val))
     (recur)))
 
@@ -143,10 +165,33 @@
   (do
     (def times-chan (async/chan))
 
-    (def future-times (util/get-future-unix-times-sec "S5" 2))
+    (def future-times (get-future-unix-times-sec "S2" 4))
 
-    (put-future-times times-chan future-times)
+    (def put-chan (put-future-times times-chan future-times))
 
-    (future-times-ons times-chan))
+    (def take-chan (future-times-ons times-chan))
 
-  (async/close! times-chan))
+    (async/close! times-chan)
+    (async/close! put-chan)
+    (async/close! take-chan))
+  (async/close! times-chan)
+  (async/close! put-chan)
+  (async/close! take-chan)
+  (async/close! times-chan)
+
+  (async/take! times-chan #(println "value is" %)))
+
+;------------------------------------;------------------------------------;------------------------------------
+
+(comment
+
+  (def chan1 (async/chan))
+
+  (def future-times (get-future-unix-times-sec "S5" 4))
+
+  (put-future-times chan1 future-times)
+
+  (async/take! chan1 println)
+
+  ;; end comment
+  )

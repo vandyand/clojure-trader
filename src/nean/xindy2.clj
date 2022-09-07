@@ -37,7 +37,7 @@
   (let [mag (if (> (first stream) 10) 1 100)
         subvecs (get-subvecs shifts max-shift stream)
         halves (split-at (int (/ (count shifts) 2)) subvecs)]
-    (axpy (* mag -1) (apply xpy (first halves)) mag (apply xpy (second halves)))))
+    (axpy mag (apply xpy (first halves)) (* -1 mag) (apply xpy (second halves)))))
 
 (defn stream->delta [stream]
   (let [stream-len-1 (- (dim stream) 1)]
@@ -53,7 +53,7 @@
 (defn get-xindy-from-shifts [shifts max-shift stream]
   (let [sieve (shifts->sieve shifts max-shift stream)
         rivulet (sieve+stream->rivulet sieve stream)]
-    {:shifts shifts :sieve sieve :rivulet rivulet :score (stats/max-dd-period (-> rivulet seq vec))}))
+    {:shifts shifts :sieve sieve :rivulet rivulet :score (stats/score-x (-> rivulet seq vec))}))
 
 (defn get-rand-xindy
   ([xindy-config stream] 

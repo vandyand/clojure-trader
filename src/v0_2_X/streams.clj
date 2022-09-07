@@ -99,8 +99,8 @@
      {:inception-streams (get-incint-streams backtest-config streams "inception" fore?)
       :intention-streams (get-incint-streams backtest-config streams "intention" fore?)})))
 
-(defn get-from-to-times
-  ([granularity _count] (get-from-to-times granularity _count 5000))
+(defn get-from-to-times-old
+  ([granularity _count] (get-from-to-times-old granularity _count 5000))
   ([granularity _count span]
    (let [from-time (util/get-past-unix-time granularity _count)
          to-time (util/current-time-sec)
@@ -115,10 +115,10 @@
                 (recur (- val time-span) (conj vals
                                                val))))))))))
 
-(defn get-big-stream
-  ([instrument granularity _count] (get-big-stream instrument granularity _count 5000))
+(defn get-big-stream-old
+  ([instrument granularity _count] (get-big-stream-old instrument granularity _count 5000))
   ([instrument granularity _count span]
-   (let [from-to-times (get-from-to-times granularity _count span)
+   (let [from-to-times (get-from-to-times-old granularity _count span)
         ;;  foo (println "from-to-times" from-to-times)
          ]
      (mapv
@@ -128,6 +128,45 @@
          (let [from-time (first from-to-time)
                to-time (second from-to-time)]
            (instruments/get-instrument-stream {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
+
+(defn get-from-to-times
+  ([granularity _count] (get-from-to-times granularity _count 5000))
+  ([granularity _count span]
+   (let [from-time (util/get-past-unix-time granularity _count)
+         to-time (util/current-time-sec)
+         time-span (* span (util/granularity->seconds granularity))]
+     (partition
+      2 1
+      (loop [val to-time vals []]
+        (if (<= val from-time)
+          (conj vals from-time)
+          (recur (- val time-span) (conj vals val))))))))
+
+(defn get-big-stream
+  ([instrument granularity _count] (get-big-stream instrument granularity _count 5000))
+  ([instrument granularity _count span]
+   (let [from-to-times (get-from-to-times granularity (* 10 _count) span)]
+     (loop [i 0 stream []]
+       (let [from-to-time (-> from-to-times (nth i))
+             from-time (second from-to-time)
+             to-time (first from-to-time)
+             new-stream-section (instruments/get-instrument-stream
+                                 {:name instrument
+                                  :granularity granularity
+                                  :from from-time
+                                  :to to-time
+                                  :includeFirst false})
+             new-stream (into new-stream-section stream)]
+         (if (> (count new-stream) _count)
+           (subvec (mapv :o new-stream) (- (count new-stream) _count))
+           (recur (inc i) new-stream)))))))
+
+(comment
+  (time (plot/plot-streams [(plot/zero-stream (get-big-stream "EUR_USD" "H1" 100000))]))
+
+  (time (plot/plot-streams [(plot/zero-stream (get-big-stream-old "EUR_USD" "H1" 100000))]))
+  ;; end comment
+  )
 
 (comment
   (def backtest-config (config/get-backtest-config-util
