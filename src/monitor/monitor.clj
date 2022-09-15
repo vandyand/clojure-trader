@@ -11,8 +11,10 @@
   (for [account-id account-ids]
     (oapi/get-account-nav account-id)))
 
-(defn get-difs [navs]
-  (map #(- % 1000) navs))
+(defn get-difs 
+  ([navs] (get-difs navs 1000))
+  ([navs starting-nav]
+  (map #(- % starting-nav) navs)))
 
 (defn get-sum [difs]
   (reduce + difs))
@@ -20,13 +22,15 @@
 (defn shorten-account-id [account-id]
   (-> account-id (clojure.string/split #"-") last))
 
-(defn get-performance [account-ids]
+(defn get-performance 
+  ([account-ids] (get-performance account-ids 1000))
+  ([account-ids starting-nav]
   (let [navs (get-navs account-ids)
-        difs (get-difs navs)
+        difs (get-difs navs starting-nav)
         sum (get-sum difs)]
     (assoc (apply hash-map (interleave (map keyword (map shorten-account-id account-ids)) difs))
            :sum sum
-           :time (util/current-time-sec))))
+           :time (util/current-time-sec)))))
 
 (defn get-and-write-performance
   ([account-ids] (get-and-write-performance account-ids "data/performance.edn"))
@@ -62,16 +66,18 @@
        (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
      schedule-chan)))
 
-(defn print-account-navs [account-ids]
+(defn print-account-navs 
+  ([account-ids] (print-account-navs account-ids 1000))
+  ([account-ids starting-nav]
   (println
    (reduce
     +
     (util/print-return
      (map
-      #(- % 1000)
+      #(- % starting-nav)
       (util/print-return
        (for [account-id account-ids]
-         (oapi/get-account-nav account-id))))))))
+         (oapi/get-account-nav account-id)))))))))
 
 (defn print-cumulative-positions [account-ids]
   (let [positions (map oapi/get-formatted-open-positions account-ids)
@@ -96,13 +102,44 @@
   )
 
 (comment
-  (def account-ids ["101-001-5729740-007" "101-001-5729740-008" "101-001-5729740-009"])
-  (scheduled-perf-writer account-ids "M5" "data/performance3.edn")
+  (def account-ids ["101-001-5729740-001" 
+                    "101-001-5729740-002"
+                    "101-001-5729740-003"
+                    "101-001-5729740-004"
+                    "101-001-5729740-005"
+                    "101-001-5729740-006"
+                    "101-001-5729740-007"])
+  (scheduled-perf-writer account-ids "M5" "data/performance.edn")
   ;; end comment
   )
 
 (comment
   (do
-    (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"])
-    (print-account-navs account-ids)
+    (def account-ids ["101-001-5729740-003"
+                      "101-001-5729740-004"
+                      "101-001-5729740-005"])
+    (print-account-navs account-ids 1000)
+    (print-cumulative-positions account-ids)))
+
+(comment
+  (do
+    (def account-ids ["101-001-5729740-001"
+                      "101-001-5729740-002"
+                      "101-001-5729740-003"
+                      "101-001-5729740-004"
+                      "101-001-5729740-005"
+                      "101-001-5729740-006"
+                      "101-001-5729740-007"
+                      "101-001-5729740-008"
+                      "101-001-5729740-009"
+                      "101-001-5729740-010"])
+    (print-account-navs account-ids 1000)
+    (print-cumulative-positions account-ids)))
+
+(comment
+  (do
+    (def account-ids ["101-001-5729740-011"
+                      "101-001-5729740-012"
+                      "101-001-5729740-013"])
+    (print-account-navs account-ids 1000000)
     (print-cumulative-positions account-ids)))

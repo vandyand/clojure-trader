@@ -59,8 +59,8 @@
   [wrindieses]
   (let [unique-instruments (set (map :instrument wrindieses))]
     (for [instrument unique-instruments]
-      {:instrument instrument
-       :rindy-shiftss (->> wrindieses (filter #(= (:instrument %) instrument)) (map :rindy-shiftss))})))
+      (let [instrument-wrindieses (filter #(= (:instrument %) instrument) wrindieses)] {:instrument instrument
+                                                                                        :rindy-shiftss (map :rindy-shiftss instrument-wrindieses)}))))
 
 (defn get-wrindieses
   ([i xc pc g gc] (get-wrindieses i xc pc g gc 1))
@@ -85,8 +85,8 @@
       (for [shifts rindy-shiftss]
         (x2/get-xindy-from-shifts shifts (:max-shift xindy-config) new-stream)))))
 
-(defn get-position-from-xindieses [xindieses]
-  (let [account-balance (oapi/get-account-balance)
+(defn get-position-from-xindieses [xindieses account-id]
+  (let [account-balance (oapi/get-account-balance account-id)
         max-pos (int (* 10 account-balance))
         target-pos (int
                     (+ 0.5
@@ -114,7 +114,8 @@
                (get-new-xindieses-from-wrindies
                 wrindies
                 xindy-config
-                granularity))
+                granularity)
+               account-id)
               account-id))))
        (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
      schedule-chan)))
@@ -122,12 +123,12 @@
 (defn generate-and-run-wrindieses
   ([i g ai xc pc gc] (generate-and-run-wrindieses i g ai xc pc gc (take (count i) (repeat 1))))
   ([instruments granularities account-ids xindy-config pop-config ga-config instrument-freq]
-   (for [gran-account-id (partition 2 (interleave granularities account-ids))]
-     (let [granularity (first gran-account-id)
-           account-id (second gran-account-id)
-           wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq)
-           filtered-rindieses (filter #(> (-> % :rindy-shiftss count) 1) wrindieses)]
-       (run-wrindieses filtered-rindieses xindy-config granularity account-id)))))
+   (doseq [gran-account-id (partition 2 (interleave granularities account-ids))]
+     (async/go
+       (let [granularity (first gran-account-id)
+             account-id (second gran-account-id)
+             wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq)]
+         (run-wrindieses wrindieses xindy-config granularity account-id))))))
 
 (comment
   ;; (do
@@ -135,13 +136,16 @@
                     "EUR_JPY" "GBP_USD" "USD_CHF" "AUD_JPY"
                     "USD_CAD" "CHF_JPY" "EUR_CHF" "CAD_CHF"
                     "NZD_USD" "EUR_CAD" "AUD_CHF" "CAD_JPY"])
-  (def instrument-freq 3)
+
+  ;; (def instruments ["EUR_USD" "USD_JPY" "AUD_USD" "GBP_USD" "USD_CHF"])
+  (def instrument-freq 7)
   (def granularity "H1")
   (def xindy-config (config/get-xindy-config 8 500))
-  (def pop-config (ga/xindy-pop-config 200 80))
-  (def ga-config (ga/xindy-ga-config 15 10000 0.95))
+  (def pop-config (ga/xindy-pop-config 400 160))
+  (def ga-config (ga/xindy-ga-config 15 12500 0.9))
 
   (def wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
+  (def wrindieses2 (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
 
   (for [wrindies wrindieses]
     (arena/post-target-pos
@@ -153,11 +157,12 @@
        granularity))
      "101-001-5729740-005"))
 
-  (run-wrindieses wrindieses xindy-config granularity "101-001-5729740-007")
-
+  (run-wrindieses wrindieses2 xindy-config granularity "101-001-5729740-002")
+  
   (generate-and-run-wrindieses
-   instruments [granularity]
-   ["101-001-5729740-005"] xindy-config
+   instruments ["H1" "H1"]
+   ["101-001-5729740-009"
+    "101-001-5729740-010"] xindy-config
    pop-config ga-config
    instrument-freq)
 
