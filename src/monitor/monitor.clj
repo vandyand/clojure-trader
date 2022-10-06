@@ -82,14 +82,16 @@
 (defn print-cumulative-positions [account-ids]
   (let [positions (map oapi/get-formatted-open-positions account-ids)
         empty-instus (->> positions flatten (map :instrument) set (map (fn [x] {:instrument x :units 0})))]
-    (reduce
-     (fn [acc-instus new-instus]
-       (for [instu acc-instus]
-         (let [potential-instu (first (filter #(= (:instrument %) (:instrument instu)) new-instus))
-               new-instu (if potential-instu potential-instu {:instrument (:instrument instu) :units 0})]
-           {:instrument (:instrument instu) :units (+ (:units new-instu) (:units instu))})))
-     empty-instus
-     positions)))
+    (sort-by
+     :instrument
+     (reduce
+      (fn [acc-instus new-instus]
+        (for [instu acc-instus]
+          (let [potential-instu (first (filter #(= (:instrument %) (:instrument instu)) new-instus))
+                new-instu (if potential-instu potential-instu {:instrument (:instrument instu) :units 0})]
+            {:instrument (:instrument instu) :units (+ (:units new-instu) (:units instu))})))
+      empty-instus
+      positions))))
 
 (comment
 
@@ -102,22 +104,39 @@
   )
 
 (comment
-  (def account-ids ["101-001-5729740-001" 
-                    "101-001-5729740-002"
-                    "101-001-5729740-003"
-                    "101-001-5729740-004"
+  (def account-ids ["101-001-5729740-004" 
                     "101-001-5729740-005"
-                    "101-001-5729740-006"
-                    "101-001-5729740-007"])
-  (scheduled-perf-writer account-ids "M5" "data/performance.edn")
+                    "101-001-5729740-006"])
+  (scheduled-perf-writer account-ids "M5" "data/performance2.edn")
   ;; end comment
   )
 
 (comment
   (do
-    (def account-ids ["101-001-5729740-003"
+    (def account-ids ["101-001-5729740-001"
+                      "101-001-5729740-002"
+                      "101-001-5729740-003"])
+    (print-account-navs account-ids 1000)
+    (print-cumulative-positions account-ids)))
+
+(comment
+  (do
+    (def account-ids ["101-001-5729740-001"
+                      "101-001-5729740-002"
+                      "101-001-5729740-003"
                       "101-001-5729740-004"
-                      "101-001-5729740-005"])
+                      "101-001-5729740-005"
+                      "101-001-5729740-006"])
+    (print-account-navs account-ids 1000)
+    (print-cumulative-positions account-ids)))
+
+(comment
+  (do
+    (def account-ids ["101-001-5729740-006"
+                      "101-001-5729740-007"
+                      "101-001-5729740-008"
+                      "101-001-5729740-009"
+                      "101-001-5729740-010"])
     (print-account-navs account-ids 1000)
     (print-cumulative-positions account-ids)))
 
@@ -134,12 +153,4 @@
                       "101-001-5729740-009"
                       "101-001-5729740-010"])
     (print-account-navs account-ids 1000)
-    (print-cumulative-positions account-ids)))
-
-(comment
-  (do
-    (def account-ids ["101-001-5729740-011"
-                      "101-001-5729740-012"
-                      "101-001-5729740-013"])
-    (print-account-navs account-ids 1000000)
     (print-cumulative-positions account-ids)))

@@ -70,7 +70,7 @@
 
 (comment
   (do
-    (def perf-data (file/read-data-file "performance2.edn" #"\r\n"))
+    (def perf-data (file/read-data-file "performance.edn" #"\r\n"))
     (generate-and-view-plot (format-performance-data perf-data)))
 
   ;; end comment

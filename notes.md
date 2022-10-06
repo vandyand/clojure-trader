@@ -1,3 +1,10 @@
+### Thurs, Sept 15, 22
+Todo:
+Live test performance is looking half way decent with the new neanderthal implementation. There is still more to do though:
+
+1. Save rindies shifts to file so we don't lose them if the computer turns off.
+2. Run rindies in the cloud?
+
 ### Tues, Aug 9, 22
 Ok, so we need better performance which is why we're using neanderthal. This should speed up our computations by several orders of magnitude. Unfortunately, to use neanderthal we need to redesign our strindies. Since neanderthal does matrix and vector operations we need to write strindies in such a way as to be able to be applied to several vectors of input and solved simultaniously for each value of said inputs. In the simplest case this will just be different shifts of one time series. Here's what we need to do:
 

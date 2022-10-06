@@ -3,13 +3,13 @@
             [clojure.core.async :as async]
             [config :as config]
             [env :as env]
+            [file :as file]
             [nean.ga :as ga]
             [nean.xindy2 :as x2]
             [stats :as stats]
             [uncomplicate.neanderthal.core :refer :all]
             [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
-            [plot :as plot]
             [v0_2_X.streams :as streams]
             [v0_3_X.arena :as arena]))
 
@@ -30,12 +30,12 @@
 (defn combine-xindies [back-xindies fore-xindies]
   (map combine-xindy back-xindies fore-xindies))
 
-(defn get-rindies-streams [num-generations pop-config xindy-config back-stream fore-stream]
+(defn get-rindies-shiftss [num-generations pop-config xindy-config back-stream fore-stream]
   (let [best-xindies (ga/get-parents (ga/run-generations num-generations pop-config xindy-config back-stream) pop-config)
         fore-xindies (for [xindy best-xindies]
                        (x2/get-xindy-from-shifts (:shifts xindy) (:max-shift xindy-config) fore-stream))
         full-xindies (combine-xindies best-xindies fore-xindies)
-        rindies (filter #(> (:robustness %) -0.25) full-xindies)]
+        rindies (filter #(and (> (-> % :back :score) 0) (> (-> % :fore :score) 0) (> (:robustness %) -0.25)) full-xindies)]
     (println "num rindies:" (count rindies))
     (map #(-> % :back :shifts) rindies)))
 
@@ -50,7 +50,7 @@
                      (- back-len (:max-shift xindy-config))
                      (+ fore-len (:max-shift xindy-config)))]
     {:instrument instrument
-     :rindy-shiftss (get-rindies-streams (:num-generations ga-config) pop-config xindy-config back-stream fore-stream)}))
+     :rindy-shiftss (get-rindies-shiftss (:num-generations ga-config) pop-config xindy-config back-stream fore-stream)}))
 
 (defn consolidate-wrindieses
   "If there are multiple wrindies of the same instrument in wrindieses
@@ -87,10 +87,10 @@
 
 (defn get-position-from-xindieses [xindieses account-id]
   (let [account-balance (oapi/get-account-balance account-id)
-        max-pos (int (* 10 account-balance))
+        max-pos (int (* 1.0 account-balance))
         target-pos (int
                     (+ 0.5
-                       (* 0.25 account-balance
+                       (* 0.125 account-balance
                           (stats/mean
                            (for [xindies xindieses]
                              (stats/mean (map #(-> % :sieve seq last) xindies)))))))]
@@ -130,21 +130,80 @@
              wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq)]
          (run-wrindieses wrindieses xindy-config granularity account-id))))))
 
+(defn save-wrindieses [file-name wrindieses all-config]
+  (file/write-file file-name wrindieses))
+
+(defn get-and-save-wrindieses [file-name & get-wrindieses-args]
+  (save-wrindieses file-name (apply get-wrindieses get-wrindieses-args)))
+
+
+
+(defn run-wrindieses-from-file
+  ([file-name]
+   (let [file-content (file/read-file file-name)
+         {:keys [granularity wrindieses xindy-config account-id]} file-content
+         schedule-chan (async/chan)]
+     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
+     (async/go-loop []
+       (when-some [val (async/<! schedule-chan)]
+         (doseq [wrindies wrindieses]
+           (async/go
+             (arena/post-target-pos
+              (:instrument wrindies)
+              (get-position-from-xindieses
+               (get-new-xindieses-from-wrindies
+                wrindies
+                xindy-config
+                granularity)
+               account-id)
+              account-id))))
+       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
+     schedule-chan)))
+
+(defn generate-and-run-wrindieses
+  ([i g ai xc pc gc] (generate-and-run-wrindieses i g ai xc pc gc (take (count i) (repeat 1))))
+  ([instruments granularities account-ids xindy-config pop-config ga-config instrument-freq]
+   (doseq [gran-account-id (partition 2 (interleave granularities account-ids))]
+     (async/go
+       (let [granularity (first gran-account-id)
+             account-id (second gran-account-id)
+             wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq)]
+         (run-wrindieses wrindieses xindy-config granularity account-id))))))
+
+
 (comment
   ;; (do
+  (def instruments ["EUR_USD" "USD_JPY" "AUD_USD" "GBP_USD" "USD_CHF"])
+  (def instruments ["EUR_USD" "AUD_USD"])
+
   (def instruments ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD"
                     "EUR_JPY" "GBP_USD" "USD_CHF" "AUD_JPY"
                     "USD_CAD" "CHF_JPY" "EUR_CHF" "CAD_CHF"
                     "NZD_USD" "EUR_CAD" "AUD_CHF" "CAD_JPY"])
 
-  ;; (def instruments ["EUR_USD" "USD_JPY" "AUD_USD" "GBP_USD" "USD_CHF"])
+  (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                    "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                    "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                    "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                    "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                    "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
+
   (def instrument-freq 7)
   (def granularity "H1")
-  (def xindy-config (config/get-xindy-config 8 500))
-  (def pop-config (ga/xindy-pop-config 400 160))
-  (def ga-config (ga/xindy-ga-config 15 12500 0.9))
+  (def xindy-config (config/get-xindy-config 8 750))
+  (def pop-config (ga/xindy-pop-config 150 75))
+  (def ga-config (ga/xindy-ga-config 15 20000 0.95))
 
   (def wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
+  (def wrindieses2 (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
+  
+  (save-wrindieses "data/wrindieses/wrindieses1.edn" wrindieses)
+  
+  (def all-config (merge {:instruments instruments} xindy-config pop-config {:granularity granularity} ga-config {:instrument-freq instrument-freq}))
+
+  (keys all-config)
+  (map str (vals all-config))
+  
   (def wrindieses2 (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
 
   (for [wrindies wrindieses]
@@ -154,32 +213,55 @@
       (get-new-xindieses-from-wrindies
        wrindies
        xindy-config
-       granularity))
-     "101-001-5729740-005"))
+       granularity)
+      "101-001-5729740-001")
+     "101-001-5729740-001"))
 
-  (run-wrindieses wrindieses2 xindy-config granularity "101-001-5729740-002")
-  
+  (run-wrindieses wrindieses xindy-config granularity "101-001-5729740-002")
+
   (generate-and-run-wrindieses
-   instruments ["H1" "H1"]
-   ["101-001-5729740-009"
-    "101-001-5729740-010"] xindy-config
+   instruments ["H1" "H1" "H1"]
+   ["101-001-5729740-001"
+    "101-001-5729740-002"
+    "101-001-5729740-003"] xindy-config
    pop-config ga-config
    instrument-freq)
 
-  (def wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq))
-
-  (run-wrindieses wrindieses xindy-config granularity "101-001-5729740-004")
-
-  (map :instrument wrindieses)
-
-  (second wrindieses)
-
-  (get-position-from-xindieses (get-new-xindieses-from-wrindies (nth wrindieses 3) xindy-config granularity))
-
-  (get-new-xindieses-from-wrindies (second wrindieses) xindy-config granularity)
 
   ;; end comment
   )
+
+(comment
+
+  (let [granularity "M5"
+        account-id "101-001-5729740-001"
+        schedule-chan (async/chan)]
+    (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
+    (async/go-loop []
+      (when-some [val (async/<! schedule-chan)]
+        (let [instruments ["USD_CHF"]
+              xindy-config (config/get-xindy-config 4 250)
+              pop-config (ga/xindy-pop-config 50 20)
+              ga-config (ga/xindy-ga-config 10 25000 0.95)
+              instrument-freq 7
+              wrindieses (get-wrindieses instruments xindy-config pop-config granularity ga-config instrument-freq)]
+          (doseq [wrindies wrindieses]
+            (async/go
+              (arena/post-target-pos
+               (:instrument wrindies)
+               (get-position-from-xindieses
+                (get-new-xindieses-from-wrindies
+                 wrindies
+                 xindy-config
+                 granularity)
+                account-id)
+               account-id)))))
+      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
+    schedule-chan)
+
+  ;; End Comment
+  )
+
 
 (comment
   (def xindy-config (config/get-xindy-config 6 500))
@@ -208,117 +290,10 @@
   ;; end comment
   )
 
-(comment
-  (def xindy-config (config/get-xindy-config 16 1000))
-  (def pop-config (ga/xindy-pop-config 300 80 0.5 0.5))
-  (def ga-config (ga/xindy-ga-config 25 25000 0.95))
-  (def granularity "S15")
-
-  (def wrindieses (get-wrindieses
-                   ["EUR_USD"]
-                   xindy-config pop-config granularity ga-config))
-
-  ;; (def wrindieses (get-wrindieses
-  ;;                         ["EUR_USD" "USD_JPY" "EUR_GBP" "AUD_USD" "EUR_JPY"
-  ;;                          "GBP_USD" "USD_CHF" "AUD_JPY" "USD_CAD" "CHF_JPY"
-  ;;                          "EUR_CHF" "CAD_CHF" "NZD_USD" "EUR_CAD" "AUD_CHF" "CAD_JPY"]
-  ;;                         xindy-config pop-config granularity ga-config))
-
-  (map #(list (-> wrindieses (nth %) :instrument) (-> wrindieses (nth %) :rindy-shiftss count)) (range (count wrindieses)))
-
-  (def filtered-rindieses (filter #(> (-> % :rindy-shiftss count) 1) wrindieses))
-
-  (map #(list (-> filtered-rindieses (nth %) :instrument) (-> filtered-rindieses (nth %) :rindy-shiftss count)) (range (count filtered-rindieses)))
-
-  (run-wrindieses filtered-rindieses xindy-config granularity "101-001-5729740-001"))
 
 (comment
 
-  (def xindy-config (config/get-xindy-config 8 1000))
-  (def pop-config (ga/xindy-pop-config 200 80 0.4 0.4))
-  (def ga-config (ga/xindy-ga-config 25 25000 0.95))
-  (def granularity "S15")
+  (stats/stdev (streams/get-big-stream "EUR_USD" "M5" 10000))
 
-  (def wrindieses (get-wrindieses
-                   ["EUR_USD" "AUD_USD" "USD_JPY"]
-                   xindy-config pop-config granularity ga-config))
-
-  (map #(-> wrindieses (nth %) :rindy-shiftss count) (range (count wrindieses)))
-
-  (doseq [wrindies wrindieses]
-    (let [new-xindieses (get-new-xindieses-from-wrindies wrindies xindy-config granularity)
-          target-pos (get-position-from-xindieses new-xindieses)]
-      (arena/post-target-pos
-       (:instrument wrindies)
-       target-pos)))
-
-  (let [schedule-chan (async/chan)
-        future-times (util/get-future-unix-times-sec granularity)]
-
-    (util/put-future-times schedule-chan future-times)
-
-    (async/go-loop []
-      (when-some [val (async/<! schedule-chan)]
-        (doseq [wrindies wrindieses]
-          (async/go
-            (arena/post-target-pos
-             (:instrument wrindies)
-             (get-position-from-xindieses
-              (get-new-xindieses-from-wrindies
-               wrindies
-               xindy-config
-               granularity))))))
-      (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))))
-
-(comment
-
-  (def max-shift 1000)
-  (def back-len-pct 90)
-
-  (def xindy-config (config/get-xindy-config 8 1000))
-  (def pop-config (ga/xindy-pop-config 200 80 0.4 0.4))
-
-  (def natural-big-stream (streams/get-big-stream "EUR_USD" "H1" 100000))
-
-  (def big-stream (dv natural-big-stream))
-
-  (def back-len (int (* (dim big-stream) back-len-pct 0.01)))
-
-  (def back-stream (subvector big-stream 0 back-len))
-
-  (def fore-stream (subvector
-                    big-stream
-                    (- back-len (:max-shift xindy-config))
-                    (- (dim big-stream) back-len (:max-shift xindy-config))))
-
-  (def rindies (get-rindies 100 pop-config xindy-config back-stream fore-stream))
-
-  (def mostr (first (reverse (sort-by :robustness rindies))))
-
-  (def mostrs (filterv #(> (-> % :robustness) -0.25) rindies))
-
-  (plot/plot-streams [(vec (reductions + (-> mostr :back :rivulet seq)))
-                      (plot/zero-stream (seq (subvector
-                                              back-stream
-                                              (:max-shift xindy-config)
-                                              (- (dim back-stream) (:max-shift xindy-config)))))])
-  (plot/plot-streams [(vec (reductions + (-> mostr :fore :rivulet seq)))
-                      (plot/zero-stream (seq (subvector
-                                              fore-stream
-                                              (:max-shift xindy-config)
-                                              (- (dim fore-stream) (:max-shift xindy-config)))))])
-  (plot/plot-streams [(vec (into (vec (reductions + (-> mostr :back :rivulet seq))) (vec (reductions + (-> mostr :fore :rivulet seq))))) (plot/zero-stream (seq big-stream))])
-
-;;   (def best-pop (ga/run-generations 100 pop-config xindy-config back-stream))
-
-;;   (def best-xindy (first best-pop))
-
-;;   (def best-xindy-fore (x2/get-xindy-from-shifts (:shifts best-xindy) (:max-shift xindy-config) fore-stream))
-
-  ;; end comment
+  ;; End Comment
   )
-
-
-
-
-

@@ -20,10 +20,15 @@
        form))
    strindy))
 
-(defn read-data-file 
+(defn read-file
+  ([file-name] (read-file file-name #"\n"))
+  ([file-name newline-regex]
+   (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") newline-regex " "))))
+
+(defn read-data-file
   ([file-name] (read-data-file file-name #"\n"))
   ([file-name newline-regex]
-  (edn/read-string (clojure.string/replace (str "[" (slurp (str data-folder file-name)) "]") newline-regex " "))))
+   (read-file (str data-folder file-name) newline-regex)))
 
 (defn write-file
   ([file-name contents] (write-file file-name contents false))

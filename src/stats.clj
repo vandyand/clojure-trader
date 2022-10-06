@@ -140,41 +140,42 @@
   (let [x (mean sample) μ (mean pop) n (count sample) σ (stdev pop)]
     (/ (* (- x μ) (Math/sqrt n)) σ)))
 
-(defn balance [beck]
-  (last beck))
+(defn balance [vs]
+  (reduce + vs))
 
 (defn sharpe [vs]
   (if (<= (count vs) 1) 0.0
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ)))))
 
-(defn max-dd-period [vs]
+(defn max-dd-period
+  "Lower is better"
+  [vs]
   (if (<= (count vs) 1) 0.0
       (let [beck (util/rivulet->beck vs)]
-        (loop [i 0 last-best 0 max-period 0 cur-period 0]
+        (loop [i 0 last-best 0 max-period 0.01 cur-period 0]
           (if (< i (count beck))
-            (if (>= last-best (nth beck i))
-              (recur (inc i) last-best
-                     (if (> (inc cur-period) max-period) (inc cur-period) max-period) (inc cur-period))
-              (recur (inc i) (nth beck i) max-period 0))
-            (double (/ (count vs) max-period)))))))
+            (if (> last-best (nth beck i))
+                (recur (inc i) last-best
+                       (if (> (inc cur-period) max-period) (inc cur-period) max-period) (inc cur-period))
+                (recur (inc i) (nth beck i) max-period 0))
+            (double max-period))))))
 
 (defn inv-dd-period [vs]
-  (if (<= (count vs) 1) 0.0
-       (/ 1 (max-dd-period vs))))
+  (/ 1.0 (max-dd-period vs)))
 
 (defn sharpe-per-std [vs]
   (if (<= (count vs) 1) 0.0
       (let [μ (mean vs) σ (stdev vs)]
         (if (= σ 0.0) 0.0 (/ μ σ σ)))))
 
-(defn score-x 
+(defn score-x
   "values vs should be rivulet"
   [vs]
   (if (<= (count vs) 1) 0.0
       (let [_sharpe (sharpe vs)
-            _max-dd-period (max-dd-period vs)]
-        (* _sharpe _max-dd-period))))
+            _inv-dd-period (inv-dd-period vs)]
+        (* _sharpe _inv-dd-period))))
 
 (defn sum [vs]
   (if (= 0 (count vs))

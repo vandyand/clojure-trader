@@ -127,7 +127,8 @@
 (defn rand-lin-dist
   "Define a line with x0 (defined as 0), y0; x1, y1
    Function returns random x int value under
-   this line, in [x0, x1)"
+   this line, in [x0, x1). y1 defaults to 1 if not
+   provided."
   ([y0 x1] (rand-lin-dist y0 x1 1))
   ([y0 x1 y1]
    (let [x (rand x1)

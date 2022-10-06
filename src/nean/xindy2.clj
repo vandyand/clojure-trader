@@ -60,6 +60,17 @@
   (let [shifts (sort-shift-halves (get-rand-shifts (:num-shifts xindy-config) (:max-shift xindy-config)))]
     (get-xindy-from-shifts shifts (:max-shift xindy-config) stream))))
 
+(comment
+  
+  (def stream (dv (streams/get-big-stream "USD_JPY" "H1" 20000)))
+  
+  (def xindy (get-xindy-from-shifts [138 284 395 404 9 215 338 371] 500 stream))
+  
+  (plot/plot-streams [(vec (reductions + (-> xindy :rivulet seq)))])
+
+  
+  ;; end comment 
+  )
 
 (comment
 

@@ -78,7 +78,8 @@
     (sort-pop (into _parents _children))))
 
 (defn run-generations
-  ([num-generations pop-config xindy-config stream] (run-generations (get-init-pop pop-config xindy-config stream) num-generations pop-config xindy-config stream))
+  ([num-generations pop-config xindy-config stream]
+   (run-generations (get-init-pop pop-config xindy-config stream) num-generations pop-config xindy-config stream))
   ([starting-pop num-generations pop-config xindy-config stream]
    (loop [i 1 pop starting-pop]
      (when (env/get-env-data :GA_LOGGING?) (println i (-> pop first :score) (stats/mean (map :score pop))))
@@ -90,20 +91,59 @@
        pop))))
 
 (comment
-  (clojure.pprint/pprint (sort (frequencies (take 10000 (repeatedly (fn [] (first (random-sample (/ 1.0 5000) (->> (range) (map #(mod % 5000)))))))))))
 
-  (def xindy-config (config/get-xindy-config 8 100))
-  (def pop-config (xindy-pop-config 200 80))
+  (def xindy-config (config/get-xindy-config 8 500))
+  (def pop-config (xindy-pop-config 2000 1000))
 
-  (def natural-big-stream (streams/get-big-stream "EUR_USD" "H1" 100000))
+  (def natural-big-stream (streams/get-big-stream "GBP_CHF" "H1" 20000))
 
   (def big-stream (dv natural-big-stream))
 
-  (def best-pop (run-generations 100 pop-config xindy-config big-stream))
+  (def best-pop (run-generations 0 pop-config xindy-config big-stream))
 
-  (def best-xindy (first best-pop))
+  (def decent-pop (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop2 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop3 (->> best-pop (filter #(> (:score %) 0))))
 
-  (plot/plot-streams [(vec (reductions + (-> best-xindy :rivulet seq))) (plot/zero-stream natural-big-stream)])
+  (def decent-pop4 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop5 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop6 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop7 (->> best-pop (filter #(> (:score %) 0))))
+
+  (def decent-pop8 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop9 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop10 (->> best-pop (filter #(> (:score %) 0))))
+  (def decent-pop11 (->> best-pop (filter #(> (:score %) 0))))
+
+  (def avg-riv (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop))))
+  (def avg-riv2 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop2))))
+  (def avg-riv3 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop3))))
+  
+  (def avg-riv4 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop4))))
+  (def avg-riv5 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop5))))
+  (def avg-riv6 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop6))))
+  (def avg-riv7 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop7))))
+
+  (def avg-riv8 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop8))))
+  (def avg-riv9 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop9))))
+  (def avg-riv10 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop10))))
+  (def avg-riv11 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop11))))
+
+  (def avg-rivs (mapv stats/mean (apply (partial map list) [avg-riv
+                                                            avg-riv2
+                                                            avg-riv3
+                                                            avg-riv4
+                                                            avg-riv5
+                                                            avg-riv6
+                                                            avg-riv7
+                                                            avg-riv8
+                                                            avg-riv9
+                                                            avg-riv10
+                                                            avg-riv11])))
+
+  (plot/plot-streams [(vec (reductions + avg-rivs))])
+  (plot/plot-streams [(vec (reductions + avg-riv2)) (plot/zero-stream (subvec natural-big-stream 500))])
+  (plot/plot-streams [(vec (reductions + (-> best-pop (nth 999) :rivulet seq))) (plot/zero-stream (subvec natural-big-stream 500))])
   (plot/plot-streams [(plot/zero-stream natural-big-stream)])
 
   ;; end comment

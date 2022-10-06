@@ -5,7 +5,8 @@
             [env :as env]
             [api.util :as autil]
             [util :as util]
-            [api.headers :as headers]))
+            [api.headers :as headers]
+            [clojure.core.async :as async]))
 
 ;; autilITY FUNCTIONS 
 
@@ -37,6 +38,16 @@
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
    (-> account-id (get-account-endpoint "instruments") autil/get-oanda-api-data :instruments)))
+
+(comment
+
+  (def account-instruments (get-account-instruments))
+
+  (def decent-margin-rate-instruments (filter #(< (-> % :marginRate Double/parseDouble) 0.1) account-instruments))
+
+  (clojure.pprint/pprint (map :name decent-margin-rate-instruments))
+  ;; End Comment
+  )
 
 (defn get-account-instrument [instrument]
   (let [instruments (get-account-instruments)]
@@ -71,12 +82,12 @@
 (defn get-formatted-open-positions
   ([] (get-formatted-open-positions (env/get-account-id)))
   ([account-id]
-   (let [cur-poss-data (-> (get-open-positions account-id) :positions)] 
-    (for [current-position-data cur-poss-data]
-     (let [instrument (-> current-position-data :instrument)
-           long-pos (-> current-position-data :long :units Integer/parseInt)
-           short-pos (-> current-position-data :short :units Integer/parseInt)]
-       {:instrument instrument :units (+ long-pos short-pos)})))))
+   (let [cur-poss-data (-> (get-open-positions account-id) :positions)]
+     (for [current-position-data cur-poss-data]
+       (let [instrument (-> current-position-data :instrument)
+             long-pos (-> current-position-data :long :units Integer/parseInt)
+             short-pos (-> current-position-data :short :units Integer/parseInt)]
+         {:instrument instrument :units (+ long-pos short-pos)})))))
 
 ;; SEND ORDER FUNCTIONS
 
@@ -202,13 +213,13 @@
   ([] (close-all-positions (env/get-account-id)))
   ([account-id]
    (let [positions (get-formatted-open-positions account-id)]
-     (for [position positions] 
-        (close-position account-id (:instrument position) (> (:units position) 0))))))
+     (for [position positions]
+       (close-position account-id (:instrument position) (> (:units position) 0))))))
 
 (defn close-alll-positions
   [account-ids]
   (for [account-id account-ids]
-    (close-all-positions account-id)))
+      (close-all-positions account-id)))
 
 (comment
   (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
@@ -216,9 +227,10 @@
                     "101-001-5729740-007" "101-001-5729740-008" "101-001-5729740-009"
                     "101-001-5729740-010" "101-001-5729740-011" "101-001-5729740-012"
                     "101-001-5729740-013" "101-001-5729740-014" "101-001-5729740-015"])
-  
+  (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"])
+
   (close-alll-positions account-ids)
-  
+
   ;; end comment
   )
 

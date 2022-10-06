@@ -2,16 +2,14 @@
 
 ### Todo - short term
 
+- [ ] Make xindies able to subscribe to multiple input streams
+- [ ] Save xindies shifts instead of keeping them all in memory with their performance. All we need is shifts and maybe back-score, fore-score and z-score
+- [ ] Make xindies position sizes proportional to the timeframe they're trading
+- [ ] Make a new system which incorporates multiple systems for enter long, enter short, long position size, short position size, exit long and exit short or some combination of them. Maybe some nerual nets?
 ### Todo - longer term
 
-- [ ] Make crossover better (more intelligent somehow?) (Somehow make new type of strindicator with updateable params - much easier to mutate and crossover... USE A CODE! See notes)
-- [ ] (0.3.X) Arena
-  - [ ] Delete hystrindies from edn file by id if z-score is too low
-  - [ ] Create Arena where gaustrindies trade via api on paper account
-  - [ ] Add arena performance data and z-score to gaustrindies (becoming agaustrindies)
-  - [ ] Good ones go live
-  - [ ] Add live performacne data and z-score to agaustrindies (becoming lagaustrindies)
-- [ ] (0.4.X) Use `core.async` to leverage parallel processing (esp on alienware).
+
+
 ### Continuous
 
 - [ ] Learn macros and start using them throughout. Embrace the power of clojure.
@@ -105,6 +103,10 @@
 - [x] (0.4.1) Use ohlc+v data instead of just open
 - [x] (0.3.?) Go long and short - test with one intention instrument
 - [x] (0.4.?) Refactor `/incubator` and/or `/strindicator` to use `core.async` for performance boost with parallel processing.
-
+- [x] (0.3.?) Arena
+  - [x] Create Arena where gaustrindies trade via api on paper account
+  - [x] Add arena performance data and z-score to gaustrindies (becoming agaustrindies)
+- [x] (0.4.?) Use `core.async` to leverage parallel processing (esp on alienware)
+- [x] (0.5.X) Make crossover better (more intelligent somehow?) (Somehow make new type of strindicator with updateable params - much easier to mutate and crossover...)
 ### Completed Nice to haves
 - [x] (0.2.8) Make strindicators able to subscribe to all config instruments as inception and intention data
