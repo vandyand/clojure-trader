@@ -39,6 +39,7 @@
 (defn send-api-get-request
   ([url headers]
    (client/get url {:headers headers :content-type :json})
+  ;;  (client/get url {:headers headers :content-type :json :throw-exceptions false})
   ;;  (client/get url {:headers headers :content-type :json :debug true})
    ))
 

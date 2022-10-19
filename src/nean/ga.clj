@@ -44,13 +44,6 @@
    (for [i (range (:pop-size pop-config))]
      (x2/get-rand-xindy xindy-config stream))))
 
-(defn xindy-pop-config [pop-size num-parents]
-  (let [num-children (- pop-size num-parents)]
-    {:pop-size pop-size :num-parents num-parents :num-children num-children}))
-
-(defn xindy-ga-config [num-generations stream-count back-pct]
-  {:num-generations num-generations :stream-count stream-count :back-pct back-pct})
-
 (defn get-parents [pop pop-config]
   (take (:num-parents pop-config) pop))
 
@@ -93,7 +86,7 @@
 (comment
 
   (def xindy-config (config/get-xindy-config 8 500))
-  (def pop-config (xindy-pop-config 2000 1000))
+  (def pop-config (config/xindy-pop-config 2000 1000))
 
   (def natural-big-stream (streams/get-big-stream "GBP_CHF" "H1" 20000))
 

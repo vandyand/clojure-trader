@@ -51,9 +51,11 @@
     (sieve->rivulet sieve delta)))
 
 (defn get-xindy-from-shifts [shifts max-shift stream]
+  (println "here 499")
+  (println shifts, stream)
   (let [sieve (shifts->sieve shifts max-shift stream)
         rivulet (sieve+stream->rivulet sieve stream)]
-    {:shifts shifts :sieve sieve :rivulet rivulet :score (stats/score-x (-> rivulet seq vec))}))
+    {:shifts shifts :last-sieve-val (-> sieve seq last) :rivulet rivulet :score (stats/score-x (-> rivulet seq vec))}))
 
 (defn get-rand-xindy
   ([xindy-config stream] 

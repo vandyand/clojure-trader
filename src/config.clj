@@ -88,8 +88,16 @@
         ga-config (get-ga-config ga-num-epochs backtest-config pop-config)]
     (get-factory-config factory-num-produced ga-config)))
 
-(defn get-xindy-config [num-shifts max-shift]
+(defn xindy-config [num-shifts max-shift]
   {:num-shifts num-shifts :max-shift max-shift})
+
+(defn xindy-pop-config [pop-size num-parents]
+  (let [num-children (- pop-size num-parents)]
+    {:pop-size pop-size :num-parents num-parents :num-children num-children}))
+
+(defn xindy-ga-config [num-generations stream-count back-pct]
+  {:num-generations num-generations :stream-count stream-count :back-pct back-pct})
+
 
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "long-only" 2 6 10 100 "H1"))

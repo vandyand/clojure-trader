@@ -21,14 +21,18 @@
    strindy))
 
 (defn read-file
-  ([file-name] (read-file file-name #"\n"))
+  ([file-name]
+   (edn/read-string (slurp file-name))))
+
+(defn read-collection-file
+  ([file-name] (read-collection-file file-name #"\n"))
   ([file-name newline-regex]
    (edn/read-string (clojure.string/replace (str "[" (slurp file-name) "]") newline-regex " "))))
 
 (defn read-data-file
   ([file-name] (read-data-file file-name #"\n"))
   ([file-name newline-regex]
-   (read-file (str data-folder file-name) newline-regex)))
+   (read-collection-file (str data-folder file-name) newline-regex)))
 
 (defn write-file
   ([file-name contents] (write-file file-name contents false))

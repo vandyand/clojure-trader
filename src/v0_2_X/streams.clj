@@ -143,22 +143,26 @@
           (recur (- val time-span) (conj vals val))))))))
 
 (defn get-big-stream
-  ([instrument granularity _count] (get-big-stream instrument granularity _count 5000))
+  ([instrument granularity _count] (get-big-stream instrument granularity _count 1000))
   ([instrument granularity _count span]
-   (let [from-to-times (get-from-to-times granularity (* 10 _count) span)]
-     (loop [i 0 stream []]
+   (println "get-big-stream" instrument granularity _count span)
+   (let [from-to-times (get-from-to-times granularity (* 2 _count) span)
+         foo (println "from-to-times:" from-to-times)]
+     (loop [i 0 stream []] ;; TODO: Change this from a loop to a reduce to map over from-to-times instead of terminating on stream length
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
+             foo (println "from-time:" from-time " to-time:" to-time)
              new-stream-section (instruments/get-instrument-stream
                                  {:name instrument
                                   :granularity granularity
                                   :from from-time
                                   :to to-time
-                                  :includeFirst false})
+                                  :includeFirst true})
+             foo (println new-stream-section)
              new-stream (into new-stream-section stream)]
-         (if (> (count new-stream) _count)
-           (subvec (mapv :o new-stream) (- (count new-stream) _count))
+         (if (or (>= i (-> from-to-times count dec)) (>= (count new-stream) _count))
+           (mapv :o new-stream)
            (recur (inc i) new-stream)))))))
 
 (comment

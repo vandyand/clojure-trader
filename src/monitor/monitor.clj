@@ -104,18 +104,19 @@
   )
 
 (comment
-  (def account-ids ["101-001-5729740-004" 
-                    "101-001-5729740-005"
-                    "101-001-5729740-006"])
-  (scheduled-perf-writer account-ids "M5" "data/performance2.edn")
+ (do
+   (def account-ids ["101-001-5729740-001"
+                     "101-001-5729740-002"
+                     "101-001-5729740-003"])
+   (scheduled-perf-writer account-ids "M5" "data/performance2.edn"))
   ;; end comment
   )
 
 (comment
   (do
-    (def account-ids ["101-001-5729740-001"
-                      "101-001-5729740-002"
-                      "101-001-5729740-003"])
+    (def account-ids ["101-001-5729740-004"
+                      "101-001-5729740-005"
+                      "101-001-5729740-006"])
     (print-account-navs account-ids 1000)
     (print-cumulative-positions account-ids)))
 
