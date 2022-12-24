@@ -5,7 +5,8 @@
    [file :as file]
    [clojure.core.async :as async]
    [env :as env]
-   [plot :as plot]))
+   [plot :as plot]
+   [stats :as stats]))
 
 (defn get-navs [account-ids]
   (for [account-id account-ids]
@@ -27,9 +28,11 @@
   ([account-ids starting-nav]
   (let [navs (get-navs account-ids)
         difs (get-difs navs starting-nav)
-        sum (get-sum difs)]
+        ;sum (get-sum difs)
+        mean (stats/mean difs)]
     (assoc (apply hash-map (interleave (map keyword (map shorten-account-id account-ids)) difs))
-           :sum sum
+           :mean mean
+           ;:sum sum
            :time (util/current-time-sec)))))
 
 (defn get-and-write-performance
@@ -107,16 +110,21 @@
  (do
    (def account-ids ["101-001-5729740-001"
                      "101-001-5729740-002"
-                     "101-001-5729740-003"])
-   (scheduled-perf-writer account-ids "M5" "data/performance2.edn"))
+                     "101-001-5729740-003"
+                     "101-001-5729740-004"])
+   (scheduled-perf-writer account-ids "M5" "data/performance.edn"))
   ;; end comment
   )
 
 (comment
   (do
-    (def account-ids ["101-001-5729740-004"
+    (def account-ids ["101-001-5729740-001"
+                      "101-001-5729740-002"
+                      "101-001-5729740-003"
+                      "101-001-5729740-004"
                       "101-001-5729740-005"
-                      "101-001-5729740-006"])
+                      "101-001-5729740-006"
+                      "101-001-5729740-007"])
     (print-account-navs account-ids 1000)
     (print-cumulative-positions account-ids)))
 

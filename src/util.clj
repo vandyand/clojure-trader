@@ -146,7 +146,7 @@
 (defn put-future-times [chan future-times]
   (async/go-loop
    [v future-times]
-    (async/<! (async/timeout 1000))
+    ;; (async/<! (async/timeout 1000)) ;; TODO: ACTUALLY SEE IF THIS IS NECESSARY
     (if (= (count v) 0) (async/close! chan)
         (if (< (first v) (current-time-sec))
           (do

@@ -31,12 +31,6 @@
 (defn sieve->rivulet [sieve intention-rivulet]
   (if (not= 0 (count sieve)) (mapv * (cons (first sieve) sieve) intention-rivulet) []))
 
-;; (defn gpu-sieve->rivulet [sieve intention-rivulet]
-;;   (if (not= 0 (count sieve)) 
-;;     (gpu/mult (cons (first sieve) sieve) intention-rivulet)
-;;     []
-;;     ))
-
 (defn slippage-sieve->rivulet
   ([s i-r] (slippage-sieve->rivulet s i-r 0))
   ([s i-r penalty]
