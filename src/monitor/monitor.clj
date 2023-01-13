@@ -40,7 +40,7 @@
   ([account-ids file-name] (get-and-write-performance account-ids file-name true))
   ([account-ids file-name pprint?]
    (let [perf (get-performance account-ids)
-         foo (when pprint? (clojure.pprint/pprint perf))]
+         foo (when pprint? (clojure.pprint/pprint (sort perf)))]
      (file/write-file file-name perf true))))
 
 (defn scheduled-perf-writer
@@ -111,7 +111,10 @@
    (def account-ids ["101-001-5729740-001"
                      "101-001-5729740-002"
                      "101-001-5729740-003"
-                     "101-001-5729740-004"])
+                     "101-001-5729740-004"
+                     "101-001-5729740-005"
+                     "101-001-5729740-006"
+                     "101-001-5729740-007"])
    (scheduled-perf-writer account-ids "M5" "data/performance.edn"))
   ;; end comment
   )

@@ -48,7 +48,9 @@
 
 (defn send-api-post-request [url options]
   ;; (client/post url (assoc options :debug false))
-  (client/post url options)
+  ;; (client/post url options)
+  (try (client/post url options)
+       (catch Exception e (println "caught exception: " (.getMessage e))))
   )
 
 ;; (defn send-api-post-request [url options]

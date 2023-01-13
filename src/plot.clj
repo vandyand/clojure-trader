@@ -58,7 +58,7 @@
      (generate-and-view-plot values))))
 
 (defn format-performance-data
-  "performance data is a collection of maps of keys (:time :sum :001 :002 ... :n)"
+  "performance data is a collection of maps of keys (:time :mean :001 :002 ... :n)"
   [perf]
   (flatten
    (for [_key (filter #(not= % :time) (-> perf first keys))]
@@ -71,7 +71,7 @@
 (comment
   (do
     (def perf-data (file/read-data-file "performance.edn" #"\r\n"))
-    (generate-and-view-plot (format-performance-data perf-data)))
+       (generate-and-view-plot (format-performance-data perf-data)))                                                                                                                                                                                                                                                        
 
   ;; end comment
   )

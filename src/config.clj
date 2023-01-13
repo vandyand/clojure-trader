@@ -91,8 +91,9 @@
 (defn xindy-config [num-shifts max-shift]
   {:num-shifts num-shifts :max-shift max-shift})
 
-(defn xindy-pop-config [pop-size num-parents]
-  (let [num-children (- pop-size num-parents)]
+(defn xindy-pop-config [pop-size parents-arg]
+  (let [num-parents (if (< parents-arg 1) (int (* pop-size parents-arg)) parents-arg)
+        num-children (- pop-size num-parents)]
     {:pop-size pop-size :num-parents num-parents :num-children num-children}))
 
 (defn xindy-ga-config [num-generations stream-count back-pct]

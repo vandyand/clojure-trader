@@ -141,6 +141,11 @@
 (comment
   (->> #(rand-lin-dist -2 10 2) (repeatedly 100000) frequencies sort))
 
+(defn get-demo-account-ids
+  ([_num] (get-demo-account-ids _num 0))
+  ([_num _start]
+   (map #(str "101-001-5729740-" (format "%03d" (inc %))) (range _start (+ _num _start)))))
+
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]

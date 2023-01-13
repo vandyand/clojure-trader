@@ -66,7 +66,7 @@
     {:back-stream back-stream :fore-stream fore-stream}))
 
 (defn generate-wrifts
-  ([instruments xindy-config pop-config granularity ga-config]
+  ([instruments xindy-config pop-config granularity ga-config num-per]
    (vec
     (for [instrument instruments]
       {:instrument instrument
@@ -76,56 +76,59 @@
                      (:stream-count ga-config)
                      (:back-pct ga-config)
                      (:max-shift xindy-config))]
-                (generate-rifts streams-map xindy-config pop-config ga-config))}))))
+                (vec
+                 (apply
+                  concat
+                  (for [_ (range num-per)]
+                    (generate-rifts streams-map xindy-config pop-config ga-config)))))}))))
 
 ;; Saved wrifts file should have everything we need to run them.
-(defn save-wrifts+stuff [wrifts xindy-config granularity]
-  (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}
-        file-name (str "data/wrifts/" (-> (md5 (str file-content)) (bytes->hex) (subs 0 6)) ".edn")]
-    (file/write-file file-name file-content)
-    (println file-name)
-    file-name))
+(defn save-wrifts+stuff
+  ([wrifts xindy-config granularity] (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/"))
+  ([wrifts xindy-config granularity directory]
+   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}
+         file-name (str directory (-> (md5 (str file-content)) (bytes->hex) (subs 0 6)) ".edn")]
+     (file/write-file file-name file-content)
+     file-name)))
 
-(defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config]
-  (let [wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config)
+(defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config num-per]
+  (let [wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)
         file-name (save-wrifts+stuff wrifts xindy-config granularity)]
     file-name))
 
 (comment
   ;; -----------------------------------------------------------------------------------------------------------------------------
-  (loop [i 0]
+  (async/go-loop [i 0]
     (if (>= i 1)
       "done"
       (do
-        (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                           "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                           "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                           "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                           "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                           "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
-              granularity "D"
-              xindy-config (config/xindy-config 8 100)
-              pop-config (config/xindy-pop-config 400 200)
-              ga-config (config/xindy-ga-config 10 2000 0.95)
-              wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config)]
-          (save-wrifts+stuff wrifts xindy-config granularity))
+        (async/go
+          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
+                num-per 7
+                granularity "H2"
+                xindy-config (config/xindy-config 6 100)
+                ga-config (config/xindy-ga-config 35 20000 0.75)
+                pop-config (config/xindy-pop-config 300 0.5)
+                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
+            (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
 
-  (let [instruments ["AUD_CAD"]
-        granularity "D"
+  (let [instruments ["AUD_CAD" "AUD_USD"]
+        num-per 3
+        granularity "S15"
         xindy-config (config/xindy-config 8 100)
-        pop-config (config/xindy-pop-config 400 300)
-        ga-config (config/xindy-ga-config 100 1000 0.95)
-        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config)]
+        pop-config (config/xindy-pop-config 400 200)
+        ga-config (config/xindy-ga-config 10 1000 0.95)
+        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
     (save-wrifts+stuff wrifts xindy-config granularity))
 
   ;; end comment
   )
-
-(defn get-dir-file-names
-  ([] (get-dir-file-names "data/wrifts"))
-  ([dir]
-   (seq (.list (clojure.java.io/file (str "./" dir))))))
 
 (defn num-weekend-bars [granularity]
   (let [secs-per-bar (util/granularity->seconds granularity)
@@ -135,7 +138,6 @@
 (defn shifts->xindies
   "shifts is a vector of shift-vectors. each shift-vector has :num-shifts shifts (ints)"
   [instrument shifts xindy-config granularity]
-  (println "here 1500?")
   (let [new-stream (dv (streams/get-big-stream
                         instrument
                         granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
@@ -145,14 +147,9 @@
 (defn xindies->raw-position [xindies]
   (stats/mean (map #(-> % :last-sieve-val) xindies)))
 
-(defn derive-raw-instrument-positions [wrifts+stuff]
-  (println "here 1300")
-  ;; (println (:wrifts wrifts+stuff))
-  (doseq [wrifts (:wrifts wrifts+stuff)]
-    (do
-      (println "here 1400")
-      (println (:instrument wrifts))
-     {:instrument (:instrument wrifts)
+(defn procure-raw-instrument-positions [wrifts+stuff]
+  (for [wrifts (:wrifts wrifts+stuff)]
+    {:instrument (:instrument wrifts)
      :raw-position (if (empty? (:rifts wrifts))
                      0.0
                      (let [xindies (shifts->xindies
@@ -160,51 +157,148 @@
                                     (:rifts wrifts)
                                     (:xindy-config wrifts+stuff)
                                     (:granularity wrifts+stuff))]
-                       (xindies->raw-position xindies)))})))
+                       (xindies->raw-position xindies)))}))
 
-(defn raw->target-instrument-position [raw-instrument-position account-balance max-pos]
-  (let [target-pos (int (+ 0.5 (* 0.125 account-balance (:raw-position raw-instrument-position))))]
+(defn raw->target-instrument-position [raw-instrument-position account-nav max-pos]
+  (let [target-pos (int (+ 0.5 (* 0.125 account-nav (:raw-position raw-instrument-position))))]
     (cond
       (> target-pos max-pos) max-pos
       (< target-pos (* -1 max-pos)) (* -1 max-pos)
       :else target-pos)))
 
 (defn raw->target-instrument-positions [raw-instrument-positions account-id]
-  (let [account-balance (oapi/get-account-balance account-id)
-        max-pos (int (* 1.0 account-balance))]
+  (let [account-nav (oapi/get-account-nav account-id)
+        max-pos (int (* 1.0 account-nav))]
     (for [raw-instrument-position raw-instrument-positions]
       (assoc raw-instrument-position
              :target-position
-             (raw->target-instrument-position raw-instrument-position account-balance max-pos)))))
+             (raw->target-instrument-position raw-instrument-position account-nav max-pos)))))
 
-(defn derive-target-instrument-positions [wrifts+stuff account-id]
-  (let [raw-instrument-positions (derive-raw-instrument-positions wrifts+stuff)]
+(defn procure-target-instrument-positions [wrifts+stuff account-id]
+  (let [raw-instrument-positions (procure-raw-instrument-positions wrifts+stuff)]
     (raw->target-instrument-positions raw-instrument-positions account-id)))
 
 (defn post-target-positions [target-instrument-positions account-id]
-  (for [target-instrument-position target-instrument-positions]
+  (doseq [target-instrument-position target-instrument-positions]
     (arena/post-target-pos (:instrument target-instrument-position)
                            (:target-position target-instrument-position)
                            account-id)))
+(comment
+  (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                    "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                    "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                    "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                    "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                    "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
 
-(defn derive-and-post-positions [wrifts+stuff account-id]
-  (println "here 1000")
-  (let [target-instrument-positions (derive-target-instrument-positions wrifts+stuff account-id)]
+  (util/get-demo-account-ids 5 7)
+
+  (doseq [x (repeatedly 1000 #(rand-int 100))]
+    (post-target-positions [{:instrument (rand-nth instruments) :target-position x}] (rand-nth (util/get-demo-account-ids 5 7)))))
+
+(defn procure-and-post-positions [wrifts+stuff account-id]
+  (let [target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]
     (post-target-positions target-instrument-positions account-id)))
 
+(defn get-dir-file-names
+  ([] (get-dir-file-names "data/wrifts"))
+  ([dir]
+   (map
+    (fn [file-name] (str dir "/" file-name))
+    (filter
+     (fn [file?] (clojure.string/includes? file? ".edn"))
+     (seq (.list (clojure.java.io/file (str "./" dir))))))))
+
+(defn batch-update
+  ([] (batch-update 0))
+  ([account-id-offset] (batch-update "data/wrifts" account-id-offset))
+  ([dir account-id-offset]
+   (let [file-names (get-dir-file-names dir)
+         file-account-ids (partition 2 (interleave file-names (util/get-demo-account-ids (count file-names) account-id-offset)))]
+     (println file-account-ids)
+     (doseq [file-account-id file-account-ids]
+       (procure-and-post-positions (file/read-file (first file-account-id)) (second file-account-id))))))
+
 (comment
+  (batch-update)
+  (batch-update "data/wrifts/H1"))
 
-  (derive-and-post-positions (file/read-file "./data/wrifts/ceacd1.edn") "101-001-5729740-001")
-  (derive-and-post-positions (file/read-file "data/wrifts/571036.edn") "101-001-5729740-002")
-  (derive-and-post-positions (file/read-file "data/wrifts/489eca.edn") "101-001-5729740-003")
+(defn scheduled-account-update
+  ([granularity] (scheduled-account-update "data/wrifts" granularity))
+  ([dir granularity]
+   (let [schedule-chan (async/chan)
+         files-contents (for [file-name (get-dir-file-names dir)] (file/read-file file-name))]
+     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
+     (async/go-loop []
+       (when-some [val (async/<! schedule-chan)]
+         (let [file-contents-account-ids (partition 2 (interleave files-contents (util/get-demo-account-ids (count files-contents))))]
+           (for [file-content-account-id file-contents-account-ids]
+             (apply procure-and-post-positions file-content-account-id))))
+       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
+     schedule-chan)))
 
-  (derive-and-post-positions (file/read-file "data/wrifts/4d3aac7a698c6c743e6c0491d08b7640.edn") "101-001-5729740-011")
-  (derive-and-post-positions (file/read-file "data/wrifts/5e4161d007203fd80e87116bded8489b.edn") "101-001-5729740-012")
-  (derive-and-post-positions (file/read-file "data/wrifts/37a02cd45f4f6627b7edd86899d146c6.edn") "101-001-5729740-013"))
+(comment
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;; (let [chann (async/chan)]
+  ;;   (util/put-future-times chann (util/get-future-unix-times-sec "H1"))
+  ;;   (async/go-loop []
+  ;;     (when-some [val (async/<! chann)]
+  ;;       (batch-update)
+  ;;       (recur))))
 
 
+  (let [chann (async/chan)]
+    (util/put-future-times chann (util/get-future-unix-times-sec "H2"))
+    (async/go-loop []
+      (when-some [val (async/<! chann)]
+        (let [file-names (get-dir-file-names)
+              file-names-account-ids (partition 2 (interleave file-names (util/get-demo-account-ids (count file-names))))]
+          (doseq [file-name-account-id file-names-account-ids]
+            (procure-and-post-positions (file/read-file (first file-name-account-id)) (second file-name-account-id))))
+        (recur))))
 
 
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+  ;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------;;-------------------------------------------------------------------
+
+  ;;
+  )
 
 (defn get-position-from-xindieses [xindieses account-id]
   (let [account-balance (oapi/get-account-balance account-id)
@@ -233,7 +327,7 @@
 
   (for [file-name (get-dir-file-names)]
     (let [wrifts+stuff (file/read-file (str "data/wrifts/" file-name))]
-      (derive-and-post-positions wrifts+stuff))))
+      (procure-and-post-positions wrifts+stuff))))
 
 (defn scheduled-wrifts-runner
   ([wr xc g] (scheduled-wrifts-runner xc g (env/get-account-id)))
