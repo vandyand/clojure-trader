@@ -103,17 +103,12 @@
       "done"
       (do
         (async/go
-          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
-                num-per 7
+          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY"]
+                num-per 1
                 granularity "H2"
                 xindy-config (config/xindy-config 6 100)
-                ga-config (config/xindy-ga-config 35 20000 0.75)
-                pop-config (config/xindy-pop-config 300 0.5)
+                ga-config (config/xindy-ga-config 20 10000 0.75)
+                pop-config (config/xindy-pop-config 3000 0.6)
                 wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
             (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))

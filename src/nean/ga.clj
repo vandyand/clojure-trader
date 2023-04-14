@@ -41,7 +41,7 @@
 
 (defn get-init-pop [pop-config xindy-config stream]
   (sort-pop
-   (for [i (range (:pop-size pop-config))]
+   (for [_ (range (:pop-size pop-config))]
      (x2/get-rand-xindy xindy-config stream))))
 
 (defn get-parents [pop pop-config]
@@ -54,7 +54,7 @@
 
 (defn get-children [parents pop-config xindy-config stream]
   (vec
-   (for [i (range (:num-children pop-config))]
+   (for [_ (range (:num-children pop-config))]
      (let [child-num-parents (->> (range) (random-sample 0.5) first (+ 1))
           ;;  child-parents (repeatedly
           ;;                 child-num-parents

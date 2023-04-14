@@ -1,11 +1,8 @@
 # Roadmap and Such and So
 
 ### Todo - short term
+- [ ] Clean up
 
-- [ ] Make xindies able to subscribe to multiple input streams
-- [ ] Save xindies shifts instead of keeping them all in memory with their performance. All we need is shifts and maybe back-score, fore-score and z-score
-- [ ] Make xindies position sizes proportional to the timeframe they're trading
-- [ ] Make a new system which incorporates multiple systems for enter long, enter short, long position size, short position size, exit long and exit short or some combination of them. Maybe some nerual nets?
 ### Todo - longer term
 
 
@@ -17,6 +14,10 @@
 
 ### Nice to haves / Future features
 
+- [ ] Make xindies able to subscribe to multiple input streams
+- [ ] Save xindies shifts instead of keeping them all in memory with their performance. All we need is shifts and maybe back-score, fore-score and z-score
+- [ ] Make xindies position sizes proportional to the timeframe they're trading
+- [ ] Make a new system which incorporates multiple systems for enter long, enter short, long position size, short position size, exit long and exit short or some combination of them. Maybe some nerual nets?
 - [ ] Spec one function
 - [ ] Fuzz test one function with spec generator
 - [ ] Spec all functions
