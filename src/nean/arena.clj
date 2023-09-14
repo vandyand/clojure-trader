@@ -94,12 +94,17 @@
       "done"
       (do
         (async/go
-          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY"]
-                num-per 1
-                granularity "H2"
-                xindy-config (config/xindy-config 6 100)
-                ga-config (config/xindy-ga-config 20 10000 0.75)
-                pop-config (config/xindy-pop-config 3000 0.6)
+          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
+                num-per 7
+                granularity "M5"
+                xindy-config (config/xindy-config 7 777)
+                ga-config (config/xindy-ga-config 15 20000 0.75)
+                pop-config (config/xindy-pop-config 300 0.5)
                 wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
             (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
@@ -152,7 +157,7 @@
     (arena/post-target-pos (:instrument target-instrument-position)
                            (:target-position target-instrument-position)
                            account-id)))
-(comment
+(comment 
   (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
                     "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
                     "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
@@ -162,8 +167,11 @@
 
   (util/get-demo-account-ids 5 7)
 
+  ;; this randomly updates instrument position sizes
   (doseq [x (repeatedly 1000 #(rand-int 100))]
-    (post-target-positions [{:instrument (rand-nth instruments) :target-position x}] (rand-nth (util/get-demo-account-ids 5 7)))))
+    (post-target-positions 
+     [{:instrument (rand-nth instruments) :target-position x}] 
+     (rand-nth (util/get-demo-account-ids 5 7)))))
 
 (defn procure-and-post-positions [wrifts+stuff account-id]
   (let [target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]

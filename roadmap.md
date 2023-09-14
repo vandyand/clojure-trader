@@ -1,11 +1,14 @@
 # Roadmap and Such and So
 
-### Todo - short term
-- [ ] Clean up
+### Next Doable ToDo
+- [ ] clean up nean/arena.clj
+- [ ] refactor nean/arena.clj - part of cleaning/refactoring initiative
+- [ ] make starting and stopping trading easier by implementing an abstraction (agent) for this. 
+### Initiatives
 
-### Todo - longer term
-
-
+- [ ] make whole system automated
+- automate metaparmeter tuning
+- make a system for autoparameter tuning and then automate it
 
 ### Continuous
 
