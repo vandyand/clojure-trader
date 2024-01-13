@@ -56,19 +56,45 @@
     {:shifts shifts :last-sieve-val (-> sieve seq last) :rivulet rivulet :score (stats/score-x (-> rivulet seq vec))}))
 
 (defn get-rand-xindy
-  ([xindy-config stream] 
-  (let [shifts (sort-shift-halves (get-rand-shifts (:num-shifts xindy-config) (:max-shift xindy-config)))]
-    (get-xindy-from-shifts shifts (:max-shift xindy-config) stream))))
+  ([xindy-config stream]
+   (let [shifts (sort-shift-halves (get-rand-shifts (:num-shifts xindy-config) (:max-shift xindy-config)))]
+     (get-xindy-from-shifts shifts (:max-shift xindy-config) stream))))
+
+(defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
+  (println "getting: " instrument)
+  (let [big-stream (dv (streams/get-big-stream instrument granularity stream-count (lesser 1000 stream-count)))
+        back-len (int (* (dim big-stream) back-pct))
+        fore-len (- (dim big-stream) back-len)
+        back-stream (subvector big-stream 0 back-len)
+        fore-stream (subvector
+                     big-stream
+                     (- back-len max-shift)
+                     (+ fore-len max-shift))]
+    {:back-stream back-stream :fore-stream fore-stream}))
+
+(defn num-weekend-bars [granularity]
+  (let [secs-per-bar (util/granularity->seconds granularity)
+        secs-per-weekend (* 60 60 24 2)]
+    (int (/ secs-per-weekend secs-per-bar))))
+
+(defn shifts->xindies
+  "shifts is a vector of shift-vectors. each shift-vector has :num-shifts shifts (ints)"
+  [instrument shifts xindy-config granularity]
+  (let [new-stream (dv (streams/get-big-stream
+                        instrument
+                        granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
+    (for [shift-vec shifts]
+      (x2/get-xindy-from-shifts shift-vec (:max-shift xindy-config) new-stream))))
 
 (comment
-  
+
   (def stream (dv (streams/get-big-stream "USD_JPY" "H1" 20000)))
-  
+
   (def xindy (get-xindy-from-shifts [138 284 395 404 9 215 338 371] 500 stream))
-  
+
   (plot/plot-streams [(vec (reductions + (-> xindy :rivulet seq)))])
 
-  
+
   ;; end comment 
   )
 

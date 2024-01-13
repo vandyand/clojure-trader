@@ -5,7 +5,7 @@
    [config :as config]
    [v0_2_X.strindicator :as strindy]
    [api.util :as api_util]
-   [api.instruments :as instruments]))
+   [api.oanda_api :as oapi]))
 
 (defn get-instrument-file-name ([instrument-config]
                                 (str "streams/" (get instrument-config :name) "-" (get instrument-config :granularity) ".edn"))
@@ -16,9 +16,6 @@
   (< (util/current-time-sec)
      (+ time-stamp (* 0.5 (util/granularity->seconds granularity)))))
 
-(defn get-api-stream [instrument-config]
-  (instruments/get-instrument-stream (assoc instrument-config :count 5000)))
-
 ;;if file does not exist -> make new file and populate with data from api and return data
 ;;else (if file does exist)...
 ;;    if file is up to date -> read file content and return the stream
@@ -27,7 +24,7 @@
 ;;        recur.
 
 (defn create-stream-file [file-name instrument-config]
-  (let [api-stream (get-api-stream instrument-config)]
+  (let [api-stream (oapi/get-instrument-stream (assoc instrument-config :count 5000))]
     (file/write-file
      (str file/data-folder file-name)
      {:time-stamp (util/current-time-sec)
@@ -125,7 +122,7 @@
        (for [from-to-time from-to-times]
          (let [from-time (first from-to-time)
                to-time (second from-to-time)]
-           (instruments/get-instrument-stream {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
+           (oapi/get-instrument-stream {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
 
 (defn get-from-to-times
   ([granularity _count] (get-from-to-times granularity _count 5000))
@@ -148,7 +145,7 @@
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
-             new-stream-section (instruments/get-instrument-stream
+             new-stream-section (oapi/get-instrument-stream
                                  {:name instrument
                                   :granularity granularity
                                   :from from-time

@@ -6,12 +6,15 @@
         cheshire/cheshire {:mvn/version "5.10.2"}
         cljfmt/cljfmt {:mvn/version "0.8.0"}
         buddy/buddy-core {:mvn/version "1.7.1"}
-        uncomplicate/clojurecuda {:mvn/version "0.15.0"}
-        uncomplicate/neanderthal {:mvn/version "0.44.1"}
-        uncomplicate/fluokitten {:mvn/version "0.9.1"}
         org.bytedeco/mkl-platform-redist {:mvn/version "2020.3-1.5.4"}
         criterium/criterium {:mvn/version "0.4.6"}
         midje/midje {:mvn/version "1.10.5"}
-        middlesphere/clj-compress {:mvn/version "0.1.0"}}
+        middlesphere/clj-compress {:mvn/version "0.1.0"}
+        ring/ring-core {:mvn/version "1.9.2"}
+        ring/ring-jetty-adapter {:mvn/version "1.9.2"}
+        compojure {:mvn/version "1.6.2"}}
  :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}
-                              org.clojure/test.check {:mvn/version "0.9.0"}}}}}
+                              org.clojure/test.check {:mvn/version "0.9.0"}}}
+           :windows11 {:extra-deps  {uncomplicate/clojurecuda {:mvn/version "0.15.0"}
+                                     uncomplicate/neanderthal {:mvn/version "0.44.1"}
+                                     uncomplicate/fluokitten {:mvn/version "0.9.1"}}}}}

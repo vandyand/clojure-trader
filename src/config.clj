@@ -99,6 +99,19 @@
 (defn xindy-ga-config [num-generations stream-count back-pct]
   {:num-generations num-generations :stream-count stream-count :back-pct back-pct})
 
+(defn wrift-config [xindy-config xindy-pop-config xindy-ga-config]
+  (assoc xindy-config :pop-config xindy-pop-config :ga-config xindy-ga-config))
+
+(comment
+  (def wrift-config
+    {:num-shifts "even integer usually between 4 and 20"
+     :max-shift "integer usually between 100 and 1000"
+     :pop-size "integer usually between 20 and 1000. sum of num-parents and num-children"
+     :num-parents "integer usually between 1 and 1000"
+     :num-children "integer usually between 1 and 1000"
+     :num-generations "integer usually between 5 and 50"
+     :stream-count "integer usually between 1000 and 20000. number of 'time bars'"
+     :back-pct "float between 0 and 1. used for deriving back-stream and fore-stream"}))
 
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "long-only" 2 6 10 100 "H1"))
