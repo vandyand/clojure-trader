@@ -113,5 +113,3 @@
    (-> endpoint
        (build-binance-url (binancify-candles-instrument-config instrument-config))
        (get-api-data (headers/get-binance-headers)))))
-
-

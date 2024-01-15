@@ -62,7 +62,7 @@
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (println "getting: " instrument)
-  (let [big-stream (dv (streams/get-big-stream instrument granularity stream-count (lesser 1000 stream-count)))
+  (let [big-stream (dv (streams/get-big-stream instrument granularity stream-count (min 1000 stream-count)))
         back-len (int (* (dim big-stream) back-pct))
         fore-len (- (dim big-stream) back-len)
         back-stream (subvector big-stream 0 back-len)
@@ -84,7 +84,7 @@
                         instrument
                         granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
     (for [shift-vec shifts]
-      (x2/get-xindy-from-shifts shift-vec (:max-shift xindy-config) new-stream))))
+      (get-xindy-from-shifts shift-vec (:max-shift xindy-config) new-stream))))
 
 (comment
 

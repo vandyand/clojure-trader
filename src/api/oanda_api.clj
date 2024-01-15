@@ -17,7 +17,18 @@
 
 ;; ACCOUNT DATA FUNCTIONS
 
-(defn get-accounts [] (autil/get-oanda-api-data "accounts"))
+(defn get-accounts [] 
+  (sort-by :id (:accounts (autil/get-oanda-api-data "accounts"))))
+
+(defn get-account-ids []
+  (mapv :id (get-accounts)))
+
+(defn get-some-account-ids [_num]
+  (let [account-ids (get-account-ids)]
+    (subvec account-ids 0 (min _num (count account-ids)))))
+
+#_(get-accounts)
+#_(get-account-ids)  
 
 (defn get-account-summary
   ([] (get-account-summary (env/get-account-id)))
@@ -34,6 +45,10 @@
   ([account-id]
    (-> (get-account-summary account-id) :account :NAV Double/parseDouble)))
 
+(comment
+  (get-account-nav)
+  )
+
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
@@ -41,6 +56,8 @@
 
 (comment
 
+  (get-account-instruments)
+  
   (def account-instruments (get-account-instruments))
 
   (def decent-margin-rate-instruments (filter #(< (-> % :marginRate Double/parseDouble) 0.1) account-instruments))
@@ -207,7 +224,7 @@
       (autil/build-oanda-url
        (get-account-endpoint account-id (str "positions/" instrument "/close")))
       (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))
-     nil)))
+     instrument)))
 
 (defn close-all-positions
   ([] (close-all-positions (env/get-account-id)))
@@ -219,7 +236,7 @@
 (defn close-alll-positions
   [account-ids]
   (for [account-id account-ids]
-      (close-all-positions account-id)))
+      {:account-id account-id :closed (close-all-positions account-id)}))
 
 (comment
   (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
@@ -283,21 +300,8 @@
 
   (get-open-trades)
 
-  (close-long-position "USD_JPY")
-  (close-short-position "EUR_GBP")
-
-  ;; (send-order-request-with-client-id "EUR_USD" 17 "id-17")
-
-  ;; (get-trade-by-client-id "id-17")
-
-  ;; (for [n (range 1 10)]
-  ;;   (send-order-request-with-client-id "EUR_USD" n (str "id-" n)))
-
-  ;; (close-trade-by-client-id "id-1")
-
-  ;; (for [n (range 2 10)]
-  ;;   (close-trade-by-client-id (str "id-" n)))
   )
 
 (comment
-  (account-instruments->names (get-account-instruments)))
+  (account-instruments->names (get-account-instruments))
+  )

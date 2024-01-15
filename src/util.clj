@@ -141,23 +141,17 @@
 (comment
   (->> #(rand-lin-dist -2 10 2) (repeatedly 100000) frequencies sort))
 
-(defn get-demo-account-ids
-  ([_num] (get-demo-account-ids _num 0))
-  ([_num _start]
-   (map #(str "101-001-5729740-" (format "%03d" (inc %))) (range _start (+ _num _start)))))
-
 ;------------------------------------;------------------------------------;------------------------------------
 
 (defn put-future-times [chan future-times]
   (async/go-loop
    [v future-times]
-    ;; (async/<! (async/timeout 1000)) ;; TODO: ACTUALLY SEE IF THIS IS NECESSARY
     (if (= (count v) 0) (async/close! chan)
         (if (< (first v) (current-time-sec))
-          (do
-            (println "put val on channel: " (first v))
-            (async/>! chan (first v))
-            (recur (rest v)))
+          (when (async/>! chan (first v))
+            (do
+              (println "put val on channel: " (first v))
+              (recur (rest v))))
           (recur v)))))
 
 (defn future-times-ons [chan]

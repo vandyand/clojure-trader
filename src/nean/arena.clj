@@ -53,9 +53,6 @@
         rifts (mapv :shifts rindies)]
     rifts))
 
-(defn lesser [op1 op2]
-  (if (< op1 op2) op1 op2))
-
 (defn generate-wrifts
   ([instruments xindy-config pop-config granularity ga-config num-per]
    (vec
@@ -87,36 +84,14 @@
         file-name (save-wrifts+stuff wrifts xindy-config granularity)]
     file-name))
 
-(comment
-  ;; -----------------------------------------------------------------------------------------------------------------------------
-  (async/go-loop [i 0]
-    (if (>= i 1)
-      "done"
-      (do
-        (async/go
-          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
-                num-per 7
-                granularity "M5"
-                xindy-config (config/xindy-config 7 777)
-                ga-config (config/xindy-ga-config 15 20000 0.75)
-                pop-config (config/xindy-pop-config 300 0.5)
-                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
-            (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
-        (recur (inc i)))))
-
-  (let [instruments ["AUD_CAD" "AUD_USD"]
-        num-per 3
-        granularity "S15"
-        xindy-config (config/xindy-config 8 100)
-        pop-config (config/xindy-pop-config 400 200)
-        ga-config (config/xindy-ga-config 10 1000 0.95)
-        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
-    (save-wrifts+stuff wrifts xindy-config granularity)))
+(defn backtest [backtest-params]
+  (generate-and-save-wrifts
+   (:instruments backtest-params)
+   (:xindy-config backtest-params)
+   (:pop-config backtest-params)
+   (:granularity backtest-params)
+   (:ga-config backtest-params)
+   (:num-per backtest-params)))
 
 (defn xindies->raw-position [xindies]
   (stats/mean (map #(-> % :last-sieve-val) xindies)))
@@ -157,21 +132,6 @@
     (arena/post-target-pos (:instrument target-instrument-position)
                            (:target-position target-instrument-position)
                            account-id)))
-(comment 
-  (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                    "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                    "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                    "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                    "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                    "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
-
-  (util/get-demo-account-ids 5 7)
-
-  ;; this randomly updates instrument position sizes
-  (doseq [x (repeatedly 1000 #(rand-int 100))]
-    (post-target-positions 
-     [{:instrument (rand-nth instruments) :target-position x}] 
-     (rand-nth (util/get-demo-account-ids 5 7)))))
 
 (defn procure-and-post-positions [wrifts+stuff account-id]
   (let [target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]
@@ -186,75 +146,84 @@
      (fn [file?] (clojure.string/includes? file? ".edn"))
      (seq (.list (clojure.java.io/file (str "./" dir))))))))
 
-(comment
-  (let [chann (async/chan)]
-    (util/put-future-times chann (util/get-future-unix-times-sec "H2"))
+(defonce trade-env (atom {}))
+
+(defn trade [granularity]
+  (let [trade-chan (async/chan)
+        stop-chan (async/chan)]
+    (util/put-future-times trade-chan (util/get-future-unix-times-sec granularity))
     (async/go-loop []
-      (when-some [val (async/<! chann)]
-        (let [file-names (get-dir-file-names)
-              file-names-account-ids (partition 2 (interleave file-names (util/get-demo-account-ids (count file-names))))]
-          (doseq [file-name-account-id file-names-account-ids]
-            (procure-and-post-positions (file/read-file (first file-name-account-id)) (second file-name-account-id))))
-        (recur)))))
+      (async/alt!
+        stop-chan
+        ([_]
+         (println "Stopping trade function.")
+         (async/close! trade-chan)
+         (async/close! stop-chan))
+        trade-chan
+        ([val]
+         (when val
+           (let [file-names (get-dir-file-names)
+                 file-names-account-ids (partition 2 (interleave file-names (oapi/get-some-account-ids (count file-names))))]
+             (doseq [file-name-account-id file-names-account-ids]
+               (procure-and-post-positions (file/read-file (first file-name-account-id)) (second file-name-account-id))))
+           (recur)))))
+    (let [trade-chans {:trade-chan trade-chan :stop-chan stop-chan}]
+      (reset! trade-env trade-chans)
+      trade-chans)))
 
-(defn batch-update
-  ([] (batch-update 0))
-  ([account-id-offset] (batch-update "data/wrifts" account-id-offset))
-  ([dir account-id-offset]
-   (let [file-names (get-dir-file-names dir)
-         file-account-ids (partition 2 (interleave file-names (util/get-demo-account-ids (count file-names) account-id-offset)))]
-     (println file-account-ids)
-     (doseq [file-account-id file-account-ids]
-       (procure-and-post-positions (file/read-file (first file-account-id)) (second file-account-id))))))
+(defn stop-trading 
+  ([] (stop-trading (:stop-chan @trade-env)))
+  ([stop-chan]
+  (async/put! stop-chan true)))
 
-(defn scheduled-account-update
-  ([granularity] (scheduled-account-update "data/wrifts" granularity))
-  ([dir granularity]
-   (let [schedule-chan (async/chan)
-         files-contents (for [file-name (get-dir-file-names dir)] (file/read-file file-name))]
-     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
-     (async/go-loop []
-       (when-some [val (async/<! schedule-chan)]
-         (let [file-contents-account-ids (partition 2 (interleave files-contents (util/get-demo-account-ids (count files-contents))))]
-           (for [file-content-account-id file-contents-account-ids]
-             (apply procure-and-post-positions file-content-account-id))))
-       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
-     schedule-chan)))
+(comment
+  (def trade-chans (trade "M1"))
 
-(defn get-position-from-xindieses [xindieses account-id]
-  (let [account-balance (oapi/get-account-balance account-id)
-        max-pos (int (* 1.0 account-balance))
-        target-pos (int
-                    (+ 0.5
-                       (* 0.125 account-balance
-                          (stats/mean
-                           (for [xindies xindieses]
-                             (stats/mean (map #(-> % :last-sieve-val) xindies)))))))]
-    (cond
-      (> target-pos max-pos) max-pos
-      (< target-pos (* -1 max-pos)) (* -1 max-pos)
-      :else target-pos)))
+  (async/put! (:stop-chan trade-chans) true))
 
-(defn wrifts->posted-positions [instrument shifts xindy-config granularity account-id]
-  (async/go
-    (arena/post-target-pos instrument
-                           (get-position-from-xindieses
-                            (x2/shifts->xindies instrument shifts xindy-config granularity)
-                            account-id)
-                           account-id)))
+(comment
+  ;; -----------------------------------------------------------------------------------------------------------------------------
+  (async/go-loop [i 0]
+    (if (>= i 1)
+      "done"
+      (do
+        (async/go
+          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
+                num-per 7
+                granularity "M5"
+                xindy-config (config/xindy-config 7 777)
+                ga-config (config/xindy-ga-config 15 20000 0.75)
+                pop-config (config/xindy-pop-config 300 0.5)
+                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
+            (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
+        (recur (inc i)))))
 
-(defn scheduled-wrifts-runner
-  ([wr xc g] (scheduled-wrifts-runner xc g (env/get-account-id)))
-  ([wrifts xindy-config granularity account-id]
-   (let [schedule-chan (async/chan)]
-     (util/put-future-times schedule-chan (util/get-future-unix-times-sec granularity))
-     (async/go-loop []
-       (when-some [val (async/<! schedule-chan)]
-         (doseq [wrift wrifts]
-           (wrifts->posted-positions (:instrument wrift) (:rifts wrift) xindy-config granularity account-id)))
-       (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
-     schedule-chan)))
+  (let [instruments ["AUD_CAD" "AUD_USD"]
+        num-per 3
+        granularity "S15"
+        xindy-config (config/xindy-config 8 100)
+        pop-config (config/xindy-pop-config 400 200)
+        ga-config (config/xindy-ga-config 10 1000 0.95)
+        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
+    (save-wrifts+stuff wrifts xindy-config granularity)))
 
-(defn scheduled-wrifts-runner-from-file [file-name account-id]
-  (let [{:keys [wrifts xindy-config granularity]} (file/read-file file-name)]
-    (scheduled-wrifts-runner wrifts xindy-config granularity account-id)))
+(comment
+  (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
+                    "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
+                    "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
+                    "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
+                    "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
+                    "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
+
+  (oapi/get-some-account-ids 5)
+
+  ;; this randomly updates instrument position sizes
+  (doseq [x (repeatedly 1000 #(rand-int 100))]
+    (post-target-positions
+     [{:instrument (rand-nth instruments) :target-position x}]
+     (rand-nth (oapi/get-some-account-ids 5)))))
