@@ -58,6 +58,8 @@
   ([file-name]
    (-> file-name (file/read-data-file #"\r\n") plot/format-performance-data plot/generate-and-view-plot)))
 
+#_(plot-perf)
+
 (defn scheduled-perf-plotter
   ([] (scheduled-perf-plotter "M1"))
   ([granularity]

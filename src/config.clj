@@ -102,6 +102,23 @@
 (defn wrift-config [xindy-config xindy-pop-config xindy-ga-config]
   {:xindy-config xindy-config :pop-config xindy-pop-config :ga-config xindy-ga-config})
 
+(defn backtest-config-util
+  [instruments granularity num-per num-shifts max-shift pop-size parent-pct num-generations stream-count back-pct]
+  {:instruments instruments
+   :granularity granularity
+   :num-per num-per
+   :xindy-config (xindy-config num-shifts max-shift)
+   :pop-config (xindy-pop-config pop-size parent-pct)
+   :ga-config (xindy-ga-config num-generations stream-count back-pct)})
+
+(defn backtest-config [instruments granularity num-per xindy-config pop-config ga-config]
+  {:instruments instruments
+   :granularity granularity
+   :num-per num-per
+   :xindy-config xindy-config
+   :pop-config pop-config
+   :ga-config ga-config})
+
 (comment
   (def wrift-config
     {:instruments "vector of instruments"
@@ -127,10 +144,8 @@
      :ga-config {:num-generations 7
                  :stream-count 10000
                  :back-pct 0.9}})
-  
-(spit "wrift-config.json" (cheshire.core/encode wrift-config))
-  
-  )
+
+  (spit "wrift-config.json" (cheshire.core/encode wrift-config)))
 
 (comment
   (def backtest-config (get-backtest-config-util ["EUR_USD" "both" "AUD_USD" "both"] "long-only" 2 6 10 100 "H1"))

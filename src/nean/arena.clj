@@ -7,8 +7,6 @@
             [nean.ga :as ga]
             [nean.xindy2 :as x2]
             [stats :as stats]
-            ;; [uncomplicate.neanderthal.core :refer :all]
-            ;; [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
             [v0_2_X.streams :as streams]
             [v0_3_X.arena :as arena]
@@ -72,17 +70,39 @@
 
 ;; Saved wrifts file should have everything we need to run them.
 (defn save-wrifts+stuff
-  ([wrifts xindy-config granularity] (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/"))
-  ([wrifts xindy-config granularity directory]
-   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}
-         file-name (str directory (-> (md5 (str file-content)) (bytes->hex) (subs 0 6)) ".edn")]
-     (file/write-file file-name file-content)
-     file-name)))
+  ([wrifts xindy-config granularity filename]
+   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}]
+     (file/write-file filename file-content)
+     filename)))
+
+(defn gen-backtest-id []
+  (subs (bytes->hex (md5 (str (System/currentTimeMillis) (rand)))) 0 7))
+
+(defn get-backtest-ids []
+  (->> (file-seq (clojure.java.io/file "data/wrifts/"))
+       (map #(.getName %))
+       (filter #(clojure.string/ends-with? % ".edn"))
+       (map #(first (clojure.string/split % #"\.")))
+       vec))
+
+#_(get-backtest-ids)
 
 (defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config num-per]
-  (let [wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)
-        file-name (save-wrifts+stuff wrifts xindy-config granularity)]
-    file-name))
+  (let [backtest-id (gen-backtest-id)
+        filename (str "data/wrifts/" backtest-id ".edn")
+        _ (file/write-file filename {})]
+    (future (save-wrifts+stuff
+             (generate-wrifts
+              instruments
+              xindy-config
+              pop-config
+              granularity
+              ga-config
+              num-per)
+             xindy-config
+             granularity
+             filename))
+    backtest-id))
 
 (defn backtest [backtest-params]
   (generate-and-save-wrifts
@@ -92,6 +112,27 @@
    (:granularity backtest-params)
    (:ga-config backtest-params)
    (:num-per backtest-params)))
+
+(comment
+
+  (def backtest-params
+    {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
+     :granularity "M15"
+     :num-per 1
+     :xindy-config {:num-shifts 30
+                    :max-shift 1000}
+     :pop-config {:pop-size 2000
+                  :num-parents 500
+                  :num-children 1500}
+     :ga-config {:num-generations 7
+                 :stream-count 20000
+                 :back-pct 0.9}})
+
+  (backtest backtest-params)
+
+
+  ;;tnemmoc
+  )
 
 (defn xindies->raw-position [xindies]
   (stats/mean (map #(-> % :last-sieve-val) xindies)))
@@ -146,40 +187,73 @@
      (fn [file?] (clojure.string/includes? file? ".edn"))
      (seq (.list (clojure.java.io/file (str "./" dir))))))))
 
+(defn backtest-id->filename
+  [backtest-id]
+  (str "data/wrifts/" backtest-id ".edn"))
+
+(defn backtest-filename->granularity
+  [filename]
+  (let [file-content (file/read-file filename)]
+    (:granularity file-content)))
+
+(defn backtest-id->backtest [backtest-id]
+  (let [filename (backtest-id->filename backtest-id)]
+    (file/read-file filename)))
+
 (defonce trade-env (atom {}))
 
-(defn trade [granularity]
-  (let [trade-chan (async/chan)
-        stop-chan (async/chan)]
-    (util/put-future-times trade-chan (util/get-future-unix-times-sec granularity))
-    (async/go-loop []
-      (async/alt!
-        stop-chan
-        ([_]
-         (println "Stopping trade function.")
-         (async/close! trade-chan)
-         (async/close! stop-chan))
-        trade-chan
-        ([val]
-         (when val
-           (let [file-names (get-dir-file-names)
-                 file-names-account-ids (partition 2 (interleave file-names (oapi/get-some-account-ids (count file-names))))]
-             (doseq [file-name-account-id file-names-account-ids]
-               (procure-and-post-positions (file/read-file (first file-name-account-id)) (second file-name-account-id))))
-           (recur)))))
-    (let [trade-chans {:trade-chan trade-chan :stop-chan stop-chan}]
-      (reset! trade-env trade-chans)
-      trade-chans)))
+(defn trade
+  ([backtest-id] (trade backtest-id (first (oapi/get-some-account-ids 1))))
+  ([backtest-id account-id]
+   (println "Starting trade function.")
+   (let [trade-chan (async/chan)
+         stop-chan (async/chan)
+         backtest-filename (backtest-id->filename backtest-id)
+         backtest-data (file/read-file backtest-filename)]
+     (util/put-future-times trade-chan (util/get-future-unix-times-sec (:granularity backtest-data)))
+     (async/go-loop []
+       (async/alt!
+         stop-chan
+         ([_]
+          (println "Stopping trade function.")
+          (async/close! trade-chan)
+          (async/close! stop-chan))
+         trade-chan
+         ([val]
+          (when val
+            (procure-and-post-positions backtest-data account-id)
+            (recur)))))
+     (let [trade-chans {account-id {:trade-chan trade-chan :stop-chan stop-chan}}]
+       (swap! trade-env conj trade-chans)
+       trade-chans))))
 
-(defn stop-trading 
-  ([] (stop-trading (:stop-chan @trade-env)))
-  ([stop-chan]
-  (async/put! stop-chan true)))
+#_(trade "101f824")
+
+@trade-env
+
+(defn stop-trading
+  [account-id]
+  (let [stop-chan (:stop-chan (get @trade-env account-id))]
+    (async/put! stop-chan true)
+    (swap! trade-env dissoc account-id)))
+
+#_(stop-trading "101-001-5729740-001")
+
+(defn stop-all-trading []
+  (let [account-ids (oapi/get-account-ids)]
+    (for [account-id account-ids] 
+        (stop-trading account-id))))
+
+
+
+#_(swap! trade-env conj {:a "thing" :account-id "101-001-5729740-001"})
 
 (comment
-  (def trade-chans (trade "M1"))
+  (def trade-chans (trade "M15"))
 
-  (async/put! (:stop-chan trade-chans) true))
+  (async/put! (:stop-chan trade-chans) true)
+  ;;tnemmoc
+  )
 
 (comment
   ;; -----------------------------------------------------------------------------------------------------------------------------
@@ -203,14 +277,16 @@
             (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
 
-  (let [instruments ["AUD_CAD" "AUD_USD"]
+  (let [instruments ["AUD_CAD" "AUD_USD" "EUR_USD"]
         num-per 3
-        granularity "S15"
+        granularity "S30"
         xindy-config (config/xindy-config 8 100)
         pop-config (config/xindy-pop-config 400 200)
         ga-config (config/xindy-ga-config 10 1000 0.95)
         wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
-    (save-wrifts+stuff wrifts xindy-config granularity)))
+    (save-wrifts+stuff wrifts xindy-config granularity))
+  ;;end comment
+  )
 
 (comment
   (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"

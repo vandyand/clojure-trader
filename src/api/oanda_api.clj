@@ -96,6 +96,8 @@
   ([] (get-open-positions (env/get-account-id)))
   ([account-id] (autil/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
 
+#_(get-open-positions)
+
 (defn get-formatted-open-positions
   ([] (get-formatted-open-positions (env/get-account-id)))
   ([account-id]
@@ -105,6 +107,15 @@
              long-pos (-> current-position-data :long :units Integer/parseInt)
              short-pos (-> current-position-data :short :units Integer/parseInt)]
          {:instrument instrument :units (+ long-pos short-pos)})))))
+
+(defn get-formatted-open-positions-by-account []
+  (let [account-ids (get-account-ids)]
+    (for [account-id account-ids]
+      {:account account-id :positions (get-formatted-open-positions account-id)})))
+
+#_(get-formatted-open-positions)
+
+#_(get-formatted-open-positions-by-account)
 
 ;; SEND ORDER FUNCTIONS
 
@@ -226,17 +237,18 @@
       (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))
      instrument)))
 
-(defn close-all-positions
-  ([] (close-all-positions (env/get-account-id)))
+(defn close-positions
+  ([] (close-positions (env/get-account-id)))
   ([account-id]
    (let [positions (get-formatted-open-positions account-id)]
      (for [position positions]
        (close-position account-id (:instrument position) (> (:units position) 0))))))
 
-(defn close-alll-positions
-  [account-ids]
+(defn close-all-positions
+  ([] (close-all-positions (get-account-ids)))
+  ([account-ids]
   (for [account-id account-ids]
-      {:account-id account-id :closed (close-all-positions account-id)}))
+      {:account-id account-id :closed (close-positions account-id)})))
 
 (comment
   (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
@@ -246,7 +258,7 @@
                     "101-001-5729740-013" "101-001-5729740-014" "101-001-5729740-015"])
   (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"])
 
-  (close-alll-positions account-ids)
+  (close-all-positions account-ids)
 
   ;; end comment
   )

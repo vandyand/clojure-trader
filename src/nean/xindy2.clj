@@ -11,8 +11,7 @@
             [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
             [plot :as plot]
-            [v0_2_X.streams :as streams]
-            [v0_3_X.arena :as arena]))
+            [v0_2_X.streams :as streams]))
 
 (defn br []
   (util/bounded-rand 1 -1))
@@ -85,34 +84,3 @@
                         granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
     (for [shift-vec shifts]
       (get-xindy-from-shifts shift-vec (:max-shift xindy-config) new-stream))))
-
-(comment
-
-  (def stream (dv (streams/get-big-stream "USD_JPY" "H1" 20000)))
-
-  (def xindy (get-xindy-from-shifts [138 284 395 404 9 215 338 371] 500 stream))
-
-  (plot/plot-streams [(vec (reductions + (-> xindy :rivulet seq)))])
-
-
-  ;; end comment 
-  )
-
-(comment
-
-  (def xindy-config (config/get-xindy-config 8 100))
-
-  (def backtest-config (config/get-backtest-config-util
-                        ["USD_JPY" "both"]
-                        "ternary" 1 2 3 4000 "H1"))
-
-  (def natural-stream (streams->open-stream (streams/fetch-formatted-streams backtest-config)))
-
-  (def stream (dv natural-stream))
-
-  ;; (def sieve (shifts->sieve shifts max-shift stream-dv))
-
-  (def xindy (get-rand-xindy xindy-config stream))
-
-  ;; end comment
-  )

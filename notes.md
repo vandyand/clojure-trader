@@ -1,3 +1,6 @@
+### Mon, Jan 15, 24
+Next steps: introduce ngrok to expose http server routes
+
 ### Thurs, Sept 15, 22
 Todo:
 Live test performance is looking half way decent with the new neanderthal implementation. There is still more to do though:
