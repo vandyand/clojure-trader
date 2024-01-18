@@ -6,11 +6,11 @@
 (defn get-env-data [keywd]
   ((json/read-str (slurp ".env.json") :key-fn keyword) keywd))
 
-(defn get-account-type []
+(defn get-live-or-demo []
   (get-env-data :OANDA_LIVE_OR_DEMO))
 
 (defn is-live-account? []
-  (= (get-account-type) "LIVE"))
+  (= (get-live-or-demo) "LIVE"))
 
 (defn get-account-url []
   (if (is-live-account?)

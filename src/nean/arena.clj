@@ -51,22 +51,67 @@
         rifts (mapv :shifts rindies)]
     rifts))
 
-(defn generate-wrifts
-  ([instruments xindy-config pop-config granularity ga-config num-per]
+(defn generate-wrifts-old
+  ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
    (vec
     (for [instrument instruments]
-      {:instrument instrument
-       :rifts (let [streams-map
-                    (x2/get-back-fore-streams
-                     instrument granularity
-                     (:stream-count ga-config)
-                     (:back-pct ga-config)
-                     (:max-shift xindy-config))]
-                (vec
-                 (apply
-                  concat
-                  (for [_ (range num-per)]
-                    (generate-rifts streams-map xindy-config pop-config ga-config)))))}))))
+      (let [rifts (let [streams-map
+                        (x2/get-back-fore-streams
+                         instrument granularity
+                         (:stream-count ga-config)
+                         (:back-pct ga-config)
+                         (:max-shift xindy-config))]
+                    (vec
+                     (apply
+                      concat
+                      (for [_ (range num-backtests-per-instrument)]
+                        (generate-rifts streams-map xindy-config pop-config ga-config)))))]
+        {:instrument instrument
+         :rifts rifts
+         :count (count rifts)})))))
+
+(defn generate-wrifts
+  ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
+   (vec
+    (for [instrument instruments]
+      (let [streams-map (x2/get-back-fore-streams
+                         instrument granularity
+                         (:stream-count ga-config)
+                         (:back-pct ga-config)
+                         (:max-shift xindy-config))
+            futures (for [_ (range num-backtests-per-instrument)]
+                      (future (generate-rifts streams-map xindy-config pop-config ga-config)))
+            rifts (vec (doall (mapcat deref futures)))]
+        {:instrument instrument
+         :rifts rifts
+         :count (count rifts)})))))
+
+(comment
+
+  (def backtest-params
+    {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
+     :granularity "M15"
+     :num-backtests-per-instrument 30
+     :xindy-config {:num-shifts 4
+                    :max-shift 100}
+     :pop-config {:pop-size 200
+                  :num-parents 50
+                  :num-children 150}
+     :ga-config {:num-generations 3
+                 :stream-count 1000
+                 :back-pct 0.95}})
+
+(time  (generate-wrifts
+   (:instruments backtest-params)
+   (:xindy-config backtest-params)
+   (:pop-config backtest-params)
+   (:granularity backtest-params)
+   (:ga-config backtest-params)
+   (:num-backtests-per-instrument backtest-params)))
+
+
+  ;;tnemmoc
+  )
 
 ;; Saved wrifts file should have everything we need to run them.
 (defn save-wrifts+stuff
@@ -87,10 +132,10 @@
 
 #_(get-backtest-ids)
 
-(defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config num-per]
+(defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
   (let [backtest-id (gen-backtest-id)
         filename (str "data/wrifts/" backtest-id ".edn")
-        _ (file/write-file filename {})]
+        _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})]
     (future (save-wrifts+stuff
              (generate-wrifts
               instruments
@@ -98,7 +143,7 @@
               pop-config
               granularity
               ga-config
-              num-per)
+              num-backtests-per-instrument)
              xindy-config
              granularity
              filename))
@@ -111,14 +156,14 @@
    (:pop-config backtest-params)
    (:granularity backtest-params)
    (:ga-config backtest-params)
-   (:num-per backtest-params)))
+   (:num-backtests-per-instrument backtest-params)))
 
 (comment
 
   (def backtest-params
     {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
      :granularity "M15"
-     :num-per 1
+     :num-backtests-per-instrument 1
      :xindy-config {:num-shifts 30
                     :max-shift 1000}
      :pop-config {:pop-size 2000
@@ -204,13 +249,14 @@
 
 (defn trade
   ([backtest-id] (trade backtest-id (first (oapi/get-some-account-ids 1))))
-  ([backtest-id account-id]
+  ([backtest-id account-id] (trade backtest-id account-id nil))
+  ([backtest-id account-id regularity]
    (println "Starting trade function.")
    (let [trade-chan (async/chan)
          stop-chan (async/chan)
          backtest-filename (backtest-id->filename backtest-id)
          backtest-data (file/read-file backtest-filename)]
-     (util/put-future-times trade-chan (util/get-future-unix-times-sec (:granularity backtest-data)))
+     (util/put-future-times trade-chan (util/get-future-unix-times-sec (if regularity regularity (:granularity backtest-data))))
      (async/go-loop []
        (async/alt!
          stop-chan
@@ -227,10 +273,6 @@
        (swap! trade-env conj trade-chans)
        trade-chans))))
 
-#_(trade "101f824")
-
-@trade-env
-
 (defn stop-trading
   [account-id]
   (let [stop-chan (:stop-chan (get @trade-env account-id))]
@@ -241,12 +283,8 @@
 
 (defn stop-all-trading []
   (let [account-ids (oapi/get-account-ids)]
-    (for [account-id account-ids] 
-        (stop-trading account-id))))
-
-
-
-#_(swap! trade-env conj {:a "thing" :account-id "101-001-5729740-001"})
+    (for [account-id account-ids]
+      (stop-trading account-id))))
 
 (comment
   (def trade-chans (trade "M15"))
@@ -268,22 +306,22 @@
                              "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
                              "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
                              "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
-                num-per 7
+                num-backtests-per-instrument 7
                 granularity "M5"
                 xindy-config (config/xindy-config 7 777)
                 ga-config (config/xindy-ga-config 15 20000 0.75)
                 pop-config (config/xindy-pop-config 300 0.5)
-                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
+                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
             (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
 
   (let [instruments ["AUD_CAD" "AUD_USD" "EUR_USD"]
-        num-per 3
+        num-backtests-per-instrument 3
         granularity "S30"
         xindy-config (config/xindy-config 8 100)
         pop-config (config/xindy-pop-config 400 200)
         ga-config (config/xindy-ga-config 10 1000 0.95)
-        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-per)]
+        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
     (save-wrifts+stuff wrifts xindy-config granularity))
   ;;end comment
   )

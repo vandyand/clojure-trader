@@ -215,7 +215,8 @@
         :c (Double/parseDouble (get-in candle [:mid :c]))}))))
 
 (comment
-  (get-instrument-stream {:name "AUD_JPY" :granularity "M1" :count 3}))
+  (get-instrument-stream {:name "USD_CNY" :granularity "H1" :count 3000})
+  )
 
 (defn get-instruments-streams [config]
   (let [instruments-config (autil/get-instruments-config config)]

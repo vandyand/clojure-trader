@@ -103,18 +103,18 @@
   {:xindy-config xindy-config :pop-config xindy-pop-config :ga-config xindy-ga-config})
 
 (defn backtest-config-util
-  [instruments granularity num-per num-shifts max-shift pop-size parent-pct num-generations stream-count back-pct]
+  [instruments granularity num-backtests-per-instrument num-shifts max-shift pop-size parent-pct num-generations stream-count back-pct]
   {:instruments instruments
    :granularity granularity
-   :num-per num-per
+   :num-backtests-per-instrument num-backtests-per-instrument
    :xindy-config (xindy-config num-shifts max-shift)
    :pop-config (xindy-pop-config pop-size parent-pct)
    :ga-config (xindy-ga-config num-generations stream-count back-pct)})
 
-(defn backtest-config [instruments granularity num-per xindy-config pop-config ga-config]
+(defn backtest-config [instruments granularity num-backtests-per-instrument xindy-config pop-config ga-config]
   {:instruments instruments
    :granularity granularity
-   :num-per num-per
+   :num-backtests-per-instrument num-backtests-per-instrument
    :xindy-config xindy-config
    :pop-config pop-config
    :ga-config ga-config})
@@ -123,7 +123,7 @@
   (def wrift-config
     {:instruments "vector of instruments"
      :granularity "granularity like M5, H2, S15, D etc"
-     :num-per "number of backtests to run per instrument"
+     :num-backtests-per-instrument "number of backtests to run per instrument"
      :xindy-config {:num-shifts "even integer usually between 4 and 20"
                     :max-shift "integer usually between 100 and 1000"}
      :pop-config {:pop-size "integer usually between 20 and 1000. sum of num-parents and num-children"
@@ -135,7 +135,7 @@
   (def wrift-config
     {:instruments ["EUR_USD" "AUD_USD"]
      :granularity "M1"
-     :num-per 3
+     :num-backtests-per-instrument 3
      :xindy-config {:num-shifts 10
                     :max-shift 1000}
      :pop-config {:pop-size 200

@@ -141,7 +141,7 @@
   ([instrument granularity _count] (get-big-stream instrument granularity _count 1000))
   ([instrument granularity _count span]
    (let [from-to-times (get-from-to-times granularity (* 2 _count) span)]
-     (loop [i 0 stream []] ;; TODO: Change this from a loop to a reduce to map over from-to-times instead of terminating on stream length
+     (loop [i 0 stream []]
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
@@ -150,7 +150,7 @@
                                   :granularity granularity
                                   :from from-time
                                   :to to-time
-                                  :includeFirst true})
+                                  :includeFirst false})
              new-stream (into new-stream-section stream)]
          (if (or (>= i (-> from-to-times count dec)) (>= (count new-stream) _count))
            (mapv :o new-stream)
@@ -176,6 +176,7 @@
 
   (def return-stream (strindy/sieve->return sieve-stream (get streams :intention-streams)))
 
-  (def big-stream (get-big-stream "EUR_USD" "H1" 20000))
+  (def big-stream (get-big-stream "USD_CNY" "H1" 2000))
 
-  (count big-stream))
+  (count big-stream)
+  )

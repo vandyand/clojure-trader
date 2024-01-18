@@ -16,10 +16,12 @@
  (cj/defroutes app-routes
    (cj/GET "/" [] (str "Hello World! Time: " (System/currentTimeMillis)))
 
+   (cj/GET "/trade-env" [] (str (env/get-live-or-demo)))
+
   ;; Endpoint for getting accounts
    (cj/GET "/accounts" []
      (try
-       (let [accounts (oapi/get-formatted-open-positions-by-account)]
+       (let [accounts (oapi/get-account-ids)]
          (response/response (json/encode {:status "success" :data accounts})))
        (catch Exception e
          (response/response (json/encode {:status "error" :message (.getMessage e)})))))
@@ -56,8 +58,11 @@
      (try
        (let [body (req->body req)
              account-id (:account-id body)
+             regularity (:regularity body)
              _ (if account-id
-                 (arena/trade (:backtest-id body) account-id)
+                 (if regularity
+                   (arena/trade (:backtest-id body) account-id regularity)
+                   (arena/trade (:backtest-id body) account-id))
                  (arena/trade (:backtest-id body)))]
          (response/response (json/encode {:status "success"})))
        (catch Exception e

@@ -69,16 +69,13 @@
         short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
         current-pos (if current-pos-data (+ long-pos short-pos) 0)
         units (if current-pos-data (- target-pos current-pos) target-pos)]
-    (if (not= units 0)
+    (when (not= units 0)
       (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
           (println "account-id: " account-id " ------------------------------------------------------")
           (println instrument ": position changed")
           (println "prev-pos: "  current-pos)
           (println "target-pos: " target-pos)
-          (println "pos-change: " units))
-      (do
-        (println "account-id: " account-id " ------------------------------------------------------")
-        (println instrument ": nothing happened"))))))
+          (println "pos-change: " units))))))
 
 (defn post-hyxs [hyxs]
   (let [instrument (:instrument (first hyxs))
