@@ -17,7 +17,7 @@
 
 ;; ACCOUNT DATA FUNCTIONS
 
-(defn get-accounts [] 
+(defn get-accounts []
   (sort-by :id (:accounts (autil/get-oanda-api-data "accounts"))))
 
 (defn get-account-ids []
@@ -28,7 +28,7 @@
     (subvec account-ids 0 (min _num (count account-ids)))))
 
 #_(get-accounts)
-#_(get-account-ids)  
+#_(get-account-ids)
 
 (defn get-account-summary
   ([] (get-account-summary (env/get-account-id)))
@@ -46,8 +46,7 @@
    (-> (get-account-summary account-id) :account :NAV Double/parseDouble)))
 
 (comment
-  (get-account-nav)
-  )
+  (get-account-nav))
 
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
@@ -57,7 +56,7 @@
 (comment
 
   (get-account-instruments)
-  
+
   (def account-instruments (get-account-instruments))
 
   (def decent-margin-rate-instruments (filter #(< (-> % :marginRate Double/parseDouble) 0.1) account-instruments))
@@ -89,6 +88,18 @@
 
 (comment
   (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3}))
+
+(comment
+  ;; EXPERIMENTAL WORK IN PROGRESS
+ (defn get-streaming-price-data
+  [instrument]
+  (let [endpoint (get-account-endpoint
+                  (env/get-account-id)
+                  (str "pricing/stream?instruments=" instrument))
+        _ (println endpoint)]
+    (autil/get-oanda-stream-data endpoint)))
+
+#_(get-streaming-price-data "EUR_USD"))
 
 ;; GET OPEN POSITIONS
 
@@ -201,10 +212,10 @@
 (defn get-instrument-current-candle-ohlc [instrument granularity ohlc]
   (get-instrument-current-price-by-ohlc instrument ohlc (or granularity "H1")))
 
-(defn get-instrument-stream-depreciated [instrument-config]
+(defn get-formatted-candle-data-depreciated [instrument-config]
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))
 
-(defn get-instrument-stream [instrument-config]
+(defn get-formatted-candle-data [instrument-config]
   (let [api-data (get-api-candle-data instrument-config)]
     (vec
      (for [candle (get api-data :candles)]
@@ -215,15 +226,12 @@
         :c (Double/parseDouble (get-in candle [:mid :c]))}))))
 
 (comment
-  (get-instrument-stream {:name "USD_CNY" :granularity "H1" :count 3000})
-  )
-
-(defn get-instruments-streams [config]
-  (let [instruments-config (autil/get-instruments-config config)]
-    (for [instrument-config instruments-config]
-      (get-instrument-stream instrument-config))))
+  (get-formatted-candle-data {:name "USD_CNY" :granularity "H1" :count 3000}))
 
 
+;; GET STREAMING PRICE DATA
+
+(defn open-streaming-price-channel [instrument])
 
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
@@ -248,8 +256,8 @@
 (defn close-all-positions
   ([] (close-all-positions (get-account-ids)))
   ([account-ids]
-  (for [account-id account-ids]
-      {:account-id account-id :closed (close-positions account-id)})))
+   (for [account-id account-ids]
+     {:account-id account-id :closed (close-positions account-id)})))
 
 (comment
   (def account-ids ["101-001-5729740-001" "101-001-5729740-002" "101-001-5729740-003"
@@ -311,10 +319,7 @@
 
   (get-account-balance)
 
-  (get-open-trades)
-
-  )
+  (get-open-trades))
 
 (comment
-  (account-instruments->names (get-account-instruments))
-  )
+  (account-instruments->names (get-account-instruments)))

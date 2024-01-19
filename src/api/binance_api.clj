@@ -18,7 +18,7 @@
 (defn get-open-prices [instrument-config]
   (format-candles (get-api-candle-data instrument-config)))
 
-(defn get-instrument-stream [instrument-config]
+(defn get-formatted-candle-data [instrument-config]
   (vec (for [data (get-open-prices instrument-config)] (get data :open))))
 
 
@@ -36,7 +36,7 @@
 (comment
   (def instrument-config (api-util/get-instrument-config "ETHBTC" "M30" 12))
   (get-open-prices instrument-config)
-  (get-instrument-stream instrument-config)
+  (get-formatted-candle-data instrument-config)
   )
 
 (comment

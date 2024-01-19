@@ -98,6 +98,8 @@
       empty-instus
       positions))))
 
+#_(print-cumulative-positions (oapi/get-some-account-ids 2))
+
 (comment
 
   (plot-perf)
@@ -117,7 +119,12 @@
                      "101-001-5729740-005"
                      "101-001-5729740-006"
                      "101-001-5729740-007"])
-   (scheduled-perf-writer account-ids "M5" "data/performance.edn"))
+   
+   
+   (def account-ids ["101-001-5729740-001"])
+
+   (scheduled-perf-writer account-ids "M5" "data/performance.edn")
+   )
   ;; end comment
   )
 
