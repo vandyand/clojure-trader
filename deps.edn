@@ -12,8 +12,13 @@
         middlesphere/clj-compress {:mvn/version "0.1.0"}
         ring/ring-core {:mvn/version "1.9.2"}
         ring/ring-jetty-adapter {:mvn/version "1.9.2"}
-        compojure {:mvn/version "1.6.2"}}
- :aliases {:dev {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.15"}
+        compojure/compojure {:mvn/version "1.6.2"}}
+ :aliases {:ui {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.15"}
+                             metosin/reitit {:mvn/version "0.7.0-alpha7"}}}
+           :watch {:main-opts ["-m" "shadow.cljs.devtools.cli"
+                               "watch" ":frontend"]}
+           :dev {:extra-deps {cider/piggieback {:mvn/version "0.5.1"}
+                              cider/cider-nrepl {:mvn/version "0.26.0"}
                               org.clojure/test.check {:mvn/version "0.9.0"}}}
            :windows11 {:extra-deps  {uncomplicate/clojurecuda {:mvn/version "0.15.0"}
                                      uncomplicate/neanderthal {:mvn/version "0.44.1"}
