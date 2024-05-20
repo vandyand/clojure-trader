@@ -6,9 +6,9 @@
             [env :as env]
             [helpers :as hlp]
             [stats :as stats]
-            [uncomplicate.fluokitten.core :refer [fmap]]
-            [uncomplicate.neanderthal.core :refer :all]
-            [uncomplicate.neanderthal.native :refer :all]
+            ;; [uncomplicate.fluokitten.core :refer [fmap]]
+            ;; [uncomplicate.neanderthal.core :refer :all]
+            ;; [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
             [plot :as plot]
             [v0_2_X.streams :as streams]
@@ -90,7 +90,7 @@
 
   (def natural-big-stream (streams/get-big-stream "GBP_CHF" "H1" 20000))
 
-  (def big-stream (dv natural-big-stream))
+  (def big-stream natural-big-stream)
 
   (def best-pop (run-generations 0 pop-config xindy-config big-stream))
 
@@ -111,7 +111,7 @@
   (def avg-riv (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop))))
   (def avg-riv2 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop2))))
   (def avg-riv3 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop3))))
-  
+
   (def avg-riv4 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop4))))
   (def avg-riv5 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop5))))
   (def avg-riv6 (mapv stats/mean (apply (partial map list) (map #(-> % :rivulet seq) decent-pop6))))

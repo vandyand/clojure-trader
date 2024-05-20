@@ -6,9 +6,9 @@
             [env :as env]
             [helpers :as hlp]
             [stats :as stats]
-            [uncomplicate.fluokitten.core :refer [fmap]]
-            [uncomplicate.neanderthal.core :refer :all]
-            [uncomplicate.neanderthal.native :refer :all]
+            ;; [uncomplicate.fluokitten.core :refer [fmap]]
+            ;; [uncomplicate.neanderthal.core :refer :all]
+            ;; [uncomplicate.neanderthal.native :refer :all]
             [util :as util]
             [plot :as plot]
             [v0_2_X.streams :as streams]))
@@ -30,7 +30,16 @@
 
 (defn get-subvecs [shifts max-shift dv-stream]
   (for [shift shifts]
-    (subvector dv-stream shift (- (dim dv-stream) max-shift))))
+    (subvec dv-stream shift (- (count dv-stream) max-shift))))
+
+(defn axpy
+  ([a x y]
+   (mapv #(+ (* a %1) %2) x y))
+  ([a x b y]
+   (mapv #(+ (* a %1) (* b %2)) x y)))
+
+(defn xpy [x y & zs]
+  (apply mapv + x y zs))
 
 (defn shifts->sieve [shifts max-shift stream]
   (let [mag (if (> (first stream) 10) 1 100)
@@ -39,11 +48,11 @@
     (axpy mag (apply xpy (first halves)) (* -1 mag) (apply xpy (second halves)))))
 
 (defn stream->delta [stream]
-  (let [stream-len-1 (- (dim stream) 1)]
-    (axpy -1 (subvector stream 0 stream-len-1) (subvector stream 1 stream-len-1))))
+  (let [stream-len-1 (- (count stream) 1)]
+    (axpy -1 (subvec stream 0 stream-len-1) (subvec stream 1 stream-len-1))))
 
 (defn sieve->rivulet [sieve delta]
-  (fmap * (subvector sieve 0 (- (dim sieve) 1)) delta))
+  (mapv * (subvec sieve 0 (- (count sieve) 1)) delta))
 
 (defn sieve+stream->rivulet [sieve stream]
   (let [delta (stream->delta stream)]
@@ -61,11 +70,11 @@
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (println "getting: " instrument)
-  (let [big-stream (dv (streams/get-big-stream instrument granularity stream-count (min 1000 stream-count)))
-        back-len (int (* (dim big-stream) back-pct))
-        fore-len (- (dim big-stream) back-len)
-        back-stream (subvector big-stream 0 back-len)
-        fore-stream (subvector
+  (let [big-stream (streams/get-big-stream instrument granularity stream-count (min 1000 stream-count))
+        back-len (int (* (count big-stream) back-pct))
+        fore-len (- (count big-stream) back-len)
+        back-stream (subvec big-stream 0 back-len)
+        fore-stream (subvec
                      big-stream
                      (- back-len max-shift)
                      (+ fore-len max-shift))]
@@ -79,8 +88,8 @@
 (defn shifts->xindies
   "shifts is a vector of shift-vectors. each shift-vector has :num-shifts shifts (ints)"
   [instrument shifts xindy-config granularity]
-  (let [new-stream (dv (streams/get-big-stream
-                        instrument
-                        granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
+  (let [new-stream (streams/get-big-stream
+                    instrument
+                    granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config)))]
     (for [shift-vec shifts]
       (get-xindy-from-shifts shift-vec (:max-shift xindy-config) new-stream))))

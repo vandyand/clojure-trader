@@ -87,7 +87,8 @@
      (autil/get-oanda-api-data endpoint instrument-config))))
 
 (comment
-  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3}))
+  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3})
+  )
 
 (comment
   ;; EXPERIMENTAL WORK IN PROGRESS

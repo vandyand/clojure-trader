@@ -164,13 +164,13 @@
     {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
      :granularity "M15"
      :num-backtests-per-instrument 1
-     :xindy-config {:num-shifts 30
-                    :max-shift 1000}
-     :pop-config {:pop-size 2000
-                  :num-parents 500
-                  :num-children 1500}
-     :ga-config {:num-generations 7
-                 :stream-count 20000
+     :xindy-config {:num-shifts 8
+                    :max-shift 100}
+     :pop-config {:pop-size 100
+                  :num-parents 50
+                  :num-children 50}
+     :ga-config {:num-generations 3
+                 :stream-count 2000
                  :back-pct 0.9}})
 
   (backtest backtest-params)
