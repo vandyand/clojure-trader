@@ -14,12 +14,14 @@
             [buddy.core.codecs :refer [bytes->hex]]))
 
 (comment
-  "strindy = strategy + indicator(s)
+  "strategy = vector of integers (shifts) representing back-shift distances for backtest scoring algorithm.
+   strindy = strategy + indicator(s)
    xindy = xpy strindy (map with keys: :shifts :sieve :rivulet :score)
    rindy = robust xindy (fore performance is 'as good as' back performance and made profit in back and fore)
    rindies = robust xindies
    rifts = robust shifts (just the shifts from rindies)
-   wrift = wrapped robust shifts (map with keys: :instrument :rifts)")
+   wrift = wrapped robust shifts (map with keys: :instrument :rifts)
+   Wrifts are used to calculate open position size based on robust backtest strategies")
 
 (defn get-robustness [back-xindy fore-xindy]
   (stats/z-score (-> back-xindy :rivulet seq) (-> fore-xindy :rivulet seq)))
@@ -101,13 +103,13 @@
                  :stream-count 1000
                  :back-pct 0.95}})
 
-(time  (generate-wrifts
-   (:instruments backtest-params)
-   (:xindy-config backtest-params)
-   (:pop-config backtest-params)
-   (:granularity backtest-params)
-   (:ga-config backtest-params)
-   (:num-backtests-per-instrument backtest-params)))
+  (time  (generate-wrifts
+          (:instruments backtest-params)
+          (:xindy-config backtest-params)
+          (:pop-config backtest-params)
+          (:granularity backtest-params)
+          (:ga-config backtest-params)
+          (:num-backtests-per-instrument backtest-params)))
 
 
   ;;tnemmoc
