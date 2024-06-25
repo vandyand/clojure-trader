@@ -98,5 +98,4 @@
   (def viz
     [:div [:vega-lite line-plot {:width 500}]])
 
-  (oz/view! viz)
-  )
+  (oz/view! viz))

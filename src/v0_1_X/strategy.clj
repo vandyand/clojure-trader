@@ -20,12 +20,12 @@
     (for [x (range num-inputs) y (range num-inputs)]
       (when (not= x y)  #{x y})))))
 
-(defn get-tree-config 
+(defn get-tree-config
   "return-type is: long-only | short-only | ternary"
   ([min-depth max-depth num-inputs] (get-tree-config min-depth max-depth num-inputs "long-only"))
   ([min-depth max-depth num-inputs return-type]
    (let [bintern (if (contains? #{"long-only" "short-only" "ternary"} return-type) return-type "long-only")]
-   {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs) :return-type bintern})))
+     {:min-depth min-depth :max-depth max-depth :index-pairs (get-index-pairs num-inputs) :return-type bintern})))
 
 ;; MAKE TREE
 
@@ -35,9 +35,9 @@
   ([available-ind-sets tree-config depth]
    (let [ind-set (rand-nth (seq available-ind-sets))
          new-available-ind-sets (set/difference available-ind-sets #{ind-set})
-         make-child #(if (or (empty? new-available-ind-sets) 
-                          (and (>= depth (tree-config :min-depth))
-                               (or (> (rand) 0.3) (>= depth (tree-config :max-depth)))))
+         make-child #(if (or (empty? new-available-ind-sets)
+                             (and (>= depth (tree-config :min-depth))
+                                  (or (> (rand) 0.3) (>= depth (tree-config :max-depth)))))
                        (rand-nth (helpers/return-type->vec (get tree-config :return-type)))
                        (make-tree-recur new-available-ind-sets tree-config (inc depth)))]
      (as-> [] $
@@ -69,7 +69,7 @@
 
 (defn solve-cond [inputs input-indxs]
   (let [inputsVec (vec inputs)]
-   (> (inputsVec (first input-indxs)) (inputsVec (last input-indxs)))))
+    (> (inputsVec (first input-indxs)) (inputsVec (last input-indxs)))))
 
 (defn solve-tree
   "Solves tree for one 'moment in time'. inst-inputs (instance (or instant?) inputs) refers to the nth index of each input stream"
@@ -127,11 +127,11 @@
 
 (defn get-sieve-stream
   [name inception-streams strat-tree solve-tree-fn]
-  (with-meta (vec 
+  (with-meta (vec
               (for
                [inst-inputs
                 (apply zip-inception-streams inception-streams)]
-                  (solve-tree-fn strat-tree inst-inputs)))
+                (solve-tree-fn strat-tree inst-inputs)))
     {:name name}))
 
 (defn get-return-stream [sieve-stream intention-stream-delta]
@@ -229,5 +229,4 @@
   (def strat2 (get-populated-strat input-config tree-config))
   (def strat3 (get-populated-strat input-config tree-config))
   (def strat4 (get-populated-strat input-config tree-config))
-  (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4)
-  )
+  (plot-strats-and-inputs input-config strat1 strat2 strat3 strat4))

@@ -1,1 +1,0 @@
-{"instruments":["EUR_USD","AUD_USD"],"granularity":"M1","num-backtests-per-instrument":3,"xindy-config":{"num-shifts":10,"max-shift":1000},"pop-config":{"pop-size":200,"num-parents":50,"num-children":150},"ga-config":{"num-generations":7,"stream-count":10000,"back-pct":0.9}}

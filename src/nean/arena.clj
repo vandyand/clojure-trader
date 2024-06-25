@@ -53,26 +53,33 @@
         rifts (mapv :shifts rindies)]
     rifts))
 
-(defn generate-wrifts-old
-  ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
-   (vec
-    (for [instrument instruments]
-      (let [rifts (let [streams-map
-                        (x2/get-back-fore-streams
-                         instrument granularity
-                         (:stream-count ga-config)
-                         (:back-pct ga-config)
-                         (:max-shift xindy-config))]
-                    (vec
-                     (apply
-                      concat
-                      (for [_ (range num-backtests-per-instrument)]
-                        (generate-rifts streams-map xindy-config pop-config ga-config)))))]
-        {:instrument instrument
-         :rifts rifts
-         :count (count rifts)})))))
+;; (defn generate-wrifts-old
+;;   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
+;;    (vec
+;;     (for [instrument instruments]
+;;       (let [rifts (let [streams-map
+;;                         (x2/get-back-fore-streams
+;;                          instrument granularity
+;;                          (:stream-count ga-config)
+;;                          (:back-pct ga-config)
+;;                          (:max-shift xindy-config))]
+;;                     (vec
+;;                      (apply
+;;                       concat
+;;                       (for [_ (range num-backtests-per-instrument)]
+;;                         (generate-rifts streams-map xindy-config pop-config ga-config)))))]
+;;         {:instrument instrument
+;;          :rifts rifts
+;;          :count (count rifts)})))))
 
 (defn generate-wrifts
+  ([backtest-params] (generate-wrifts
+                      (:instruments backtest-params)
+                      (:xindy-config backtest-params)
+                      (:pop-config backtest-params)
+                      (:granularity backtest-params)
+                      (:ga-config backtest-params)
+                      (:num-backtests-per-instrument backtest-params)))
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
    (vec
     (for [instrument instruments]
@@ -90,29 +97,22 @@
 
 (comment
 
-  (def backtest-params
-    {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
-     :granularity "M15"
-     :num-backtests-per-instrument 30
-     :xindy-config {:num-shifts 4
-                    :max-shift 100}
-     :pop-config {:pop-size 200
-                  :num-parents 50
-                  :num-children 150}
-     :ga-config {:num-generations 3
-                 :stream-count 1000
-                 :back-pct 0.95}})
-
-  (time  (generate-wrifts
-          (:instruments backtest-params)
-          (:xindy-config backtest-params)
-          (:pop-config backtest-params)
-          (:granularity backtest-params)
-          (:ga-config backtest-params)
-          (:num-backtests-per-instrument backtest-params)))
+  (let [backtest-params
+        {:instruments ["EUR_USD"]
+         :granularity "H1"
+         :num-backtests-per-instrument 30
+         :xindy-config {:num-shifts 4
+                        :max-shift 100}
+         :pop-config {:pop-size 200
+                      :num-parents 50
+                      :num-children 150}
+         :ga-config {:num-generations 3
+                     :stream-count 2000
+                     :back-pct 0.95}}]
+    (time  (generate-wrifts backtest-params)))
 
 
-  ;;tnemmoc
+  ;;end comment
   )
 
 ;; Saved wrifts file should have everything we need to run them.
@@ -134,46 +134,42 @@
 
 #_(get-backtest-ids)
 
-(defn generate-and-save-wrifts [instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
-  (let [backtest-id (gen-backtest-id)
-        filename (str "data/wrifts/" backtest-id ".edn")
-        _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})]
-    (future (save-wrifts+stuff
-             (generate-wrifts
-              instruments
-              xindy-config
-              pop-config
-              granularity
-              ga-config
-              num-backtests-per-instrument)
-             xindy-config
-             granularity
-             filename))
-    backtest-id))
+(defn generate-and-save-wrifts
+  ([backtest-params] (generate-and-save-wrifts
+                      (:instruments backtest-params)
+                      (:xindy-config backtest-params)
+                      (:pop-config backtest-params)
+                      (:granularity backtest-params)
+                      (:ga-config backtest-params)
+                      (:num-backtests-per-instrument backtest-params)))
+  ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
+   (let [backtest-id (gen-backtest-id)
+         filename (str "data/wrifts/" backtest-id ".edn")
+         _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})]
+     (save-wrifts+stuff
+      (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)
+      xindy-config
+      granularity
+      filename)
+     backtest-id)))
 
 (defn backtest [backtest-params]
-  (generate-and-save-wrifts
-   (:instruments backtest-params)
-   (:xindy-config backtest-params)
-   (:pop-config backtest-params)
-   (:granularity backtest-params)
-   (:ga-config backtest-params)
-   (:num-backtests-per-instrument backtest-params)))
+  (generate-and-save-wrifts backtest-params))
 
 (comment
 
   (def backtest-params
-    {:instruments ["EUR_USD" "AUD_USD" "USD_JPY"]
-     :granularity "M15"
-     :num-backtests-per-instrument 1
-     :xindy-config {:num-shifts 30
+    {:instruments ["EUR_USD"]
+     :granularity "H1"
+     :num-backtests-per-instrument 30
+     :xindy-config {:num-shifts 4
                     :max-shift 1000}
-     :pop-config {:pop-size 2000
-                  :num-parents 500
-                  :num-children 1500}
-     :ga-config {:num-generations 7
-                 :stream-count 20000
-                 :back-pct 0.9}})
+     :pop-config {:pop-size 200
+                  :num-parents 50
+                  :num-children 150}
+     :ga-config {:num-generations 3
+                 :stream-count 3000
+                 :back-pct 0.95}})
 
   (backtest backtest-params)
 
@@ -197,7 +193,7 @@
                        (xindies->raw-position xindies)))}))
 
 (defn raw->target-instrument-position [raw-instrument-position account-nav max-pos]
-  (let [target-pos (int (+ 0.5 (* 0.125 account-nav (:raw-position raw-instrument-position))))]
+  (let [target-pos (int (+ 0.5 (* 0.01 account-nav (:raw-position raw-instrument-position))))]
     (cond
       (> target-pos max-pos) max-pos
       (< target-pos (* -1 max-pos)) (* -1 max-pos)
@@ -221,10 +217,6 @@
                            (:target-position target-instrument-position)
                            account-id)))
 
-(defn procure-and-post-positions [wrifts+stuff account-id]
-  (let [target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]
-    (post-target-positions target-instrument-positions account-id)))
-
 (defn get-dir-file-names
   ([] (get-dir-file-names "data/wrifts"))
   ([dir]
@@ -246,6 +238,54 @@
 (defn backtest-id->backtest [backtest-id]
   (let [filename (backtest-id->filename backtest-id)]
     (file/read-file filename)))
+
+(defn procure-and-post-positions
+  ([backtest-id account-id]
+   (let [wrifts+stuff (backtest-id->backtest backtest-id)
+         target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]
+     (post-target-positions target-instrument-positions account-id))))
+
+(let [account-id "101-001-5729740-002"
+      backtest-params
+      {:instruments ["EUR_USD"]
+       :granularity "H1"
+       :num-backtests-per-instrument 1
+       :xindy-config {:num-shifts 4
+                      :max-shift 100}
+       :pop-config {:pop-size 200
+                    :num-parents 50
+                    :num-children 150}
+       :ga-config {:num-generations 5
+                   :stream-count 3000
+                   :back-pct 0.9}}
+      backtest-id (backtest backtest-params)
+      _ (println "backtest-id: " backtest-id)]
+  (procure-and-post-positions backtest-id account-id))
+
+(defn run-backtest-and-procure-positions []
+  (let [account-id "101-001-5729740-002"
+        backtest-params {:instruments ["EUR_USD"]
+                         :granularity "H1"
+                         :num-backtests-per-instrument 1
+                         :xindy-config {:num-shifts 4
+                                        :max-shift 20}
+                         :pop-config {:pop-size 20
+                                      :num-parents 5
+                                      :num-children 15}
+                         :ga-config {:num-generations 2
+                                     :stream-count 200
+                                     :back-pct 0.9}}
+        backtest-id (backtest backtest-params)
+        _ (println "backtest-id: " backtest-id)]
+    (procure-and-post-positions backtest-id account-id)))
+
+(comment
+  ;; Load the trace setup
+  (require '[nean.trace :as trace])
+
+  ;; Run the traced function
+  (trace/run-traced-backtest)
+  )
 
 (defonce trade-env (atom {}))
 
@@ -269,11 +309,28 @@
          trade-chan
          ([val]
           (when val
-            (procure-and-post-positions backtest-data account-id)
+            (procure-and-post-positions backtest-id account-id)
             (recur)))))
      (let [trade-chans {account-id {:trade-chan trade-chan :stop-chan stop-chan}}]
        (swap! trade-env conj trade-chans)
        trade-chans))))
+
+(comment
+  (let [backtest-params
+        {:instruments ["EUR_USD"]
+         :granularity "M1"
+         :num-backtests-per-instrument 30
+         :xindy-config {:num-shifts 4
+                        :max-shift 1000}
+         :pop-config {:pop-size 200
+                      :num-parents 50
+                      :num-children 150}
+         :ga-config {:num-generations 3
+                     :stream-count 3000
+                     :back-pct 0.95}}
+        backtest-id (backtest backtest-params)
+        _ (println "backtest-id: " backtest-id)]
+    (trade backtest-id (second (oapi/get-some-account-ids 2)))))
 
 (defn stop-trading
   [account-id]
@@ -281,7 +338,7 @@
     (async/put! stop-chan true)
     (swap! trade-env dissoc account-id)))
 
-#_(stop-trading "101-001-5729740-001")
+#_(stop-trading "101-001-5729740-002")
 
 (defn stop-all-trading []
   (let [account-ids (oapi/get-account-ids)]
@@ -343,3 +400,5 @@
     (post-target-positions
      [{:instrument (rand-nth instruments) :target-position x}]
      (rand-nth (oapi/get-some-account-ids 5)))))
+
+

@@ -105,9 +105,7 @@
    (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
 
 (defn rivulet->beck [rivulet]
-  (vec (reductions + rivulet))
-  ;; (reduce (fn [acc newVal] (conj acc (+ newVal (or (last acc) 0)))) [] rivulet)
-  )
+  (vec (reductions + rivulet)))
 
 (defn bounded-rand [low high]
   (-> (rand) (* (- high low)) (+ low)))

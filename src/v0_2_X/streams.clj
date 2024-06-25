@@ -24,7 +24,7 @@
 ;;        recur.
 
 (defn create-stream-file [file-name instrument-config]
-  (let [api-stream (oapi/get-formatted-candle-data (assoc instrument-config :count 5000))]
+  (let [api-stream (oapi/get-instrument-stream (assoc instrument-config :count 5000))]
     (file/write-file
      (str file/data-folder file-name)
      {:time-stamp (util/current-time-sec)
@@ -122,7 +122,7 @@
        (for [from-to-time from-to-times]
          (let [from-time (first from-to-time)
                to-time (second from-to-time)]
-           (oapi/get-formatted-candle-data {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
+           (oapi/get-instrument-stream {:name instrument :granularity granularity :from from-time :to to-time :includeFirst false}))))))))
 
 (defn get-from-to-times
   ([granularity _count] (get-from-to-times granularity _count 5000))
@@ -145,7 +145,7 @@
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
-             new-stream-section (oapi/get-formatted-candle-data
+             new-stream-section (oapi/get-instrument-stream
                                  {:name instrument
                                   :granularity granularity
                                   :from from-time

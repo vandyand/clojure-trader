@@ -23,20 +23,20 @@
     "H12" "12h" "D" "1d" "W" "1w" "M" "1M" granularity))
 
 (defn binancify-candles-instrument-config [instrument-config]
-  {:symbol (:name instrument-config) 
-   :interval (gran->binance-gran (:granularity instrument-config)) 
+  {:symbol (:name instrument-config)
+   :interval (gran->binance-gran (:granularity instrument-config))
    :limit (if (> (:count instrument-config) 1000) 1000 (:count instrument-config))})
 
 ;; CONFIG FUNCTIONS 
 
-(defn get-instrument-config 
+(defn get-instrument-config
   ([name granularity] (get-instrument-config name granularity 5000))
   ([name granularity count]
-  {:name name :granularity granularity :count count}))
+   {:name name :granularity granularity :count count}))
 
 (defn get-instruments-config [config]
   (for [stream-config (filterv #(not= (get % :name) "default") (get config :streams-config))]
-      (get-instrument-config (get stream-config :name) (get config :granularity) (get config :num-data-points))))
+    (get-instrument-config (get stream-config :name) (get config :granularity) (get config :num-data-points))))
 
 ;; SEND GET PUT POST REQUESTS
 
@@ -54,8 +54,7 @@
   ;; (client/post url (assoc options :debug false))
   ;; (client/post url options)
   (try (client/post url options)
-       (catch Exception e (println "caught exception: " (.getMessage e))))
-  )
+       (catch Exception e (println "caught exception: " (.getMessage e)))))
 
 ;; (defn send-api-post-request [url options]
 ;;   (println url)
@@ -75,10 +74,10 @@
 ;; UTILITY FUNCTIONS
 
 (defn format-query-params [query-params]
-   (reduce
-    #(str %1 "&" %2)
-    (for [kv query-params]
-      (str (name (key kv)) "=" (val kv)))))
+  (reduce
+   #(str %1 "&" %2)
+   (for [kv query-params]
+     (str (name (key kv)) "=" (val kv)))))
 
 (defn build-url [target endpoint instrument-config]
   (let [account-type (env/get-env-data :OANDA_LIVE_OR_DEMO)
@@ -118,23 +117,23 @@
 
 (defn get-oanda-stream-data-old
   [endpoint]
-(-> endpoint 
-    (build-oanda-stream-url)
-    (get-api-data (headers/get-oanda-headers))))
+  (-> endpoint
+      (build-oanda-stream-url)
+      (get-api-data (headers/get-oanda-headers))))
 
 (require '[clojure.core.async :as async])
 
 (defn get-oanda-stream-data
   [endpoint]
-  (let [response (send-api-get-request 
-                  (build-oanda-stream-url endpoint) 
+  (let [response (send-api-get-request
+                  (build-oanda-stream-url endpoint)
                   (headers/get-oanda-headers))
         _ (println "response:" response)
         ch (async/chan)]
     (async/thread
       (with-open [reader (java.io.BufferedReader. (java.io.InputStreamReader. (:body response)))]
         (doseq [line (line-seq reader)]
-          (println )
+          (println)
           (async/>!! ch line))))
     ch))
 
@@ -188,12 +187,12 @@
     (let [res (hk-client/get url {:headers headers :timeout 10000 :as :stream} streaming-callback)
           _ (println "Streaming started, callback will handle the data.")]
       res))
-  
-;; Call start-streaming to initiate the streaming request
-  (def res (start-streaming)) 
 
-  
-  
+;; Call start-streaming to initiate the streaming request
+  (def res (start-streaming))
+
+
+
   (let [time (System/currentTimeMillis)]
     (hk-client/get "http://http-kit.org" {:my-start-time time} callback))
 
@@ -213,8 +212,8 @@
         (println "Received line:" line))))
 
   (defn start-curl-process []
-    (let [process-builder (ProcessBuilder. ["curl" 
-                                            "--no-buffer" 
+    (let [process-builder (ProcessBuilder. ["curl"
+                                            "--no-buffer"
                                             "-H" "Authorization: Bearer 808b8c2978ded93c563bc420348788ab-00fba0cf47cf2456d8b4bfeb4c65c312"
                                             "-H" "Accept-Datetime-Format: UNIX"
                                             "https://stream-fxpractice.oanda.com/v3/accounts/101-001-5729740-001/pricing/stream?instruments=EUR_USD%2CUSD_CAD%2CUSD_JPY%2CAUD_USD%2CEUR_JPY%2CGBP_USD%2CGBP_JPY"])
@@ -229,8 +228,7 @@
   (.destroy curl-process)
 
 
-  (+ 1 2)
-  )
+  (+ 1 2))
 
 (comment
 ;; EXPERIMENTAL STREAM DATA FROM STREAM ENDPOINT VIA CURL SUBPROCESS because clj-http and http-kit didn't work.
@@ -283,13 +281,4 @@
         (when (stream-stopped?)
           (swap! curl-process restart-curl-process))))
 
-    (future (monitor-and-restart-stream)))
-
-  )
-
-(defn get-binance-api-data
-  ([endpoint] (get-binance-api-data endpoint nil))
-  ([endpoint instrument-config]
-   (-> endpoint
-       (build-binance-url (binancify-candles-instrument-config instrument-config))
-       (get-api-data (headers/get-binance-headers)))))
+    (future (monitor-and-restart-stream))))

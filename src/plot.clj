@@ -3,7 +3,7 @@
             [oz.core :as oz]
             [v0_1_X.strategy :as strat]))
 
-;; (oz/start-server! 10670)
+#_(oz/start-server! 10670)
 
 (defn format-stream-for-view
   "returns a collection of view data (maps of form {:item <stream name> :x <x value> :y <y value>} )

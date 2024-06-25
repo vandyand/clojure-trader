@@ -1,12 +1,8 @@
 (ns api.oanda_api
-  (:require [clj-http.client :as client]
-            ;; [clojure.pprint :as pp]
-            [clojure.data.json :as json]
+  (:require [clojure.data.json :as json]
             [env :as env]
             [api.util :as autil]
-            [util :as util]
-            [api.headers :as headers]
-            [clojure.core.async :as async]))
+            [api.headers :as headers]))
 
 ;; autilITY FUNCTIONS 
 
@@ -91,15 +87,15 @@
 
 (comment
   ;; EXPERIMENTAL WORK IN PROGRESS
- (defn get-streaming-price-data
-  [instrument]
-  (let [endpoint (get-account-endpoint
-                  (env/get-account-id)
-                  (str "pricing/stream?instruments=" instrument))
-        _ (println endpoint)]
-    (autil/get-oanda-stream-data endpoint)))
+  (defn get-streaming-price-data
+    [instrument]
+    (let [endpoint (get-account-endpoint
+                    (env/get-account-id)
+                    (str "pricing/stream?instruments=" instrument))
+          _ (println endpoint)]
+      (autil/get-oanda-stream-data endpoint)))
 
-#_(get-streaming-price-data "EUR_USD"))
+  #_(get-streaming-price-data "EUR_USD"))
 
 ;; GET OPEN POSITIONS
 
@@ -174,14 +170,23 @@
     (autil/build-oanda-url (get-account-endpoint account-id "orders"))
     (make-request-options order-options))))
 
+(defn get-instrument-stream [instrument-config]
+  (let [api-data (get-api-candle-data instrument-config)]
+    (vec
+     (for [candle (get api-data :candles)]
+       {:v (get candle :volume)
+        :o (Double/parseDouble (get-in candle [:mid :o]))
+        :h (Double/parseDouble (get-in candle [:mid :h]))
+        :l (Double/parseDouble (get-in candle [:mid :l]))
+        :c (Double/parseDouble (get-in candle [:mid :c]))}))))
+
 (comment
 
-  ;; (ot/make-order-options-autil "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
+  (ot/make-order-options-autil "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
 
-  ;; (send-order-request (ot/make-order-options-autil "EUR_USD" 5))
+  (send-order-request (ot/make-order-options-autil "EUR_USD" 5))
 
-  ;; (send-order-request (ot/make-order-options-autil "EUR_USD" -50 "GTD" "H1" 0.005 0.005)) 
-  )
+  (send-order-request (ot/make-order-options-autil "EUR_USD" -50 "GTD" "H1" 0.005 0.005)))
 
 ;; OANDA STRINDICATOR STUFF
 

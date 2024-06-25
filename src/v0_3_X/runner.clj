@@ -12,12 +12,10 @@
          (catch Throwable e
            (println "Error has been caught!" (.getMessage e))))
     (Thread/sleep _delay)
-    (recur)
-  ))
+    (recur)))
 
 (comment
-  (run-runner ["M15-250-T_AUD_JPY.edn"] 300000)
-  )
+  (run-runner ["M15-250-T_AUD_JPY.edn"] 300000))
 
 (comment
   (def factory-config (config/get-factory-config-util
@@ -26,8 +24,7 @@
                        [10 0.5 0.2 0.5]
                        1 100))
   (factory/run-factory-to-file factory-config)
-  (run-runner [(util/config->file-name factory-config)] 28000)
-  )
+  (run-runner [(util/config->file-name factory-config)] 28000))
 
 (comment
   (def factory-config (config/get-factory-config-util
@@ -50,8 +47,7 @@
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-T_CAD_CHF-AUD_CHF.edn"] 30000)
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-CAD_CHF-T_AUD_CHF.edn"] 30000)
   (run-runner ["M15-200-CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF-T_EUR_CHF.edn"] 30000)
-  (run-runner ["M15-250-CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF-EUR_CHF-T_EUR_USD.edn"] 30000)
-  )
+  (run-runner ["M15-250-CAD_SGD-AUD_CAD-CAD_CHF-AUD_CHF-EUR_CHF-T_EUR_USD.edn"] 30000))
 
 (comment
   (async/go
@@ -63,8 +59,7 @@
   (factory/run-many-factories
    ["EUR_USD" "AUD_USD" "GBP_USD"]
    [[nil "ternary" 2 4 6 2000 200 "M15" "score-x"]
-    [30 0.4 0.1 0.6] 10 21])
-  )
+    [30 0.4 0.1 0.6] 10 21]))
 
 (comment
   (do
@@ -76,15 +71,13 @@
 
     (def factory-config (config/get-factory-config 3 ga-config))
 
-    (factory/run-factory-to-file factory-config)
-    
-    ))
+    (factory/run-factory-to-file factory-config)))
 
 (comment
   (async/go
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "both" "AUD_USD" "inception" "GBP_USD" "inception"
-                           "EUR_GBP" "inception" "USD_JPY" "inception" "EUR_JPY" "inception" 
+                           "EUR_GBP" "inception" "USD_JPY" "inception" "EUR_JPY" "inception"
                            "AUD_JPY" "inception"]
                           "ternary" 2 4 6 2000 200 "M15" "score-x"))
 
@@ -93,15 +86,13 @@
     (def factory-config (config/get-factory-config 21 ga-config))
 
     (factory/run-factory-to-file factory-config)
-   
-   (loop []
-     (try (arena/run-arena ["M15-2000-target_eur_usd-aud_usd-gbp_usd-eur_gbp-usd_jpy-eur_jpy-aud_jpy.edn"])
-         (catch Throwable e
-           (println "Error has been caught!" (.getMessage e))))
-    (Thread/sleep 300000)
-    (recur))
-  )
-)
+
+    (loop []
+      (try (arena/run-arena ["M15-2000-target_eur_usd-aud_usd-gbp_usd-eur_gbp-usd_jpy-eur_jpy-aud_jpy.edn"])
+           (catch Throwable e
+             (println "Error has been caught!" (.getMessage e))))
+      (Thread/sleep 300000)
+      (recur))))
 
 
 
@@ -114,8 +105,7 @@
          (catch Throwable e
            (println "Error has been caught!" (.getMessage e))))
     (Thread/sleep 300000)
-    (recur))
-  )
+    (recur)))
 
 (comment
   (async/go-loop []
@@ -125,8 +115,7 @@
          (catch Throwable e
            (println "Error has been caught!" (.getMessage e))))
     (Thread/sleep 300000)
-    (recur))
-  )
+    (recur)))
 
 (comment
   (async/go-loop []
@@ -134,12 +123,11 @@
          (catch Throwable e
            (println "Error has been caught!" (.getMessage e))))
     (Thread/sleep 300000)
-    (recur))
-  )
+    (recur)))
 
-(comment 
+(comment
   (async/go
-   
+
     (def backtest-config (config/get-backtest-config-util
                           ["EUR_USD" "inception" "AUD_USD" "inception" "GBP_USD" "inception"
                            "EUR_GBP" "both" "USD_JPY" "inception" "USD_CHF" "inception"]
@@ -149,21 +137,18 @@
 
     (def factory-config (config/get-factory-config 21 ga-config))
 
-    (factory/run-factory-to-file factory-config)
-   ))
+    (factory/run-factory-to-file factory-config)))
 
 (comment
   (let [file-names ["H1-500-Target_ETHBTC.edn"]]
     (async/go
       (try (arena/run-arena file-names)
            (catch Throwable e
-             (println "Error has been caught!" (.getMessage e))))))
-  )
+             (println "Error has been caught!" (.getMessage e)))))))
 
 
 (comment
   (def pairs ["EUR_USD" "AUD_USD" "GBP_USD" "USD_JPY" "EUR_GBP" "EUR_JPY"
-               "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
-               "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
-               "EUR_AUD" "GBP_CAD"])
-  )
+              "USD_CHF" "AUD_JPY" "USD_CAD" "AUD_CAD" "CHF_JPY" "EUR_CHF"
+              "NZD_USD" "EUR_CAD" "NZD_JPY" "AUD_CHF" "CAD_CHF" "GBP_CHF"
+              "EUR_AUD" "GBP_CAD"]))

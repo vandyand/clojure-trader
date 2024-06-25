@@ -5,14 +5,13 @@
    [v0_2_X.streams :as streams]
    [stats :as stats]
    [helpers :as hlp]
-   [util :as util]
-   ))
+   [util :as util]))
 
 (defn good-gaust? [gaust]
   (> (:z-score gaust) -0.25))
 
 (defn get-best-gausts [gausts]
-   (filterv good-gaust? gausts))
+  (filterv good-gaust? gausts))
 
 (defn get-best-gaust [gausts]
   (reduce (fn [acc cur] (if (> (:z-score cur) (:z-score acc)) cur acc)) gausts))
@@ -28,7 +27,7 @@
   {:rivulet rivulet
    :beck (util/rivulet->beck rivulet)})
 
-(defn get-gaustrindy [back-hystrindy fore-hystrindy] 
+(defn get-gaustrindy [back-hystrindy fore-hystrindy]
   (let [fore-beck (-> fore-hystrindy :return-stream :beck)
         back-beck ((repopulate-return-stream (-> back-hystrindy :return-stream :rivulet)) :beck)
         z-score (stats/z-score
@@ -42,8 +41,7 @@
      :back-fitness (:fitness back-hystrindy)
      :fore-fitness (:fitness fore-hystrindy)
      :z-score z-score
-     :g-score (* z-score (-> back-hystrindy :fitness))
-     }))
+     :g-score (* z-score (-> back-hystrindy :fitness))}))
 
 (defn get-gaustrindies [hystrindies fore-hystrindies]
   (for [n (range (count hystrindies))]
@@ -51,7 +49,7 @@
           fore-hystrindy (nth fore-hystrindies n)]
       (get-gaustrindy back-hystrindy fore-hystrindy))))
 
-(defn run-gauntlet 
+(defn run-gauntlet
   "hysts-arg is either vector of hysts or string file-name of hysts file"
   [hysts-arg]
   (let [hysts (if (= (type hysts-arg) java.lang.String) (file/get-hystrindies-from-file hysts-arg) hysts-arg)
