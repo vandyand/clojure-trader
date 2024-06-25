@@ -13,7 +13,8 @@
         ring/ring-core {:mvn/version "1.9.2"}
         ring/ring-jetty-adapter {:mvn/version "1.9.2"}
         compojure/compojure {:mvn/version "1.6.2"}
-        http-kit/http-kit {:mvn/version "2.7.0"}}
+        http-kit/http-kit {:mvn/version "2.7.0"}
+        uncomplicate/clojurecl {:mvn/version "0.16.0"}}
  :aliases {:dev {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}}
            :windows11 {:extra-deps  {uncomplicate/clojurecuda {:mvn/version "0.15.0"}
                                      uncomplicate/neanderthal {:mvn/version "0.44.1"}

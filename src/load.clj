@@ -7,7 +7,6 @@
 (load "/api/oanda_api")
 (load "/api/binance_api")
 (load "/api/order_types")
-(load "/api/instruments")
 
 (load "plot")
 (load "/v0_1_X/inputs")
