@@ -1,7 +1,6 @@
 (ns plot
   (:require [file :as file]
-            [oz.core :as oz]
-            [v0_1_X.strategy :as strat]))
+            [oz.core :as oz]))
 
 #_(oz/start-server! 10670)
 
@@ -9,7 +8,7 @@
   "returns a collection of view data (maps of form {:item <stream name> :x <x value> :y <y value>} )
    from the stream"
   [stream]
-  (let [stream-name  (or (get (meta stream) :name) (strat/rand-suffix "noname"))]
+  (let [stream-name  (or (get (meta stream) :name) "noname")]
     (loop [i 0 v (transient [])]
       (if (< i (count stream))
         (recur (inc i) (conj! v {:item stream-name :x i :y (stream i)})) ;; view data structure
@@ -71,7 +70,7 @@
 (comment
   (do
     (def perf-data (file/read-data-file "performance.edn" #"\r\n"))
-       (generate-and-view-plot (format-performance-data perf-data)))                                                                                                                                                                                                                                                        
+    (generate-and-view-plot (format-performance-data perf-data)))
 
   ;; end comment
   )

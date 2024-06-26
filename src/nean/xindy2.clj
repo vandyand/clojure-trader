@@ -1,14 +1,7 @@
 (ns nean.xindy2
-  (:require [api.oanda_api :as oa]
-            [api.order_types :as ot]
-            [clojure.core.async :as async]
-            [config :as config]
-            [env :as env]
-            [helpers :as hlp]
+  (:require [api.oanda_api :as oapi]
             [stats :as stats]
-            [util :as util]
-            [plot :as plot]
-            [v0_2_X.streams :as streams]))
+            [util :as util]))
 
 (defn br []
   (util/bounded-rand 1 -1))
@@ -74,9 +67,41 @@
    (let [shifts (sort-shift-halves (get-rand-shifts (:num-shifts xindy-config) (:max-shift xindy-config)))]
      (get-xindy-from-shifts shifts (:max-shift xindy-config) stream))))
 
+(defn get-from-to-times
+  ([granularity _count] (get-from-to-times granularity _count 5000))
+  ([granularity _count span]
+   (let [from-time (util/get-past-unix-time granularity _count)
+         to-time (util/current-time-sec)
+         time-span (* span (util/granularity->seconds granularity))]
+     (partition
+      2 1
+      (loop [val to-time vals []]
+        (if (<= val from-time)
+          (conj vals from-time)
+          (recur (- val time-span) (conj vals val))))))))
+
+(defn get-big-stream
+  ([instrument granularity _count] (get-big-stream instrument granularity _count 1000))
+  ([instrument granularity _count span]
+   (let [from-to-times (get-from-to-times granularity (* 2 _count) span)]
+     (loop [i 0 stream []]
+       (let [from-to-time (-> from-to-times (nth i))
+             from-time (second from-to-time)
+             to-time (first from-to-time)
+             new-stream-section (oapi/get-instrument-stream
+                                 {:name instrument
+                                  :granularity granularity
+                                  :from from-time
+                                  :to to-time
+                                  :includeFirst false})
+             new-stream (into new-stream-section stream)]
+         (if (or (>= i (-> from-to-times count dec)) (>= (count new-stream) _count))
+           (mapv :o new-stream)
+           (recur (inc i) new-stream)))))))
+
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (println "getting: " instrument)
-  (let [big-stream (vec (streams/get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
+  (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
         back-len (int (* (count big-stream) back-pct))
         fore-len (- (count big-stream) back-len)
         back-stream (subvec big-stream 0 back-len)
@@ -94,7 +119,7 @@
 (defn shifts->xindies
   "shifts is a vector of shift-vectors. each shift-vector has :num-shifts shifts (ints)"
   [instrument shifts xindy-config granularity]
-  (let [new-stream (vec (streams/get-big-stream
+  (let [new-stream (vec (get-big-stream
                          instrument
                          granularity (+ 2 (num-weekend-bars granularity) (:max-shift xindy-config))))]
     (for [shift-vec shifts]

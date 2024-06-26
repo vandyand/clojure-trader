@@ -1,5 +1,6 @@
 (ns nean.arena
   (:require [api.oanda_api :as oapi]
+            [api.order_types :as ot]
             [clojure.core.async :as async]
             [config :as config]
             [env :as env]
@@ -8,8 +9,6 @@
             [nean.xindy2 :as x2]
             [stats :as stats]
             [util :as util]
-            [v0_2_X.streams :as streams]
-            [v0_3_X.arena :as arena]
             [buddy.core.hash :refer [md5]]
             [buddy.core.codecs :refer [bytes->hex]]))
 
@@ -174,7 +173,7 @@
   (backtest backtest-params)
 
 
-  ;;tnemmoc
+  ;; end comment
   )
 
 (defn xindies->raw-position [xindies]
@@ -211,11 +210,27 @@
   (let [raw-instrument-positions (procure-raw-instrument-positions wrifts+stuff)]
     (raw->target-instrument-positions raw-instrument-positions account-id)))
 
+(defn post-target-pos
+  ([instrument target-pos] (post-target-pos instrument target-pos (env/get-account-id)))
+  ([instrument target-pos account-id]
+   (let [current-pos-data (-> (oapi/get-open-positions account-id) :positions (util/find-in :instrument instrument))
+         long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
+         short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
+         current-pos (if current-pos-data (+ long-pos short-pos) 0)
+         units (if current-pos-data (- target-pos current-pos) target-pos)]
+     (when (not= units 0)
+       (do (oapi/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
+           (println "account-id: " account-id " ------------------------------------------------------")
+           (println instrument ": position changed")
+           (println "prev-pos: "  current-pos)
+           (println "target-pos: " target-pos)
+           (println "pos-change: " units))))))
+
 (defn post-target-positions [target-instrument-positions account-id]
   (doseq [target-instrument-position target-instrument-positions]
-    (arena/post-target-pos (:instrument target-instrument-position)
-                           (:target-position target-instrument-position)
-                           account-id)))
+    (post-target-pos (:instrument target-instrument-position)
+                     (:target-position target-instrument-position)
+                     account-id)))
 
 (defn get-dir-file-names
   ([] (get-dir-file-names "data/wrifts"))
@@ -284,8 +299,7 @@
   (require '[nean.trace :as trace])
 
   ;; Run the traced function
-  (trace/run-traced-backtest)
-  )
+  (trace/run-traced-backtest))
 
 (defonce trade-env (atom {}))
 
@@ -349,7 +363,7 @@
   (def trade-chans (trade "M15"))
 
   (async/put! (:stop-chan trade-chans) true)
-  ;;tnemmoc
+  ;; end comment
   )
 
 (comment

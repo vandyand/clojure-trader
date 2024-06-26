@@ -11,29 +11,29 @@
 (load "/api/order_types")
 
 (load "plot")
-(load "/v0_1_X/inputs")
-(load "/v0_1_X/strategy")
-(load "/v0_1_X/ga")
+;; (load "/v0_1_X/inputs")
+;; (load "/v0_1_X/strategy")
+;; (load "/v0_1_X/ga")
 
-(load "/v0_2_X/solver")
+;; (load "/v0_2_X/solver")
 
-(load "/v0_2_X/strindicator")
+;; (load "/v0_2_X/strindicator")
 
 (load "/file")
 
-(load "/v0_2_X/streams")
+;; (load "/v0_2_X/streams")
 
-(load "/v0_2_X/hystrindy")
+;; (load "/v0_2_X/hystrindy")
 
-(load "/v0_2_X/ga")
+;; (load "/v0_2_X/ga")
 
-(load "/v0_2_X/hyst_factory")
+;; (load "/v0_2_X/hyst_factory")
 
-(load "/v0_3_X/gauntlet")
+;; (load "/v0_3_X/gauntlet")
 
-(load "/v0_3_X/arena")
+;; (load "/v0_3_X/arena")
 
-(load "/v0_3_X/runner")
+;; (load "/v0_3_X/runner")
 
 (load "/nean/xindy2")
 (load "/nean/ga")
@@ -42,10 +42,8 @@
 
 (load "/compile_master")
 
-(load "/hyp_test")
 (load "/meta/constants")
 
 
 (load "/nean/arena")
 (load "/nean/server")
-

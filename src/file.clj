@@ -1,8 +1,6 @@
 (ns file
   (:require
    [clojure.edn :as edn]
-   [v0_1_X.strategy :as strat]
-   [v0_2_X.strindicator :as strindy]
    [util :as util]
    [clojure.core.async :as async]
    [clojure.java.io :as io]
@@ -11,14 +9,6 @@
 (def data-folder "data/")
 (def hyst-folder "hysts/")
 (def lab-folder "lab/")
-
-(defn format-strindy-for-edn [strindy]
-  (clojure.walk/postwalk
-   (fn [form]
-     (if (and (map? form) (some #(= % :policy) (keys form)))
-       (update-in form [:policy] dissoc :fn)
-       form))
-   strindy))
 
 (defn read-file
   ([file-name]
@@ -54,42 +44,6 @@
 
 (defn get-by-id [file-name id]
   (util/find-in (read-data-file file-name) :id id))
-
-(defn format-hyst-for-edn [hyst]
-  (assoc hyst :strindy (format-strindy-for-edn (get hyst :strindy))))
-
-(defn save-hystrindy-to-file
-  ([hyst] (save-hystrindy-to-file hyst hyst-folder))
-  ([hystrindy folder]
-   (let [formatted-hystrindy (format-hyst-for-edn hystrindy)
-         file-name (util/config->file-name hystrindy)]
-     (write-file (str data-folder folder file-name) formatted-hystrindy true))))
-
-(defn save-hystrindies-to-file
-  ([hystrindies]
-   (for [hyst hystrindies]
-     (save-hystrindy-to-file hyst))))
-
-(defn deformat-hystrindy [formatted-hystrindy]
-  (clojure.walk/postwalk
-   (fn [form]
-     (if (and (map? form) (some #(= % :policy) (keys form)))
-       (let [form-type (get-in form [:policy :type])
-             func (cond (= form-type "rand")
-                        (constantly (get-in form [:policy :value]))
-                        (some #(= % :tree) (keys (form :policy)))
-                        (fn [& args] (strat/solve-tree (get-in form [:policy :tree]) args))
-                        :else (:fn (util/find-in strindy/strindy-funcs :type form-type)))]
-         (assoc form :policy (into (:policy form) {:fn func})))
-       form))
-   formatted-hystrindy))
-
-(defn get-hystrindies-from-file
-  ([] (get-hystrindies-from-file "hystrindies.edn"))
-  ([file-name]
-   (let [formatted-hystrindies (read-data-file (str hyst-folder file-name))]
-     (for [formatted-hystrindy formatted-hystrindies]
-       (deformat-hystrindy formatted-hystrindy)))))
 
 (defn open-file-writer-async [from-chan full-file-name watcher-atom]
   (async/go
