@@ -12,26 +12,15 @@
 (defn is-live-account? []
   (= (get-live-or-demo) "LIVE"))
 
-(defn get-account-url []
+(defn get-account-id []
   (if (is-live-account?)
-    (get-env-data :OANDA_LIVE_URL)
-    (get-env-data :OANDA_DEMO_URL)
-    ))
+    (get-env-data :OANDA_LIVE_ACCOUNT_ID)
+    (get-env-data :OANDA_DEMO_ACCOUNT_ID)))
 
-(defn get-account-id [] 
-   (if (is-live-account?)
-     (get-env-data :OANDA_LIVE_ACCOUNT_ID)
-     (get-env-data :OANDA_DEMO_ACCOUNT_ID)
-     ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; sensitive
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn get-sensitive-data [keywd]
   ((json/read-str (slurp ".sensitive.json") :key-fn keyword) keywd))
 
 (defn get-oanda-api-key []
-  (if (is-live-account?) 
+  (if (is-live-account?)
     (get-sensitive-data :OANDA_LIVE_KEY)
-    (get-sensitive-data :OANDA_DEMO_KEY)
-    ))
+    (get-sensitive-data :OANDA_DEMO_KEY)))

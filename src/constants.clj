@@ -1,4 +1,4 @@
-(ns meta.constants)
+(ns constants)
 
 (defn backtest-config-util
   [instruments granularity num-backtests-per-instrument num-shifts max-shift pop-size parent-pct num-generations stream-count back-pct]

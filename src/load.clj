@@ -40,9 +40,7 @@
 
 (load "/monitor/monitor")
 
-(load "/compile_master")
-
-(load "/meta/constants")
+;; (load "/constants")
 
 
 (load "/nean/arena")

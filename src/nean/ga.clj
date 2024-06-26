@@ -1,6 +1,5 @@
 (ns nean.ga
   (:require [env :as env]
-            [helpers :as hlp]
             [stats :as stats]
             [util :as util]
             [nean.xindy2 :as x2]))
@@ -11,7 +10,7 @@
 (defn mutate-shifts [shifts max-shift]
   (mapv
    (fn [shift]
-     (let [new-shift (if (hlp/rand-bool) shift (-> 41 rand-int (- 20) (+ shift)))]
+     (let [new-shift (if (util/rand-bool) shift (-> 41 rand-int (- 20) (+ shift)))]
        (if (in-range new-shift 1 max-shift) new-shift shift)))
    shifts))
 
@@ -46,10 +45,6 @@
   (vec
    (for [_ (range (:num-children pop-config))]
      (let [child-num-parents (->> (range) (random-sample 0.5) first (+ 1))
-          ;;  child-parents (repeatedly
-          ;;                 child-num-parents
-          ;;                 #(->> (range (:num-parents pop-config)) cycle
-          ;;                       (random-sample 0.01) first (nth parents)))
            child-parents (repeatedly
                           child-num-parents
                           #(nth parents (util/rand-lin-dist 2 (:num-parents pop-config))))]
@@ -66,9 +61,6 @@
   ([starting-pop num-generations pop-config xindy-config stream]
    (loop [i 1 pop starting-pop]
      (when (env/get-env-data :GA_LOGGING?) (println i (-> pop first :score) (stats/mean (map :score pop))))
-    ;;  (plot/plot-streams [(->> pop first :rivulet seq vec (reductions +) vec)
-    ;;                      (->> pop second :rivulet seq vec (reductions +) vec)
-    ;;                      (plot/zero-stream (-> stream seq vec (subvec (:max-shift xindy-config))))])
      (if (< i num-generations)
        (recur (inc i) (run-generation pop pop-config xindy-config stream))
        pop))))

@@ -7,8 +7,6 @@
    [env :as env]))
 
 (def data-folder "data/")
-(def hyst-folder "hysts/")
-(def lab-folder "lab/")
 
 (defn read-file
   ([file-name]

@@ -2,32 +2,14 @@
   (:require
    [clojure.core.async :as async]))
 
-(defn pos-or-zero [num] (if (pos? num) num 0))
+(defn rand-bool []
+  (> 0.5 (rand)))
 
-(defn bool->binary [bool]
-  (get {true 1 false 0} bool))
+(defn pos-or-zero [num] (if (pos? num) num 0))
 
 (defn find-in [coll _key _val]
   (reduce (fn [_ cur-val] (when (= (_key cur-val) _val) (reduced cur-val)))
           nil coll))
-
-(defn subvec-end [v cnt]
-  (if (and (> cnt -1) (> (count v) cnt))
-    (subvec v (- (count v) cnt))
-    v))
-
-(defn get-overlap-ind [old new]
-  (if (> (count new) (count old))
-    (when (= old (subvec new 0 (count old)))
-      (- (count new) (count old)))
-    (loop [i 0]
-      (cond
-        (>= i (count new)) -1
-        (let [sub-new (subvec new 0 (- (count new) i))
-              sub-old (subvec old (- (count old) (count sub-new)))]
-          (= sub-old sub-new))
-        i
-        :else (recur (inc i))))))
 
 (defn get-fore-ind [proxy new]
   (loop [i 0]
@@ -39,9 +21,6 @@
 
 (defn current-time-sec []
   (quot (System/currentTimeMillis) 1000))
-
-(defn current-time-msec []
-  (System/currentTimeMillis))
 
 (defn round-dub
   "Round a double to the given precision (number of significant digits)"
@@ -99,28 +78,15 @@
            (get backtest-config :granularity)))
          ".edn")))
 
-(defn rand-caps-str
-  ([] (rand-caps-str 4))
-  ([len]
-   (apply str (take len (repeatedly #(char (+ (rand 26) 65)))))))
-
 (defn rivulet->beck [rivulet]
   (vec (reductions + rivulet)))
 
 (defn bounded-rand [low high]
   (-> (rand) (* (- high low)) (+ low)))
 
-(defn mapv-indexed [f coll]
-  (vec (map-indexed f coll)))
-
 (defn print-return [arg]
   (println arg)
   arg)
-
-(defmacro for-do
-  "(for seq-exprs (do body-exprs-1 body-exprs-2 etc))"
-  [seq-exprs & body-exprs]
-  (list 'for seq-exprs (cons 'do body-exprs)))
 
 (defn rand-lin-dist
   "Define a line with x0 (defined as 0), y0; x1, y1

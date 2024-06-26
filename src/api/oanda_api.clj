@@ -1,8 +1,7 @@
 (ns api.oanda_api
   (:require [clojure.data.json :as json]
             [env :as env]
-            [api.util :as autil]
-            [api.headers :as headers]))
+            [api.util :as autil]))
 
 ;; autilITY FUNCTIONS 
 
@@ -71,9 +70,6 @@
 (defn account-instruments->names [account-instruments]
   (map (fn [instrument] (:name instrument)) (:instruments account-instruments)))
 
-(defn get-account-instruments-names []
-  (-> (get-account-instruments) account-instruments->names))
-
 ;; GET CANDLES
 
 (defn get-api-candle-data
@@ -115,49 +111,14 @@
              short-pos (-> current-position-data :short :units Integer/parseInt)]
          {:instrument instrument :units (+ long-pos short-pos)})))))
 
-(defn get-formatted-open-positions-by-account []
-  (let [account-ids (get-account-ids)]
-    (for [account-id account-ids]
-      {:account account-id :positions (get-formatted-open-positions account-id)})))
-
 #_(get-formatted-open-positions)
 
 #_(get-formatted-open-positions-by-account)
 
 ;; SEND ORDER FUNCTIONS
 
-;; (defn make-market-order-body [instrument units]
-;;   {:order {:instrument instrument 
-;;            :units units 
-;;            :timeInForce "FOK" 
-;;            :type "MARKET" 
-;;            :positionFill "DEFAULT"}})
-
-;; (defn make-market-price-order-body [instrument units price-bound]
-;;   {:order {:instrument instrument 
-;;            :units units 
-;;            :timeInForce "FOK" 
-;;            :type "MARKET" 
-;;            :positionFill "DEFAULT"
-;;            :priceBound price-bound}})
-
-;; (defn make-limit-sltp-order-body [instrument units details]
-;;   {:order {:instrument instrument
-;;            :units units
-;;            :price (details :price)
-;;            :timeInForce "GTD"
-;;            :gtdTime (details :cancel-time) 
-;;            :triggerCondition "DEFAULT"
-;;            :type "LIMIT"
-;;            :positionFill "DEFAULT"
-;;            :stopLossOnFill {:price (details :sl-price)}
-;;            :takeProfitOnFill {:price (details :tp-price)}}})
-
-;; (defn make-limit-order-details [cancel-time price tp-price sl-price]
-;;   {:order-type "LIMIT" :cancel-time (str cancel-time) :price (str price) :tp-price (str tp-price) :sl-price (str sl-price)})
-
 (defn make-request-options [body]
-  {:headers (headers/get-oanda-headers)
+  {:headers (autil/get-oanda-headers)
    :content-type :json
    :body (json/write-str body)
    :as :json})
@@ -190,16 +151,6 @@
 
 ;; OANDA STRINDICATOR STUFF
 
-(defn format-candles [candles]
-  (map
-   (fn [candle]
-     {:time (Double/parseDouble (get candle :time))
-      :open (Double/parseDouble (get-in candle [:mid :o]))})
-   candles))
-
-(defn get-open-prices [instrument-config]
-  (format-candles (get (get-api-candle-data instrument-config) :candles)))
-
 (defn get-instrument-last-candle [instrument granularity]
   (-> instrument (autil/get-instrument-config granularity 1) get-api-candle-data :candles last))
 
@@ -211,14 +162,8 @@
   ([instrument ohlc-key granularity]
    (-> instrument (get-instrument-last-candle granularity) :mid ohlc-key Double/parseDouble)))
 
-(defn get-instrument-current-price [instrument]
-  (get-instrument-current-price-by-ohlc instrument :c))
-
 (defn get-instrument-current-candle-ohlc [instrument granularity ohlc]
   (get-instrument-current-price-by-ohlc instrument ohlc (or granularity "H1")))
-
-(defn get-formatted-candle-data-depreciated [instrument-config]
-  (vec (for [data (get-open-prices instrument-config)] (get data :open))))
 
 (defn get-formatted-candle-data [instrument-config]
   (let [api-data (get-api-candle-data instrument-config)]
@@ -281,42 +226,6 @@
 
 (defn get-open-trades []
   (autil/get-oanda-api-data  (get-account-endpoint "openTrades")))
-
-(defn get-open-trade [trade-id]
-  (autil/get-oanda-api-data  (get-account-endpoint (str "trades/" trade-id))))
-
-(defn close-trade [trade-id]
-  (autil/send-api-put-request
-   (autil/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/close")))
-   (make-request-options {:units "ALL"})))
-
-;; CLIENT ID STUFF
-
-(defn update-trade-with-id [trade-id client-id]
-  (autil/send-api-put-request
-   (autil/build-oanda-url (get-account-endpoint (str "trades/" trade-id "/clientExtensions")))
-   (make-request-options {:clientExtensions {:id client-id}})))
-
-(defn get-trade-client-id [trade-id]
-  (-> trade-id
-      get-open-trade
-      :trade
-      :clientExtensions
-      :id))
-
-(defn get-trade-by-client-id [client-id]
-  (let [trades (:trades (get-open-trades))]
-    (filter (fn [trade] (= client-id (-> trade :clientExtensions :id))) trades)))
-
-;; (defn send-order-request-with-client-id [instrument units client-id]
-;;   (let [trade-id (-> (send-order-request (ot/make-order-options-autil instrument units)) :body :orderFillTransaction :id)]
-;;     (Thread/sleep 100)
-;;     (update-trade-with-id trade-id client-id)))
-
-;; (defn close-trade-by-client-id [client-id]
-;;   (let [trade-id (-> (get-trade-by-client-id client-id) first :id)]
-;;     (Thread/sleep 100)
-;;     (close-trade trade-id)))
 
 (comment
 

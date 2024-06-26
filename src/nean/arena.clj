@@ -52,25 +52,6 @@
         rifts (mapv :shifts rindies)]
     rifts))
 
-;; (defn generate-wrifts-old
-;;   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
-;;    (vec
-;;     (for [instrument instruments]
-;;       (let [rifts (let [streams-map
-;;                         (x2/get-back-fore-streams
-;;                          instrument granularity
-;;                          (:stream-count ga-config)
-;;                          (:back-pct ga-config)
-;;                          (:max-shift xindy-config))]
-;;                     (vec
-;;                      (apply
-;;                       concat
-;;                       (for [_ (range num-backtests-per-instrument)]
-;;                         (generate-rifts streams-map xindy-config pop-config ga-config)))))]
-;;         {:instrument instrument
-;;          :rifts rifts
-;;          :count (count rifts)})))))
-
 (defn generate-wrifts
   ([backtest-params] (generate-wrifts
                       (:instruments backtest-params)
@@ -95,7 +76,6 @@
          :count (count rifts)})))))
 
 (comment
-
   (let [backtest-params
         {:instruments ["EUR_USD"]
          :granularity "H1"
@@ -109,8 +89,6 @@
                      :stream-count 2000
                      :back-pct 0.95}}]
     (time  (generate-wrifts backtest-params)))
-
-
   ;;end comment
   )
 
@@ -171,7 +149,6 @@
                  :back-pct 0.95}})
 
   (backtest backtest-params)
-
 
   ;; end comment
   )
@@ -359,12 +336,7 @@
     (for [account-id account-ids]
       (stop-trading account-id))))
 
-(comment
-  (def trade-chans (trade "M15"))
-
-  (async/put! (:stop-chan trade-chans) true)
-  ;; end comment
-  )
+#_(stop-all-trading)
 
 (comment
   ;; -----------------------------------------------------------------------------------------------------------------------------
@@ -388,14 +360,6 @@
             (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
 
-  (let [instruments ["AUD_CAD" "AUD_USD" "EUR_USD"]
-        num-backtests-per-instrument 3
-        granularity "S30"
-        xindy-config (config/xindy-config 8 100)
-        pop-config (config/xindy-pop-config 400 200)
-        ga-config (config/xindy-ga-config 10 1000 0.95)
-        wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
-    (save-wrifts+stuff wrifts xindy-config granularity))
   ;;end comment
   )
 
