@@ -35,10 +35,10 @@
 
 ;; (load "/v0_3_X/runner")
 
-(load "/nean/xindy2")
+(load "/nean/xindy")
 (load "/nean/ga")
 
-(load "/monitor/monitor")
+(load "/monitor")
 
 ;; (load "/constants")
 

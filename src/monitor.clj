@@ -1,4 +1,4 @@
-(ns monitor.monitor
+(ns monitor
   (:require
    [api.oanda_api :as oapi]
    [util :as util]

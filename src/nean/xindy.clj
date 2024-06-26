@@ -1,15 +1,7 @@
-(ns nean.xindy2
+(ns nean.xindy
   (:require [api.oanda_api :as oapi]
             [stats :as stats]
             [util :as util]))
-
-(defn br []
-  (util/bounded-rand 1 -1))
-
-(defn streams->open-stream
-  "Takes streams from streams/fetch-formatted-streams"
-  [streams]
-  (->> streams :inception-streams first (mapv :o)))
 
 (defn get-rand-shifts [_num max-shift]
   (vec (take _num (repeatedly #(+ 1 (rand-int (- max-shift 1)))))))

@@ -2,7 +2,7 @@
   (:require [env :as env]
             [stats :as stats]
             [util :as util]
-            [nean.xindy2 :as x2]))
+            [nean.xindy :as xindy]))
 
 (defn in-range [val range-low range-high]
   (and (>= val range-low) (<= val range-high)))
@@ -16,14 +16,14 @@
 
 (defn mutate-xindy [xindy xindy-config stream]
   (let [new-shifts (mutate-shifts (:shifts xindy) (:max-shift xindy-config))]
-    (x2/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
+    (xindy/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
 
 (defn crossover-shifts [shifts]
   (mapv stats/mean-int (apply (partial map list) shifts)))
 
 (defn crossover-xindies [xindies xindy-config stream]
   (let [new-shifts (crossover-shifts (map :shifts xindies))]
-    (x2/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
+    (xindy/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
 
 (defn sort-pop [pop]
   (->> pop (sort-by :score) reverse vec))
@@ -31,7 +31,7 @@
 (defn get-init-pop [pop-config xindy-config stream]
   (sort-pop
    (for [_ (range (:pop-size pop-config))]
-     (x2/get-rand-xindy xindy-config stream))))
+     (xindy/get-rand-xindy xindy-config stream))))
 
 (defn get-parents [pop pop-config]
   (take (:num-parents pop-config) pop))

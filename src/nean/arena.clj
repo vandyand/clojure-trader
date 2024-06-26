@@ -6,7 +6,7 @@
             [env :as env]
             [file :as file]
             [nean.ga :as ga]
-            [nean.xindy2 :as x2]
+            [nean.xindy :as xindy]
             [stats :as stats]
             [util :as util]
             [buddy.core.hash :refer [md5]]
@@ -37,7 +37,7 @@
 (defn get-rindies [num-generations pop-config xindy-config back-stream fore-stream]
   (let [best-xindies (ga/get-parents (ga/run-generations num-generations pop-config xindy-config back-stream) pop-config)
         fore-xindies (for [xindy best-xindies]
-                       (x2/get-xindy-from-shifts (:shifts xindy) (:max-shift xindy-config) fore-stream))
+                       (xindy/get-xindy-from-shifts (:shifts xindy) (:max-shift xindy-config) fore-stream))
         full-xindies (combine-xindies best-xindies fore-xindies)
         rindies (filter #(and (> (-> % :back :score) 0) (> (-> % :fore :score) 0) (> (:robustness %) -0.25)) full-xindies)]
     (println "num rindies:" (count rindies))
@@ -63,7 +63,7 @@
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
    (vec
     (for [instrument instruments]
-      (let [streams-map (x2/get-back-fore-streams
+      (let [streams-map (xindy/get-back-fore-streams
                          instrument granularity
                          (:stream-count ga-config)
                          (:back-pct ga-config)
@@ -161,7 +161,7 @@
     {:instrument (:instrument wrifts)
      :raw-position (if (empty? (:rifts wrifts))
                      0.0
-                     (let [xindies (x2/shifts->xindies
+                     (let [xindies (xindy/shifts->xindies
                                     (:instrument wrifts)
                                     (:rifts wrifts)
                                     (:xindy-config wrifts+stuff)
