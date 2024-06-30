@@ -9,20 +9,19 @@
 
 (defn send-api-get-request
   ([url headers]
-  ;;  (client/get url {:headers headers})
+   (client/get url {:headers headers})
   ;;  (client/get url {:headers headers :content-type :octet-stream})
   ;;  (client/get url {:headers headers :content-type :json :throw-exceptions false})
-   (client/get url {:headers headers :content-type :json :debug true})
+  ;;  (client/get url {:headers headers :content-type :json :debug true})
    ))
 
 (defn send-api-put-request [url options]
   (client/put url options))
 
 (defn send-api-post-request [url options]
-  (client/post url (assoc options :debug true))
+  ;; (client/post url (assoc options :debug true))
   ;; (client/post url options)
-  ;; (try (client/post url options) (catch Exception e (println "caught exception: " (.getMessage e))))
-  )
+  (try (client/post url options) (catch Exception e (println "caught exception: " (.getMessage e)))))
 
 ;; UTILITY FUNCTIONS
 

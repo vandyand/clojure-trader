@@ -1,5 +1,6 @@
 (ns api.oanda_api
   (:require [clojure.data.json :as json]
+            [clj-http.client :as client]
             [env :as env]
             [api.util :as autil]
             [config :as config]))
@@ -73,11 +74,56 @@
 
 ;; GET CANDLES
 
-(defn get-api-candle-data
-  ([instrument-config] (get-api-candle-data (env/get-account-id) instrument-config))
+(defn get-api-candle-data-old
+  ([instrument-config] (get-api-candle-data-old (env/get-account-id) instrument-config))
   ([account-id instrument-config]
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (autil/get-oanda-api-data endpoint instrument-config))))
+
+(defn get-crypto-api-data [endpoint]
+  (let [response (client/get endpoint {:as :json})]
+    (:body response)))
+
+
+(defn map-oanda-to-binance-granularity [oanda-granularity]
+  (case oanda-granularity
+    "S5" "1s"
+    "M1" "1m"
+    "M3" "3m"
+    "M5" "5m"
+    "M15" "15m"
+    "M30" "30m"
+    "H1" "1h"
+    "H2" "2h"
+    "H4" "4h"
+    "H6" "6h"
+    "H8" "8h"
+    "H12" "12h"
+    "D" "1d"
+    "W" "1w"
+    "M" "1M"
+    oanda-granularity))
+
+(defn get-api-candle-data
+  ([instrument-config] (get-api-candle-data (env/get-account-id) instrument-config))
+  ([account-id instrument-config]
+   (let [instrument-name (get instrument-config :name)
+         is-crypto (clojure.string/includes? instrument-name "USDT")
+         granularity (get instrument-config :granularity)
+         binance-granularity (map-oanda-to-binance-granularity granularity)
+         endpoint (if is-crypto
+                    (str "http://localhost:5000/candlestick?symbol=" instrument-name
+                         "&timeframe=" binance-granularity
+                         "&limit=" (get instrument-config :count))
+                    (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"
+                                                          "?granularity=" granularity)))]
+     (try
+       (if is-crypto
+         (get-crypto-api-data endpoint)
+         (autil/get-oanda-api-data endpoint))
+       (catch Exception e
+         (println "Error fetching API data:" (.getMessage e))
+         (throw e))))))
 
 (comment
   (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3}))
@@ -88,8 +134,7 @@
     [instrument]
     (let [endpoint (get-account-endpoint
                     (env/get-account-id)
-                    (str "pricing/stream?instruments=" instrument))
-          _ (println endpoint)]
+                    (str "pricing/stream?instruments=" instrument))]
       (autil/get-oanda-stream-data endpoint)))
 
   #_(get-streaming-price-data "EUR_USD"))
@@ -132,7 +177,7 @@
     (autil/build-oanda-url (get-account-endpoint account-id "orders"))
     (make-request-options order-options))))
 
-(defn get-instrument-stream [instrument-config]
+(defn get-instrument-stream-old [instrument-config]
   (let [candle-data (get-api-candle-data instrument-config)]
     (vec
      (for [candle (get candle-data :candles)]
@@ -141,6 +186,26 @@
         :h (Double/parseDouble (get-in candle [:mid :h]))
         :l (Double/parseDouble (get-in candle [:mid :l]))
         :c (Double/parseDouble (get-in candle [:mid :c]))}))))
+
+(defn get-instrument-stream [instrument-config]
+  (let [candle-data (get-api-candle-data instrument-config)
+        is-crypto (clojure.string/includes? (get instrument-config :name) "USDT")]
+    (if is-crypto
+      (vec
+       (for [candle candle-data]
+         {:v (get candle :volume)
+          :o (get candle :open)
+          :h (get candle :high)
+          :l (get candle :low)
+          :c (get candle :close)}))
+      (vec
+       (for [candle (get candle-data :candles)]
+         {:v (get candle :volume)
+          :o (Double/parseDouble (get-in candle [:mid :o]))
+          :h (Double/parseDouble (get-in candle [:mid :h]))
+          :l (Double/parseDouble (get-in candle [:mid :l]))
+          :c (Double/parseDouble (get-in candle [:mid :c]))})))))
+
 
 (comment
 

@@ -11,7 +11,7 @@
             [util :as util]
             [buddy.core.hash :refer [md5]]
             [buddy.core.codecs :refer [bytes->hex]]
-            [constants :as c]))
+            [constants :as constants]))
 
 (comment
   "strategy = vector of integers (shifts) representing back-shift distances for backtest scoring algorithm.
@@ -113,8 +113,19 @@
 
 #_(get-backtest-ids)
 
-(defn run-backtest
-  ([backtest-params] (run-backtest
+(defn run-and-save-backtest
+  ([] (run-and-save-backtest {:instruments ["ETH_USD"]
+                              :granularity "H1"
+                              :num-backtests-per-instrument 1
+                              :xindy-config {:num-shifts 4
+                                             :max-shift 20}
+                              :pop-config {:pop-size 20
+                                           :num-parents 5
+                                           :num-children 15}
+                              :ga-config {:num-generations 2
+                                          :stream-count 200
+                                          :back-pct 0.9}}))
+  ([backtest-params] (run-and-save-backtest
                       (:instruments backtest-params)
                       (:xindy-config backtest-params)
                       (:pop-config backtest-params)
@@ -132,10 +143,12 @@
       filename)
      backtest-id)))
 
+#_(run-and-save-backtest)
+
 (comment
 
   (def backtest-params
-    {:instruments ["EUR_USD"]
+    {:instruments ["EUR_USD" "BTCUSDT"]
      :granularity "H1"
      :num-backtests-per-instrument 30
      :xindy-config {:num-shifts 4
@@ -147,7 +160,7 @@
                  :stream-count 3000
                  :back-pct 0.95}})
 
-  (run-backtest backtest-params)
+  (run-and-save-backtest backtest-params)
 
   ;; end comment
   )
@@ -234,26 +247,9 @@
          target-instrument-positions (backtest->target-instruments-positions backtest account-id)]
      (post-target-positions target-instrument-positions account-id))))
 
-#_(let [account-id "101-001-5729740-002"
-        backtest-params
-        {:instruments ["EUR_USD"]
-         :granularity "H1"
-         :num-backtests-per-instrument 1
-         :xindy-config {:num-shifts 4
-                        :max-shift 100}
-         :pop-config {:pop-size 200
-                      :num-parents 50
-                      :num-children 150}
-         :ga-config {:num-generations 5
-                     :stream-count 3000
-                     :back-pct 0.9}}
-        backtest-id (backtest backtest-params)
-        _ (println "backtest-id: " backtest-id)]
-    (procure-and-post-positions backtest-id account-id))
-
-(defn run-backtest-and-procure-positions-sm []
+(defn run-and-save-backtest-and-procure-positions-sm []
   (let [account-id "101-001-5729740-002"
-        backtest-params {:instruments ["EUR_USD"]
+        backtest-params {:instruments ["EUR_USD" "BTCUSDT"]
                          :granularity "H1"
                          :num-backtests-per-instrument 1
                          :xindy-config {:num-shifts 4
@@ -264,18 +260,18 @@
                          :ga-config {:num-generations 2
                                      :stream-count 200
                                      :back-pct 0.9}}
-        backtest-id (run-backtest backtest-params)
+        backtest-id (run-and-save-backtest backtest-params)
         _ (println "backtest-id: " backtest-id)]
     (procure-and-post-positions backtest-id account-id)))
 
-#_(run-backtest-and-procure-positions-sm)
+(run-and-save-backtest-and-procure-positions-sm)
 
 #_(let [demo-account-id "101-001-5729740-002"
         live-account-id "001-001-1352681-001"]
     (println demo-account-id live-account-id))
 
-(defn run-backtest-and-procure-positions []
-  (doseq [instrument (subvec c/pairs-by-liquidity 0 7)]
+(defn run-and-save-backtest-and-procure-positions []
+  (doseq [instrument (subvec constants/pairs-by-liquidity 0 7)]
     (let [account-id "101-001-5729740-002"
           backtest-params {:instruments [instrument]
                            :granularity "H1"
@@ -288,11 +284,11 @@
                            :ga-config {:num-generations 7
                                        :stream-count 777
                                        :back-pct 0.95}}
-          backtest-id (run-backtest backtest-params)
+          backtest-id (run-and-save-backtest backtest-params)
           _ (println "backtest-id: " backtest-id)]
       (procure-and-post-positions backtest-id account-id))))
 
-(run-backtest-and-procure-positions)
+#_(run-and-save-backtest-and-procure-positions)
 
 (defonce trade-env (atom {}))
 
@@ -335,7 +331,7 @@
          :ga-config {:num-generations 3
                      :stream-count 3000
                      :back-pct 0.95}}
-        backtest-id (run-backtest backtest-params)
+        backtest-id (run-and-save-backtest backtest-params)
         _ (println "backtest-id: " backtest-id)]
     (trade backtest-id (second (oa/get-some-account-ids 2)))))
 

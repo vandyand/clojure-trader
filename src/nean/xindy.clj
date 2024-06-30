@@ -80,16 +80,23 @@
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
-             new-stream-section (oa/get-instrument-stream
-                                 {:name instrument
-                                  :granularity granularity
-                                  :from from-time
-                                  :to to-time
-                                  :includeFirst false})
+             stream-config {:name instrument
+                            :granularity granularity
+                            :from from-time
+                            :to to-time
+                            :includeFirst false
+                            :count _count}
+             new-stream-section (oa/get-instrument-stream stream-config)
              new-stream (into new-stream-section stream)]
          (if (or (>= i (-> from-to-times count dec)) (>= (count new-stream) _count))
            (mapv :o new-stream)
            (recur (inc i) new-stream)))))))
+
+(comment
+  (def eth_stream (get-big-stream "ETHUSDT" "H1" 12))
+  (println eth_stream)
+  (def eur_stream (get-big-stream "EUR_USD" "H1" 12))
+  (println eur_stream))
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
