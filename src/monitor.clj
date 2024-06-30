@@ -1,6 +1,6 @@
 (ns monitor
   (:require
-   [api.oanda_api :as oapi]
+   [api.oanda_api :as oa]
    [util :as util]
    [file :as file]
    [clojure.core.async :as async]
@@ -10,12 +10,12 @@
 
 (defn get-navs [account-ids]
   (for [account-id account-ids]
-    (oapi/get-account-nav account-id)))
+    (oa/get-account-nav account-id)))
 
-(defn get-difs 
+(defn get-difs
   ([navs] (get-difs navs 1000))
   ([navs starting-nav]
-  (map #(- % starting-nav) navs)))
+   (map #(- % starting-nav) navs)))
 
 (defn get-sum [difs]
   (reduce + difs))
@@ -23,17 +23,17 @@
 (defn shorten-account-id [account-id]
   (-> account-id (clojure.string/split #"-") last))
 
-(defn get-performance 
+(defn get-performance
   ([account-ids] (get-performance account-ids 1000))
   ([account-ids starting-nav]
-  (let [navs (get-navs account-ids)
-        difs (get-difs navs starting-nav)
+   (let [navs (get-navs account-ids)
+         difs (get-difs navs starting-nav)
         ;sum (get-sum difs)
-        mean (stats/mean difs)]
-    (assoc (apply hash-map (interleave (map keyword (map shorten-account-id account-ids)) difs))
-           :mean mean
+         mean (stats/mean difs)]
+     (assoc (apply hash-map (interleave (map keyword (map shorten-account-id account-ids)) difs))
+            :mean mean
            ;:sum sum
-           :time (util/current-time-sec)))))
+            :time (util/current-time-sec)))))
 
 (defn get-and-write-performance
   ([account-ids] (get-and-write-performance account-ids "data/performance.edn"))
@@ -71,21 +71,21 @@
        (when (not (env/get-env-data :KILL_GO_BLOCKS?)) (recur)))
      schedule-chan)))
 
-(defn print-account-navs 
+(defn print-account-navs
   ([account-ids] (print-account-navs account-ids 1000))
   ([account-ids starting-nav]
-  (println
-   (reduce
-    +
-    (util/print-return
-     (map
-      #(- % starting-nav)
-      (util/print-return
-       (for [account-id account-ids]
-         (oapi/get-account-nav account-id)))))))))
+   (println
+    (reduce
+     +
+     (util/print-return
+      (map
+       #(- % starting-nav)
+       (util/print-return
+        (for [account-id account-ids]
+          (oa/get-account-nav account-id)))))))))
 
 (defn print-cumulative-positions [account-ids]
-  (let [positions (map oapi/get-formatted-open-positions account-ids)
+  (let [positions (map oa/get-formatted-open-positions account-ids)
         empty-instus (->> positions flatten (map :instrument) set (map (fn [x] {:instrument x :units 0})))]
     (sort-by
      :instrument
@@ -98,7 +98,7 @@
       empty-instus
       positions))))
 
-#_(print-cumulative-positions (oapi/get-some-account-ids 2))
+#_(print-cumulative-positions (oa/get-some-account-ids 2))
 
 (comment
 
@@ -111,20 +111,19 @@
   )
 
 (comment
- (do
-   (def account-ids ["101-001-5729740-001"
-                     "101-001-5729740-002"
-                     "101-001-5729740-003"
-                     "101-001-5729740-004"
-                     "101-001-5729740-005"
-                     "101-001-5729740-006"
-                     "101-001-5729740-007"])
-   
-   
-   (def account-ids ["101-001-5729740-001"])
+  (do
+    (def account-ids ["101-001-5729740-001"
+                      "101-001-5729740-002"
+                      "101-001-5729740-003"
+                      "101-001-5729740-004"
+                      "101-001-5729740-005"
+                      "101-001-5729740-006"
+                      "101-001-5729740-007"])
 
-   (scheduled-perf-writer account-ids "M5" "data/performance.edn")
-   )
+
+    (def account-ids ["101-001-5729740-001"])
+
+    (scheduled-perf-writer account-ids "M5" "data/performance.edn"))
   ;; end comment
   )
 

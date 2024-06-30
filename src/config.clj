@@ -1,5 +1,10 @@
 (ns config)
 
+(defn get-instrument-config
+  ([name granularity] (get-instrument-config name granularity 5000))
+  ([name granularity count]
+   {:name name :granularity granularity :count count}))
+
 ;; :incint is a string of "inception" | "intention" | "both"
 (defn get-streams-config [& args]
   (reduce (fn [acc args] (conj acc {:name (first args) :incint (last args) :id (count acc)}))

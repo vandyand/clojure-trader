@@ -1,5 +1,5 @@
 (ns nean.xindy
-  (:require [api.oanda_api :as oapi]
+  (:require [api.oanda_api :as oa]
             [stats :as stats]
             [util :as util]))
 
@@ -80,7 +80,7 @@
        (let [from-to-time (-> from-to-times (nth i))
              from-time (second from-to-time)
              to-time (first from-to-time)
-             new-stream-section (oapi/get-instrument-stream
+             new-stream-section (oa/get-instrument-stream
                                  {:name instrument
                                   :granularity granularity
                                   :from from-time
@@ -92,7 +92,6 @@
            (recur (inc i) new-stream)))))))
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
-  (println "getting: " instrument)
   (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
         back-len (int (* (count big-stream) back-pct))
         fore-len (- (count big-stream) back-len)

@@ -6,7 +6,7 @@
    [nean.arena :as arena]
    [ring.util.response :as response]
    [cheshire.core :as json]
-   [api.oanda_api :as oapi]))
+   [api.oanda_api :as oa]))
 
 (defn req->body [req]
   (json/decode (-> req :body slurp) true))
@@ -19,7 +19,7 @@
   ;; Endpoint for getting accounts
   (cj/GET "/accounts" []
     (try
-      (let [accounts (oapi/get-account-ids)]
+      (let [accounts (oa/get-account-ids)]
         (response/response (json/encode {:status "success" :data accounts})))
       (catch Exception e
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))
@@ -87,7 +87,7 @@
   (cj/POST "/close-positions" req
     (try
       (let [body (req->body req)
-            result (oapi/close-positions (:account-id body))]
+            result (oa/close-positions (:account-id body))]
         (response/response (json/encode {:status "success" :data result})))
       (catch Exception e
         (response/response (json/encode {:stats "error" :message (.getMessage e)})))))
@@ -95,7 +95,7 @@
   ;; Endpoint for closing all open positions
   (cj/POST "/close-all-positions" _
     (try
-      (let [result (oapi/close-all-positions)]
+      (let [result (oa/close-all-positions)]
         (response/response (json/encode {:status "success" :data result})))
       (catch Exception e
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))

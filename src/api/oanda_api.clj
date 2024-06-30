@@ -1,7 +1,8 @@
 (ns api.oanda_api
   (:require [clojure.data.json :as json]
             [env :as env]
-            [api.util :as autil]))
+            [api.util :as autil]
+            [config :as config]))
 
 ;; autilITY FUNCTIONS 
 
@@ -132,9 +133,9 @@
     (make-request-options order-options))))
 
 (defn get-instrument-stream [instrument-config]
-  (let [api-data (get-api-candle-data instrument-config)]
+  (let [candle-data (get-api-candle-data instrument-config)]
     (vec
-     (for [candle (get api-data :candles)]
+     (for [candle (get candle-data :candles)]
        {:v (get candle :volume)
         :o (Double/parseDouble (get-in candle [:mid :o]))
         :h (Double/parseDouble (get-in candle [:mid :h]))
@@ -152,7 +153,7 @@
 ;; OANDA STRINDICATOR STUFF
 
 (defn get-instrument-last-candle [instrument granularity]
-  (-> instrument (autil/get-instrument-config granularity 1) get-api-candle-data :candles last))
+  (-> instrument (config/get-instrument-config granularity 1) get-api-candle-data :candles last))
 
 (defn get-current-candle-open-time [granularity]
   (-> "EUR_USD" (get-instrument-last-candle (or granularity "H1")) :time Double/parseDouble))

@@ -1,5 +1,5 @@
 (ns nean.arena
-  (:require [api.oanda_api :as oapi]
+  (:require [api.oanda_api :as oa]
             [api.order_types :as ot]
             [clojure.core.async :as async]
             [config :as config]
@@ -10,7 +10,8 @@
             [stats :as stats]
             [util :as util]
             [buddy.core.hash :refer [md5]]
-            [buddy.core.codecs :refer [bytes->hex]]))
+            [buddy.core.codecs :refer [bytes->hex]]
+            [constants :as c]))
 
 (comment
   "strategy = vector of integers (shifts) representing back-shift distances for backtest scoring algorithm.
@@ -63,7 +64,8 @@
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
    (vec
     (for [instrument instruments]
-      (let [streams-map (xindy/get-back-fore-streams
+      (let [_ (println instrument)
+            streams-map (xindy/get-back-fore-streams
                          instrument granularity
                          (:stream-count ga-config)
                          (:back-pct ga-config)
@@ -93,7 +95,7 @@
   )
 
 ;; Saved wrifts file should have everything we need to run them.
-(defn save-wrifts+stuff
+(defn save-backtest
   ([wrifts xindy-config granularity filename]
    (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}]
      (file/write-file filename file-content)
@@ -111,8 +113,8 @@
 
 #_(get-backtest-ids)
 
-(defn generate-and-save-wrifts
-  ([backtest-params] (generate-and-save-wrifts
+(defn run-backtest
+  ([backtest-params] (run-backtest
                       (:instruments backtest-params)
                       (:xindy-config backtest-params)
                       (:pop-config backtest-params)
@@ -123,15 +125,12 @@
    (let [backtest-id (gen-backtest-id)
          filename (str "data/wrifts/" backtest-id ".edn")
          _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})]
-     (save-wrifts+stuff
+     (save-backtest
       (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)
       xindy-config
       granularity
       filename)
      backtest-id)))
-
-(defn backtest [backtest-params]
-  (generate-and-save-wrifts backtest-params))
 
 (comment
 
@@ -148,7 +147,7 @@
                  :stream-count 3000
                  :back-pct 0.95}})
 
-  (backtest backtest-params)
+  (run-backtest backtest-params)
 
   ;; end comment
   )
@@ -156,52 +155,50 @@
 (defn xindies->raw-position [xindies]
   (stats/mean (map #(-> % :last-sieve-val) xindies)))
 
-(defn procure-raw-instrument-positions [wrifts+stuff]
-  (for [wrifts (:wrifts wrifts+stuff)]
+(defn procure-raw-instrument-positions [backtest]
+  (for [wrifts (:wrifts backtest)]
     {:instrument (:instrument wrifts)
      :raw-position (if (empty? (:rifts wrifts))
                      0.0
                      (let [xindies (xindy/shifts->xindies
                                     (:instrument wrifts)
                                     (:rifts wrifts)
-                                    (:xindy-config wrifts+stuff)
-                                    (:granularity wrifts+stuff))]
+                                    (:xindy-config backtest)
+                                    (:granularity backtest))]
                        (xindies->raw-position xindies)))}))
 
 (defn raw->target-instrument-position [raw-instrument-position account-nav max-pos]
-  (let [target-pos (int (+ 0.5 (* 0.01 account-nav (:raw-position raw-instrument-position))))]
+  (let [target-pos (int (+ 0.5 (* 0.05 account-nav (:raw-position raw-instrument-position))))]
     (cond
       (> target-pos max-pos) max-pos
       (< target-pos (* -1 max-pos)) (* -1 max-pos)
       :else target-pos)))
 
 (defn raw->target-instrument-positions [raw-instrument-positions account-id]
-  (let [account-nav (oapi/get-account-nav account-id)
+  (let [account-nav (oa/get-account-nav account-id)
         max-pos (int (* 1.0 account-nav))]
     (for [raw-instrument-position raw-instrument-positions]
       (assoc raw-instrument-position
              :target-position
              (raw->target-instrument-position raw-instrument-position account-nav max-pos)))))
 
-(defn procure-target-instrument-positions [wrifts+stuff account-id]
-  (let [raw-instrument-positions (procure-raw-instrument-positions wrifts+stuff)]
-    (raw->target-instrument-positions raw-instrument-positions account-id)))
+(defn backtest->target-instruments-positions [backtest account-id]
+  (raw->target-instrument-positions (procure-raw-instrument-positions backtest) account-id))
 
 (defn post-target-pos
   ([instrument target-pos] (post-target-pos instrument target-pos (env/get-account-id)))
   ([instrument target-pos account-id]
-   (let [current-pos-data (-> (oapi/get-open-positions account-id) :positions (util/find-in :instrument instrument))
+   (let [current-pos-data (-> (oa/get-open-positions account-id) :positions (util/find-in :instrument instrument))
          long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
          short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
          current-pos (if current-pos-data (+ long-pos short-pos) 0)
          units (if current-pos-data (- target-pos current-pos) target-pos)]
-     (when (not= units 0)
-       (do (oapi/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
-           (println "account-id: " account-id " ------------------------------------------------------")
-           (println instrument ": position changed")
-           (println "prev-pos: "  current-pos)
-           (println "target-pos: " target-pos)
-           (println "pos-change: " units))))))
+     (if (= units 0)
+       (println "No position change for " instrument "\nCurrent position: " current-pos "\n")
+       (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
+           (println "Position change for " instrument "\nOld position: " current-pos "\nNew position: " (+ current-pos units) "\n"))))))
+
+#_(ot/make-order-options-util "EUR_USD" 100 "MARKET")
 
 (defn post-target-positions [target-instrument-positions account-id]
   (doseq [target-instrument-position target-instrument-positions]
@@ -233,28 +230,28 @@
 
 (defn procure-and-post-positions
   ([backtest-id account-id]
-   (let [wrifts+stuff (backtest-id->backtest backtest-id)
-         target-instrument-positions (procure-target-instrument-positions wrifts+stuff account-id)]
+   (let [backtest (backtest-id->backtest backtest-id)
+         target-instrument-positions (backtest->target-instruments-positions backtest account-id)]
      (post-target-positions target-instrument-positions account-id))))
 
-(let [account-id "101-001-5729740-002"
-      backtest-params
-      {:instruments ["EUR_USD"]
-       :granularity "H1"
-       :num-backtests-per-instrument 1
-       :xindy-config {:num-shifts 4
-                      :max-shift 100}
-       :pop-config {:pop-size 200
-                    :num-parents 50
-                    :num-children 150}
-       :ga-config {:num-generations 5
-                   :stream-count 3000
-                   :back-pct 0.9}}
-      backtest-id (backtest backtest-params)
-      _ (println "backtest-id: " backtest-id)]
-  (procure-and-post-positions backtest-id account-id))
+#_(let [account-id "101-001-5729740-002"
+        backtest-params
+        {:instruments ["EUR_USD"]
+         :granularity "H1"
+         :num-backtests-per-instrument 1
+         :xindy-config {:num-shifts 4
+                        :max-shift 100}
+         :pop-config {:pop-size 200
+                      :num-parents 50
+                      :num-children 150}
+         :ga-config {:num-generations 5
+                     :stream-count 3000
+                     :back-pct 0.9}}
+        backtest-id (backtest backtest-params)
+        _ (println "backtest-id: " backtest-id)]
+    (procure-and-post-positions backtest-id account-id))
 
-(defn run-backtest-and-procure-positions []
+(defn run-backtest-and-procure-positions-sm []
   (let [account-id "101-001-5729740-002"
         backtest-params {:instruments ["EUR_USD"]
                          :granularity "H1"
@@ -267,21 +264,40 @@
                          :ga-config {:num-generations 2
                                      :stream-count 200
                                      :back-pct 0.9}}
-        backtest-id (backtest backtest-params)
+        backtest-id (run-backtest backtest-params)
         _ (println "backtest-id: " backtest-id)]
     (procure-and-post-positions backtest-id account-id)))
 
-(comment
-  ;; Load the trace setup
-  (require '[nean.trace :as trace])
+#_(run-backtest-and-procure-positions-sm)
 
-  ;; Run the traced function
-  (trace/run-traced-backtest))
+#_(let [demo-account-id "101-001-5729740-002"
+        live-account-id "001-001-1352681-001"]
+    (println demo-account-id live-account-id))
+
+(defn run-backtest-and-procure-positions []
+  (doseq [instrument (subvec c/pairs-by-liquidity 0 7)]
+    (let [account-id "101-001-5729740-002"
+          backtest-params {:instruments [instrument]
+                           :granularity "H1"
+                           :num-backtests-per-instrument 7
+                           :xindy-config {:num-shifts 14
+                                          :max-shift 77}
+                           :pop-config {:pop-size 77
+                                        :num-parents 33
+                                        :num-children 44}
+                           :ga-config {:num-generations 7
+                                       :stream-count 777
+                                       :back-pct 0.95}}
+          backtest-id (run-backtest backtest-params)
+          _ (println "backtest-id: " backtest-id)]
+      (procure-and-post-positions backtest-id account-id))))
+
+(run-backtest-and-procure-positions)
 
 (defonce trade-env (atom {}))
 
 (defn trade
-  ([backtest-id] (trade backtest-id (first (oapi/get-some-account-ids 1))))
+  ([backtest-id] (trade backtest-id (first (oa/get-some-account-ids 1))))
   ([backtest-id account-id] (trade backtest-id account-id nil))
   ([backtest-id account-id regularity]
    (println "Starting trade function.")
@@ -319,9 +335,9 @@
          :ga-config {:num-generations 3
                      :stream-count 3000
                      :back-pct 0.95}}
-        backtest-id (backtest backtest-params)
+        backtest-id (run-backtest backtest-params)
         _ (println "backtest-id: " backtest-id)]
-    (trade backtest-id (second (oapi/get-some-account-ids 2)))))
+    (trade backtest-id (second (oa/get-some-account-ids 2)))))
 
 (defn stop-trading
   [account-id]
@@ -332,7 +348,7 @@
 #_(stop-trading "101-001-5729740-002")
 
 (defn stop-all-trading []
-  (let [account-ids (oapi/get-account-ids)]
+  (let [account-ids (oa/get-account-ids)]
     (for [account-id account-ids]
       (stop-trading account-id))))
 
@@ -357,7 +373,7 @@
                 ga-config (config/xindy-ga-config 15 20000 0.75)
                 pop-config (config/xindy-pop-config 300 0.5)
                 wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
-            (save-wrifts+stuff wrifts xindy-config granularity "data/wrifts/")))
+            (save-backtest wrifts xindy-config granularity "data/wrifts/")))
         (recur (inc i)))))
 
   ;;end comment
@@ -371,12 +387,12 @@
                     "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
                     "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
 
-  (oapi/get-some-account-ids 5)
+  (oa/get-some-account-ids 5)
 
   ;; this randomly updates instrument position sizes
   (doseq [x (repeatedly 1000 #(rand-int 100))]
     (post-target-positions
      [{:instrument (rand-nth instruments) :target-position x}]
-     (rand-nth (oapi/get-some-account-ids 5)))))
+     (rand-nth (oa/get-some-account-ids 5)))))
 
 
