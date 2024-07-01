@@ -3,7 +3,8 @@
             [clj-http.client :as client]
             [env :as env]
             [api.util :as autil]
-            [config :as config]))
+            [config :as config]
+            [api.order_types :as ot]))
 
 ;; autilITY FUNCTIONS 
 
@@ -112,7 +113,7 @@
          granularity (get instrument-config :granularity)
          binance-granularity (map-oanda-to-binance-granularity granularity)
          endpoint (if is-crypto
-                    (str "http://localhost:5000/candlestick?symbol=" instrument-name
+                    (str "http://localhost:4321/candlestick?symbol=" instrument-name
                          "&timeframe=" binance-granularity
                          "&limit=" (get instrument-config :count))
                     (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"
@@ -140,6 +141,13 @@
   #_(get-streaming-price-data "EUR_USD"))
 
 ;; GET OPEN POSITIONS
+
+(defn get-binance-positions []
+  (let [url "http://localhost:4321/balances"
+        response (client/get url {:as :json})]
+    (:body response)))
+
+#_(get-binance-positions)
 
 (defn get-open-positions
   ([] (get-open-positions (env/get-account-id)))
@@ -170,12 +178,28 @@
    :as :json})
 
 (defn send-order-request
-  "order-options can be made by order_types/make-order-options-autil function"
+  "order-options can be made by order_types/make-order-options-util function"
   ([order-options] (send-order-request order-options (env/get-account-id)))
-  ([order-options account-id]
+  ([order-options account-id] 
    (autil/send-api-post-request
     (autil/build-oanda-url (get-account-endpoint account-id "orders"))
     (make-request-options order-options))))
+
+(defn send-binance-order [symbol type side amount]
+  (let [url "http://localhost:4321/order"
+        payload {:symbol symbol
+                 :type type
+                 :side side
+                 :amount amount}
+        response (client/post url
+                              {:body (json/write-str payload)
+                               :headers {"Content-Type" "application/json"}
+                               :as :json})]
+    (:body response)))
+
+#_(send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
+#_(send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
+#_(send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS ETH
 
 (defn get-instrument-stream-old [instrument-config]
   (let [candle-data (get-api-candle-data instrument-config)]
@@ -209,11 +233,11 @@
 
 (comment
 
-  (ot/make-order-options-autil "EUR_USD" 50 "GTD" "H1" 0.005 0.005)
+  (ot/make-order-options-util "EUR_USD" 50)
 
-  (send-order-request (ot/make-order-options-autil "EUR_USD" 5))
+  (send-order-request (ot/make-order-options-util "EUR_USD" 5))
 
-  (send-order-request (ot/make-order-options-autil "EUR_USD" -50 "GTD" "H1" 0.005 0.005)))
+  (send-order-request (ot/make-order-options-util "EUR_USD" -50 "GTD" "H1" 0.005 0.005)))
 
 ;; OANDA STRINDICATOR STUFF
 

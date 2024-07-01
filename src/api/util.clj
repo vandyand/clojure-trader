@@ -5,6 +5,9 @@
    [clojure.data.json :as json]
    [clojure.core.async :as async]))
 
+(defn is-crypto? [instrument]
+  (clojure.string/includes? instrument "USDT"))
+
 ;; SEND GET PUT POST REQUESTS
 
 (defn send-api-get-request

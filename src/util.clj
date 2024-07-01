@@ -2,6 +2,12 @@
   (:require
    [clojure.core.async :as async]))
 
+(defn is-crypto? [instrument]
+  (clojure.string/includes? instrument "USDT"))
+
+#_(is-crypto? "BTCUSDT")
+#_(is-crypto? "EUR_USD")
+
 (defn rand-bool []
   (> 0.5 (rand)))
 

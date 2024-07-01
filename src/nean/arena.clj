@@ -114,7 +114,7 @@
 #_(get-backtest-ids)
 
 (defn run-and-save-backtest
-  ([] (run-and-save-backtest {:instruments ["ETH_USD"]
+  ([] (run-and-save-backtest {:instruments ["BTCUSDT"]
                               :granularity "H1"
                               :num-backtests-per-instrument 1
                               :xindy-config {:num-shifts 4
@@ -198,8 +198,10 @@
 (defn backtest->target-instruments-positions [backtest account-id]
   (raw->target-instrument-positions (procure-raw-instrument-positions backtest) account-id))
 
-(defn post-target-pos
-  ([instrument target-pos] (post-target-pos instrument target-pos (env/get-account-id)))
+#_(-> "75148d6" backtest-id->backtest procure-raw-instrument-positions)
+
+(defn post-target-pos-oanda
+  ([instrument target-pos] (post-target-pos-oanda instrument target-pos (env/get-account-id)))
   ([instrument target-pos account-id]
    (let [current-pos-data (-> (oa/get-open-positions account-id) :positions (util/find-in :instrument instrument))
          long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
@@ -210,6 +212,72 @@
        (println "No position change for " instrument "\nCurrent position: " current-pos "\n")
        (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
            (println "Position change for " instrument "\nOld position: " current-pos "\nNew position: " (+ current-pos units) "\n"))))))
+
+(defn extract-base-asset [instrument]
+  (subs instrument 0 (- (count instrument) 4))) ;; Assuming all pairs end with "USDT"
+
+(defn post-target-pos-binance
+  ([instrument target-pos] 
+   (post-target-pos-binance instrument target-pos (env/get-account-id)))
+  ([instrument target-pos account-id]
+   (let [base-asset (keyword (extract-base-asset instrument))]
+     (println "Extracted base asset:" base-asset)
+     
+     (let [positions (oa/get-binance-positions)]
+       (println "Fetched Binance positions:" positions)
+       
+       (let [current-pos-data (get positions base-asset)]
+         (println "Current position data for" base-asset ":" current-pos-data)
+         
+         (let [current-pos (if current-pos-data 
+                             (Double/parseDouble (str current-pos-data)) 
+                             0.0)]
+           (println "Current position for" instrument ":" current-pos)
+           
+           (let [units (- target-pos current-pos)]
+             (println "Calculated units to change for" instrument ":" units)
+             
+             (if (= units 0.0)
+               (println "No position change for" instrument "\nCurrent position:" current-pos "\n")
+               (do
+                 (oa/send-binance-order instrument "market" 
+                                        (if (> units 0) "buy" "sell") 
+                                        (Math/abs units))
+                 (println "Position change for" instrument "\nOld position:" current-pos "\nNew position:" (+ current-pos units) "\n"))))))))))
+
+#_(oa/send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
+#_(oa/send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
+#_(oa/send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS ETH
+
+#_(post-target-pos-binance "BTCUSDT" 0.0003)
+
+(comment
+  (post-target-pos-binance "ETHUSDT" 0.0001)
+  )
+
+(comment
+  (let [instrument "ETHUSDT"
+        target-pos 0.0001
+        base-asset (keyword (extract-base-asset instrument))
+        positions (oa/get-binance-positions)
+        current-pos-data (get positions base-asset)
+        current-pos (if current-pos-data (Double/parseDouble (str current-pos-data)) 0.0)
+        units (- target-pos current-pos)]
+    (println "instrument" instrument "\n"
+             "target-pos" target-pos "\n"
+             "base-asset" base-asset "\n"
+             "positions" positions "\n"
+             "current-pos-data" current-pos-data "\n"
+             "current-pos" current-pos "\n"
+             "units" units))
+  ;; end comment
+  )
+
+(defn post-target-pos
+  [instrument target-pos]
+  (if (util/is-crypto? instrument)
+    (post-target-pos-binance instrument target-pos)
+    (post-target-pos-oanda instrument target-pos)))
 
 #_(ot/make-order-options-util "EUR_USD" 100 "MARKET")
 
@@ -249,7 +317,7 @@
 
 (defn run-and-save-backtest-and-procure-positions-sm []
   (let [account-id "101-001-5729740-002"
-        backtest-params {:instruments ["EUR_USD" "BTCUSDT"]
+        backtest-params {:instruments ["BTCUSDT"]
                          :granularity "H1"
                          :num-backtests-per-instrument 1
                          :xindy-config {:num-shifts 4
@@ -264,7 +332,7 @@
         _ (println "backtest-id: " backtest-id)]
     (procure-and-post-positions backtest-id account-id)))
 
-(run-and-save-backtest-and-procure-positions-sm)
+#_(run-and-save-backtest-and-procure-positions-sm)
 
 #_(let [demo-account-id "101-001-5729740-002"
         live-account-id "001-001-1352681-001"]
