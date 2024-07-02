@@ -11,11 +11,11 @@
 ;; gtdTime needed if timeInForce is "GTD"
 
 (defn make-base-order-body [instrument units _type time-in-force]
-    {:instrument instrument
-     :units units
-     :type (or _type "MARKET")
-     :timeInForce (or time-in-force "FOK")
-     :positionFill "DEFAULT"})
+  {:instrument instrument
+   :units units
+   :type (or _type "MARKET")
+   :timeInForce (or time-in-force "FOK")
+   :positionFill "DEFAULT"})
 
 (defn make-order-body [instrument units _type sl-price lim-price tp-price time-in-force gtd-time]
   (let [base (make-base-order-body instrument units _type time-in-force)]
@@ -29,7 +29,7 @@
 (defn- price->pow [target-price]
   (as-> target-price $ (str $) (clojure.string/split $ #"[.]") (first $) (count $) (dec $) (Math/pow 10 $)))
 
-(defn get-sltp-prices 
+(defn get-sltp-prices
   ([long? target-price sl-dist tp-dist]
    (let [power (price->pow target-price) ;; This is to scale distances for JPY
          sl-fn (if long? - +)
@@ -56,7 +56,7 @@
         formatted-tp (when sltp? (format-num-for-api (sltp-prices :tp) precision))
         formatted-gtd-time (when gtd-time (str (int gtd-time)))
         formatted-units (str units)]
-     (make-order-body instrument formatted-units _type formatted-sl formatted-price formatted-tp time-in-force formatted-gtd-time)))
+    (make-order-body instrument formatted-units _type formatted-sl formatted-price formatted-tp time-in-force formatted-gtd-time)))
 
 (defn make-order-options-util
   ([instrument units] (make-order-options-util instrument units nil))
@@ -64,15 +64,3 @@
   ([instrument units _type sl-dist tp-dist] (make-order-options-util instrument units _type sl-dist tp-dist nil nil))
   ([instrument units _type sl-dist tp-dist time-in-force granularity]
    (make-formatted-options instrument units _type sl-dist tp-dist granularity time-in-force)))
-
-(comment
-
-
-  (-> "EUR_USD"
-      (make-order-options-util 50)
-      clojure.pprint/pprint)
-
-
-  (clojure.pprint/pprint (make-order-options-util "EUR_USD" 50 "MARKET" 0.005 0.005))
-  
-  )

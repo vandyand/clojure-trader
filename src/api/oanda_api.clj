@@ -3,8 +3,7 @@
             [clj-http.client :as client]
             [env :as env]
             [api.util :as autil]
-            [config :as config]
-            [api.order_types :as ot]))
+            [config :as config]))
 
 ;; autilITY FUNCTIONS 
 
@@ -180,7 +179,7 @@
 (defn send-order-request
   "order-options can be made by order_types/make-order-options-util function"
   ([order-options] (send-order-request order-options (env/get-account-id)))
-  ([order-options account-id] 
+  ([order-options account-id]
    (autil/send-api-post-request
     (autil/build-oanda-url (get-account-endpoint account-id "orders"))
     (make-request-options order-options))))
@@ -229,15 +228,6 @@
           :h (Double/parseDouble (get-in candle [:mid :h]))
           :l (Double/parseDouble (get-in candle [:mid :l]))
           :c (Double/parseDouble (get-in candle [:mid :c]))})))))
-
-
-(comment
-
-  (ot/make-order-options-util "EUR_USD" 50)
-
-  (send-order-request (ot/make-order-options-util "EUR_USD" 5))
-
-  (send-order-request (ot/make-order-options-util "EUR_USD" -50 "GTD" "H1" 0.005 0.005)))
 
 ;; OANDA STRINDICATOR STUFF
 
