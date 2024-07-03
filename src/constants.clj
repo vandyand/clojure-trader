@@ -41,11 +41,20 @@
    "DAIUSDT", "DASHUSDT", "HBARUSDT", "ICXUSDT", "IOTAUSDT", "RVNUSDT", "XNOUSDT", "XTZUSDT", "ZILUSDT", "ORBSUSDT",
    "CUDOSUSDT", "ADXUSDT", "FORTUSDT", "SUIUSDT", "ONGUSDT"])
 
+(def all-instruments
+  (concat forex-instruments crypto-instruments))
+
 (def currencies-by-liquidity
   ["USD" "EUR" "JPY" "GBP" "AUD" "CHF" "CAD" "NZD"])
 
-(def pairs-by-liquidity
+(def pairs-by-liquidity-oanda
   ["EUR_USD" "USD_JPY" "GBP_USD" "AUD_USD" "USD_CAD" "USD_CHF" "NZD_USD" "EUR_JPY" "GBP_JPY" "EUR_GBP" "AUD_JPY" "EUR_AUD"])
+
+(def pairs-by-liquidity-crypto
+  ["BTCUSDT" "ETHUSDT" "XRPUSDT" "BCHUSDT" "LTCUSDT" "BNBUSDT" "ADAUSDT" "BATUSDT" "ETCUSDT" "XLMUSDT" "ZRXUSDT" "DOGEUSDT" "ATOMUSDT"])
+
+(def pairs-by-liquidity
+  (concat pairs-by-liquidity-oanda pairs-by-liquidity-crypto))
 
 (def oanda-granularities
   ["S5" "S10" "S15" "S30" "M1" "M2" "M4" "M5" "M10" "M15" "M30"

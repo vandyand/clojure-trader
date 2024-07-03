@@ -26,7 +26,7 @@
     (xindy/get-xindy-from-shifts new-shifts (:max-shift xindy-config) stream)))
 
 (defn sort-pop [pop]
-  (->> pop (sort-by :score) reverse vec))
+  (->> pop (sort-by :ga-score) reverse vec))
 
 (defn get-init-pop [pop-config xindy-config stream]
   (sort-pop
@@ -60,7 +60,7 @@
    (run-generations (get-init-pop pop-config xindy-config stream) num-generations pop-config xindy-config stream))
   ([starting-pop num-generations pop-config xindy-config stream]
    (loop [i 1 pop starting-pop]
-     (when (env/get-env-data :GA_LOGGING?) (println i (-> pop first :score) (stats/mean (map :score pop))))
+     (when (env/get-env-data :GA_LOGGING?) (println i (-> pop first :ga-score) (stats/mean (map :ga-score pop))))
      (if (< i num-generations)
        (recur (inc i) (run-generation pop pop-config xindy-config stream))
        pop))))

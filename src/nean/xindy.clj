@@ -51,8 +51,18 @@
 
 (defn get-xindy-from-shifts [shifts max-shift stream]
   (let [sieve (shifts->sieve shifts max-shift stream)
+        sieve-mean (stats/mean sieve)
+        sieve-stdev (stats/stdev sieve)
+        last-sieve-val (-> sieve seq last)
+        last-rel-sieve-val (if (not= sieve-stdev 0.0)
+                             (/ (- last-sieve-val sieve-mean) sieve-stdev)
+                             0.0)
         rivulet (sieve+stream->rivulet sieve stream)]
-    {:shifts shifts :last-sieve-val (-> sieve seq last) :rivulet rivulet :score (stats/score-x (-> rivulet seq vec))}))
+    {:shifts shifts
+     :last-sieve-val last-sieve-val
+     :last-rel-sieve-val last-rel-sieve-val
+     :rivulet rivulet
+     :ga-score (stats/score-x (-> rivulet seq vec))}))
 
 (defn get-rand-xindy
   ([xindy-config stream]
@@ -107,7 +117,7 @@
                      big-stream
                      (- back-len max-shift)
                      (count big-stream))]
-    {:back-stream back-stream :fore-stream fore-stream}))
+    {:back-stream back-stream :fore-stream fore-stream :total-stream big-stream}))
 
 (defn num-weekend-bars [granularity]
   (let [secs-per-bar (util/granularity->seconds granularity)

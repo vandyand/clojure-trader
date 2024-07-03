@@ -141,10 +141,16 @@
 
 ;; GET OPEN POSITIONS
 
+(defn format-binance-positions [positions]
+  (->> positions
+       (filter (fn [[_ v]] (not= v 0.0))) ;; Exclude zero positions
+       (map (fn [[k v]] {:instrument (name k) :units v}))))
+
 (defn get-binance-positions []
   (let [url "http://localhost:4321/balances"
-        response (client/get url {:as :json})]
-    (:body response)))
+        response (client/get url {:as :json})
+        positions (:body response)]
+    (format-binance-positions positions)))
 
 #_(get-binance-positions)
 
