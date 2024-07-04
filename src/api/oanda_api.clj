@@ -80,9 +80,19 @@
    (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (autil/get-oanda-api-data endpoint instrument-config))))
 
-(defn get-crypto-api-data [endpoint]
-  (let [response (client/get endpoint {:as :json})]
-    (:body response)))
+(def crypto-cache (atom {}))
+
+(defn get-crypto-api-data
+  [endpoint]
+  (let [current-time (System/currentTimeMillis)
+        cached-data (get @crypto-cache endpoint)
+        cache-valid? (and cached-data (< (- current-time (:timestamp cached-data)) 60000))]
+    (if cache-valid?
+      (:data cached-data)
+      (let [response (client/get endpoint {:as :json})
+            data (:body response)]
+        (swap! crypto-cache assoc endpoint {:data data :timestamp current-time})
+        data))))
 
 
 (defn map-oanda-to-binance-granularity [oanda-granularity]

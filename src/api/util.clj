@@ -67,12 +67,24 @@
   [] {:Authorization (str "Bearer " (env/get-oanda-api-key))
       :Accept-Datetime-Format "UNIX"})
 
+(def oanda-cache (atom {}))
+
 (defn get-oanda-api-data
   ([endpoint] (get-oanda-api-data endpoint nil))
   ([endpoint instrument-config]
-   (-> endpoint
-       (build-oanda-url instrument-config)
-       (get-api-data (get-oanda-headers)))))
+   (let [cache-key (if instrument-config
+                     (str endpoint "?" (format-query-params (dissoc instrument-config :name)))
+                     endpoint)
+         current-time (System/currentTimeMillis)
+         cached-data (get @oanda-cache cache-key)
+         cache-valid? (and cached-data (< (- current-time (:timestamp cached-data)) 60000))]
+     (if cache-valid?
+       (:data cached-data)
+       (let [url (build-oanda-url endpoint instrument-config)
+             response (get-api-data url (get-oanda-headers))
+             data response]
+         (swap! oanda-cache assoc cache-key {:data data :timestamp current-time})
+         data)))))
 
 (defn get-oanda-stream-data
   [endpoint]

@@ -8,7 +8,6 @@
 (ns portfolio
   (:require [nean.arena :as arena]
             [nean.xindy :as xindy]
-            [nean.trade :as trade]
             [api.oanda_api :as oanda_api]
             [clojure.set :as set]
             [clojure.core.async :as async]
@@ -35,7 +34,7 @@
 
 (defn get-instrument-scores [backtest-arg]
   (let [backtest (if (string? backtest-arg)
-                   (trade/backtest-id->backtest backtest-arg)
+                   (arena/backtest-id->backtest backtest-arg)
                    backtest-arg)
         wrifts (:wrifts backtest)
         instrument-rel-scores (vec (for [wrift wrifts]
