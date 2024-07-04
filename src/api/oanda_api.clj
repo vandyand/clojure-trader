@@ -146,11 +146,21 @@
        (filter (fn [[_ v]] (not= v 0.0))) ;; Exclude zero positions
        (map (fn [[k v]] {:instrument (name k) :units v}))))
 
-(defn get-binance-positions []
-  (let [url "http://localhost:4321/balances"
-        response (client/get url {:as :json})
-        positions (:body response)]
-    (format-binance-positions positions)))
+(def binance-cache (atom {:positions nil :timestamp 0}))
+
+(defn get-binance-positions
+  ([] (get-binance-positions false))
+  ([force-refresh?]
+   (let [{:keys [positions timestamp]} @binance-cache
+         current-time (System/currentTimeMillis)
+         cache-valid? (and positions (< (- current-time timestamp) 180000))]
+     (if (and (not force-refresh?) cache-valid?)
+       positions
+       (let [url "http://localhost:4321/balances"
+             response (client/get url {:as :json})
+             new-positions (format-binance-positions (:body response))]
+         (reset! binance-cache {:positions new-positions :timestamp current-time})
+         new-positions)))))
 
 #_(get-binance-positions)
 
@@ -234,6 +244,21 @@
           :h (Double/parseDouble (get-in candle [:mid :h]))
           :l (Double/parseDouble (get-in candle [:mid :l]))
           :c (Double/parseDouble (get-in candle [:mid :c]))})))))
+
+(defn get-latest-price
+  [instrument]
+  (let [candle-data (get-api-candle-data {:name instrument :granularity "M1" :count 1})
+        is-crypto (clojure.string/includes? instrument "USDT")]
+    (if is-crypto
+      (-> candle-data first :close)
+      (-> candle-data :candles first :mid :c Double/parseDouble))))
+
+#_(get-latest-price "BTCUSDT")
+
+(defn get-latest-prices [instruments]
+  (mapv (fn [instrument] {:instrument instrument :price (get-latest-price instrument)}) instruments))
+
+#_(get-latest-prices ["EUR_USD" "BTCUSDT" "ETHUSDT"])
 
 ;; OANDA STRINDICATOR STUFF
 

@@ -5,6 +5,9 @@
 (defn is-crypto? [instrument]
   (clojure.string/includes? instrument "USDT"))
 
+(defn is-forex? [instrument]
+  (clojure.string/includes? instrument "_"))
+
 #_(is-crypto? "BTCUSDT")
 #_(is-crypto? "EUR_USD")
 

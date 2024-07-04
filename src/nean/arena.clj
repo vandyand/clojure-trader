@@ -214,7 +214,7 @@
          long-pos (when current-pos-data (-> current-pos-data :long :units Integer/parseInt))
          short-pos (when current-pos-data (-> current-pos-data :short :units Integer/parseInt))
          current-pos (if current-pos-data (+ long-pos short-pos) 0)
-         units (if current-pos-data (- target-pos current-pos) target-pos)]
+         units (int (if current-pos-data (- target-pos current-pos) target-pos))]
      (if (= units 0)
        (println "No position change for " instrument "\nCurrent position: " current-pos "\n")
        (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
@@ -223,35 +223,28 @@
 (defn extract-base-asset [instrument]
   (subs instrument 0 (- (count instrument) 4))) ;; Assuming all pairs end with "USDT"
 
+#_(-> "BTCUSDT" extract-base-asset)
+
 (defn post-target-pos-binance
   ([instrument target-pos]
    (post-target-pos-binance instrument target-pos (env/get-account-id)))
   ([instrument target-pos account-id]
-   (let [base-asset (keyword (extract-base-asset instrument))]
-     (println "Extracted base asset:" base-asset)
-
-     (let [positions (oa/get-binance-positions)]
-       (println "Fetched Binance positions:" positions)
-
-       (let [current-pos-data (get positions base-asset)]
-         (println "Current position data for" base-asset ":" current-pos-data)
-
-         (let [current-pos (if current-pos-data
-                             (Double/parseDouble (str current-pos-data))
-                             0.0)]
-           (println "Current position for" instrument ":" current-pos)
-
-           (let [units (- target-pos current-pos)]
-             (println "Calculated units to change for" instrument ":" units)
-
-             (if (= units 0.0)
-               (println "No position change for" instrument "\nCurrent position:" current-pos "\n")
-               (do
-                 (oa/send-binance-order instrument "market"
-                                        (if (> units 0) "buy" "sell")
-                                        (Math/abs units))
-                 (println "Position change for" instrument "\nOld position:" current-pos "\nNew position:" (+ current-pos units) "\n"))))))))))
-
+   (let [positions (oa/get-binance-positions)
+         _ (println "positions" positions)
+         base-asset (extract-base-asset instrument)
+         _ (println "base-asset" base-asset)
+         current-pos-data (first (filter (fn [pos] (= (:instrument pos) base-asset)) positions))
+         _ (println "current-pos-data" current-pos-data)
+         current-pos (if current-pos-data (:units current-pos-data) 0.0)
+         units (- target-pos current-pos)]
+     (println "Calculated units to change for" instrument ":" units)
+     (if (= units 0.0)
+       (println "No position change for" instrument "\nCurrent position:" current-pos "\n")
+       (do
+         (oa/send-binance-order instrument "market"
+                                (if (> units 0) "buy" "sell")
+                                (Math/abs units))
+         (println "Position change for" instrument "\nOld position:" current-pos "\nNew position:" (+ current-pos units) "\n"))))))
 
 #_(oa/send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
 #_(oa/send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
@@ -271,6 +264,7 @@
 #_(post-target-pos-binance "BTCUSDT" 0.0003)
 #_(post-target-pos-binance "ETHUSDT" 0.005)
 
+#_(post-target-pos "ARBUSDT" 3)
 #_(post-target-pos "ETHUSDT" 0.004)
 #_(post-target-pos "EUR_USD" 10)
 
