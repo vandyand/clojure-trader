@@ -222,6 +222,21 @@
                                :as :json})]
     (:body response)))
 
+(defn fake-post [url payload]
+  {:body {:status 200}})
+
+(defn _send-binance-order [symbol type side amount]
+  (let [url "http://localhost:4321/order"
+        payload {:symbol symbol
+                 :type type
+                 :side side
+                 :amount amount}
+        response (fake-post url
+                              {:body (json/write-str payload)
+                               :headers {"Content-Type" "application/json"}
+                               :as :json})]
+    (:body response)))
+
 #_(send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
 #_(send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
 #_(send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS ETH

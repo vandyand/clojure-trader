@@ -30,9 +30,9 @@
 (defn combine-xindy [back-xindy fore-xindy total-xindy]
   {:shifts (:shifts back-xindy)
    :robustness (get-robustness back-xindy fore-xindy)
-   :back (dissoc back-xindy :shifts :rivulet)
-   :fore (dissoc fore-xindy :shifts :rivulet)
-   :total (dissoc total-xindy :shifts :rivulet)})
+   :back {:ga-score (:ga-score back-xindy)}
+   :fore {:ga-score (:ga-score fore-xindy)}
+   :total {:last-rel-sieve-val (:last-rel-sieve-val total-xindy)}})
 
 (defn combine-xindies [back-xindies fore-xindies total-xindies]
   (map combine-xindy back-xindies fore-xindies total-xindies))
@@ -257,13 +257,9 @@
     (post-target-pos-oanda instrument target-pos)))
 
 (defn post-target-positions [target-instrument-positions]
-  (let [post-fn (fn [target-instrument-position]
-                  (try
-                    (post-target-pos (:instrument target-instrument-position)
-                                     (:target-position target-instrument-position))
-                    (catch Exception e
-                      (println "Error posting target position for" (:instrument target-instrument-position) ":" (.getMessage e)))))]
-    (doall (pmap post-fn target-instrument-positions))))
+  (doseq [target-instrument-position target-instrument-positions]
+    (post-target-pos (:instrument target-instrument-position)
+                     (:target-position target-instrument-position))))
 
 #_(post-target-pos-binance "BTCUSDT" 0.0003)
 #_(post-target-pos-binance "ETHUSDT" 0.005)

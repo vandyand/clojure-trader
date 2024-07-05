@@ -26,6 +26,12 @@
   ;; (client/post url options)
   (try (client/post url options) (catch Exception e (println "caught exception: " (.getMessage e)))))
 
+(defn fake-post [url payload]
+  {:body {:status 200}})
+
+(defn _send-api-post-request [url options]
+  (try (fake-post url options) (catch Exception e (println "caught exception: " (.getMessage e)))))
+
 ;; UTILITY FUNCTIONS
 
 (defn format-query-params [query-params]

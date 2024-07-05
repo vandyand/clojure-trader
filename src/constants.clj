@@ -48,10 +48,16 @@
   ["USD" "EUR" "JPY" "GBP" "AUD" "CHF" "CAD" "NZD"])
 
 (def pairs-by-liquidity-oanda
-  ["EUR_USD" "USD_JPY" "GBP_USD" "AUD_USD" "USD_CAD" "USD_CHF" "NZD_USD" "EUR_JPY" "GBP_JPY" "EUR_GBP" "AUD_JPY" "EUR_AUD"])
+  ["EUR_USD" "USD_JPY" "GBP_USD" "AUD_USD" "USD_CHF" 
+   "USD_CAD" "NZD_USD" "EUR_JPY" "GBP_JPY" "EUR_GBP" 
+   "EUR_CHF" "EUR_AUD" "EUR_CAD" "GBP_CHF" "AUD_JPY" 
+   "AUD_CHF" "CAD_JPY" "NZD_JPY" "GBP_AUD" "AUD_NZD"])
 
 (def pairs-by-liquidity-crypto
-  ["BTCUSDT" "ETHUSDT" "XRPUSDT" "BCHUSDT" "LTCUSDT" "BNBUSDT" "ADAUSDT" "BATUSDT" "ETCUSDT" "XLMUSDT" "ZRXUSDT" "DOGEUSDT" "ATOMUSDT"])
+  ["BTCUSDT" "ETHUSDT" "XRPUSDT" "BCHUSDT" "LTCUSDT" 
+   "BNBUSDT" "ADAUSDT" "BATUSDT" "ETCUSDT" "XLMUSDT"
+   "ZRXUSDT" "DOGEUSDT" "ATOMUSDT" "DOTUSDT" "LINKUSDT" 
+   "UNIUSDT" "SOLUSDT" "AVAXUSDT" "MATICUSDT" "FILUSDT"])
 
 (def pairs-by-liquidity
   (concat pairs-by-liquidity-oanda pairs-by-liquidity-crypto))
