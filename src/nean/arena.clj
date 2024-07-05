@@ -82,7 +82,7 @@
             rifts (:rifts rindies)]
         {:instrument instrument
          :rifts (mapv :shifts rindies)
-         :rindies rindies
+         :rindies (mapv #(dissoc % :shifts) rindies)
          :count (count rifts)})))))
 
 (comment
@@ -257,9 +257,13 @@
     (post-target-pos-oanda instrument target-pos)))
 
 (defn post-target-positions [target-instrument-positions]
-  (doseq [target-instrument-position target-instrument-positions]
-    (post-target-pos (:instrument target-instrument-position)
-                     (:target-position target-instrument-position))))
+  (let [post-fn (fn [target-instrument-position]
+                  (try
+                    (post-target-pos (:instrument target-instrument-position)
+                                     (:target-position target-instrument-position))
+                    (catch Exception e
+                      (println "Error posting target position for" (:instrument target-instrument-position) ":" (.getMessage e)))))]
+    (doall (pmap post-fn target-instrument-positions))))
 
 #_(post-target-pos-binance "BTCUSDT" 0.0003)
 #_(post-target-pos-binance "ETHUSDT" 0.005)

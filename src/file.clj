@@ -4,13 +4,19 @@
    [util :as util]
    [clojure.core.async :as async]
    [clojure.java.io :as io]
-   [env :as env]))
+   [env :as env]
+   [clojure.data.fressian :as fressian]))
 
 (def data-folder "data/")
 
-(defn read-file
+(defn read-uncompressed-file
   ([file-name]
    (edn/read-string (slurp file-name))))
+
+(defn read-file
+  ([file-name]
+   (with-open [in (io/input-stream file-name)]
+     (fressian/read in))))
 
 (defn read-collection-file
   ([file-name] (read-collection-file file-name #"\n"))
@@ -22,10 +28,16 @@
   ([file-name newline-regex]
    (read-collection-file (str data-folder file-name) newline-regex)))
 
-(defn write-file
-  ([file-name contents] (write-file file-name contents false))
+(defn write-uncompressed-file
+  ([file-name contents] (write-uncompressed-file file-name contents false))
   ([file-name contents append?]
    (spit file-name (prn-str contents) :append append?)))
+
+(defn write-file
+  ([file-name contents]
+   (with-open [out (io/output-stream file-name)]
+     (let [writer (fressian/create-writer out)]
+       (fressian/write-object writer contents)))))
 
 (defn clear-file [file-name]
   (spit (str data-folder file-name) ""))
