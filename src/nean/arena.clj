@@ -220,21 +220,18 @@
        (do (oa/send-order-request (ot/make-order-options-util instrument units "MARKET") account-id)
            (println "Position change for " instrument "\nOld position: " current-pos "\nNew position: " (+ current-pos units) "\n"))))))
 
-(defn extract-base-asset [instrument]
+(defn extract-crypto-base-asset [instrument]
   (subs instrument 0 (- (count instrument) 4))) ;; Assuming all pairs end with "USDT"
 
-#_(-> "BTCUSDT" extract-base-asset)
+#_(-> "BTCUSDT" extract-crypto-base-asset)
 
 (defn post-target-pos-binance
   ([instrument target-pos]
-   (post-target-pos-binance instrument target-pos (env/get-account-id)))
-  ([instrument target-pos account-id]
    (let [positions (oa/get-binance-positions)
-         _ (println "positions" positions)
-         base-asset (extract-base-asset instrument)
+         base-asset (extract-crypto-base-asset instrument)
          _ (println "base-asset" base-asset)
          current-pos-data (first (filter (fn [pos] (= (:instrument pos) base-asset)) positions))
-         _ (println "current-pos-data" current-pos-data)
+         _ (println "current-pos-data" (:units current-pos-data))
          current-pos (if current-pos-data (:units current-pos-data) 0.0)
          units (- target-pos current-pos)]
      (println "Calculated units to change for" instrument ":" units)
@@ -258,8 +255,10 @@
 
 (defn post-target-positions [target-instrument-positions]
   (doseq [target-instrument-position target-instrument-positions]
-    (post-target-pos (:instrument target-instrument-position)
-                     (:target-position target-instrument-position))))
+    (try
+      (post-target-pos (:instrument target-instrument-position)
+                       (:target-position target-instrument-position))
+      (catch Exception e (str "post-target-position caught exception: " (.getMessage e))))))
 
 #_(post-target-pos-binance "BTCUSDT" 0.0003)
 #_(post-target-pos-binance "ETHUSDT" 0.005)

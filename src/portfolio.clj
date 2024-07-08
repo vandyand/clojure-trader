@@ -1,7 +1,8 @@
 (ns portfolio
   (:require [nean.arena :as arena]
             [api.oanda_api :as oanda_api]
-            [stats :as stats]))
+            [stats :as stats]
+            [constants :as constants]))
 
 (defn run-backtests [instruments]
   ;; Run backtests on instruments to get "buy sell scores"
@@ -11,14 +12,14 @@
                          :xindy-config {:num-shifts 14
                                         :max-shift 777}
                          :pop-config {:pop-size 77
-                                      :num-parents 33
-                                      :num-children 44}
+                                      :num-parents 44
+                                      :num-children 33}
                          :ga-config {:num-generations 7
                                      :stream-count 7777
-                                     :back-pct 0.95}}]
+                                     :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(def backtest-id (run-backtests constants/pairs-by-liquidity))
+#_(def backtest-id (run-backtests constants/pairs-by-liquidity))
 
 (def instrument-scores-cache (atom {}))
 
@@ -59,21 +60,31 @@
 (defn instrument-ends-in-gbp? [instrument]
   (= (subs instrument (max 0 (- (count instrument) 3))) "GBP"))
 
+(defn instrument-ends-in-nzd? [instrument]
+  (= (subs instrument (max 0 (- (count instrument) 3))) "NZD"))
+
+(defn instrument-ends-in-aud? [instrument]
+  (= (subs instrument (max 0 (- (count instrument) 3))) "AUD"))
+
+(defn instrument-ends-in-cad? [instrument]
+  (= (subs instrument (max 0 (- (count instrument) 3))) "CAD"))
+
+(defn instrument-ends-in-chf? [instrument]
+  (= (subs instrument (max 0 (- (count instrument) 3))) "CHF"))
+
 (defn get-target-position-amount [instrument latest-price usd-amount]
-  (if (instrument-ends-in-usd-or-usdt? instrument)
-    (/ usd-amount latest-price)
-    (if (instrument-has-usd-in-it? instrument)
-      (if (instrument-ends-in-jpy? instrument)
-        (* usd-amount latest-price 0.01)
-        (* usd-amount latest-price))
-      (if (instrument-ends-in-jpy? instrument)
-        (let [usd-jpy-latest-price (oanda_api/get-latest-price "USD_JPY")]
-          (/ (* usd-amount latest-price) usd-jpy-latest-price))
-        (if (instrument-ends-in-gbp? instrument)
-          (let [gbp-usd-latest-price (oanda_api/get-latest-price "GBP_USD")]
-            (* usd-amount latest-price gbp-usd-latest-price))
-          (let [aud-usd-latest-price (oanda_api/get-latest-price "AUD_USD")]
-            (* usd-amount latest-price aud-usd-latest-price)))))))
+  (cond
+    (instrument-ends-in-usd-or-usdt? instrument) (/ usd-amount latest-price)
+    (instrument-has-usd-in-it? instrument) (cond
+                                             (instrument-ends-in-jpy? instrument) (* usd-amount latest-price 0.01)
+                                             :else (* usd-amount latest-price))
+    (instrument-ends-in-jpy? instrument) (/ (* usd-amount latest-price) (oanda_api/get-latest-price "USD_JPY"))
+    (instrument-ends-in-cad? instrument) (/ (* usd-amount latest-price) (oanda_api/get-latest-price "USD_CAD"))
+    (instrument-ends-in-chf? instrument) (/ (* usd-amount latest-price) (oanda_api/get-latest-price "USD_CHF"))
+    (instrument-ends-in-gbp? instrument) (* usd-amount latest-price (oanda_api/get-latest-price "GBP_USD"))
+    (instrument-ends-in-nzd? instrument) (* usd-amount latest-price (oanda_api/get-latest-price "NZD_USD"))
+    (instrument-ends-in-aud? instrument) (* usd-amount latest-price (oanda_api/get-latest-price "AUD_USD"))
+    :else (/ usd-amount latest-price)))
 
 (defn is-negative-crypto? [instrument target-position]
   (and (util/is-crypto? instrument) (< target-position 0)))
@@ -119,5 +130,7 @@
         tscs (get-target-scores x inscs)
         bscs (get-balanced-scores tscs)]
     (arena/post-target-positions bscs)))
+
+(def backtest-id "178901b")
 
 (shoot-money-x-from-backtest-y 240 backtest-id)
