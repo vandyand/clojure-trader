@@ -4,23 +4,6 @@
             [stats :as stats]
             [constants :as constants]))
 
-(defn run-backtests [instruments]
-  ;; Run backtests on instruments to get "buy sell scores"
-  (let [backtest-params {:instruments instruments
-                         :granularity "H1"
-                         :num-backtests-per-instrument 7
-                         :xindy-config {:num-shifts 14
-                                        :max-shift 777}
-                         :pop-config {:pop-size 77
-                                      :num-parents 44
-                                      :num-children 33}
-                         :ga-config {:num-generations 7
-                                     :stream-count 7777
-                                     :back-pct 0.77}}]
-    (arena/run-and-save-backtest backtest-params)))
-
-#_(def backtest-id (run-backtests constants/pairs-by-liquidity))
-
 (def instrument-scores-cache (atom {}))
 
 (defn get-instrument-scores [backtest-arg]
@@ -131,6 +114,19 @@
         bscs (get-balanced-scores tscs)]
     (arena/post-target-positions bscs)))
 
-(def backtest-id "178901b")
+(defn run-backtest [instruments]
+  ;; Run backtests on instruments to get "buy sell scores"
+  (let [backtest-params {:instruments instruments
+                         :granularity "H1"
+                         :num-backtests-per-instrument 7
+                         :xindy-config {:num-shifts 14
+                                        :max-shift 777}
+                         :pop-config {:pop-size 77
+                                      :num-parents 44
+                                      :num-children 33}
+                         :ga-config {:num-generations 7
+                                     :stream-count 7777
+                                     :back-pct 0.77}}]
+    (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 240 backtest-id)
+(shoot-money-x-from-backtest-y 240 (run-backtest constants/pairs-by-liquidity))

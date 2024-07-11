@@ -102,6 +102,15 @@
            (mapv :o new-stream)
            (recur (inc i) new-stream)))))))
 
+(defn subvec-end [vs target-len]
+  (if (> target-len (count vs))
+    (throw (IllegalArgumentException. "target-len is greater than the length of the vector"))
+    (subvec vs (- (count vs) target-len))))
+
+(defn get-stream 
+  [instrument granularity _count]
+  (subvec-end (get-big-stream instrument granularity _count) _count))
+
 (comment
   (def eth_stream (get-big-stream "ETHUSDT" "H1" 12))
   (println eth_stream)

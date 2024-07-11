@@ -6,6 +6,12 @@
 .sensitive.json
 data/**
 
-python-trader/.env
+python-binance-wrapper/.env
+python-binance-wrapper/py-bi-server
+
+python-demo-exchange/**
+
+python-broker/**
+
 src/sketch.clj
 sketch/**

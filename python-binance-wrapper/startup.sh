@@ -7,7 +7,7 @@ python3 -m venv py-bi-env
 source py-bi-env/bin/activate
 
 # Install required dependencies
-pip install flask ccxt pandas requests
+pip install -r requirements.txt
 
 # Run the server
 python server.py
