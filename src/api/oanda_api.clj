@@ -38,7 +38,7 @@
    (-> (get-account-summary account-id) :account :balance Double/parseDouble)))
 
 (defn get-account-nav
-  ([] (get-account-balance (env/get-account-id)))
+  ([] (get-account-nav (env/get-account-id)))
   ([account-id]
    (-> (get-account-summary account-id) :account :NAV Double/parseDouble)))
 
@@ -93,7 +93,6 @@
             data (:body response)]
         (swap! crypto-cache assoc endpoint {:data data :timestamp current-time})
         data))))
-
 
 (defn map-oanda-to-binance-granularity [oanda-granularity]
   (case oanda-granularity
@@ -232,9 +231,9 @@
                  :side side
                  :amount amount}
         response (fake-post url
-                              {:body (json/write-str payload)
-                               :headers {"Content-Type" "application/json"}
-                               :as :json})]
+                            {:body (json/write-str payload)
+                             :headers {"Content-Type" "application/json"}
+                             :as :json})]
     (:body response)))
 
 #_(send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
@@ -284,6 +283,37 @@
   (mapv (fn [instrument] {:instrument instrument :price (get-latest-price instrument)}) instruments))
 
 #_(get-latest-prices ["EUR_USD" "BTCUSDT" "ETHUSDT"])
+
+#_(get-binance-positions)
+
+(defn instrument-has-usdt-in-it? [instrument]
+  (not (nil? (re-find #"USDT" instrument))))
+
+(defn get-binance-position-values []
+  (vec
+   (for [position (get-binance-positions)]
+     (let [symb (case (:instrument position)
+                  "USD" (:instrument position)
+                  "USDT" "USDTUSD"
+                  (str (:instrument position) "USDT"))
+           latest-price (case (:instrument position)
+                          "USD" 1.0
+                          "USDT" 1.0
+                          (get-latest-price symb))
+           usd-amount (* latest-price (:units position))]
+       (assoc position :latest-price latest-price :usd-amount usd-amount)))))
+
+(defn sum-usd-amounts
+  [records]
+  (reduce + (map :usd-amount records)))
+
+#_(sum-usd-amounts)
+
+(defn get-binance-account-usd-amount
+  []
+  (sum-usd-amounts (get-binance-position-values)))
+
+#_(get-binance-account-usd-amount)
 
 ;; OANDA STRINDICATOR STUFF
 
