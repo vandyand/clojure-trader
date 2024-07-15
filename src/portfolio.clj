@@ -130,3 +130,16 @@
     (arena/run-and-save-backtest backtest-params)))
 
 (shoot-money-x-from-backtest-y 240 (run-backtest constants/pairs-by-liquidity))
+
+(defn get-accounts-worth []
+  (let [oanda-nav (oanda_api/get-account-nav)
+        binance-nav (oanda_api/get-binance-account-usd-amount)
+        total-nav (+ oanda-nav binance-nav)
+        ret {:oanda oanda-nav
+             :binance binance-nav
+             :total total-nav
+             :timestamp (System/currentTimeMillis)}]
+    (println ret)
+    ret))
+
+#_(get-accounts-worth)

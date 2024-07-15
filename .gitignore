@@ -7,7 +7,9 @@
 data/**
 
 python-binance-wrapper/.env
-python-binance-wrapper/py-bi-server
+python-binance-wrapper/py-bi-env
+
+python-robinhood-wrapper/**
 
 python-demo-exchange/**
 

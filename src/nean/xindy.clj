@@ -107,7 +107,7 @@
     (throw (IllegalArgumentException. "target-len is greater than the length of the vector"))
     (subvec vs (- (count vs) target-len))))
 
-(defn get-stream 
+(defn get-stream
   [instrument granularity _count]
   (subvec-end (get-big-stream instrument granularity _count) _count))
 
@@ -119,6 +119,7 @@
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
+        _ (println "big-stream count: " (count big-stream))
         back-len (int (* (count big-stream) back-pct))
         fore-len (- (count big-stream) back-len)
         back-stream (subvec big-stream 0 back-len)
