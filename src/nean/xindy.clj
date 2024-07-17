@@ -83,7 +83,7 @@
           (recur (- val time-span) (conj vals val))))))))
 
 (defn get-big-stream
-  ([instrument granularity _count] (get-big-stream instrument granularity _count 1000))
+  ([instrument granularity _count] (get-big-stream instrument granularity _count (max 1000 _count)))
   ([instrument granularity _count span]
    (let [from-to-times (get-from-to-times granularity (* 2 _count) span)]
      (loop [i 0 stream []]
@@ -102,20 +102,17 @@
            (mapv :o new-stream)
            (recur (inc i) new-stream)))))))
 
-(defn subvec-end [vs target-len]
-  (if (> target-len (count vs))
-    (throw (IllegalArgumentException. "target-len is greater than the length of the vector"))
-    (subvec vs (- (count vs) target-len))))
-
-(defn get-stream 
+(defn get-stream
   [instrument granularity _count]
-  (subvec-end (get-big-stream instrument granularity _count) _count))
+  (util/subvec-end (get-big-stream instrument granularity _count) _count))
 
 (comment
-  (def eth_stream (get-big-stream "ETHUSDT" "H1" 12))
+  (def eth_stream (get-stream "ETHUSDT" "H1" 1200))
   (println eth_stream)
-  (def eur_stream (get-big-stream "EUR_USD" "H1" 12))
-  (println eur_stream))
+  (def eur_stream (get-stream "EUR_USD" "H1" 1200))
+  (println eur_stream)
+  (def aapl_stream (get-stream "AAPL" "H1" 12))
+  (println aapl_stream))
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
   (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))

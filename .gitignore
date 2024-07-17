@@ -9,9 +9,8 @@ data/**
 python-binance-wrapper/.env
 python-binance-wrapper/py-bi-env
 
-python-demo-exchange/**
-
-python-broker/**
+python-robinhood-wrapper/.env
+python-robinhood-wrapper/py-rh-env
 
 src/sketch.clj
 sketch/**

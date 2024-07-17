@@ -8,8 +8,17 @@
 (defn is-forex? [instrument]
   (clojure.string/includes? instrument "_"))
 
+(defn is-equity? [instrument]
+  (not (or (is-crypto? instrument)
+           (is-forex? instrument))))
+
 #_(is-crypto? "BTCUSDT")
 #_(is-crypto? "EUR_USD")
+
+(defn subvec-end [vs target-len]
+  (if (> target-len (count vs))
+    (throw (IllegalArgumentException. (str "target-len is greater than the length of the vector: " target-len " > " (count vs))))
+    (subvec vs (- (count vs) target-len))))
 
 (defn rand-bool []
   (> 0.5 (rand)))

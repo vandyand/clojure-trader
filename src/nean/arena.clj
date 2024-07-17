@@ -67,6 +67,7 @@
                       (:ga-config backtest-params)
                       (:num-backtests-per-instrument backtest-params)))
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
+   (println "generate-wrifts run")
    (vec
     (for [instrument instruments]
       (let [_ (println instrument)
@@ -141,6 +142,7 @@
                       (:ga-config backtest-params)
                       (:num-backtests-per-instrument backtest-params)))
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
+   (println "run-and-save-backtest run")
    (let [backtest-id (gen-backtest-id)
          filename (str "data/wrifts/" backtest-id ".edn")
          _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})
@@ -247,11 +249,28 @@
 #_(oa/send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
 #_(oa/send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS ETH
 
+(defn post-target-pos-robinhood
+  ([instrument target-usd-pos]
+   (let [positions (oa/get-robinhood-positions)
+         current-pos-data (first (filter (fn [pos] (= (:instrument pos) instrument)) positions))
+         _ (println "current-pos-data" (:units current-pos-data))
+         current-pos (if current-pos-data (:units current-pos-data) 0.0)
+         latest-price (oa/get-latest-price instrument)
+         current-usd-pos (if current-pos-data (* current-pos latest-price) 0.0)
+         usd-units (- target-usd-pos current-usd-pos)]
+     (println "Calculated units to change for" instrument ":" usd-units)
+     (if (= usd-units 0.0)
+       (println "No position change for" instrument "\nCurrent position:" current-pos "\n")
+       (do
+         (oa/send-robinhood-usd-order instrument usd-units)
+         (println "Position change for" instrument "\nOld position:" current-pos "\nNew position:" (+ current-pos usd-units) "\n"))))))
+
 (defn post-target-pos
   [instrument target-pos]
-  (if (util/is-crypto? instrument)
-    (post-target-pos-binance instrument target-pos)
-    (post-target-pos-oanda instrument target-pos)))
+  (cond
+    (util/is-crypto? instrument) (post-target-pos-binance instrument target-pos)
+    (util/is-forex? instrument) (post-target-pos-oanda instrument target-pos)
+    (util/is-equity? instrument) (post-target-pos-robinhood instrument target-pos)))
 
 (defn post-target-positions [target-instrument-positions]
   (doseq [target-instrument-position target-instrument-positions]

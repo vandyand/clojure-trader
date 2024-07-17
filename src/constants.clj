@@ -41,6 +41,20 @@
    "DAIUSDT", "DASHUSDT", "HBARUSDT", "ICXUSDT", "IOTAUSDT", "RVNUSDT", "XNOUSDT", "XTZUSDT", "ZILUSDT", "ORBSUSDT",
    "CUDOSUSDT", "ADXUSDT", "FORTUSDT", "SUIUSDT", "ONGUSDT"])
 
+(def equity-instruments
+  ["AAPL" "NVDA" "TSLA" "AMZN" "MSFT" "GOOGL" "META" "AMD" "GME" "VOO" "UNH" "SMCI" "AVGO" "PANW" "ELV"
+   "F" "CEG" "VRTX" "MELI" "AMGN" "BRKb" "CRM" "ACN" "BAC" "JPM" "XOM" "PFE" "WMT" "JNJ" "V" "PG" "HD"
+   "MA" "DIS" "ADBE" "NFLX" "CSCO" "INTC" "MSTR" "GOOG" "ETN" "PLTR" "MARA" "MU" "NKE" "COIN" "FFIE" "SOFI"
+   "TSM" "DJT"])
+
+(def stocks
+  ["AAPL" "AGQ" "APHA" "BAR" "CROX" "CYCN" "DIS" "FSCT" "GDXJ" "GILD"
+   "HMC" "HMHC" "HOLI" "HOME" "INTEQ" "JRVR" "KOD" "KODK" "META" "MYGN"
+   "NUGT" "NVDA" "PAGS" "PE" "PINS" "RAPT" "ROKU" "RST" "SAGE" "SCS" "SHAK" "SIVR" "SPXL" "SPXS"
+   "SPY" "SVXY" "TECS" "TQQQ" "TSLA" "UGL" "UGLDF" "USLVF" "UVXY" "VERI" "VIXY" "VXX" "WAFD" "WW" "XNET" "ZM"])
+
+(def stocks-by-liquidity (take 20 equity-instruments))
+
 (def all-instruments
   (concat forex-instruments crypto-instruments))
 
@@ -48,19 +62,19 @@
   ["USD" "EUR" "JPY" "GBP" "AUD" "CHF" "CAD" "NZD"])
 
 (def pairs-by-liquidity-oanda
-  ["EUR_USD" "USD_JPY" "GBP_USD" "AUD_USD" "USD_CHF" 
-   "USD_CAD" "NZD_USD" "EUR_JPY" "GBP_JPY" "EUR_GBP" 
-   "EUR_CHF" "EUR_AUD" "EUR_CAD" "GBP_CHF" "AUD_JPY" 
+  ["EUR_USD" "USD_JPY" "GBP_USD" "AUD_USD" "USD_CHF"
+   "USD_CAD" "NZD_USD" "EUR_JPY" "GBP_JPY" "EUR_GBP"
+   "EUR_CHF" "EUR_AUD" "EUR_CAD" "GBP_CHF" "AUD_JPY"
    "AUD_CHF" "CAD_JPY" "NZD_JPY" "GBP_AUD" "AUD_NZD"])
 
 (def pairs-by-liquidity-crypto
-  ["BTCUSDT" "ETHUSDT" "XRPUSDT" "BCHUSDT" "LTCUSDT" 
+  ["BTCUSDT" "ETHUSDT" "XRPUSDT" "BCHUSDT" "LTCUSDT"
    "BNBUSDT" "ADAUSDT" "BATUSDT" "ETCUSDT" "XLMUSDT"
-   "ZRXUSDT" "DOGEUSDT" "ATOMUSDT" "DOTUSDT" "LINKUSDT" 
+   "ZRXUSDT" "DOGEUSDT" "ATOMUSDT" "DOTUSDT" "LINKUSDT"
    "UNIUSDT" "SOLUSDT" "AVAXUSDT" "MATICUSDT" "FILUSDT"])
 
 (def pairs-by-liquidity
-  (concat pairs-by-liquidity-oanda pairs-by-liquidity-crypto))
+  (concat pairs-by-liquidity-oanda pairs-by-liquidity-crypto stocks-by-liquidity))
 
 (def oanda-granularities
   ["S5" "S10" "S15" "S30" "M1" "M2" "M4" "M5" "M10" "M15" "M30"
@@ -68,6 +82,24 @@
 
 (def binance-granularities
   ["1s" "1m" "3m" "5m" "15m" "30m" "1h" "2h" "4h" "6h" "8h" "12h" "1d" "3d" "1w" "1M"])
+
+(def robinhood-granularities
+  ["5minute" "10minute" "hour" "day" "week"])
+
+(def robinhood-spans
+  ["day" "week" "month" "3month" "year" "5year"])
+
+(defn num-rh-grans-per-span
+  [granularity span]
+  (let [gran-count (get {"5minute" 5 "10minute" 10 "hour" 60 "day" 1440 "week" 10080 "month" 43200 "3month" 129600 "year" 525600 "5year" 2628000} granularity 1)
+        span-count (get {"day" 1440 "week" 10080 "month" 43200 "3month" 129600 "year" 525600 "5year" 2628000} span 1)
+        stock-hours-per-day-scaler (/ 8.5 24)]
+    (int (/ span-count gran-count (/ 1 stock-hours-per-day-scaler)))))
+
+(def num-rh-grans-per-span-map
+  (for [gran robinhood-granularities span robinhood-spans]
+    {:gran gran :span span :count (num-rh-grans-per-span gran span)}))
+
 
 (defn get-range
   ([min max] (get-range min max 1))

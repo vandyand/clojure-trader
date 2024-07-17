@@ -7,7 +7,9 @@
 (def instrument-scores-cache (atom {}))
 
 (defn get-instrument-scores [backtest-arg]
-  (let [cache-key backtest-arg
+  (let [cache-key (if (string? backtest-arg)
+                   backtest-arg
+                   (:id backtest-arg))
         current-time (System/currentTimeMillis)
         cached-data (get @instrument-scores-cache cache-key)
         cache-valid? (and cached-data (< (- current-time (:timestamp cached-data)) (* 60 60 1000)))]
@@ -26,7 +28,6 @@
         instrument-rel-scores))))
 
 #_(get-instrument-scores backtest-id)
-
 
 (defn instrument-ends-in-usd-or-usdt? [instrument]
   (let [suffix3 (subs instrument (max 0 (- (count instrument) 3)))
@@ -72,6 +73,9 @@
 (defn is-negative-crypto? [instrument target-position]
   (and (util/is-crypto? instrument) (< target-position 0)))
 
+(defn is-negative-stock? [instrument target-position]
+  (and (util/is-equity? instrument) (< target-position 0)))
+
 (defn abs-sum [vs]
   (reduce + (pmap #(Math/abs %) vs)))
 
@@ -85,7 +89,8 @@
                               :usd-buy-sell-amount usd-buy-sell-amount
                               :target-position (get-target-position-amount (:instrument instrament-score-record) (:latest-price instrament-score-record) usd-buy-sell-amount))))
         updated-usd-prices (mapv (fn [record]
-                                   (if (is-negative-crypto? (:instrument record) (:target-position record))
+                                   (if (or (is-negative-crypto? (:instrument record) (:target-position record))
+                                         (is-negative-stock? (:instrument record) (:target-position record)))
                                      (assoc record :target-position 0.0)
                                      record))
                                  usd-prices)]
@@ -129,17 +134,36 @@
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 240 (run-backtest constants/pairs-by-liquidity))
+(defn run-backtest-stocks [instruments]
+  ;; Run backtests on instruments to get "buy sell scores"
+  (let [backtest-params {:instruments instruments
+                         :granularity "H1"
+                         :num-backtests-per-instrument 3
+                         :xindy-config {:num-shifts 6
+                                        :max-shift 333}
+                         :pop-config {:pop-size 33
+                                      :num-parents 22
+                                      :num-children 11}
+                         :ga-config {:num-generations 3
+                                     :stream-count 3333
+                                     :back-pct 0.77}}]
+    (arena/run-and-save-backtest backtest-params)))
+
+#_(run-backtest-stocks constants/stocks-by-liquidity)
+
+#_(shoot-money-x-from-backtest-y 240 (run-backtest constants/stocks-by-liquidity))
 
 (defn get-accounts-worth []
   (let [oanda-nav (oanda_api/get-account-nav)
         binance-nav (oanda_api/get-binance-account-usd-amount)
-        total-nav (+ oanda-nav binance-nav)
+        robinhood-nav (oanda_api/get-robinhood-equity)
+        total-nav (+ oanda-nav binance-nav robinhood-nav)
         ret {:oanda oanda-nav
              :binance binance-nav
+             :robinhood robinhood-nav
              :total total-nav
              :timestamp (System/currentTimeMillis)}]
-    (println ret)
+    (println (dissoc ret :timestamp))
     ret))
 
-#_(get-accounts-worth)
+(get-accounts-worth)

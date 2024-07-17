@@ -1,0 +1,3360 @@
+Robinhood Functions
+Note
+Even though the functions are written as robin_stocks.module.function, the module name is unimportant when calling a function. Simply use robin_stocks.function for all functions.
+
+Sending Requests to API
+Contains decorator functions and functions for interacting with global data.
+
+robin_stocks.robinhood.helper.request_delete(url)[source]
+For a given url and payload, makes a delete request and returns the response.
+
+Parameters:
+url (str) – The url to send a delete request to.
+
+Returns:
+Returns the data from the delete request.
+
+robin_stocks.robinhood.helper.request_document(url, payload=None)[source]
+Using a document url, makes a get request and returnes the session data.
+
+Parameters:
+url (str) – The url to send a get request to.
+
+Returns:
+Returns the session.get() data as opppose to session.get().json() data.
+
+robin_stocks.robinhood.helper.request_get(url, dataType='regular', payload=None, jsonify_data=True)[source]
+For a given url and payload, makes a get request and returns the data.
+
+Parameters:
+url (str) – The url to send a get request to.
+
+dataType (Optional[str]) – Determines how to filter the data. ‘regular’ returns the unfiltered data. ‘results’ will return data[‘results’]. ‘pagination’ will return data[‘results’] and append it with any data that is in data[‘next’]. ‘indexzero’ will return data[‘results’][0].
+
+payload (Optional[dict]) – Dictionary of parameters to pass to the url. Will append the requests url as url/?key1=value1&key2=value2.
+
+jsonify_data (bool) – If this is true, will return requests.post().json(), otherwise will return response from requests.post().
+
+Returns:
+Returns the data from the get request. If jsonify_data=True and requests returns an http code other than <200> then either ‘[None]’ or ‘None’ will be returned based on what the dataType parameter was set as.
+
+robin_stocks.robinhood.helper.request_post(url, payload=None, timeout=16, json=False, jsonify_data=True)[source]
+For a given url and payload, makes a post request and returns the response. Allows for responses other than 200.
+
+Parameters:
+url (str) – The url to send a post request to.
+
+payload (Optional[dict]) – Dictionary of parameters to pass to the url as url/?key1=value1&key2=value2.
+
+timeout (Optional[int]) – The time for the post to wait for a response. Should be slightly greater than multiples of 3.
+
+json (bool) – This will set the ‘content-type’ parameter of the session header to ‘application/json’
+
+jsonify_data (bool) – If this is true, will return requests.post().json(), otherwise will return response from requests.post().
+
+Returns:
+Returns the data from the post request.
+
+Logging In and Out
+Contains all functions for the purpose of logging in and out to Robinhood.
+
+robin_stocks.robinhood.authentication.login(username=None, password=None, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')[source]
+This function will effectively log the user into robinhood by getting an authentication token and saving it to the session header. By default, it will store the authentication token in a pickle file and load that value on subsequent logins.
+
+Parameters:
+username (Optional[str]) – The username for your robinhood account, usually your email. Not required if credentials are already cached and valid.
+
+password (Optional[str]) – The password for your robinhood account. Not required if credentials are already cached and valid.
+
+expiresIn (Optional[int]) – The time until your login session expires. This is in seconds.
+
+scope (Optional[str]) – Specifies the scope of the authentication.
+
+by_sms (Optional[boolean]) – Specifies whether to send an email(False) or an sms(True)
+
+store_session (Optional[boolean]) – Specifies whether to save the log in authorization for future log ins.
+
+mfa_code (Optional[str]) – MFA token if enabled.
+
+pickle_name – Allows users to name Pickle token file in order to switch between different accounts without having to re-login every time.
+
+Returns:
+A dictionary with log in information. The ‘access_token’ keyword contains the access token, and the ‘detail’ keyword contains information on whether the access token was generated or loaded from pickle file.
+
+robin_stocks.robinhood.authentication.logout()[source]
+Removes authorization from the session header.
+
+Returns:
+None
+
+Loading Profiles
+Contains functions for getting all the information tied to a user account.
+
+robin_stocks.robinhood.profiles.load_account_profile(account_number=None, info=None, dataType='indexzero')[source]
+Gets the information associated with the accounts profile,including day trading information and cash being held by Robinhood.
+
+Parameters:
+acccount_number (Optional[str]) – the robinhood account number.
+
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+dataType (Optional[str]) – Determines how to filter the data. ‘regular’ returns the unfiltered data. ‘results’ will return data[‘results’]. ‘pagination’ will return data[‘results’] and append it with any data that is in data[‘next’]. ‘indexzero’ will return data[‘results’][0].
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+url
+
+portfolio_cash
+
+can_downgrade_to_cash
+
+user
+
+account_number
+
+type
+
+created_at
+
+updated_at
+
+deactivated
+
+deposit_halted
+
+only_position_closing_trades
+
+buying_power
+
+cash_available_for_withdrawal
+
+cash
+
+cash_held_for_orders
+
+uncleared_deposits
+
+sma
+
+sma_held_for_orders
+
+unsettled_funds
+
+unsettled_debit
+
+crypto_buying_power
+
+max_ach_early_access_amount
+
+cash_balances
+
+margin_balances
+
+sweep_enabled
+
+instant_eligibility
+
+option_level
+
+is_pinnacle_account
+
+rhs_account_number
+
+state
+
+active_subscription_id
+
+locked
+
+permanently_deactivated
+
+received_ach_debit_locked
+
+drip_enabled
+
+eligible_for_fractionals
+
+eligible_for_drip
+
+eligible_for_cash_management
+
+cash_management_enabled
+
+option_trading_on_expiration_enabled
+
+cash_held_for_options_collateral
+
+fractional_position_closing_only
+
+user_id
+
+rhs_stock_loan_consent_status
+
+robin_stocks.robinhood.profiles.load_basic_profile(info=None)[source]
+Gets the information associated with the personal profile, such as phone number, city, marital status, and date of birth.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+user
+
+address
+
+city
+
+state
+
+zipcode
+
+phone_number
+
+marital_status
+
+date_of_birth
+
+citizenship
+
+country_of_residence
+
+number_dependents
+
+signup_as_rhs
+
+tax_id_ssn
+
+updated_at
+
+robin_stocks.robinhood.profiles.load_investment_profile(info=None)[source]
+Gets the information associated with the investment profile. These are the answers to the questionaire you filled out when you made your profile.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+user
+
+total_net_worth
+
+annual_income
+
+source_of_funds
+
+investment_objective
+
+investment_experience
+
+liquid_net_worth
+
+risk_tolerance
+
+tax_bracket
+
+time_horizon
+
+liquidity_needs
+
+investment_experience_collected
+
+suitability_verified
+
+option_trading_experience
+
+professional_trader
+
+understand_option_spreads
+
+interested_in_options
+
+updated_at
+
+robin_stocks.robinhood.profiles.load_portfolio_profile(account_number=None, info=None)[source]
+Gets the information associated with the portfolios profile, such as withdrawable amount, market value of account, and excess margin.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+url
+
+account
+
+start_date
+
+market_value
+
+equity
+
+extended_hours_market_value
+
+extended_hours_equity
+
+extended_hours_portfolio_equity
+
+last_core_market_value
+
+last_core_equity
+
+last_core_portfolio_equity
+
+excess_margin
+
+excess_maintenance
+
+excess_margin_with_uncleared_deposits
+
+excess_maintenance_with_uncleared_deposits
+
+equity_previous_close
+
+portfolio_equity_previous_close
+
+adjusted_equity_previous_close
+
+adjusted_portfolio_equity_previous_close
+
+withdrawable_amount
+
+unwithdrawable_deposits
+
+unwithdrawable_grants
+
+robin_stocks.robinhood.profiles.load_security_profile(info=None)[source]
+Gets the information associated with the security profile.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+user
+
+object_to_disclosure
+
+sweep_consent
+
+control_person
+
+control_person_security_symbol
+
+security_affiliated_employee
+
+security_affiliated_firm_relationship
+
+security_affiliated_firm_name
+
+security_affiliated_person_name
+
+security_affiliated_address
+
+security_affiliated_address_subject
+
+security_affiliated_requires_duplicates
+
+stock_loan_consent_status
+
+agreed_to_rhs
+
+agreed_to_rhs_margin
+
+rhs_stock_loan_consent_status
+
+updated_at
+
+robin_stocks.robinhood.profiles.load_user_profile(info=None)[source]
+Gets the information associated with the user profile, such as username, email, and links to the urls for other profiles.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+url
+
+id
+
+id_info
+
+username
+
+email
+
+email_verified
+
+first_name
+
+last_name
+
+origin
+
+profile_name
+
+created_at
+
+Getting Stock Information
+Contains information in regards to stocks.
+
+robin_stocks.robinhood.stocks.find_instrument_data(query)[source]
+Will search for stocks that contain the query keyword and return the instrument data.
+
+Parameters:
+query (str) – The keyword to search for.
+
+Returns:
+[list] Returns a list of dictionaries that contain the instrument data for each stock that matches the query.
+
+Dictionary Keys:
+id
+
+url
+
+quote
+
+fundamentals
+
+splits
+
+state
+
+market
+
+simple_name
+
+name
+
+tradeable
+
+tradability
+
+symbol
+
+bloomberg_unique
+
+margin_initial_ratio
+
+maintenance_ratio
+
+country
+
+day_trade_ratio
+
+list_date
+
+min_tick_size
+
+type
+
+tradable_chain_id
+
+rhs_tradability
+
+fractional_tradability
+
+default_collar_fraction
+
+robin_stocks.robinhood.stocks.get_earnings(symbol, info=None)[source]
+Returns the earnings for the different financial quarters.
+
+Parameters:
+symbol (str) – The stock ticker.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+symbol
+
+instrument
+
+year
+
+quarter
+
+eps
+
+report
+
+call
+
+robin_stocks.robinhood.stocks.get_events(symbol, info=None)[source]
+Returns the events related to a stock that the user owns. For example, if you owned options for USO and that stock underwent a stock split resulting in you owning shares of newly created USO1, then that event will be returned when calling get_events(‘uso1’)
+
+Parameters:
+symbol (str) – The stock ticker.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] If the info parameter is provided, then the function will extract the value of the key that matches the info parameter. Otherwise, the whole dictionary is returned.
+
+Dictionary Keys:
+account
+
+cash_component
+
+chain_id
+
+created_at
+
+direction
+
+equity_components
+
+event_date
+
+id
+
+option
+
+position
+
+quantity
+
+state
+
+total_cash_amount
+
+type
+
+underlying_price
+
+updated_at
+
+robin_stocks.robinhood.stocks.get_fundamentals(inputSymbols, info=None)[source]
+Takes any number of stock tickers and returns fundamental information about the stock such as what sector it is in, a description of the company, dividend yield, and market cap.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+open
+
+high
+
+low
+
+volume
+
+average_volume_2_weeks
+
+average_volume
+
+high_52_weeks
+
+dividend_yield
+
+float
+
+low_52_weeks
+
+market_cap
+
+pb_ratio
+
+pe_ratio
+
+shares_outstanding
+
+description
+
+instrument
+
+ceo
+
+headquarters_city
+
+headquarters_state
+
+sector
+
+industry
+
+num_employees
+
+year_founded
+
+symbol
+
+robin_stocks.robinhood.stocks.get_instrument_by_url(url, info=None)[source]
+Takes a single url for the stock. Should be located at https://api.robinhood.com/instruments/<id> where <id> is the id of the stock.
+
+Parameters:
+url (str) – The url of the stock. Can be found in several locations including in the dictionary returned from get_instruments_by_symbols(inputSymbols,info=None)
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[dict or str] If info parameter is left as None then will return a dictionary of key/value pairs for a specific url. Otherwise, it will be the string value of the key that corresponds to info.
+
+Dictionary Keys:
+id
+
+url
+
+quote
+
+fundamentals
+
+splits
+
+state
+
+market
+
+simple_name
+
+name
+
+tradeable
+
+tradability
+
+symbol
+
+bloomberg_unique
+
+margin_initial_ratio
+
+maintenance_ratio
+
+country
+
+day_trade_ratio
+
+list_date
+
+min_tick_size
+
+type
+
+tradable_chain_id
+
+rhs_tradability
+
+fractional_tradability
+
+default_collar_fraction
+
+robin_stocks.robinhood.stocks.get_instruments_by_symbols(inputSymbols, info=None)[source]
+Takes any number of stock tickers and returns information held by the market such as ticker name, bloomberg id, and listing date.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] If info parameter is left as None then the list will a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+id
+
+url
+
+quote
+
+fundamentals
+
+splits
+
+state
+
+market
+
+simple_name
+
+name
+
+tradeable
+
+tradability
+
+symbol
+
+bloomberg_unique
+
+margin_initial_ratio
+
+maintenance_ratio
+
+country
+
+day_trade_ratio
+
+list_date
+
+min_tick_size
+
+type
+
+tradable_chain_id
+
+rhs_tradability
+
+fractional_tradability
+
+default_collar_fraction
+
+robin_stocks.robinhood.stocks.get_latest_price(inputSymbols, priceType=None, includeExtendedHours=True)[source]
+Takes any number of stock tickers and returns the latest price of each one as a string.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+priceType (str) – Can either be ‘ask_price’ or ‘bid_price’. If this parameter is set, then includeExtendedHours is ignored.
+
+includeExtendedHours (bool) – Leave as True if you want to get extendedhours price if available. False if you only want regular hours price, even after hours.
+
+Returns:
+[list] A list of prices as strings.
+
+robin_stocks.robinhood.stocks.get_name_by_symbol(symbol)[source]
+Returns the name of a stock from the stock ticker.
+
+Parameters:
+symbol (str) – The ticker of the stock as a string.
+
+Returns:
+[str] Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+robin_stocks.robinhood.stocks.get_name_by_url(url)[source]
+Returns the name of a stock from the instrument url. Should be located at https://api.robinhood.com/instruments/<id> where <id> is the id of the stock.
+
+Parameters:
+url (str) – The url of the stock as a string.
+
+Returns:
+[str] Returns the simple name of the stock. If the simple name does not exist then returns the full name.
+
+robin_stocks.robinhood.stocks.get_news(symbol, info=None)[source]
+Returns news stories for a stock.
+
+Parameters:
+symbol (str) – The stock ticker.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+api_source
+
+author
+
+num_clicks
+
+preview_image_url
+
+published_at
+
+relay_url
+
+source
+
+summary
+
+title
+
+updated_at
+
+url
+
+uuid
+
+related_instruments
+
+preview_text
+
+currency_id
+
+robin_stocks.robinhood.stocks.get_pricebook_by_id(stock_id, info=None)[source]
+Represents Level II Market Data provided for Gold subscribers
+
+Parameters:
+stock_id (str) – robinhood stock id
+
+info (Optional[str]) – Will filter the results to get a specific value. Possible options are url, instrument, execution_date, divsor, and multiplier.
+
+Returns:
+Returns a dictionary of asks and bids.
+
+robin_stocks.robinhood.stocks.get_pricebook_by_symbol(symbol, info=None)[source]
+Represents Level II Market Data provided for Gold subscribers
+
+Parameters:
+symbol (str) – symbol id
+
+info (Optional[str]) – Will filter the results to get a specific value. Possible options are url, instrument, execution_date, divsor, and multiplier.
+
+Returns:
+Returns a dictionary of asks and bids.
+
+robin_stocks.robinhood.stocks.get_quotes(inputSymbols, info=None)[source]
+Takes any number of stock tickers and returns information pertaining to its price.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.stocks.get_ratings(symbol, info=None)[source]
+Returns the ratings for a stock, including the number of buy, hold, and sell ratings.
+
+Parameters:
+symbol (str) – The stock ticker.
+
+info (Optional[str]) – Will filter the results to contain a dictionary of values that correspond to the key that matches info. Possible values are summary, ratings, and instrument_id
+
+Returns:
+[dict] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will contain the values that correspond to the keyword that matches info.
+
+Dictionary Keys:
+summary - value is a dictionary
+
+ratings - value is a list of dictionaries
+
+instrument_id - value is a string
+
+ratings_published_at - value is a string
+
+robin_stocks.robinhood.stocks.get_splits(symbol, info=None)[source]
+Returns the date, divisor, and multiplier for when a stock split occureed.
+
+Parameters:
+symbol (str) – The stock ticker.
+
+info (Optional[str]) – Will filter the results to get a specific value. Possible options are url, instrument, execution_date, divsor, and multiplier.
+
+Returns:
+[list] Returns a list of dictionaries. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+url
+
+instrument
+
+execution_date
+
+multiplier
+
+divisor
+
+robin_stocks.robinhood.stocks.get_stock_historicals(inputSymbols, interval='hour', span='week', bounds='regular', info=None)[source]
+Represents the historicl data for a stock.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+interval (Optional[str]) – Interval to retrieve data for. Values are ‘5minute’, ‘10minute’, ‘hour’, ‘day’, ‘week’. Default is ‘hour’.
+
+span (Optional[str]) – Sets the range of the data to be either ‘day’, ‘week’, ‘month’, ‘3month’, ‘year’, or ‘5year’. Default is ‘week’.
+
+bounds (Optional[str]) – Represents if graph will include extended trading hours or just regular trading hours. Values are ‘extended’, ‘trading’, or ‘regular’. Default is ‘regular’
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] Returns a list of dictionaries where each dictionary is for a different time. If multiple stocks are provided the historical data is listed one after another.
+
+Dictionary Keys:
+begins_at
+
+open_price
+
+close_price
+
+high_price
+
+low_price
+
+volume
+
+session
+
+interpolated
+
+symbol
+
+robin_stocks.robinhood.stocks.get_stock_quote_by_id(stock_id, info=None)[source]
+Represents basic stock quote information
+
+Parameters:
+stock_id (str) – robinhood stock id
+
+info (Optional[str]) – Will filter the results to get a specific value. Possible options are url, instrument, execution_date, divsor, and multiplier.
+
+Returns:
+[dict] If the info parameter is provided, then the function will extract the value of the key that matches the info parameter. Otherwise, the whole dictionary is returned.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.stocks.get_stock_quote_by_symbol(symbol, info=None)[source]
+Represents basic stock quote information
+
+Parameters:
+symbol – robinhood stock id
+
+info (Optional[str]) – Will filter the results to get a specific value. Possible options are url, instrument, execution_date, divsor, and multiplier.
+
+Returns:
+[dict] If the info parameter is provided, then the function will extract the value of the key that matches the info parameter. Otherwise, the whole dictionary is returned.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.stocks.get_symbol_by_url(url)[source]
+Returns the symbol of a stock from the instrument url. Should be located at https://api.robinhood.com/instruments/<id> where <id> is the id of the stock.
+
+Parameters:
+url (str) – The url of the stock as a string.
+
+Returns:
+[str] Returns the ticker symbol of the stock.
+
+Getting Option Information
+Contains functions for getting information about options.
+
+robin_stocks.robinhood.options.find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None)[source]
+Returns a list of all the option orders that match the seach parameters
+
+Parameters:
+inputSymbols (str) – The ticker of either a single stock or a list of stocks.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+optionType (Optional[str]) – Can be either ‘call’ or ‘put’ or leave blank to get both.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None)[source]
+Returns a list of all the option orders that match the seach parameters
+
+Parameters:
+inputSymbols (str) – The ticker of either a single stock or a list of stocks.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+strikePrice (str) – Represents the strike price to filter for.
+
+optionType (Optional[str]) – Can be either ‘call’ or ‘put’ or leave blank to get both.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit='chance_of_profit_short', profitFloor=0.0, profitCeiling=1.0, info=None)[source]
+Returns a list of option market data for several stock tickers that match a range of profitability.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD. Leave as None to get all available dates.
+
+strikePrice (str) – Represents the price of the option. Leave as None to get all available strike prices.
+
+optionType (Optional[str]) – Can be either ‘call’ or ‘put’ or leave blank to get both.
+
+typeProfit (str) – Will either be “chance_of_profit_short” or “chance_of_profit_long”.
+
+profitFloor (int) – The lower percentage on scale 0 to 1.
+
+profitCeiling (int) – The higher percentage on scale 0 to 1.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for all stock option market data. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None)[source]
+Returns a list of all the option orders that match the seach parameters
+
+Parameters:
+inputSymbols (str) – The ticker of either a single stock or a list of stocks.
+
+strikePrice (str) – Represents the strike price to filter for.
+
+optionType (Optional[str]) – Can be either ‘call’ or ‘put’ or leave blank to get both.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None)[source]
+Returns a list of all available options for a stock.
+
+Parameters:
+symbol (str) – The ticker of the stock.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+strikePrice (str) – Represents the strike price of the option.
+
+optionType (Optional[str]) – Can be either ‘call’ or ‘put’ or left blank to get both.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for all calls of the stock. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_aggregate_open_positions(info=None, account_number=None)[source]
+Collapses all open option positions for a stock into a single dictionary.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_aggregate_positions(info=None, account_number=None)[source]
+Collapses all option orders for a stock into a single dictionary.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_all_option_positions(info=None, account_number=None)[source]
+Returns all option positions ever held for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_chains(symbol, info=None)[source]
+Returns the chain information of an option.
+
+Parameters:
+symbol (str) – The ticker of the stock.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the option. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_market_options(info=None)[source]
+Returns a list of all options.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_open_option_positions(account_number=None, info=None)[source]
+Returns all open option positions for the account.
+
+Parameters:
+acccount_number (Optional[str]) – the robinhood account number.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.options.get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None)[source]
+Returns the data that is used to make the graphs.
+
+Parameters:
+symbol (str) – The ticker of the stock.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+strikePrice (str) – Represents the price of the option.
+
+optionType (str) – Can be either ‘call’ or ‘put’.
+
+interval (Optional[str]) – Interval to retrieve data for. Values are ‘5minute’, ‘10minute’, ‘hour’, ‘day’, ‘week’. Default is ‘hour’.
+
+span (Optional[str]) – Sets the range of the data to be either ‘day’, ‘week’, ‘year’, or ‘5year’. Default is ‘week’.
+
+bounds (Optional[str]) – Represents if graph will include extended trading hours or just regular trading hours. Values are ‘regular’, ‘trading’, and ‘extended’. regular hours are 6 hours long, trading hours are 9 hours long, and extended hours are 16 hours long. Default is ‘regular’
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+Returns a list that contains a list for each symbol. Each list contains a dictionary where each dictionary is for a different time.
+
+robin_stocks.robinhood.options.get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None)[source]
+Returns the option instrument data for the stock option.
+
+Parameters:
+symbol (str) – The ticker of the stock.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+strikePrice (str) – Represents the price of the option.
+
+optionType (str) – Can be either ‘call’ or ‘put’.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the stock. If info parameter is provided, the value of the key that matches info is extracted.
+
+robin_stocks.robinhood.options.get_option_instrument_data_by_id(id, info=None)[source]
+Returns the option instrument information.
+
+Parameters:
+id (str) – The id of the stock.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the stock. If info parameter is provided, the value of the key that matches info is extracted.
+
+robin_stocks.robinhood.options.get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None)[source]
+Returns the option market data for the stock option, including the greeks, open interest, change of profit, and adjusted mark price.
+
+Parameters:
+inputSymbols (str) – The ticker of the stock.
+
+expirationDate (str) – Represents the expiration date in the format YYYY-MM-DD.
+
+strikePrice (str) – Represents the price of the option.
+
+optionType (str) – Can be either ‘call’ or ‘put’.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the stock. If info parameter is provided, the value of the key that matches info is extracted.
+
+robin_stocks.robinhood.options.get_option_market_data_by_id(id, info=None)[source]
+Returns the option market data for a stock, including the greeks, open interest, change of profit, and adjusted mark price.
+
+Parameters:
+id (str) – The id of the stock.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the stock. If info parameter is provided, the value of the key that matches info is extracted.
+
+robin_stocks.robinhood.options.spinning_cursor()[source]
+This is a generator function to yield a character.
+
+robin_stocks.robinhood.options.write_spinner()[source]
+Function to create a spinning cursor to tell user that the code is working on getting market data.
+
+Getting Market Information
+Contains functions for getting market level data.
+
+robin_stocks.robinhood.markets.get_all_stocks_from_market_tag(tag, info=None)[source]
+Returns all the stock quote information that matches a tag category.
+
+Parameters:
+tag (str) – The category to filter for. Examples include ‘biopharmaceutical’, ‘upcoming-earnings’, ‘most-popular-under-25’, and ‘technology’.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.markets.get_currency_pairs(info=None)[source]
+Returns currency pairs
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each currency pair. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+asset_currency
+
+display_only
+
+id
+
+max_order_size
+
+min_order_size
+
+min_order_price_increment
+
+min_order_quantity_increment
+
+name
+
+quote_currency
+
+symbol
+
+tradability
+
+robin_stocks.robinhood.markets.get_market_hours(market, date, info=None)[source]
+Returns the opening and closing hours of a specific market on a specific date. Also will tell you if market is market is open on that date. Can be used with past or future dates.
+
+Parameters:
+market (str) – The ‘mic’ value for the market. Can be found using get_markets().
+
+date (str) – The date you want to get information for. format is YYYY-MM-DD.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the specific market. If info parameter is provided, the string value for the corresponding key will be provided.
+
+Dictionary Keys:
+date
+
+is_open
+
+opens_at
+
+closes_at
+
+extended_opens_at
+
+extended_closes_at
+
+previous_open_hours
+
+next_open_hours
+
+robin_stocks.robinhood.markets.get_market_next_open_hours(market, info=None)[source]
+Returns the opening and closing hours for the next open trading day after today. Also will tell you if market is market is open on that date.
+
+Parameters:
+market (str) – The ‘mic’ value for the market. Can be found using get_markets().
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the specific market. If info parameter is provided, the string value for the corresponding key will be provided.
+
+Dictionary Keys:
+date
+
+is_open
+
+opens_at
+
+closes_at
+
+extended_opens_at
+
+extended_closes_at
+
+previous_open_hours
+
+next_open_hours
+
+robin_stocks.robinhood.markets.get_market_next_open_hours_after_date(market, date, info=None)[source]
+Returns the opening and closing hours for the next open trading day after a date that is specified. Also will tell you if market is market is open on that date.
+
+Parameters:
+market (str) – The ‘mic’ value for the market. Can be found using get_markets().
+
+date (str) – The date you want to find the next available trading day after. format is YYYY-MM-DD.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the specific market. If info parameter is provided, the string value for the corresponding key will be provided.
+
+Dictionary Keys:
+date
+
+is_open
+
+opens_at
+
+closes_at
+
+extended_opens_at
+
+extended_closes_at
+
+previous_open_hours
+
+next_open_hours
+
+robin_stocks.robinhood.markets.get_market_today_hours(market, info=None)[source]
+Returns the opening and closing hours of a specific market for today. Also will tell you if market is market is open on that date.
+
+Parameters:
+market (str) – The ‘mic’ value for the market. Can be found using get_markets().
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictionary of key/value pairs for the specific market. If info parameter is provided, the string value for the corresponding key will be provided.
+
+Dictionary Keys:
+date
+
+is_open
+
+opens_at
+
+closes_at
+
+extended_opens_at
+
+extended_closes_at
+
+previous_open_hours
+
+next_open_hours
+
+robin_stocks.robinhood.markets.get_markets(info=None)[source]
+Returns a list of available markets.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each market. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+url
+
+todays_hours
+
+mic
+
+operating_mic
+
+acronym
+
+name
+
+city
+
+country
+
+timezone
+
+website
+
+robin_stocks.robinhood.markets.get_top_100(info=None)[source]
+Returns a list of the Top 100 stocks on Robin Hood.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.markets.get_top_movers(info=None)[source]
+Returns a list of the Top 20 movers on Robin Hood.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+ask_price
+
+ask_size
+
+bid_price
+
+bid_size
+
+last_trade_price
+
+last_extended_hours_trade_price
+
+previous_close
+
+adjusted_previous_close
+
+previous_close_date
+
+symbol
+
+trading_halted
+
+has_traded
+
+last_trade_price_source
+
+updated_at
+
+instrument
+
+robin_stocks.robinhood.markets.get_top_movers_sp500(direction, info=None)[source]
+Returns a list of the top S&P500 movers up or down for the day.
+
+Parameters:
+direction (str) – The direction of movement either ‘up’ or ‘down’
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each mover. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+instrument_url
+
+symbol
+
+updated_at
+
+price_movement
+
+description
+
+Getting Positions and Account Information
+Contains functions for getting information related to the user account.
+
+robin_stocks.robinhood.account.build_holdings(with_dividends=False)[source]
+Builds a dictionary of important information regarding the stocks and positions owned by the user.
+
+Parameters:
+with_dividends (bool) – True if you want to include divident information.
+
+Returns:
+Returns a dictionary where the keys are the stock tickers and the value is another dictionary that has the stock price, quantity held, equity, percent change, equity change, type, name, id, pe ratio, percentage of portfolio, and average buy price.
+
+robin_stocks.robinhood.account.build_user_profile(account_number=None)[source]
+Builds a dictionary of important information regarding the user account.
+
+Returns:
+Returns a dictionary that has total equity, extended hours equity, cash, and divendend total.
+
+robin_stocks.robinhood.account.delete_symbols_from_watchlist(inputSymbols, name='My First List')[source]
+Deletes multiple stock tickers from a watchlist.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+name (Optional[str]) – The name of the watchlist to delete data from.
+
+Returns:
+Returns result of the delete request.
+
+robin_stocks.robinhood.account.deposit_funds_to_robinhood_account(ach_relationship, amount, info=None)[source]
+Submits a post request to deposit a certain amount of money from a bank account to Robinhood.
+
+Parameters:
+ach_relationship (str) – The url of the bank account you want to deposit the money from.
+
+amount (float) – The amount of money you wish to deposit.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for the transaction.
+
+robin_stocks.robinhood.account.download_all_documents(doctype=None, dirpath=None)[source]
+Downloads all the documents associated with an account and saves them as a PDF. If no name is given, document is saved as a combination of the data of creation, type, and id. If no directory is given, document is saved in the root directory of code.
+
+Parameters:
+doctype (Optional[str]) – The type of document to download, such as account_statement.
+
+dirpath (Optional[str]) – The directory of where to save the documents.
+
+Returns:
+Returns the list of documents from get_documents(info=None)
+
+robin_stocks.robinhood.account.download_document(url, name=None, dirpath=None)[source]
+Downloads a document and saves as it as a PDF. If no name is given, document is saved as the name that Robinhood has for the document. If no directory is given, document is saved in the root directory of code.
+
+Parameters:
+url (str) – The url of the document. Can be found by using get_documents(info=’download_url’).
+
+name (Optional[str]) – The name to save the document as.
+
+dirpath (Optional[str]) – The directory of where to save the document.
+
+Returns:
+Returns the data from the get request.
+
+robin_stocks.robinhood.account.get_all_positions(info=None)[source]
+Returns a list containing every position ever traded.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+url
+
+instrument
+
+account
+
+account_number
+
+average_buy_price
+
+pending_average_buy_price
+
+quantity
+
+intraday_average_buy_price
+
+intraday_quantity
+
+shares_held_for_buys
+
+shares_held_for_sells
+
+shares_held_for_stock_grants
+
+shares_held_for_options_collateral
+
+shares_held_for_options_events
+
+shares_pending_from_options_events
+
+updated_at
+
+created_at
+
+robin_stocks.robinhood.account.get_all_watchlists(info=None)[source]
+Returns a list of all watchlists that have been created. Everyone has a ‘My First List’ watchlist.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of the watchlists. Keywords are ‘url’, ‘user’, and ‘name’.
+
+robin_stocks.robinhood.account.get_bank_account_info(id, info=None)[source]
+Returns a single dictionary of bank information
+
+Parameters:
+id (str) – The bank id.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a dictinoary of key/value pairs for the bank. If info parameter is provided, the value of the key that matches info is extracted.
+
+robin_stocks.robinhood.account.get_bank_transfers(direction=None, info=None)[source]
+Returns all bank transfers made for the account.
+
+Parameters:
+direction (Optional[str]) – Possible values are ‘received’. If left blank, function will return all withdrawls and deposits that are initiated from Robinhood. If the value is ‘received’, funciton will return transfers intiated from your bank rather than Robinhood.
+
+info (Optional[str]) – Will filter the results to get a specific value. ‘direction’ gives if it was deposit or withdrawl.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_card_transactions(cardType=None, info=None)[source]
+Returns all debit card transactions made on the account
+
+Parameters:
+cardType (Optional[str]) – Will filter the card transaction types. Can be ‘pending’ or ‘settled’.
+
+info (Optional[str]) – Will filter the results to get a specific value. ‘direction’ gives if it was debit or credit.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each transfer. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_day_trades(info=None)[source]
+Returns recent day trades.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each day trade. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_dividends(info=None)[source]
+Returns a list of dividend trasactions that include information such as the percentage rate, amount, shares of held stock, and date paid.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries of key/value pairs for each divident payment. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+id
+
+url
+
+account
+
+instrument
+
+amount
+
+rate
+
+position
+
+withholding
+
+record_date
+
+payable_date
+
+paid_at
+
+state
+
+nra_withholding
+
+drip_enabled
+
+robin_stocks.robinhood.account.get_dividends_by_instrument(instrument, dividend_data)[source]
+Returns a dictionary with three fields when given the instrument value for a stock
+
+Parameters:
+instrument (str) – The instrument to get the dividend data.
+
+dividend_data (list) – The information returned by get_dividends().
+
+Returns:
+dividend_rate – the rate paid for a single share of a specified stock total_dividend – the total dividend paid based on total shares for a specified stock amount_paid_to_date – total amount earned by account for this particular stock
+
+robin_stocks.robinhood.account.get_documents(info=None)[source]
+Returns a list of documents that have been released by Robinhood to the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each document. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_interest_payments(info=None)[source]
+Returns a list of interest payments.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each interest payment. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_latest_notification()[source]
+Returns the time of the latest notification.
+
+Returns:
+Returns a dictionary of key/value pairs. But there is only one key, ‘last_viewed_at’
+
+robin_stocks.robinhood.account.get_linked_bank_accounts(info=None)[source]
+Returns all linked bank accounts.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each bank.
+
+robin_stocks.robinhood.account.get_margin_calls(symbol=None)[source]
+Returns either all margin calls or margin calls for a specific stock.
+
+Parameters:
+symbol (Optional[str]) – Will determine which stock to get margin calls for.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each margin call.
+
+robin_stocks.robinhood.account.get_margin_interest(info=None)[source]
+Returns a list of margin interest.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each interest. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_notifications(info=None)[source]
+Returns a list of notifications.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each notification. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_open_stock_positions(account_number=None, info=None)[source]
+Returns a list of stocks that are currently held.
+
+Parameters:
+acccount_number (Optional[str]) – the robinhood account number.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries of key/value pairs for each ticker. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+url
+
+instrument
+
+account
+
+account_number
+
+average_buy_price
+
+pending_average_buy_price
+
+quantity
+
+intraday_average_buy_price
+
+intraday_quantity
+
+shares_held_for_buys
+
+shares_held_for_sells
+
+shares_held_for_stock_grants
+
+shares_held_for_options_collateral
+
+shares_held_for_options_events
+
+shares_pending_from_options_events
+
+updated_at
+
+created_at
+
+robin_stocks.robinhood.account.get_referrals(info=None)[source]
+Returns a list of referrals.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each referral. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_stock_loan_payments(info=None)[source]
+Returns a list of loan payments.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each payment. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_subscription_fees(info=None)[source]
+Returns a list of subscription fees.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each fee. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.get_total_dividends()[source]
+Returns a float number representing the total amount of dividends paid to the account.
+
+Returns:
+Total dollar amount of dividends paid to the account as a 2 precision float.
+
+robin_stocks.robinhood.account.get_watchlist_by_name(name='My First List', info=None)[source]
+Returns a list of information related to the stocks in a single watchlist.
+
+Parameters:
+name (Optional[str]) – The name of the watchlist to get data from.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries that contain the instrument urls and a url that references itself.
+
+robin_stocks.robinhood.account.get_wire_transfers(info=None)[source]
+Returns a list of wire transfers.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each wire transfer. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.account.load_phoenix_account(info=None)[source]
+Returns unified information about your account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries of key/value pairs. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+account_buying_power
+
+cash_available_from_instant_deposits
+
+cash_held_for_currency_orders
+
+cash_held_for_dividends
+
+cash_held_for_equity_orders
+
+cash_held_for_options_collateral
+
+cash_held_for_orders
+
+crypto
+
+crypto_buying_power
+
+equities
+
+extended_hours_portfolio_equity
+
+instant_allocated
+
+levered_amount
+
+near_margin_call
+
+options_buying_power
+
+portfolio_equity
+
+portfolio_previous_close
+
+previous_close
+
+regular_hours_portfolio_equity
+
+total_equity
+
+total_extended_hours_equity
+
+total_extended_hours_market_value
+
+total_market_value
+
+total_regular_hours_equity
+
+total_regular_hours_market_value
+
+uninvested_cash
+
+withdrawable_cash
+
+robin_stocks.robinhood.account.post_symbols_to_watchlist(inputSymbols, name='My First List')[source]
+Posts multiple stock tickers to a watchlist.
+
+Parameters:
+inputSymbols (str or list) – May be a single stock ticker or a list of stock tickers.
+
+name (Optional[str]) – The name of the watchlist to post data to.
+
+Returns:
+Returns result of the post request.
+
+robin_stocks.robinhood.account.unlink_bank_account(id)[source]
+Unlinks a bank account.
+
+Parameters:
+id (str) – The bank id.
+
+Returns:
+Information returned from post request.
+
+robin_stocks.robinhood.account.withdrawl_funds_to_bank_account(ach_relationship, amount, info=None)[source]
+Submits a post request to withdraw a certain amount of money to a bank account.
+
+Parameters:
+ach_relationship (str) – The url of the bank account you want to withdrawl the money to.
+
+amount (float) – The amount of money you wish to withdrawl.
+
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for the transaction.
+
+Placing and Cancelling Orders
+Contains all functions for placing orders for stocks, options, and crypto.
+
+robin_stocks.robinhood.orders.cancel_all_crypto_orders()[source]
+Cancels all crypto orders.
+
+Returns:
+Returns the order information for the orders that were cancelled.
+
+robin_stocks.robinhood.orders.cancel_all_option_orders()[source]
+Cancels all option orders.
+
+Returns:
+Returns the order information for the orders that were cancelled.
+
+robin_stocks.robinhood.orders.cancel_all_stock_orders()[source]
+Cancels all stock orders.
+
+Returns:
+The list of orders that were cancelled.
+
+robin_stocks.robinhood.orders.cancel_crypto_order(orderID)[source]
+Cancels a specific crypto order.
+
+Parameters:
+orderID (str) – The ID associated with the order. Can be found using get_all_crypto_orders(info=None).
+
+Returns:
+Returns the order information for the order that was cancelled.
+
+robin_stocks.robinhood.orders.cancel_option_order(orderID)[source]
+Cancels a specific option order.
+
+Parameters:
+orderID (str) – The ID associated with the order. Can be found using get_all_option_orders(info=None).
+
+Returns:
+Returns the order information for the order that was cancelled.
+
+robin_stocks.robinhood.orders.cancel_stock_order(orderID)[source]
+Cancels a specific order.
+
+Parameters:
+orderID (str) – The ID associated with the order. Can be found using get_all_stock_orders(info=None).
+
+Returns:
+Returns the order information for the order that was cancelled.
+
+robin_stocks.robinhood.orders.find_stock_orders(**arguments)[source]
+Returns a list of orders that match the keyword parameters.
+
+Parameters:
+arguments (str) – Variable length of keyword arguments. EX. find_orders(symbol=’FB’,cancel=None,quantity=1)
+
+Returns:
+Returns a list of orders.
+
+robin_stocks.robinhood.orders.get_all_crypto_orders(info=None)[source]
+Returns a list of all the crypto orders that have been processed for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_all_open_crypto_orders(info=None)[source]
+Returns a list of all the crypto orders that have been processed for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_all_open_option_orders(info=None, account_number=None)[source]
+Returns a list of all the orders that are currently open.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_all_open_stock_orders(info=None, account_number=None)[source]
+Returns a list of all the orders that are currently open.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_all_option_orders(info=None)[source]
+Returns a list of all the option orders that have been processed for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each option order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_all_stock_orders(info=None)[source]
+Returns a list of all the orders that have been processed for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for each order. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+robin_stocks.robinhood.orders.get_crypto_order_info(order_id)[source]
+Returns the information for a single crypto order.
+
+Parameters:
+order_id (str) – The ID associated with the option order.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for the order.
+
+robin_stocks.robinhood.orders.get_option_order_info(order_id)[source]
+Returns the information for a single option order.
+
+Parameters:
+order_id (str) – The ID associated with the option order.
+
+Returns:
+Returns a list of dictionaries of key/value pairs for the order.
+
+robin_stocks.robinhood.orders.get_stock_order_info(orderID)[source]
+Returns the information for a single order.
+
+Parameters:
+orderID (str) – The ID associated with the order. Can be found using get_all_orders(info=None) or get_all_orders(info=None).
+
+Returns:
+Returns a list of dictionaries of key/value pairs for the order.
+
+robin_stocks.robinhood.orders.order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True, market_hours='regular_hours')[source]
+A generic order function.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+side (str) – Either ‘buy’ or ‘sell’
+
+limitPrice (float) – The price to trigger the market order.
+
+stopPrice (float) – The price to trigger the limit or market order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (str) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase or selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True)[source]
+Submits a market order for a crypto by specifying the amount in dollars that you want to trade. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+amountInDollars (float) – The amount in dollars of the crypto you want to buy.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True)[source]
+Submits a market order for a crypto by specifying the decimal amount of shares to buy. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+quantity (float) – The decimal amount of shares to buy.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for a crypto by specifying the decimal amount of shares to buy. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+quantity (float) – The decimal amount of shares to buy.
+
+limitPrice (float) – The limit price to set for the crypto.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for a crypto by specifying the decimal price to buy. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+amountInDollars (float) – The amount in dollars of the crypto you want to buy.
+
+limitPrice (float) – The limit price to set for the crypto.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True, market_hours='regular_hours')[source]
+Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders for fractional trades.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+amountInDollars (float) – The amount in dollars of the fractional shares you want to buy.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True)[source]
+Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders for fractional trades.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (float) – The amount of the fractional shares you want to buy.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a limit order to be executed once a certain price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (int) – The number of stocks to buy.
+
+limitPrice (float) – The price to trigger the buy order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_market(symbol, quantity, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a market order to be executed immediately.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (int) – The number of stocks to buy.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for an option. i.e. place a long call or a long put.
+
+Parameters:
+positionEffect (str) – Either ‘open’ for a buy to open effect or ‘close’ for a buy to close effect.
+
+creditOrDebit (str) – Either ‘debit’ or ‘credit’.
+
+price (float) – The limit price to trigger a buy of the option.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to buy.
+
+expirationDate (str) – The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike (float) – The strike price of the option.
+
+optionType (str) – This should be ‘call’ or ‘put’
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc', jsonify=True)[source]
+Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+Parameters:
+positionEffect (str) – Either ‘open’ for a buy to open effect or ‘close’ for a buy to close effect.
+
+creditOrDebit (str) – Either ‘debit’ or ‘credit’.
+
+limitPrice (float) – The limit price to trigger a buy of the option.
+
+stopPrice (float) – The price to trigger the limit order.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to buy.
+
+expirationDate (str) – The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike (float) – The strike price of the option.
+
+optionType (str) – This should be ‘call’ or ‘put’
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (int) – The number of stocks to buy.
+
+limitPrice (float) – The price to trigger the market order.
+
+stopPrice (float) – The price to trigger the limit order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a stop order to be turned into a market order once a certain stop price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (int) – The number of stocks to buy.
+
+stopPrice (float) – The price to trigger the market order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a trailing stop buy order to be turned into a market order when traling stop price reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to buy.
+
+quantity (int) – The number of stocks to buy.
+
+trailAmount (float) – how much to trail by; could be percentage or dollar value depending on trailType
+
+trailType (str) – could be “amount” or “percentage”
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_crypto(symbol, side, quantityOrPrice, amountIn='quantity', limitPrice=None, timeInForce='gtc', jsonify=True)[source]
+Submits an order for a crypto.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+side (str) – Either ‘buy’ or ‘sell’
+
+quantityOrPrice (float) – Either the decimal price of shares to trade or the decimal quantity of shares.
+
+amountIn (Optional[str]) – If left default value of ‘quantity’, order will attempt to trade cryptos by the amount of crypto you want to trade. If changed to ‘price’, order will attempt to trade cryptos by the price you want to buy or sell.
+
+limitPrice (Optional[float]) – The price to trigger the market order.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True)[source]
+Submits a limit order for an option credit spread.
+
+Parameters:
+price (float) – The limit price to trigger a sell of the option.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to sell.
+
+spread (dict) –
+
+A dictionary of spread options with the following keys:
+
+expirationDate: The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike: The strike price of the option.
+
+optionType: This should be ‘call’ or ‘put’.
+
+effect: This should be ‘open’ or ‘close’.
+
+action: This should be ‘buy’ or ‘sell’.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ = execute at opening.
+
+account_number (Optional[str]) – the robinhood account number.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the trading of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True)[source]
+Submits a limit order for an option debit spread.
+
+Parameters:
+price (float) – The limit price to trigger a sell of the option.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to sell.
+
+spread (dict) –
+
+A dictionary of spread options with the following keys:
+
+expirationDate: The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike: The strike price of the option.
+
+optionType: This should be ‘call’ or ‘put’.
+
+effect: This should be ‘open’ or ‘close’.
+
+action: This should be ‘buy’ or ‘sell’.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+account_number (Optional[str]) – the robinhood account number.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the trading of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_option_spread(direction, price, symbol, quantity, spread, account_number=None, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for an option spread. i.e. place a debit / credit spread
+
+Parameters:
+direction (str) – Can be “credit” or “debit”.
+
+price (float) – The limit price to trigger a trade of the option.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to trade.
+
+spread (dict) –
+
+A dictionary of spread options with the following keys:
+
+expirationDate: The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike: The strike price of the option.
+
+optionType: This should be ‘call’ or ‘put’.
+
+effect: This should be ‘open’ or ‘close’.
+
+action: This should be ‘buy’ or ‘sell’.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the trading of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True)[source]
+Submits a market order for a crypto by specifying the amount in dollars that you want to trade. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+amountInDollars (float) – The amount in dollars of the crypto you want to sell.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True)[source]
+Submits a market order for a crypto by specifying the decimal amount of shares to buy. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+quantity (float) – The decimal amount of shares to sell.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for a crypto by specifying the decimal amount of shares to sell. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+quantity (float) – The decimal amount of shares to sell.
+
+limitPrice (float) – The limit price to set for the crypto.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for a crypto by specifying the decimal price to sell. Good for share fractions up to 8 decimal places.
+
+Parameters:
+symbol (str) – The crypto ticker of the crypto to trade.
+
+amountInDollars (float) – The amount in dollars of the crypto you want to sell.
+
+limitPrice (float) – The limit price to set for the crypto.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of crypto, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False, jsonify=True)[source]
+Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders for fractional trades.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+amountInDollars (float) – The amount in dollars of the fractional shares you want to buy.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', priceType='bid_price', extendedHours=False, jsonify=True, market_hours='regular_hours')[source]
+Submits a market order to be executed immediately for fractional shares by specifying the amount that you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing limit, stop, or stop loss orders for fractional trades.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to purchase.
+
+quantity (float) – The amount of the fractional shares you want to buy.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a limit order to be executed once a certain price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+limitPrice (float) – The price to trigger the sell order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a market order to be executed immediately.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc', jsonify=True)[source]
+Submits a limit order for an option. i.e. place a short call or a short put.
+
+Parameters:
+positionEffect (str) – Either ‘open’ for a sell to open effect or ‘close’ for a sell to close effect.
+
+creditOrDebit (str) – Either ‘debit’ or ‘credit’.
+
+price (float) – The limit price to trigger a sell of the option.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to sell.
+
+expirationDate (str) – The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike (float) – The strike price of the option.
+
+optionType (str) – This should be ‘call’ or ‘put’
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity, expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc', jsonify=True)[source]
+Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+Parameters:
+positionEffect (str) – Either ‘open’ for a buy to open effect or ‘close’ for a buy to close effect.
+
+creditOrDebit (str) – Either ‘debit’ or ‘credit’.
+
+limitPrice (float) – The limit price to trigger a buy of the option.
+
+stopPrice (float) – The price to trigger the limit order.
+
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of options to buy.
+
+expirationDate (str) – The expiration date of the option in ‘YYYY-MM-DD’ format.
+
+strike (float) – The strike price of the option.
+
+optionType (str) – This should be ‘call’ or ‘put’
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day. ‘ioc’ = immediate or cancel. ‘opg’ execute at opening.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the buying of options, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a stop order to be turned into a limit order once a certain stop price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+limitPrice (float) – The price to trigger the market order.
+
+stopPrice (float) – The price to trigger the limit order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a stop order to be turned into a market order once a certain stop price is reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+stopPrice (float) – The price to trigger the market order.
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a trailing stop sell order to be turned into a market order when traling stop price reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to sell.
+
+quantity (int) – The number of stocks to sell.
+
+trailAmount (float) – how much to trail by; could be percentage or dollar value depending on trailType
+
+trailType (str) – could be “amount” or “percentage”
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the selling of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+robin_stocks.robinhood.orders.order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True)[source]
+Submits a trailing stop order to be turned into a market order when traling stop price reached.
+
+Parameters:
+symbol (str) – The stock ticker of the stock to trade.
+
+quantity (int) – The number of stocks to trade.
+
+side (str) – buy or sell
+
+trailAmount (float) – how much to trail by; could be percentage or dollar value depending on trailType
+
+trailType (str) – could be “amount” or “percentage”
+
+account_number (Optional[str]) – the robinhood account number.
+
+timeInForce (Optional[str]) – Changes how long the order will be in effect for. ‘gtc’ = good until cancelled. ‘gfd’ = good for the day.
+
+extendedHours (Optional[str]) – Premium users only. Allows trading during extended hours. Should be true or false.
+
+jsonify (Optional[str]) – If set to False, function will return the request object which contains status code and headers.
+
+Returns:
+Dictionary that contains information regarding the purchase of stocks, such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), the price, and the quantity.
+
+Getting Crypto Information
+Contains functions to get information about crypto-currencies.
+
+robin_stocks.robinhood.crypto.get_crypto_currency_pairs(info=None)[source]
+Gets a list of all the cypto currencies that you can trade.
+
+Parameters:
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+asset_currency
+
+display_only
+
+id
+
+max_order_size
+
+min_order_size
+
+min_order_price_increment
+
+min_order_quantity_increment
+
+name
+
+quote_currency
+
+symbol
+
+tradability
+
+robin_stocks.robinhood.crypto.get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', info=None)[source]
+Gets historical information about a crypto including open price, close price, high price, and low price.
+
+Parameters:
+symbol (str) – The crypto ticker.
+
+interval (str) – The time between data points. Can be ’15second’, ‘5minute’, ‘10minute’, ‘hour’, ‘day’, or ‘week’. Default is ‘hour’.
+
+span (str) – The entire time frame to collect data points. Can be ‘hour’, ‘day’, ‘week’, ‘month’, ‘3month’, ‘year’, or ‘5year’. Default is ‘week’
+
+bound (str) – The times of day to collect data points. ‘Regular’ is 6 hours a day, ‘trading’ is 9 hours a day, ‘extended’ is 16 hours a day, ‘24_7’ is 24 hours a day. Default is ‘24_7’
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[list] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+begins_at
+
+open_price
+
+close_price
+
+high_price
+
+low_price
+
+volume
+
+session
+
+interpolated
+
+symbol
+
+robin_stocks.robinhood.crypto.get_crypto_id(symbol)[source]
+Gets the Robinhood ID of the given cryptocurrency used to make trades. This function uses an in-memory cache of the IDs to save a network round-trip when possible.
+
+Parameters:
+symbol (str) – The crypto ticker.
+
+Returns:
+[str] The symbol’s Robinhood ID.
+
+robin_stocks.robinhood.crypto.get_crypto_info(symbol, info=None)[source]
+Gets information about a crpyto currency.
+
+Parameters:
+symbol (str) – The crypto ticker.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[dict] If info parameter is left as None then will return a dictionary of key/value pairs for each ticker. Otherwise, it will be a strings representing the value of the key.
+
+Dictionary Keys:
+asset_currency
+
+display_only
+
+id
+
+max_order_size
+
+min_order_size
+
+min_order_price_increment
+
+min_order_quantity_increment
+
+name
+
+quote_currency
+
+symbol
+
+tradability
+
+robin_stocks.robinhood.crypto.get_crypto_positions(info=None)[source]
+Returns crypto positions for the account.
+
+Parameters:
+info (Optional[str]) – Will filter the results to get a specific value.
+
+Returns:
+[list] Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+
+Dictionary Keys:
+account_id
+
+cost_basis
+
+created_at
+
+currency
+
+id
+
+quantity
+
+quantity_available
+
+quantity_held_for_buy
+
+quantity_held_for_sell
+
+updated_at
+
+robin_stocks.robinhood.crypto.get_crypto_quote(symbol, info=None)[source]
+Gets information about a crypto including low price, high price, and open price
+
+Parameters:
+symbol (str) – The crypto ticker.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[dict] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+ask_price
+
+bid_price
+
+high_price
+
+id
+
+low_price
+
+mark_price
+
+open_price
+
+symbol
+
+volume
+
+robin_stocks.robinhood.crypto.get_crypto_quote_from_id(id, info=None)[source]
+Gets information about a crypto including low price, high price, and open price. Uses the id instead of crypto ticker.
+
+Parameters:
+id (str) – The id of a crypto.
+
+info (Optional[str]) – Will filter the results to have a list of the values that correspond to key that matches info.
+
+Returns:
+[dict] If info parameter is left as None then the list will contain a dictionary of key/value pairs for each ticker. Otherwise, it will be a list of strings where the strings are the values of the key that corresponds to info.
+
+Dictionary Keys:
+ask_price
+
+bid_price
+
+high_price
+
+id
+
+low_price
+
+mark_price
+
+open_price
+
+symbol
+
+volume
+
+robin_stocks.robinhood.crypto.load_crypto_profile(info=None)[source]
+Gets the information associated with the crypto account.
+
+Parameters:
+info (Optional[str]) – The name of the key whose value is to be returned from the function.
+
+Returns:
+[dict] The function returns a dictionary of key/value pairs. If a string is passed in to the info parameter, then the function will return a string corresponding to the value of the key whose name matches the info parameter.
+
+Dictionary Keys:
+apex_account_number
+
+created_at
+
+id
+
+rhs_account_number
+
+status
+
+status_reason_code
+
+updated_at
+
+user_id
+
+Export Information
+robin_stocks.robinhood.export.create_absolute_csv(dir_path, file_name, order_type)[source]
+Creates a filepath given a directory and file name.
+
+Parameters:
+dir_path (str) – Absolute or relative path to the directory the file will be written.
+
+file_name (str) – An optional argument for the name of the file. If not defined, filename will be stock_orders_{current date}
+
+file_name – Will be ‘stock’, ‘option’, or ‘crypto’
+
+Returns:
+An absolute file path as a string.
+
+robin_stocks.robinhood.export.export_completed_crypto_orders(dir_path, file_name=None)[source]
+Write all completed crypto orders to a csv file
+
+Parameters:
+dir_path (str) – Absolute or relative path to the directory the file will be written.
+
+file_name (Optional[str]) – An optional argument for the name of the file. If not defined, filename will be crypto_orders_{current date}
+
+robin_stocks.robinhood.export.export_completed_option_orders(dir_path, file_name=None)[source]
+Write all completed option orders to a csv
+
+Parameters:
+dir_path (str) – Absolute or relative path to the directory the file will be written.
+
+file_name (Optional[str]) – An optional argument for the name of the file. If not defined, filename will be option_orders_{current date}
+
+robin_stocks.robinhood.export.export_completed_stock_orders(dir_path, file_name=None)[source]
+Write all completed orders to a csv file
+
+Parameters:
+dir_path (str) – Absolute or relative path to the directory the file will be written.
+
+file_name (Optional[str]) – An optional argument for the name of the file. If not defined, filename will be stock_orders_{current date}
+
+robin_stocks.robinhood.export.fix_file_extension(file_name)[source]
+Takes a file extension and makes it end with .csv
+
+Parameters:
+file_name (str) – Name of the file.
+
+Returns:
+Adds or replaces the file suffix with .csv and returns it as a string.
+
+Logo
+
+Robin Stocks is the easy to use python library for interacting with the Robinhood API.
+
+
+
+Ko-fi donationsSupport RobinStocks
+
+Table of Contents
+Introduction
+Installing
+Quick Start
+Advanced Usage
+Robinhood Functions
+Sending Requests to API
+request_delete()
+request_document()
+request_get()
+request_post()
+Logging In and Out
+login()
+logout()
+Loading Profiles
+load_account_profile()
+load_basic_profile()
+load_investment_profile()
+load_portfolio_profile()
+load_security_profile()
+load_user_profile()
+Getting Stock Information
+find_instrument_data()
+get_earnings()
+get_events()
+get_fundamentals()
+get_instrument_by_url()
+get_instruments_by_symbols()
+get_latest_price()
+get_name_by_symbol()
+get_name_by_url()
+get_news()
+get_pricebook_by_id()
+get_pricebook_by_symbol()
+get_quotes()
+get_ratings()
+get_splits()
+get_stock_historicals()
+get_stock_quote_by_id()
+get_stock_quote_by_symbol()
+get_symbol_by_url()
+Getting Option Information
+find_options_by_expiration()
+find_options_by_expiration_and_strike()
+find_options_by_specific_profitability()
+find_options_by_strike()
+find_tradable_options()
+get_aggregate_open_positions()
+get_aggregate_positions()
+get_all_option_positions()
+get_chains()
+get_market_options()
+get_open_option_positions()
+get_option_historicals()
+get_option_instrument_data()
+get_option_instrument_data_by_id()
+get_option_market_data()
+get_option_market_data_by_id()
+spinning_cursor()
+write_spinner()
+Getting Market Information
+get_all_stocks_from_market_tag()
+get_currency_pairs()
+get_market_hours()
+get_market_next_open_hours()
+get_market_next_open_hours_after_date()
+get_market_today_hours()
+get_markets()
+get_top_100()
+get_top_movers()
+get_top_movers_sp500()
+Getting Positions and Account Information
+build_holdings()
+build_user_profile()
+delete_symbols_from_watchlist()
+deposit_funds_to_robinhood_account()
+download_all_documents()
+download_document()
+get_all_positions()
+get_all_watchlists()
+get_bank_account_info()
+get_bank_transfers()
+get_card_transactions()
+get_day_trades()
+get_dividends()
+get_dividends_by_instrument()
+get_documents()
+get_interest_payments()
+get_latest_notification()
+get_linked_bank_accounts()
+get_margin_calls()
+get_margin_interest()
+get_notifications()
+get_open_stock_positions()
+get_referrals()
+get_stock_loan_payments()
+get_subscription_fees()
+get_total_dividends()
+get_watchlist_by_name()
+get_wire_transfers()
+load_phoenix_account()
+post_symbols_to_watchlist()
+unlink_bank_account()
+withdrawl_funds_to_bank_account()
+Placing and Cancelling Orders
+cancel_all_crypto_orders()
+cancel_all_option_orders()
+cancel_all_stock_orders()
+cancel_crypto_order()
+cancel_option_order()
+cancel_stock_order()
+find_stock_orders()
+get_all_crypto_orders()
+get_all_open_crypto_orders()
+get_all_open_option_orders()
+get_all_open_stock_orders()
+get_all_option_orders()
+get_all_stock_orders()
+get_crypto_order_info()
+get_option_order_info()
+get_stock_order_info()
+order()
+order_buy_crypto_by_price()
+order_buy_crypto_by_quantity()
+order_buy_crypto_limit()
+order_buy_crypto_limit_by_price()
+order_buy_fractional_by_price()
+order_buy_fractional_by_quantity()
+order_buy_limit()
+order_buy_market()
+order_buy_option_limit()
+order_buy_option_stop_limit()
+order_buy_stop_limit()
+order_buy_stop_loss()
+order_buy_trailing_stop()
+order_crypto()
+order_option_credit_spread()
+order_option_debit_spread()
+order_option_spread()
+order_sell_crypto_by_price()
+order_sell_crypto_by_quantity()
+order_sell_crypto_limit()
+order_sell_crypto_limit_by_price()
+order_sell_fractional_by_price()
+order_sell_fractional_by_quantity()
+order_sell_limit()
+order_sell_market()
+order_sell_option_limit()
+order_sell_option_stop_limit()
+order_sell_stop_limit()
+order_sell_stop_loss()
+order_sell_trailing_stop()
+order_trailing_stop()
+Getting Crypto Information
+get_crypto_currency_pairs()
+get_crypto_historicals()
+get_crypto_id()
+get_crypto_info()
+get_crypto_positions()
+get_crypto_quote()
+get_crypto_quote_from_id()
+load_crypto_profile()
+Export Information
+create_absolute_csv()
+export_completed_crypto_orders()
+export_completed_option_orders()
+export_completed_stock_orders()
+fix_file_extension()
+TD Ameritrade Functions
+Gemini Functions
+Example Scripts
+Quick search
+©2018, Joshua M. Fernandes. | Powered by Sphinx 7.3.7 & Alabaster 0.7.16
+  v: latest 

@@ -3,12 +3,15 @@
             [clj-http.client :as client]
             [env :as env]
             [api.util :as autil]
-            [config :as config]))
+            [config :as config])
+  (:import [java.time Instant]
+           [java.time.format DateTimeFormatter]
+           [java.util Date]))
 
 ;; autilITY FUNCTIONS 
 
-(defn get-account-endpoint
-  ([end] (get-account-endpoint (env/get-account-id) end))
+(defn get-oanda-account-endpoint
+  ([end] (get-oanda-account-endpoint (env/get-account-id) end))
   ([account-id end]
    (str "accounts/" account-id "/" end)))
 
@@ -30,7 +33,7 @@
 (defn get-account-summary
   ([] (get-account-summary (env/get-account-id)))
   ([account-id]
-   (autil/get-oanda-api-data (get-account-endpoint account-id "summary"))))
+   (autil/get-oanda-api-data (get-oanda-account-endpoint account-id "summary"))))
 
 (defn get-account-balance
   ([] (get-account-balance (env/get-account-id)))
@@ -48,7 +51,7 @@
 (defn get-account-instruments
   ([] (get-account-instruments (env/get-account-id)))
   ([account-id]
-   (-> account-id (get-account-endpoint "instruments") autil/get-oanda-api-data :instruments)))
+   (-> account-id (get-oanda-account-endpoint "instruments") autil/get-oanda-api-data :instruments)))
 
 (comment
 
@@ -77,7 +80,7 @@
 (defn get-api-candle-data-old
   ([instrument-config] (get-api-candle-data-old (env/get-account-id) instrument-config))
   ([account-id instrument-config]
-   (let [endpoint (get-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
+   (let [endpoint (get-oanda-account-endpoint account-id (str "instruments/" (get instrument-config :name) "/candles"))]
      (autil/get-oanda-api-data endpoint instrument-config))))
 
 (def crypto-cache (atom {}))
@@ -93,6 +96,27 @@
             data (:body response)]
         (swap! crypto-cache assoc endpoint {:data data :timestamp current-time})
         data))))
+
+(def robinhood-cache (atom {}))
+
+(defn get-robinhood-api-data
+  [endpoint]
+  (let [current-time (System/currentTimeMillis)
+        cached-data (get @robinhood-cache endpoint)
+        cache-valid? (and cached-data (< (- current-time (:timestamp cached-data)) (* 1000 10)))]
+    (if cache-valid?
+      (:data cached-data)
+      (let [response (client/get endpoint {:as :json})
+            data (:body response)]
+        (swap! robinhood-cache assoc endpoint {:data data :timestamp current-time})
+        data))))
+
+#_(get-robinhood-api-data "http://localhost:4322/portfolio_profile")
+
+(defn get-robinhood-equity []
+  (-> "http://localhost:4322/portfolio_profile" get-robinhood-api-data :extended_hours_equity Double/parseDouble))
+
+#_(get-robinhood-equity)
 
 (defn map-oanda-to-binance-granularity [oanda-granularity]
   (case oanda-granularity
@@ -113,35 +137,69 @@
     "M" "1M"
     oanda-granularity))
 
+#_(map-oanda-to-binance-granularity "M1")
+
+(defn map-oanda-to-robinhood-granularity [oanda-granularity]
+  (case oanda-granularity
+    "M5" "5minute"
+    "M10" "10minute"
+    "H1" "hour"
+    "D" "day"
+    "W" "week"
+    oanda-granularity))
+
+(defn get-gran-spans [granularity]
+  (filter #(= (:gran %) granularity) constants/num-rh-grans-per-span-map))
+
+#_(get-gran-spans "5minute")
+
+(defn get-least-greater-span [granularity count]
+  (:span (first (filter #(>= (:count %) count) (get-gran-spans granularity)))))
+
+#_(get-least-greater-gran-span "5minute" 1000)
+
+(defn get-robinhood-span [instrument-config]
+  (let [granularity (map-oanda-to-robinhood-granularity (get instrument-config :granularity))
+        count (get instrument-config :count)
+        span (get-least-greater-span granularity count)]
+    span))
+
+#_(get-robinhood-span {:name "AAPL" :granularity "H1" :count 1000})
+
 (defn get-api-candle-data
   ([instrument-config] (get-api-candle-data (env/get-account-id) instrument-config))
   ([account-id instrument-config]
    (let [instrument-name (get instrument-config :name)
-         is-crypto (clojure.string/includes? instrument-name "USDT")
          granularity (get instrument-config :granularity)
          binance-granularity (map-oanda-to-binance-granularity granularity)
-         endpoint (if is-crypto
-                    (str "http://localhost:4321/candlestick?symbol=" instrument-name
-                         "&timeframe=" binance-granularity
-                         "&limit=" (get instrument-config :count))
-                    (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"
-                                                          "?granularity=" granularity)))]
+         robinhood-granularity (map-oanda-to-robinhood-granularity granularity)
+         endpoint (cond
+                    (util/is-crypto? instrument-name) (str "http://localhost:4321/candlestick?symbol=" instrument-name
+                                                           "&timeframe=" binance-granularity
+                                                           "&limit=" (get instrument-config :count))
+                    (util/is-forex? instrument-name) (get-oanda-account-endpoint account-id (str "instruments/" instrument-name "/candles"
+                                                                                                 "?granularity=" granularity))
+                    (util/is-equity? instrument-name) (str "http://localhost:4322/candlestick?symbol=" instrument-name
+                                                           "&timeframe=" robinhood-granularity
+                                                           "&span=" (get-robinhood-span instrument-config)))]
      (try
-       (if is-crypto
-         (get-crypto-api-data endpoint)
-         (autil/get-oanda-api-data endpoint))
+       (cond
+         (util/is-crypto? instrument-name) (get-crypto-api-data endpoint)
+         (util/is-forex? instrument-name) (autil/get-oanda-api-data endpoint)
+         (util/is-equity? instrument-name) (get-robinhood-api-data endpoint))
        (catch Exception e
          (println "Error fetching API data:" (.getMessage e))
          (throw e))))))
 
-(comment
-  (get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3}))
+#_(get-api-candle-data {:name "AAPL" :granularity "M5" :count 100})
+#_(get-api-candle-data {:name "AUD_JPY" :granularity "M1" :count 3})
+#_(get-api-candle-data {:name "BTCUSDT" :granularity "M1" :count 3})
 
 (comment
   ;; EXPERIMENTAL WORK IN PROGRESS
   (defn get-streaming-price-data
     [instrument]
-    (let [endpoint (get-account-endpoint
+    (let [endpoint (get-oanda-account-endpoint
                     (env/get-account-id)
                     (str "pricing/stream?instruments=" instrument))]
       (autil/get-oanda-stream-data endpoint)))
@@ -173,9 +231,28 @@
 
 #_(get-binance-positions)
 
+(def robinhood-cache (atom {:positions nil :timestamp 0}))
+
+(defn get-robinhood-positions
+  ([] (get-robinhood-positions false))
+  ([force-refresh?]
+   (let [{:keys [positions timestamp]} @robinhood-cache
+         current-time (System/currentTimeMillis)
+         cache-valid? (and positions (< (- current-time timestamp) (* 1000 180)))]
+     (if (and (not force-refresh?) cache-valid?)
+       positions
+       (let [url "http://localhost:4322/balances"
+             response (client/get url {:as :json})
+             active-positions (:body response)]
+         (reset! robinhood-cache {:positions active-positions :timestamp current-time})
+        ;;  (println "current positions: " active-positions)
+         active-positions)))))
+
+#_(def rh-positions (get-robinhood-positions true))
+
 (defn get-open-positions
   ([] (get-open-positions (env/get-account-id)))
-  ([account-id] (autil/get-oanda-api-data (get-account-endpoint account-id "openPositions"))))
+  ([account-id] (autil/get-oanda-api-data (get-oanda-account-endpoint account-id "openPositions"))))
 
 #_(get-open-positions)
 
@@ -206,7 +283,7 @@
   ([order-options] (send-order-request order-options (env/get-account-id)))
   ([order-options account-id]
    (autil/send-api-post-request
-    (autil/build-oanda-url (get-account-endpoint account-id "orders"))
+    (autil/build-oanda-url (get-oanda-account-endpoint account-id "orders"))
     (make-request-options order-options))))
 
 (defn send-binance-order [symbol type side amount]
@@ -236,53 +313,74 @@
                              :as :json})]
     (:body response)))
 
-#_(send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS BTC
-#_(send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS BTC
-#_(send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS ETH
+#_(send-binance-order "BTCUSDT" "market" "buy" 0.0001) ;; WARNING: THIS ACTUALLY BUYS 0.0001 BTC
+#_(send-binance-order "BTCUSDT" "market" "sell" 0.0001) ;; WARNING: THIS ACTUALLY SELLS 0.0001BTC
+#_(send-binance-order "ETHUSDT" "market" "buy" 0.001) ;; WARNING: THIS ACTUALLY BUYS 0.001 ETH
 
-(defn get-instrument-stream-old [instrument-config]
-  (let [candle-data (get-api-candle-data instrument-config)]
-    (vec
-     (for [candle (get candle-data :candles)]
-       {:v (get candle :volume)
-        :o (Double/parseDouble (get-in candle [:mid :o]))
-        :h (Double/parseDouble (get-in candle [:mid :h]))
-        :l (Double/parseDouble (get-in candle [:mid :l]))
-        :c (Double/parseDouble (get-in candle [:mid :c]))}))))
+(defn send-robinhood-usd-order [symbol amount]
+  (let [url "http://localhost:4322/order"
+        payload {:symbol symbol
+                 :amount amount}
+        response (client/post url
+                              {:body (json/write-str payload)
+                               :headers {"Content-Type" "application/json"}
+                               :as :json})]
+    (:body response)))
 
-(defn get-instrument-stream [instrument-config]
-  (let [candle-data (get-api-candle-data instrument-config)
-        is-crypto (clojure.string/includes? (get instrument-config :name) "USDT")]
-    (if is-crypto
-      (vec
-       (for [candle candle-data]
-         {:v (get candle :volume)
-          :o (get candle :open)
-          :h (get candle :high)
-          :l (get candle :low)
-          :c (get candle :close)}))
-      (vec
-       (for [candle (get candle-data :candles)]
-         {:v (get candle :volume)
-          :o (Double/parseDouble (get-in candle [:mid :o]))
-          :h (Double/parseDouble (get-in candle [:mid :h]))
-          :l (Double/parseDouble (get-in candle [:mid :l]))
-          :c (Double/parseDouble (get-in candle [:mid :c]))})))))
+#_(send-robinhood-usd-order "TSLA" 2.0) ;; WARNING: THIS ACTUALLY BUYS $2.00 worth of TSLA
+
+(defn get-instrument-stream
+  ([name granularity _count] (get-instrument-stream {:name name :granularity granularity :count _count}))
+  ([instrument-config]
+   (let [candle-data (get-api-candle-data instrument-config)
+         instrument (:name instrument-config)
+         candles (cond
+                   (util/is-crypto? instrument)
+                   (vec
+                    (for [candle candle-data]
+                      {:t (get candle :timestamp)
+                       :v (get candle :volume)
+                       :o (get candle :open)
+                       :h (get candle :high)
+                       :l (get candle :low)
+                       :c (get candle :close)}))
+                   (util/is-forex? instrument)
+                   (vec
+                    (for [candle (get candle-data :candles)]
+                      {:t (get candle :time)
+                       :v (get candle :volume)
+                       :o (Double/parseDouble (get-in candle [:mid :o]))
+                       :h (Double/parseDouble (get-in candle [:mid :h]))
+                       :l (Double/parseDouble (get-in candle [:mid :l]))
+                       :c (Double/parseDouble (get-in candle [:mid :c]))}))
+                   (util/is-equity? instrument)
+                   (vec
+                    (for [candle candle-data]
+                      {:t (get candle :begins_at)
+                       :v (get candle :volume)
+                       :o (Double/parseDouble (get candle :open_price))
+                       :h (Double/parseDouble (get candle :high_price))
+                       :l (Double/parseDouble (get candle :low_price))
+                       :c (Double/parseDouble (get candle :close_price))})))]
+     (util/subvec-end candles (:count instrument-config)))))
+
+#_(get-instrument-stream {:name "BTCUSDT" :granularity "H1" :count 7777})
+#_(get-instrument-stream {:name "EUR_USD" :granularity "H1" :count 7777})
+#_(get-instrument-stream {:name "AAPL" :granularity "H1" :count 333})
 
 (defn get-latest-price
   [instrument]
-  (let [candle-data (get-api-candle-data {:name instrument :granularity "M1" :count 1})
-        is-crypto (clojure.string/includes? instrument "USDT")]
-    (if is-crypto
-      (-> candle-data first :close)
-      (-> candle-data :candles first :mid :c Double/parseDouble))))
+  (let [inst-config {:name instrument :granularity (if (util/is-equity? instrument) "M5" "M1") :count 1}]
+    (-> inst-config get-instrument-stream last :c)))
 
 #_(get-latest-price "BTCUSDT")
+#_(get-latest-price "EUR_USD")
+#_(get-latest-price "AAPL")
 
 (defn get-latest-prices [instruments]
   (mapv (fn [instrument] {:instrument instrument :price (get-latest-price instrument)}) instruments))
 
-#_(get-latest-prices ["EUR_USD" "BTCUSDT" "ETHUSDT"])
+#_(get-latest-prices ["AUD_USD" "ETHUSDT" "TSLA"])
 
 #_(get-binance-positions)
 
@@ -315,6 +413,18 @@
 
 #_(get-binance-account-usd-amount)
 
+(defn get-robinhood-position-values []
+  (vec
+   (for [position (get-robinhood-positions)]
+     (let [latest-price (get-latest-price (:instrument position))
+           usd-amount (* latest-price (:units position))]
+       (assoc position :latest-price latest-price :usd-amount usd-amount)))))
+
+(defn get-robinhood-account-usd-amount []
+  (sum-usd-amounts (get-robinhood-position-values)))
+
+#_(get-robinhood-account-usd-amount)
+
 ;; OANDA STRINDICATOR STUFF
 
 (defn get-instrument-last-candle [instrument granularity]
@@ -344,11 +454,6 @@
 (comment
   (get-formatted-candle-data {:name "USD_CNY" :granularity "H1" :count 3000}))
 
-
-;; GET STREAMING PRICE DATA
-
-(defn open-streaming-price-channel [instrument])
-
 ;; CLOSE OPEN POSITION FOR INSTRUMENT
 
 (defn close-position
@@ -358,7 +463,7 @@
    (do
      (autil/send-api-put-request
       (autil/build-oanda-url
-       (get-account-endpoint account-id (str "positions/" instrument "/close")))
+       (get-oanda-account-endpoint account-id (str "positions/" instrument "/close")))
       (make-request-options (if long-pos? {:longUnits "ALL"} {:shortUnits "ALL"})))
      instrument)))
 
@@ -391,7 +496,7 @@
 ;; TRADES FUNCTIONS
 
 (defn get-open-trades []
-  (autil/get-oanda-api-data  (get-account-endpoint "openTrades")))
+  (autil/get-oanda-api-data  (get-oanda-account-endpoint "openTrades")))
 
 (comment
 
