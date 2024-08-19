@@ -118,7 +118,7 @@
   (println eur_stream))
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
-  (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (min 1000 stream-count)))
+  (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (max 1000 stream-count)))
         _ (println "big-stream count: " (count big-stream))
         back-len (int (* (count big-stream) back-pct))
         fore-len (- (count big-stream) back-len)
