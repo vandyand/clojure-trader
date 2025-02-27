@@ -129,7 +129,9 @@
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 240 (run-backtest constants/pairs-by-liquidity))
+#_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-oanda))
+#_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
+(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 
 (defn get-accounts-worth []
   (let [oanda-nav (oanda_api/get-account-nav)
@@ -143,3 +145,7 @@
     ret))
 
 #_(get-accounts-worth)
+
+#_(oanda_api/get-account-nav)
+
+#_(oanda_api/get-binance-account-usd-amount)

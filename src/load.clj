@@ -16,4 +16,4 @@
 (load "/nean/xindy")
 (load "/nean/ga")
 (load "/nean/arena")
-(load "/nean/server")
+#_(load "/nean/server")

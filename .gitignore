@@ -17,3 +17,4 @@ python-broker/**
 
 src/sketch.clj
 sketch/**
+py-bi-env/
