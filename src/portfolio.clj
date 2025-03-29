@@ -129,7 +129,7 @@
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-oanda))
+(shoot-money-x-from-backtest-y 50 (run-backtest constants/pairs-by-liquidity-oanda))
 #_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
 #_(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 

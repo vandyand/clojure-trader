@@ -119,13 +119,19 @@
    (let [instrument-name (get instrument-config :name)
          is-crypto (clojure.string/includes? instrument-name "USDT")
          granularity (get instrument-config :granularity)
+         count (get instrument-config :count)
+         to (get instrument-config :to)
+         from (get instrument-config :from)
          binance-granularity (map-oanda-to-binance-granularity granularity)
          endpoint (if is-crypto
                     (str "http://localhost:4321/candlestick?symbol=" instrument-name
                          "&timeframe=" binance-granularity
                          "&limit=" (get instrument-config :count))
                     (get-account-endpoint account-id (str "instruments/" instrument-name "/candles"
-                                                          "?granularity=" granularity)))]
+                                                          "?granularity=" granularity
+                                                          (when count (str "&count=" (min 5000 count)))
+                                                          (when from (str "&from=" from))
+                                                          (when to (str "&to=" to)))))]
      (try
        (if is-crypto
          (get-crypto-api-data endpoint)
@@ -267,7 +273,8 @@
           :o (Double/parseDouble (get-in candle [:mid :o]))
           :h (Double/parseDouble (get-in candle [:mid :h]))
           :l (Double/parseDouble (get-in candle [:mid :l]))
-          :c (Double/parseDouble (get-in candle [:mid :c]))})))))
+          :c (Double/parseDouble (get-in candle [:mid :c]))
+          :time (Double/parseDouble (get candle :time))})))))
 
 (defn get-latest-price
   [instrument]

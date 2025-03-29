@@ -82,8 +82,8 @@
           (conj vals from-time)
           (recur (- val time-span) (conj vals val))))))))
 
-(defn get-big-stream
-  ([instrument granularity _count] (get-big-stream instrument granularity _count 1000))
+(defn get-big-stream-old
+  ([instrument granularity _count] (get-big-stream-old instrument granularity _count 1000))
   ([instrument granularity _count span]
    (let [from-to-times (get-from-to-times granularity (* 2 _count) span)]
      (loop [i 0 stream []]
@@ -102,6 +102,23 @@
            (mapv :o new-stream)
            (recur (inc i) new-stream)))))))
 
+(defn get-big-stream
+  [instrument granularity _count]
+  (let [stream-config {:name instrument
+                       :granularity granularity
+                       :count _count
+                      ;;  :to "1717704000.000000000"
+                      ;;  :from (str (- 1717704000 (* 60 60 5000)) ".000000000")
+                       }
+        stream (oa/get-instrument-stream stream-config)]
+    (mapv :o stream)))
+
+;; (def big-stream (get-big-stream "EUR_USD", "H1", 7777))
+;; (count big-stream)
+;; (first big-stream)
+;; (second big-stream)
+;; (last big-stream)
+
 (defn subvec-end [vs target-len]
   (if (> target-len (count vs))
     (throw (IllegalArgumentException. "target-len is greater than the length of the vector"))
@@ -118,7 +135,7 @@
   (println eur_stream))
 
 (defn get-back-fore-streams [instrument granularity stream-count back-pct max-shift]
-  (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift) (max 1000 stream-count)))
+  (let [big-stream (vec (get-big-stream instrument granularity (+ stream-count max-shift)))
         _ (println "big-stream count: " (count big-stream))
         back-len (int (* (count big-stream) back-pct))
         fore-len (- (count big-stream) back-len)
@@ -128,6 +145,12 @@
                      (- back-len max-shift)
                      (count big-stream))]
     {:back-stream back-stream :fore-stream fore-stream :total-stream big-stream}))
+
+(def streams (get-back-fore-streams "EUR_USD", "H1", 7777, 0.9, 777))
+
+(println (count (:back-stream streams)))
+(println (keys streams))
+
 
 (defn num-weekend-bars [granularity]
   (let [secs-per-bar (util/granularity->seconds granularity)
