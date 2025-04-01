@@ -19,8 +19,10 @@
             wrifts (:wrifts backtest)
             instrument-rel-scores (vec (for [wrift wrifts]
                                          {:instrument (:instrument wrift)
-                                          :rel-buy-sell-score (let [vals (map #(get-in % [:total :last-rel-sieve-val]) (:rindies wrift))]
-                                                                (stats/mean vals))
+                                          :rel-buy-sell-score (let [vals (map #(get-in % [:total :last-rel-sieve-val]) (:rindies wrift))
+                                                                    mean-val (stats/mean vals)
+                                                                    robust-ratio (/ (count (:rindies wrift)) (:num-parents backtest))]
+                                                                (* robust-ratio mean-val))
                                           :latest-price (oanda_api/get-latest-price (:instrument wrift))}))]
         (swap! instrument-scores-cache assoc cache-key {:data instrument-rel-scores :timestamp current-time})
         instrument-rel-scores))))
@@ -118,18 +120,18 @@
   ;; Run backtests on instruments to get "buy sell scores"
   (let [backtest-params {:instruments instruments
                          :granularity "H1"
-                         :num-backtests-per-instrument 7
-                         :xindy-config {:num-shifts 14
-                                        :max-shift 777}
+                         :num-backtests-per-instrument 3
+                         :xindy-config {:num-shifts 10
+                                        :max-shift 77}
                          :pop-config {:pop-size 77
                                       :num-parents 44
                                       :num-children 33}
                          :ga-config {:num-generations 7
-                                     :stream-count 7777
+                                     :stream-count 3333
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 50 (run-backtest constants/pairs-by-liquidity-oanda))
+(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
 #_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
 #_(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 

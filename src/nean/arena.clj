@@ -45,7 +45,7 @@
                         (xindy/get-xindy-from-shifts (:shifts xindy) (:max-shift xindy-config) total-stream))
         full-xindies (combine-xindies best-xindies fore-xindies total-xindies)
         rindies (filter #(and (> (-> % :back :ga-score) 0) (> (-> % :fore :ga-score) 0) (> (:robustness %) -0.25)) full-xindies)]
-    (println "num rindies:" (count rindies))
+    (println "num rindies:" (count rindies) " out of:" (count best-xindies))
     rindies))
 
 (defn generate-rindies [streams-map xindy-config pop-config ga-config]
@@ -78,11 +78,12 @@
             futures (for [_ (range num-backtests-per-instrument)]
                       (future (generate-rindies streams-map xindy-config pop-config ga-config)))
             rindies (vec (doall (mapcat deref futures)))
-            _ (println rindies)
+            _ (when (env/get-env-data :GA_LOGGING?) (println "rindies" rindies))
             rifts (:rifts rindies)]
         {:instrument instrument
          :rifts (mapv :shifts rindies)
          :rindies (mapv #(dissoc % :shifts) rindies)
+         :pop-size (:pop-size pop-config)
          :count (count rifts)})))))
 
 (comment
@@ -104,8 +105,8 @@
 
 ;; Saved wrifts file should have everything we need to run them.
 (defn save-backtest
-  ([wrifts xindy-config granularity filename]
-   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts}]
+  ([wrifts xindy-config granularity num-parents filename]
+   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts :num-parents num-parents}]
      (file/write-file filename file-content)
      filename)))
 
@@ -145,7 +146,7 @@
          filename (str "data/wrifts/" backtest-id ".edn")
          _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})
          backtest (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
-     (save-backtest backtest xindy-config granularity filename)
+     (save-backtest backtest xindy-config granularity (:num-parents pop-config) filename)
      backtest-id)))
 
 #_(run-and-save-backtest)
