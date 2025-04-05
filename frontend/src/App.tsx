@@ -29,7 +29,8 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/positions" element={<Positions />} />
               <Route path="/performance" element={<Performance />} />
-              <Route path="/backtests" element={<Backtests />} />
+              {/* Backtests route hidden until fully implemented */}
+              {/* <Route path="/backtests" element={<Backtests />} /> */}
             </Routes>
           </Layout>
         </Router>

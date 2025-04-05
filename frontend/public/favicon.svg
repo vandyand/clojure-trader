@@ -1,0 +1,13 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="4" fill="#f8fafc" />
+  
+  <!-- Clojure symbol stylized as C with trading chart -->
+  <path d="M 16,4 A 12,12 0 0 0 4,16 12,12 0 0 0 16,28 12,12 0 0 0 28,16 12,12 0 0 0 16,4 Z" fill="none" stroke="#3b82f6" stroke-width="2.5" />
+  
+  <!-- Trading chart lines -->
+  <polyline points="8,20 12,16 16,18 20,12 24,14" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Dot to represent Clojure logo -->
+  <circle cx="16" cy="16" r="2.5" fill="#3b82f6" />
+</svg> 

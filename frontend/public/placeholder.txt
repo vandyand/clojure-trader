@@ -1,0 +1,17 @@
+To complete the branding update, you should create:
+
+1. logo192.png - A 192x192 pixel PNG version of your logo (based on the SVG favicon we created)
+2. logo512.png - A 512x512 pixel PNG version of your logo
+
+You can use any image editor that can export SVGs to PNG, like:
+- Inkscape (free, open-source)
+- Adobe Illustrator
+- Figma
+- GIMP
+- Photoshop
+
+Instructions:
+1. Open the favicon.svg file in your preferred image editor
+2. Scale it to 192x192 and 512x512 pixels respectively
+3. Export as PNG with transparent background
+4. Replace the existing logo files in the public directory 
