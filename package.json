@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^29.5.14",
+    "highlight.js": "11.5.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "vega": "^5.22.1",
+    "vega-embed": "^6.21.0",
+    "vega-lite": "^5.5.0",
+    "web-vitals": "^4.2.4"
+  },
+  "name": "clojure-trader",
+  "version": "1.0.0",
+  "description": "## Overview",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "shadow-cljs": "^2.28.22"
+  }
+}
