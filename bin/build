@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# bin/build
+echo "----> Running custom build script"
+chmod +x lein
+./lein uberjar
+mkdir -p target
+cp target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar target/clojure-trader.jar
+echo "----> Custom build completed" 
