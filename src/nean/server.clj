@@ -18,6 +18,7 @@
    [api.oanda_api :as oa]
    [auth.core :as auth]
    [env :as env]
+   [migrations.core :as migrations]
    [nean.db-test :as db-test])
   (:gen-class))
 
@@ -347,25 +348,24 @@
     (future-cancel thread)
     (reset! performance-collection-thread nil)))
 
-(defn -main [& args]
-  (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
-    ;; Test database connection on startup
-    (db-test/run-db-tests)
+(defn -main
+  "Start the API server with the specified port."
+  [& args]
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "8080"))]
+    (println "Initializing database...")
+    (db/init-db!)
 
-    ;; Initialize auth database tables
+    ;; Run database migrations
+    (println "Running database migrations...")
+    (migrations/init)
+
+    ;; Initialize auth tables
+    (println "Initializing auth tables...")
     (auth/init-auth-db! db/db-spec)
 
-    (println "Starting server on port" port)
-    (println "Collecting performance data...")
-
-    ;; Start the API server
-    (jetty/run-jetty (wrap-cors app-routes :access-control-allow-origin [#".*"]
-                                :access-control-allow-methods [:get :post])
-                     {:port port
-                      :join? false})
-
-    ;; Start collection thread
-    (start-performance-collection)))
+    (println (str "Starting server on port " port "..."))
+    (println "Environment: " (env/get-live-or-demo))
+    (jetty/run-jetty #'app-routes {:port port :join? false})))
 
 ;; Only call -main when running as a standalone application, not when required by other code
 (when (= *file* (System/getProperty "babashka.file"))

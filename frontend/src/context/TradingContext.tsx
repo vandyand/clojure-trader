@@ -31,6 +31,7 @@ interface TradingContextState {
   fetchAccounts: () => Promise<void>;
   fetchPositions: (accountId?: string) => Promise<void>;
   fetchPerformance: (days?: number) => Promise<void>;
+  refreshData: () => Promise<void>;
   setApiSource: (source: ApiSource) => void;
   setSelectedAccountId: (id: string | null) => void;
 }
@@ -198,6 +199,11 @@ export const TradingProvider: React.FC<TradingProviderProps> = ({
     fetchAccounts,
     fetchPositions,
     fetchPerformance,
+    refreshData: async () => {
+      await fetchAccounts();
+      await fetchPositions();
+      await fetchPerformance();
+    },
     setApiSource,
     setSelectedAccountId,
   };

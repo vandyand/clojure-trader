@@ -44,6 +44,16 @@ if ! heroku addons:info --app "$APP_NAME" | grep -q "heroku-postgresql"; then
     fi
 fi
 
+# Run database migrations
+echo "Would you like to run database migrations? (y/n)"
+read -r RUN_MIGRATIONS
+if [[ $RUN_MIGRATIONS =~ ^[Yy]$ ]]; then
+    echo "Running database migrations..."
+    heroku run -a "$APP_NAME" "lein run -m migrations.core" || {
+        echo "Note: Migrations might not run until the app is deployed. They will run on application startup."
+    }
+fi
+
 # Push to Heroku
 echo "Pushing code to Heroku..."
 if git remote | grep -q "heroku"; then
@@ -56,4 +66,17 @@ fi
 git push heroku master
 
 echo "Deployment complete!"
-echo "Your application is now available at: https://$APP_NAME.herokuapp.com" 
+echo "Your application is now available at: https://$APP_NAME.herokuapp.com"
+
+# Final reminders about permanent database setup
+echo ""
+echo "Next steps for database management:"
+echo "1. For production use, consider migrating to a dedicated PostgreSQL service:"
+echo "   - AWS RDS (https://aws.amazon.com/rds/postgresql/)"
+echo "   - DigitalOcean Managed Databases (https://www.digitalocean.com/products/managed-databases-postgresql)"
+echo "   - TimescaleDB Cloud for time-series data (https://www.timescale.com/cloud)"
+echo ""
+echo "2. To migrate to a permanent database, update the DATABASE_URL config var:"
+echo "   heroku config:set DATABASE_URL=postgres://username:password@host:port/dbname --app $APP_NAME"
+echo ""
+echo "3. Don't forget to set up regular database backups!" 

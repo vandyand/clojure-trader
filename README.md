@@ -1,233 +1,233 @@
 # Clojure Trader
 
-A trading system built with Clojure that automatically manages forex and cryptocurrency positions.
+A modern trading platform built with Clojure, React, and PostgreSQL. This application provides algorithmic trading capabilities with backtesting and live trading features.
 
-## Project Structure
+## Table of Contents
 
-- `frontend/` - React dashboard for visualizing trades and portfolio
-- `src/` - Clojure backend code for trading algorithms and API connections
-- `src/portfolio.clj` - The portfolio management script that updates positions
-
-## Setup
-
-### Prerequisites
-
-- Java 17+
-- Clojure
-- Node.js 18+ (for frontend)
-- OANDA account (for forex trading)
-- Binance account (for crypto trading)
-
-### Configuration
-
-1. Copy `.env.example` to `.env.json` and fill in your details
-2. Copy `.sensitive.example` to `.sensitive.json` and add your API keys
-
-## Local Development
-
-### Backend
-
-```
-clj -m nean.server
-```
-
-### Frontend
-
-```
-cd frontend
-npm install
-npm start
-```
-
-## Deployment
-
-### Heroku Deployment
-
-1. Create a Heroku app for the backend:
-
-```
-heroku create clojure-trader-backend
-```
-
-2. Set environment variables:
-
-```
-heroku config:set OANDA_LIVE_OR_DEMO=DEMO
-heroku config:set OANDA_DEMO_ACCOUNT_ID=your-account-id
-heroku config:set OANDA_DEMO_KEY=your-api-key
-```
-
-3. Push to Heroku:
-
-```
-git push heroku master
-```
-
-## Scheduling Portfolio Updates
-
-### Option 1: Heroku Scheduler
-
-1. Install the Heroku Scheduler add-on:
-
-```
-heroku addons:create scheduler:standard
-```
-
-2. Create a scheduled job to run daily at your preferred time (e.g., 6-7 PM EST):
-
-```
-clj run-portfolio.clj
-```
-
-### Option 2: GitHub Actions
-
-1. Add a GitHub workflow file to run the portfolio script daily:
-
-```yaml
-name: Daily Portfolio Update
-
-on:
-  schedule:
-    # Run at 6:30 PM Eastern Time (22:30 UTC)
-    - cron: "30 22 * * *"
-
-jobs:
-  update-portfolio:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-      - uses: DeLaGuardo/setup-clojure@12.1
-        with:
-          cli: 1.11.1.1273
-      - name: Run Portfolio Update
-        run: clj -M run-portfolio.clj
-        env:
-          OANDA_LIVE_OR_DEMO: ${{ secrets.OANDA_LIVE_OR_DEMO }}
-          OANDA_DEMO_ACCOUNT_ID: ${{ secrets.OANDA_DEMO_ACCOUNT_ID }}
-          OANDA_LIVE_ACCOUNT_ID: ${{ secrets.OANDA_LIVE_ACCOUNT_ID }}
-          OANDA_DEMO_KEY: ${{ secrets.OANDA_DEMO_KEY }}
-          OANDA_LIVE_KEY: ${{ secrets.OANDA_LIVE_KEY }}
-          BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
-          BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
-```
-
-### Option 3: Local Crontab (Unix/Linux/macOS)
-
-Add a crontab entry to run the script daily at 6:30 PM Eastern:
-
-```
-30 18 * * * cd /path/to/clojure-trader && clj -M run-portfolio.clj >> portfolio.log 2>&1
-```
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Backend Setup](#backend-setup)
+- [Frontend Setup](#frontend-setup)
+- [Deployment](#deployment)
+- [Database Migration](#database-migration)
+- [Authentication](#authentication)
+- [API Documentation](#api-documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Architecture
 
-The system consists of:
+The application consists of two main components:
 
-1. **Portfolio Management** - Analyzes market conditions and determines position sizes
-2. **Backend API** - Provides data to the frontend and executes trades
-3. **Frontend Dashboard** - Visualizes trading results and portfolio performance
+1. **Backend**: A Clojure-based API server with the following features:
 
-## Overview
+   - Trading algorithm implementation
+   - Backtesting engine
+   - JWT authentication
+   - Database integration with PostgreSQL
+   - Real-time market data processing
 
-Welcome to **Clojure Trader**, an advanced trading framework designed for optimal performance in algorithmic trading. This personal project combines the power of Clojure with modern trading strategies to capitalize on market opportunities.
-
-## Project Objective
-
-The primary objective of this project is to develop, test, and optimize trading algorithms using a data-driven methodology. Leveraging genetic algorithms, the framework searches through a space of trading strategies to identify the most effective ones for various financial instruments.
-
-## Key Features
-
-- **Intuitive Strategy Definition**: Define strategies using simple vectors of positive integers representing buy and sell signals, making it easy to create custom algorithms.
-- **Genetic Algorithm**: Employ genetic algorithm techniques for strategy backtesting optimization.
-- **Multi-Instrument Support**: Analyze and optimize trading strategies across multiple forex pairs and cryptocurrencies.
-- **Asynchronous Processing**: Efficiently manage data retrieval and processing through asynchronous operations.
-- **Extensive Library Support**: Utilize a range of libraries for data manipulation, visualization, and HTTP requests.
-
-## Technologies and Dependencies
-
-- **Clojure**: A modern Lisp dialect for robust and efficient programming.
-- **CUDA**: For parallel processing of vector computations to enhance backtest performance.
-- **Compojure**: Simplifies routing and handling requests.
-- **Midje**: Provides a framework for testing and validation.
-- **metasoarous/oz**: For data visualizations.
-- **org.clojure/data.csv**: For CSV handling.
-- **clj-http/clj-http**: For making HTTP requests.
-
-## Roadmap
-
-Plan to extend Clojure Trader with further enhancements:
-
-- Implement web UI
-  - Visualize performance
-  - Manage portfolios
-  - Control trading parameters
-- Integration with additional trading APIs such as Interactive Brokers and others.
-- Experiment with position entering and exiting time based strategies.
+2. **Frontend**: A React application with:
+   - Interactive trading dashboard
+   - Portfolio analytics
+   - Backtesting interface
+   - Position management
 
 ## Getting Started
 
 ### Prerequisites
 
-Make sure you have the following installed:
+- JDK 11+
+- Leiningen (Clojure build tool)
+- Node.js 16+ and npm
+- PostgreSQL 12+
 
-- Java (JDK 8 or later)
-- Clojure
-- VSCode with Calva extension
-
-### Installation
-
-Clone the repository:
+### Clone the Repository
 
 ```bash
-git clone https://github.com/vandyand/clojure-trader.git
+git clone https://github.com/yourusername/clojure-trader.git
 cd clojure-trader
-code .
 ```
 
-Update environment variables in `.sensitive.json`:
+## Backend Setup
 
-```json
-{
-  "OANDA_DEMO_KEY": "xxxxxxxx",
-  "OANDA_LIVE_KEY": "xxxxxxxx",
-  "BINANCE_API_KEY": "xxxxxxxx",
-  "BINANCE_API_SECRET": "xxxxxxxx"
-}
-```
-
-Update account information in `.env.json`:
-
-```json
-{
-  "OANDA_LIVE_ACCOUNT_ID": "xxxxxxxx",
-  "OANDA_DEMO_ACCOUNT_ID": "xxxxxxxx"
-}
-```
-
-Start the Python server if using cryptocurrency trading:
+1. Install dependencies:
 
 ```bash
-./python-binance-wrapper/startup.sh
+./lein deps
 ```
 
-Install dependencies:
-From VSCode Command Pallette:
+2. Configure the database:
+
+Create a `.env` file with your database credentials or use environment variables:
 
 ```
-Calva: Start a Project REPL and Connect (aka Jack-in)
+DATABASE_URL=postgres://username:password@localhost:5432/clojure_trader
+JWT_SECRET=your_secret_key_here
 ```
 
-Run the application:  
-From the calva repl run src/portfolio.clj file. This will run backtests on the top 20 most liquid forex pairs and cryptocurrencies, calculate optimal position sizes and post orders to OANDA and Binance.
+3. Run the backend server locally:
 
-## Contribution
+```bash
+./lein run
+```
 
-Contributions are welcome! Please submit pull requests or open issues to discuss improvements.
+The server will be available at http://localhost:8080
+
+## Frontend Setup
+
+1. Navigate to the frontend directory:
+
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Configure the environment:
+
+Create a `.env` file with your API configuration:
+
+```
+REACT_APP_CLOJURE_API_URL=http://localhost:8080
+REACT_APP_DEFAULT_API_SOURCE=clojure
+```
+
+4. Start the development server:
+
+```bash
+npm start
+```
+
+The frontend will be available at http://localhost:3000
+
+## Deployment
+
+### Backend Deployment (Heroku)
+
+1. Deploy the application using our automated script:
+
+```bash
+./deploy-to-heroku.sh
+```
+
+This script will:
+
+- Configure PostgreSQL on Heroku
+- Set up necessary environment variables
+- Run database migrations
+- Deploy the backend to Heroku
+
+### Frontend Deployment (Heroku)
+
+1. Deploy the frontend using our automated script:
+
+```bash
+./deploy-frontend-heroku.sh
+```
+
+This script will:
+
+- Build the React application with optimized settings
+- Configure API endpoints to point to your backend
+- Set up an Express server for serving static content
+- Deploy the frontend to Heroku
+- Configure CORS settings on the backend to allow frontend access
+
+Your application will be available at:
+
+- Backend: https://clojure-trader-api-18279899daf7.herokuapp.com
+- Frontend: https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com
+
+## Database Migration
+
+The application uses a custom database migration system:
+
+```bash
+./lein run -m migrations.core
+```
+
+Migrations are automatically run during application startup to ensure the database schema is up-to-date.
+
+## Authentication
+
+The system uses JWT for authentication:
+
+1. Register a user:
+
+```
+POST /api/auth/register
+{
+  "username": "your_username",
+  "password": "your_password",
+  "email": "your_email@example.com"
+}
+```
+
+2. Login to get a token:
+
+```
+POST /api/auth/login
+{
+  "username": "your_username",
+  "password": "your_password"
+}
+```
+
+3. Use the returned token in the Authorization header:
+
+```
+Authorization: Bearer your_token_here
+```
+
+## API Documentation
+
+### Public Endpoints
+
+- `GET /` - Health check
+- `GET /trade-env` - Get current trading environment (live/demo)
+- `POST /api/auth/login` - Login
+- `POST /api/auth/register` - Register new user
+
+### Protected Endpoints
+
+- `GET /api/v1/accounts` - Get all trading accounts
+- `GET /api/v1/account-summary/:account-id` - Get account summary
+- `GET /api/v1/open-positions/:account-id` - Get open positions for account
+- `GET /api/v1/backtest-ids` - Get all backtest IDs
+- `GET /api/v1/backtest/:id` - Get backtest details
+- `POST /api/v1/backtest` - Run a new backtest
+- `POST /api/v1/trade` - Execute a live trade based on backtest
+
+## Monitoring & Production Readiness
+
+For production deployment, consider:
+
+1. **Database**: Migrate to a dedicated PostgreSQL service:
+
+   - AWS RDS for PostgreSQL
+   - DigitalOcean Managed Databases
+   - TimescaleDB Cloud (ideal for time-series data)
+
+2. **Monitoring**:
+
+   - Set up application monitoring (New Relic, Datadog)
+   - Configure alerting for critical errors
+   - Enable database query performance monitoring
+
+3. **Backups**:
+   - Schedule regular database backups
+   - Set up point-in-time recovery
+   - Test backup restoration periodically
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

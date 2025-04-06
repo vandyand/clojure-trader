@@ -143,16 +143,53 @@ export const clojureApiService = {
     }
   },
 
-  // Position endpoints
-  getPositions: async (accountId?: string): Promise<Position[]> => {
+  getAccountsWorth: async (): Promise<{
+    oanda: number;
+    binance: number;
+    total: number;
+    timestamp: number;
+  }> => {
     try {
-      const endpoint = accountId
-        ? `/api/v1/open-positions/${accountId}`
-        : "/api/v1/open-positions";
+      const accounts = await clojureApiService.getAccounts();
+      const totalValue = accounts.reduce(
+        (sum, account) => sum + (account.nav || account.balance || 0),
+        0
+      );
+
+      return {
+        oanda: totalValue, // Assuming all accounts are from Oanda for now
+        binance: 0, // Not implemented yet
+        total: totalValue,
+        timestamp: Date.now(),
+      };
+    } catch (error) {
+      console.error("Error calculating accounts worth:", error);
+      throw error;
+    }
+  },
+
+  // Position endpoints
+  getPositions: async (): Promise<Position[]> => {
+    try {
+      const endpoint = "/api/v1/open-positions";
       const response = await clojureClient.get(endpoint);
       return processResponse<Position[]>(response);
     } catch (error) {
       console.error("Error fetching positions:", error);
+      throw error;
+    }
+  },
+
+  getPositionsByAccount: async (accountId: string): Promise<Position[]> => {
+    try {
+      const endpoint = `/api/v1/open-positions/${accountId}`;
+      const response = await clojureClient.get(endpoint);
+      return processResponse<Position[]>(response);
+    } catch (error) {
+      console.error(
+        `Error fetching positions for account ${accountId}:`,
+        error
+      );
       throw error;
     }
   },

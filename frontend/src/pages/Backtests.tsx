@@ -554,7 +554,6 @@ const Backtests: React.FC = () => {
   const [showNewBacktestModal, setShowNewBacktestModal] =
     useState<boolean>(false);
   const [runningBacktest, setRunningBacktest] = useState<boolean>(false);
-  const { refreshData } = useTradingContext();
 
   useEffect(() => {
     const fetchBacktests = async () => {
