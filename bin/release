@@ -9,12 +9,19 @@ echo "----> Running release phase script"
 echo "----> Files in target directory:"
 ls -la target/
 
-# Check if the JAR file we need exists
-if [[ -f target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
-  echo "----> Found target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
+# Check if the JAR file we need exists in target/uberjar
+if [[ -f target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+  echo "----> Found target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
 else
-  echo "----> ERROR: target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar not found!"
-  exit 1
+  # Check if the JAR file exists in the target directory directly
+  if [[ -f target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+    echo "----> Found target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
+  else
+    echo "----> ERROR: JAR file not found in expected locations!"
+    echo "----> Listing target/uberjar directory:"
+    ls -la target/uberjar/
+    exit 1
+  fi
 fi
 
 echo "----> Release phase completed successfully" 
