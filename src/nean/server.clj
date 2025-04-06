@@ -11,11 +11,37 @@
    [ring.middleware.cors :refer [wrap-cors]]
    [nean.arena :as arena]
    [api.oanda_api :as oa]
+   [db.core :as db]
    [env :as env])
   (:gen-class))
 
+;; Helper function to parse request bodies
 (defn req->body [req]
-  (json/parse-string (slurp (:body req)) true))
+  (try
+    (if-let [body (:body req)]
+      (json/parse-string (slurp body) true)
+      {})
+    (catch Exception e
+      (println "Error parsing request body:" (.getMessage e))
+      {})))
+
+;; Performance data collection function
+(defn collect-performance-data []
+  (try
+    (println "Collecting performance data...")
+    (let [accounts (oa/get-accounts)]
+      (doseq [account accounts]
+        (let [account-id (:id account)
+              account-summary (oa/get-account-summary account-id)
+              positions (oa/get-formatted-open-positions account-id)]
+          ;; Save account performance
+          (db/save-account-performance (:account account-summary))
+          ;; Save position snapshots
+          (doseq [position positions]
+            (db/save-position-snapshot position account-id))))
+      (println "Performance data collection completed."))
+    (catch Exception e
+      (println "Error collecting performance data:" (.getMessage e)))))
 
 (defroutes routes
   (GET "/" [] (str "Hello World! Time: " (System/currentTimeMillis)))
@@ -146,6 +172,32 @@
       (catch Exception e
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))
 
+  ;; Endpoint for getting account performance history
+  (GET "/performance/:account-id" [account-id days]
+    (try
+      (let [days-int (if days (Integer/parseInt days) 30)
+            history (db/get-account-performance-history account-id days-int)]
+        (response/response (json/encode {:status "success" :data history})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting all accounts performance history
+  (GET "/performance" [days]
+    (try
+      (let [days-int (if days (Integer/parseInt days) 30)
+            history (db/get-all-accounts-performance-history days-int)]
+        (response/response (json/encode {:status "success" :data history})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for manually triggering performance data collection
+  (POST "/collect-performance" []
+    (try
+      (collect-performance-data)
+      (response/response (json/encode {:status "success" :message "Performance data collection started"}))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
   ;; Endpoint for getting latest price of an instrument
   (GET "/price/:instrument" [instrument]
     (try
@@ -158,10 +210,14 @@
   (POST "/prices" req
     (try
       (let [body (req->body req)
-            instruments (:instruments body)
-            prices (oa/get-latest-prices instruments)]
-        (response/response (json/encode {:status "success" :data prices})))
+            instruments (:instruments body)]
+        (println "Received instruments:" instruments)
+        (if (and instruments (seq instruments))
+          (let [prices (oa/get-latest-prices instruments)]
+            (response/response (json/encode {:status "success" :data prices})))
+          (response/response (json/encode {:status "error" :message "No instruments provided or invalid format. Expected {\"instruments\": [\"EUR_USD\", ...]}"}))))
       (catch Exception e
+        (println "Error in prices endpoint:" (.getMessage e))
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))
 
   (route/not-found "Not Found"))
@@ -176,9 +232,35 @@
       wrap-json-response
       wrap-json-body))
 
+;; Setup a scheduled task to collect performance data
+(def performance-collection-interval (* 60 60 1000)) ;; Every hour
+(def performance-collection-thread (atom nil))
+
+(defn start-performance-collection []
+  (reset! performance-collection-thread
+          (future
+            (while true
+              (try
+                (collect-performance-data)
+                (Thread/sleep performance-collection-interval)
+                (catch Exception e
+                  (println "Error in performance collection thread:" (.getMessage e))
+                  (Thread/sleep 60000)))) ;; Wait a minute on error before trying again
+            )))
+
+(defn stop-performance-collection []
+  (when-let [thread @performance-collection-thread]
+    (future-cancel thread)
+    (reset! performance-collection-thread nil)))
+
 (defn -main []
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
     (println (str "Starting server on port " port))
+    ;; Start performance data collection
+    (start-performance-collection)
+    ;; Add shutdown hook to stop collection when the JVM exits
+    (.addShutdownHook (Runtime/getRuntime)
+                      (Thread. ^Runnable stop-performance-collection))
     (jetty/run-jetty app-routes {:port port :join? false})))
 
 ;; Only call -main when running as a standalone application, not when required by other code

@@ -7,6 +7,8 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/data.csv "1.0.1"]
+                 [org.xerial/sqlite-jdbc "3.41.2.2"]
+                 [com.github.seancorfield/next.jdbc "1.3.894"]
                  [metasoarous/oz "1.6.0-alpha36"]
                  [ring/ring-core "1.9.6"]
                  [ring/ring-jetty-adapter "1.9.6"]
