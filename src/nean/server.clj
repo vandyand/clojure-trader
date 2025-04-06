@@ -4,7 +4,7 @@
    [ring.middleware.params :as params]
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
    [ring.util.response :as response]
-   [compojure.core :as compojure :refer [defroutes GET POST PUT DELETE]]
+   [compojure.core :as compojure :refer [defroutes GET POST PUT DELETE context]]
    [compojure.route :as route]
    [cheshire.core :as json]
    [clojure.string :as string]
@@ -12,7 +12,9 @@
    [nean.arena :as arena]
    [api.oanda_api :as oa]
    [db.core :as db]
-   [env :as env])
+   [auth.core :as auth]
+   [env :as env]
+   [nean.db-test :as db-test])
   (:gen-class))
 
 ;; Helper function to parse request bodies
@@ -62,11 +64,62 @@
     (catch Exception e
       (println "Error collecting performance data:" (.getMessage e)))))
 
-(defroutes routes
+;; Authentication routes
+(defroutes auth-routes
+  ;; Login endpoint
+  (POST "/login" req
+    (try
+      (let [body (req->body req)
+            username (:username body)
+            password (:password body)
+            ;; Use database user validation in production
+            user (auth/validate-db-user db/db-spec username password)]
+        (if user
+          (let [token (auth/create-token user)]
+            (response/response (json/encode {:status "success"
+                                             :token token
+                                             :user (select-keys user [:username :email :roles])})))
+          (response/response (json/encode {:status "error" :message "Invalid credentials"}))))
+      (catch Exception e
+        (println "Login error:" (.getMessage e))
+        (response/response (json/encode {:status "error" :message "Login failed"})))))
+
+  ;; Register endpoint
+  (POST "/register" req
+    (try
+      (let [body (req->body req)
+            username (:username body)
+            password (:password body)
+            email (:email body)]
+        (if (and username password email)
+          ;; Use database user registration in production
+          (if (auth/register-db-user db/db-spec username password email)
+            (response/response (json/encode {:status "success" :message "User registered successfully"}))
+            (response/response (json/encode {:status "error" :message "Username or email already exists"})))
+          (response/response (json/encode {:status "error" :message "Missing required fields"}))))
+      (catch Exception e
+        (println "Registration error:" (.getMessage e))
+        (response/response (json/encode {:status "error" :message "Registration failed"})))))
+
+  ;; Profile endpoint (protected, requires authentication)
+  (GET "/profile" req
+    (auth/wrap-authenticated
+     (fn [request]
+       (let [username (auth/get-user-from-request request)
+              ;; Get user from database in production
+             user (auth/get-db-user db/db-spec username)]
+         (if user
+           (response/response (json/encode {:status "success"
+                                            :data (select-keys user [:username :email :roles])}))
+           (response/response (json/encode {:status "error" :message "User not found"}))))))))
+
+;; Public API routes (no authentication required)
+(defroutes public-routes
   (GET "/" [] (str "Hello World! Time: " (System/currentTimeMillis)))
+  (GET "/trade-env" [] (str (env/get-live-or-demo))))
 
-  (GET "/trade-env" [] (str (env/get-live-or-demo)))
-
+;; Protected API routes (requires authentication)
+(defroutes protected-routes
   ;; Endpoint for getting accounts
   (GET "/accounts" []
     (try
@@ -242,19 +295,28 @@
       (catch Exception e
         (println "Error in prices endpoint:" (.getMessage e))
         (println "Stack trace:" (.printStackTrace e))
-        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+        (response/response (json/encode {:status "error" :message (.getMessage e)}))))))
 
+;; Combine all routes
+(defroutes all-routes
+  (context "/api" []
+    (context "/auth" [] auth-routes)
+    (context "/v1" []
+      (-> protected-routes
+          auth/wrap-authenticated))) ; Apply authentication to protected routes
+  public-routes
   (route/not-found "Not Found"))
 
 ;; Wrap the application with middleware
 (def app-routes
-  (-> routes
+  (-> all-routes
       params/wrap-params
       (wrap-cors :access-control-allow-origin [#".*"]
                  :access-control-allow-methods [:get :post :put :delete]
-                 :access-control-allow-headers ["Origin" "X-Requested-With" "Content-Type" "Accept"])
+                 :access-control-allow-headers ["Origin" "X-Requested-With" "Content-Type" "Accept" "Authorization"])
       wrap-json-response
-      wrap-json-body))
+      wrap-json-body
+      auth/add-auth-middleware)) ; Add authentication middleware
 
 ;; Setup a scheduled task to collect performance data
 (def performance-collection-interval (* 60 60 1000)) ;; Every hour
@@ -277,15 +339,25 @@
     (future-cancel thread)
     (reset! performance-collection-thread nil)))
 
-(defn -main []
+(defn -main [& args]
   (let [port (Integer/parseInt (or (System/getenv "PORT") "3000"))]
-    (println (str "Starting server on port " port))
-    ;; Start performance data collection
-    (start-performance-collection)
-    ;; Add shutdown hook to stop collection when the JVM exits
-    (.addShutdownHook (Runtime/getRuntime)
-                      (Thread. ^Runnable stop-performance-collection))
-    (jetty/run-jetty app-routes {:port port :join? false})))
+    ;; Test database connection on startup
+    (db-test/run-db-tests)
+
+    ;; Initialize auth database tables
+    (auth/init-auth-db! db/db-spec)
+
+    (println "Starting server on port" port)
+    (println "Collecting performance data...")
+
+    ;; Start the API server
+    (jetty/run-jetty (wrap-cors app-routes :access-control-allow-origin [#".*"]
+                                :access-control-allow-methods [:get :post])
+                     {:port port
+                      :join? false})
+
+    ;; Start collection thread
+    (start-performance-collection)))
 
 ;; Only call -main when running as a standalone application, not when required by other code
 (when (= *file* (System/getProperty "babashka.file"))
