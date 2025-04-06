@@ -21,3 +21,6 @@ py-bi-env/
 
 frontent/node_modules/
 node_modules/
+
+target/
+lein
