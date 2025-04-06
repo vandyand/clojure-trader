@@ -15,7 +15,7 @@
   (:gen-class))
 
 (defn req->body [req]
-  (json/decode (-> req :body slurp) true))
+  (json/parse-string (slurp (:body req)) true))
 
 (defroutes routes
   (GET "/" [] (str "Hello World! Time: " (System/currentTimeMillis)))
