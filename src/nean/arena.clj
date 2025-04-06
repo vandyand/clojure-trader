@@ -106,7 +106,9 @@
 ;; Saved wrifts file should have everything we need to run them.
 (defn save-backtest
   ([wrifts xindy-config granularity num-parents filename]
-   (let [file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts :num-parents num-parents}]
+   (let [dir (-> filename (java.io.File.) (.getParent) (java.io.File.))
+         _ (.mkdirs dir)  ; Create parent directory if it doesn't exist
+         file-content {:xindy-config xindy-config :granularity granularity :wrifts wrifts :num-parents num-parents}]
      (file/write-file filename file-content)
      filename)))
 
@@ -114,11 +116,13 @@
   (subs (bytes->hex (md5 (str (System/currentTimeMillis) (rand)))) 0 7))
 
 (defn get-backtest-ids []
-  (->> (file-seq (clojure.java.io/file "data/wrifts/"))
-       (map #(.getName %))
-       (filter #(clojure.string/ends-with? % ".edn"))
-       (map #(first (clojure.string/split % #"\.")))
-       vec))
+  (let [dir (clojure.java.io/file "data/wrifts/")]
+    (.mkdirs dir)  ; Create directory if it doesn't exist
+    (->> (file-seq dir)
+         (map #(.getName %))
+         (filter #(clojure.string/ends-with? % ".edn"))
+         (map #(first (clojure.string/split % #"\.")))
+         vec)))
 
 #_(get-backtest-ids)
 
@@ -144,6 +148,8 @@
   ([instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument]
    (let [backtest-id (gen-backtest-id)
          filename (str "data/wrifts/" backtest-id ".edn")
+         dir (clojure.java.io/file "data/wrifts/")
+         _ (.mkdirs dir)  ; Create directory if it doesn't exist
          _ (file/write-file filename {:xindy-config {} :granularity "" :wrifts []})
          backtest (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
      (save-backtest backtest xindy-config granularity (:num-parents pop-config) filename)
@@ -271,11 +277,13 @@
 (defn get-dir-file-names
   ([] (get-dir-file-names "data/wrifts"))
   ([dir]
-   (map
-    (fn [file-name] (str dir "/" file-name))
-    (filter
-     (fn [file?] (clojure.string/includes? file? ".edn"))
-     (seq (.list (clojure.java.io/file (str "./" dir))))))))
+   (let [dir-file (clojure.java.io/file (str "./" dir))]
+     (.mkdirs dir-file)  ; Create directory if it doesn't exist
+     (map
+      (fn [file-name] (str dir "/" file-name))
+      (filter
+       (fn [file?] (clojure.string/includes? file? ".edn"))
+       (seq (.list dir-file)))))))
 
 (defn backtest-id->filename
   [backtest-id]
