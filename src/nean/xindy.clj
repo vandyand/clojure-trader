@@ -146,11 +146,10 @@
                      (count big-stream))]
     {:back-stream back-stream :fore-stream fore-stream :total-stream big-stream}))
 
-(def streams (get-back-fore-streams "EUR_USD", "H1", 7777, 0.9, 777))
+;; (def streams (get-back-fore-streams "EUR_USD", "H1", 7777, 0.9, 777))
 
-(println (count (:back-stream streams)))
-(println (keys streams))
-
+;; (println (count (:back-stream streams)))
+;; (println (keys streams))
 
 (defn num-weekend-bars [granularity]
   (let [secs-per-bar (util/granularity->seconds granularity)

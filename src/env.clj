@@ -18,7 +18,12 @@
     (get-env-data :OANDA_DEMO_ACCOUNT_ID)))
 
 (defn get-sensitive-data [keywd]
-  ((json/read-str (slurp ".sensitive.json") :key-fn keyword) keywd))
+  (or (System/getenv (name keywd))
+      (try
+        ((json/read-str (slurp ".sensitive.json") :key-fn keyword) keywd)
+        (catch Exception e
+          (println "Error fetching API data from .sensitive.json:" (.getMessage e))
+          nil))))
 
 (defn get-oanda-api-key []
   (if (is-live-account?)
