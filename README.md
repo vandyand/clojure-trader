@@ -14,6 +14,7 @@ A modern trading platform built with Clojure, React, and PostgreSQL. This applic
 - [API Documentation](#api-documentation)
 - [Contributing](#contributing)
 - [License](#license)
+- [GitHub Integration](#github-integration)
 
 ## Architecture
 
@@ -231,3 +232,34 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## GitHub Integration
+
+To connect your GitHub repository with your deployed applications:
+
+1. Run our automated script:
+
+```bash
+./update-github-urls.sh
+```
+
+This script will:
+
+- Set the repository homepage to your frontend URL
+- Add relevant topics for discoverability
+- Create GitHub environments for deployment tracking
+- Add deployment status badges to your README
+
+Alternatively, you can use GitHub Actions for automatic updates:
+
+1. Push the included workflow file to your repository:
+
+```bash
+git add .github/workflows/update-repository.yml
+git commit -m "Add GitHub repository update workflow"
+git push
+```
+
+2. The workflow will run automatically on pushes to the main branch, or you can trigger it manually from the Actions tab in your repository.
+
+The GitHub Environments feature provides deployment history and quick links to your applications from the repository page.

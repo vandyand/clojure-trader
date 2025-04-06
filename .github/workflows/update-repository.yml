@@ -1,0 +1,89 @@
+name: Update Repository URLs
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-repository:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Setup GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+
+      - name: Login to GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Set repository homepage
+        run: gh api -X PATCH "repos/${{ github.repository }}" -f homepage="https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com"
+
+      - name: Set repository topics
+        run: gh api -X PUT "repos/${{ github.repository }}/topics" -f names[]="clojure" -f names[]="trading" -f names[]="react" -f names[]="heroku-deployed"
+
+      - name: Create frontend environment
+        run: gh api -X PUT "repos/${{ github.repository }}/environments/frontend-production" -f wait_timer=0 -f deployment_branch_policy=null
+
+      - name: Create backend environment
+        run: gh api -X PUT "repos/${{ github.repository }}/environments/backend-production" -f wait_timer=0 -f deployment_branch_policy=null
+
+      - name: Update README badges if needed
+        run: |
+          if ! grep -q "## Deployment Status" README.md; then
+            cat >> README.md << EOL
+
+          ## Deployment Status
+
+          [![Frontend](https://img.shields.io/badge/Frontend-Deployed-brightgreen)](https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com)
+          [![Backend](https://img.shields.io/badge/Backend-Deployed-brightgreen)](https://clojure-trader-api-18279899daf7.herokuapp.com)
+
+          EOL
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add README.md
+            git commit -m "Add deployment status badges to README"
+            git push
+          fi
+
+      - name: Create deployment entry for frontend
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/deployments" \
+            -f ref="${{ github.ref }}" \
+            -f environment="frontend-production" \
+            -f auto_merge=false \
+            -f required_contexts="[]" \
+            -f description="Frontend deployment" \
+            -f production_environment=true
+
+          # Set deployment status to success
+          DEPLOYMENT_ID=$(gh api "repos/${{ github.repository }}/deployments?environment=frontend-production" | jq -r '.[0].id')
+          gh api -X POST "repos/${{ github.repository }}/deployments/$DEPLOYMENT_ID/statuses" \
+            -f state="success" \
+            -f target_url="https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com" \
+            -f environment_url="https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com" \
+            -f auto_inactive=true
+
+      - name: Create deployment entry for backend
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/deployments" \
+            -f ref="${{ github.ref }}" \
+            -f environment="backend-production" \
+            -f auto_merge=false \
+            -f required_contexts="[]" \
+            -f description="Backend deployment" \
+            -f production_environment=true
+
+          # Set deployment status to success
+          DEPLOYMENT_ID=$(gh api "repos/${{ github.repository }}/deployments?environment=backend-production" | jq -r '.[0].id')
+          gh api -X POST "repos/${{ github.repository }}/deployments/$DEPLOYMENT_ID/statuses" \
+            -f state="success" \
+            -f target_url="https://clojure-trader-api-18279899daf7.herokuapp.com" \
+            -f environment_url="https://clojure-trader-api-18279899daf7.herokuapp.com" \
+            -f auto_inactive=true
