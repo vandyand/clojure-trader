@@ -4,20 +4,6 @@
    [environ.core :refer [env]]
    [clojure.string :as str]))
 
-;; Fallback function to handle any hardcoded SQLite references during compilation
-(defn ^:private jdbc-getConnection
-  [url]
-  (let [db-url (System/getenv "DATABASE_URL")]
-    (if (and db-url (str/includes? url "jdbc:sqlite"))
-      (java.sql.DriverManager/getConnection db-url)
-      (java.sql.DriverManager/getConnection url))))
-
-;; Replace the standard JDBC getConnection method during compilation
-(extend-protocol clojure.java.jdbc/ISQLDriver
-  String
-  (connect [url]
-    (jdbc-getConnection url)))
-
 ;; Database connection configuration
 (def db-spec
   (if-let [database-url (System/getenv "DATABASE_URL")]
@@ -31,10 +17,18 @@
      :password "postgres"
      :ssl false}))
 
+;; Register PostgreSQL driver explicitly
+(try
+  (Class/forName "org.postgresql.Driver")
+  (println "PostgreSQL driver loaded successfully")
+  (catch Exception e
+    (println "Failed to load PostgreSQL driver:" (.getMessage e))))
+
 ;; Initialize the database by creating tables if they don't exist
 (defn init-db! []
   (try
     (println "Initializing database...")
+    (println "Using database connection:" db-spec)
 
     ;; Create account_performance table
     (jdbc/execute! db-spec
