@@ -106,6 +106,64 @@
       (catch Exception e
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))
 
+  ;; Endpoint for getting account summary
+  (GET "/account-summary" []
+    (try
+      (let [summary (oa/get-account-summary)]
+        (response/response (json/encode {:status "success" :data summary})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting account summary for a specific account
+  (GET "/account-summary/:account-id" [account-id]
+    (try
+      (let [summary (oa/get-account-summary account-id)]
+        (response/response (json/encode {:status "success" :data summary})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting open positions
+  (GET "/open-positions" []
+    (try
+      (let [positions (oa/get-formatted-open-positions)]
+        (response/response (json/encode {:status "success" :data positions})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting open positions for a specific account
+  (GET "/open-positions/:account-id" [account-id]
+    (try
+      (let [positions (oa/get-formatted-open-positions account-id)]
+        (response/response (json/encode {:status "success" :data positions})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting open trades
+  (GET "/open-trades" []
+    (try
+      (let [trades (oa/get-open-trades)]
+        (response/response (json/encode {:status "success" :data trades})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting latest price of an instrument
+  (GET "/price/:instrument" [instrument]
+    (try
+      (let [price (oa/get-latest-price instrument)]
+        (response/response (json/encode {:status "success" :data {:instrument instrument :price price}})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
+  ;; Endpoint for getting latest prices of multiple instruments
+  (POST "/prices" req
+    (try
+      (let [body (req->body req)
+            instruments (:instruments body)
+            prices (oa/get-latest-prices instruments)]
+        (response/response (json/encode {:status "success" :data prices})))
+      (catch Exception e
+        (response/response (json/encode {:status "error" :message (.getMessage e)})))))
+
   (route/not-found "Not Found"))
 
 ;; Wrap the application with middleware
