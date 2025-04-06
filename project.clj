@@ -7,7 +7,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/data.csv "1.0.1"]
-                 [org.xerial/sqlite-jdbc "3.41.2.2"]
+                 [org.postgresql/postgresql "42.6.0"]
                  [com.github.seancorfield/next.jdbc "1.3.894"]
                  [metasoarous/oz "1.6.0-alpha36"]
                  [ring/ring-core "1.9.6"]
@@ -20,7 +20,11 @@
                  [org.clojure/data.fressian "1.0.0"]
                  [buddy/buddy-core "1.7.1"]
                  [org.slf4j/slf4j-api "1.7.36"]
-                 [org.slf4j/slf4j-simple "1.7.36"]]
+                 [org.slf4j/slf4j-simple "1.7.36"]
+                 [buddy/buddy-auth "3.0.1"]
+                 [buddy/buddy-sign "3.4.1"]
+                 [buddy/buddy-hashers "1.8.1"]
+                 [org.clojure/core.async "1.5.648"]]
   :main ^:skip-aot nean.server
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
