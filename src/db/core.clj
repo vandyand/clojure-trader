@@ -6,9 +6,13 @@
 
 ;; Database connection configuration
 (def db-spec
-  (if-let [database-url (System/getenv "DATABASE_URL")]
-    ;; Production database URL from Heroku
-    {:connection-uri database-url}
+  (if-let [db-url (System/getenv "DATABASE_URL")]
+    ;; Production database URL from Heroku - fix format from postgres:// to jdbc:postgresql://
+    (let [fixed-url (if (str/starts-with? db-url "postgres://")
+                      (str "jdbc:" (str/replace-first db-url #"postgres://" "postgresql://"))
+                      db-url)]
+      (println "Fixed database URL:" fixed-url)
+      {:connection-uri fixed-url})
     ;; Local development database
     {:dbtype "postgresql"
      :dbname "clojure_trader"
