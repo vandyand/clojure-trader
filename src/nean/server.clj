@@ -19,10 +19,20 @@
 (defn req->body [req]
   (try
     (if-let [body (:body req)]
-      (json/parse-string (slurp body) true)
-      {})
+      (do
+        (println "Request body type:" (type body))
+        (println "Raw request body:" body)
+        (let [body-str (slurp body)
+              parsed (json/parse-string body-str true)]
+          (println "Body string:" body-str)
+          (println "Parsed body:" parsed)
+          parsed))
+      (do
+        (println "No body in request")
+        {}))
     (catch Exception e
       (println "Error parsing request body:" (.getMessage e))
+      (println "Stack trace:" (.printStackTrace e))
       {})))
 
 ;; Performance data collection function
@@ -210,14 +220,19 @@
   (POST "/prices" req
     (try
       (let [body (req->body req)
+            _ (println "Processed body:" body)
             instruments (:instruments body)]
         (println "Received instruments:" instruments)
         (if (and instruments (seq instruments))
           (let [prices (oa/get-latest-prices instruments)]
+            (println "Retrieved prices:" prices)
             (response/response (json/encode {:status "success" :data prices})))
-          (response/response (json/encode {:status "error" :message "No instruments provided or invalid format. Expected {\"instruments\": [\"EUR_USD\", ...]}"}))))
+          (do
+            (println "Invalid or missing instruments array")
+            (response/response (json/encode {:status "error" :message "No instruments provided or invalid format. Expected {\"instruments\": [\"EUR_USD\", ...]}"})))))
       (catch Exception e
         (println "Error in prices endpoint:" (.getMessage e))
+        (println "Stack trace:" (.printStackTrace e))
         (response/response (json/encode {:status "error" :message (.getMessage e)})))))
 
   (route/not-found "Not Found"))
