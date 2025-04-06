@@ -1,8 +1,41 @@
 #!/usr/bin/env bash
-# bin/build
-echo "----> Running custom build script"
+# bin/build - Heroku custom build script
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+echo "----> Running custom build script for Clojure Trader"
+
+# Make lein executable and verify
+echo "----> Making lein executable"
 chmod +x lein
+if [[ ! -x ./lein ]]; then
+  echo "ERROR: Failed to make lein executable"
+  exit 1
+fi
+
+# Build the uberjar
+echo "----> Building uberjar with lein"
+./lein clean
 ./lein uberjar
+
+# Verify uberjar was built
+if [[ ! -f target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+  echo "ERROR: Failed to build uberjar"
+  exit 1
+fi
+
+# Create target directory if it doesn't exist
+echo "----> Creating target directory"
 mkdir -p target
+
+# Copy the JAR file to the location expected by the Procfile
+echo "----> Copying JAR to target/clojure-trader.jar"
 cp target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar target/clojure-trader.jar
-echo "----> Custom build completed" 
+
+# Verify the copy
+if [[ ! -f target/clojure-trader.jar ]]; then
+  echo "ERROR: Failed to copy JAR file"
+  exit 1
+fi
+
+echo "----> Custom build completed successfully" 
