@@ -22,11 +22,20 @@
       (do
         (println "Request body type:" (type body))
         (println "Raw request body:" body)
-        (let [body-str (slurp body)
-              parsed (json/parse-string body-str true)]
-          (println "Body string:" body-str)
-          (println "Parsed body:" parsed)
-          parsed))
+        (cond
+          ;; If body is already a map (parsed by middleware)
+          (map? body)
+          (do
+            (println "Body is already a map, returning directly")
+            body)
+
+          ;; Otherwise try to parse it as JSON string
+          :else
+          (let [body-str (slurp body)
+                parsed (json/parse-string body-str true)]
+            (println "Body string:" body-str)
+            (println "Parsed body:" parsed)
+            parsed)))
       (do
         (println "No body in request")
         {}))
