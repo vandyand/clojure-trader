@@ -1,0 +1,6 @@
+{
+  "OANDA_DEMO_KEY": "your-demo-api-key",
+  "OANDA_LIVE_KEY": "your-live-api-key",
+  "BINANCE_API_KEY": "your-binance-api-key",
+  "BINANCE_SECRET_KEY": "your-binance-secret-key"
+} 

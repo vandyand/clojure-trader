@@ -1,0 +1,1 @@
+web: java -cp target/clojure-trader.jar clojure.main -m nean.server 
