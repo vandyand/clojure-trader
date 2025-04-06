@@ -27,6 +27,9 @@
                  [buddy/buddy-hashers "1.8.1"]
                  [org.clojure/core.async "1.5.648"]]
   :main ^:skip-aot nean.server
+  :source-paths ["src" "classes"]
+  :resource-paths ["resources"]
+  :aot [auth.core db.core nean.server]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}) 

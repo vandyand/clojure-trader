@@ -5,21 +5,18 @@ set -e
 
 echo "----> Running custom build script for Clojure Trader"
 
-# Use system lein if available, otherwise use the one in .lein/bin
-if command -v lein &> /dev/null; then
-  echo "----> Using system lein"
-  LEIN_CMD=lein
-else
-  echo "----> Using lein from .lein/bin"
-  LEIN_CMD=.lein/bin/lein
-fi
-
-# Print versions for debugging
+echo "----> Using system lein"
 echo "----> Java version:"
 java -version
 
-echo "----> Building uberjar with $LEIN_CMD"
-$LEIN_CMD uberjar
+echo "----> Building uberjar with lein"
+lein uberjar
+
+echo "----> Ensuring target directory exists"
+mkdir -p target/base+system+user+dev/classes/auth
+
+echo "----> Copying compiled auth.core"
+cp -r classes/auth target/base+system+user+dev/classes/
 
 # Verify the JAR was created
 if [[ -f target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
