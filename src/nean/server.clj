@@ -230,7 +230,7 @@
     (try
       (let [body (req->body req)
             _ (println "Processed body:" body)
-            instruments (:instruments body)]
+            instruments (or (:instruments body) (get body "instruments"))]
         (println "Received instruments:" instruments)
         (if (and instruments (seq instruments))
           (let [prices (oa/get-latest-prices instruments)]
