@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# bin/release - Heroku release phase script
+
+set -e
+
+echo "----> Running release phase script"
+
+# List all files in the target directory
+echo "----> Files in target directory:"
+ls -la target/
+
+# Check if the JAR file we need exists
+if [[ -f target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+  echo "----> Found target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
+else
+  echo "----> ERROR: target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar not found!"
+  exit 1
+fi
+
+echo "----> Release phase completed successfully" 

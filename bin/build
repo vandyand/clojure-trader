@@ -28,13 +28,19 @@ fi
 echo "----> Creating target directory"
 mkdir -p target
 
-# Copy the JAR file to the location expected by the Procfile
-echo "----> Copying JAR to target/clojure-trader.jar"
+# Copy the JAR file to both potential locations
+echo "----> Copying JAR files to target locations"
 cp target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar target/clojure-trader.jar
+cp target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar
 
-# Verify the copy
+# Verify the copies
 if [[ ! -f target/clojure-trader.jar ]]; then
-  echo "ERROR: Failed to copy JAR file"
+  echo "ERROR: Failed to copy clojure-trader.jar"
+  exit 1
+fi
+
+if [[ ! -f target/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+  echo "ERROR: Failed to copy clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
   exit 1
 fi
 
