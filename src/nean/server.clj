@@ -1,4 +1,5 @@
 (ns nean.server
+  (:gen-class)
   (:require
    [ring.adapter.jetty :as jetty]
    [ring.middleware.params :as params]
@@ -6,16 +7,23 @@
    [ring.util.response :as response]
    [compojure.core :as compojure :refer [defroutes GET POST PUT DELETE context]]
    [compojure.route :as route]
+   [compojure.handler :as handler]
    [cheshire.core :as json]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [db.core :as db]
    [clojure.string :as string]
    [ring.middleware.cors :refer [wrap-cors]]
    [nean.arena :as arena]
    [api.oanda_api :as oa]
-   [db.core :as db]
    [auth.core :as auth]
    [env :as env]
    [nean.db-test :as db-test])
   (:gen-class))
+
+;; Debug auth namespace loading
+(println "Loading nean.server namespace")
+(println "Auth namespace available:" (boolean (resolve 'auth/create-token)))
 
 ;; Helper function to parse request bodies
 (defn req->body [req]

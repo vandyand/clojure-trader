@@ -2,99 +2,99 @@
   (:require
    [clojure.java.jdbc :as jdbc]
    [environ.core :refer [env]]
-   [clojure.string :as str]))
+   [clojure.string :as str])
+  (:import
+   (java.net URI)
+   (org.postgresql Driver)))
 
-;; Parse Heroku DATABASE_URL
-(defn parse-db-url [url]
-  (if (str/starts-with? url "postgres://")
-    (let [uri (java.net.URI. url)
-          userInfo (str/split (.getUserInfo uri) #":")
-          user (first userInfo)
-          password (second userInfo)
-          host (.getHost uri)
-          port (.getPort uri)
-          path (.getPath uri)
-          db-name (subs path 1)]  ; Remove leading '/'
-      {:dbtype "postgresql"
-       :host host
-       :port (if (pos? port) port 5432)
-       :dbname db-name
-       :user user
-       :password password
-       :ssl true})
-    {:connection-uri url}))
+(println "Loading db.core namespace")
+(println "Registering PostgreSQL driver")
 
-;; Database connection configuration
-(def db-spec
-  (if-let [db-url (System/getenv "DATABASE_URL")]
-    (do
-      (println "Using DATABASE_URL from environment")
-      (parse-db-url db-url))
-    ;; Local development database
-    {:dbtype "postgresql"
-     :dbname "clojure_trader"
-     :host "localhost"
-     :user "postgres"
-     :password "postgres"
-     :ssl false}))
-
-;; Register PostgreSQL driver explicitly
+;; Explicitly register PostgreSQL driver
 (try
   (Class/forName "org.postgresql.Driver")
-  (println "PostgreSQL driver loaded successfully")
+  (println "PostgreSQL driver registered successfully")
   (catch Exception e
-    (println "Failed to load PostgreSQL driver:" (.getMessage e))))
+    (println "Error registering PostgreSQL driver:" (.getMessage e))))
 
-;; Initialize the database by creating tables if they don't exist
-(defn init-db! []
+(defn parse-db-url [url]
+  (println "Parsing DB URL:" url)
   (try
-    (println "Initializing database...")
-    (println "Using database connection:" db-spec)
-
-    ;; Create account_performance table
-    (jdbc/execute! db-spec
-                   ["CREATE TABLE IF NOT EXISTS account_performance (
-          id SERIAL PRIMARY KEY,
-          account_id VARCHAR(255) NOT NULL,
-          timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-          balance DECIMAL(20, 5) NOT NULL,
-          nav DECIMAL(20, 5) NOT NULL,
-          currency VARCHAR(10) NOT NULL
-        )"])
-
-    ;; Create position_snapshots table
-    (jdbc/execute! db-spec
-                   ["CREATE TABLE IF NOT EXISTS position_snapshots (
-          id SERIAL PRIMARY KEY,
-          account_id VARCHAR(255) NOT NULL,
-          instrument VARCHAR(255) NOT NULL,
-          timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-          units INTEGER NOT NULL,
-          avg_price DECIMAL(20, 5) NOT NULL,
-          current_price DECIMAL(20, 5) NOT NULL,
-          pnl DECIMAL(20, 5) NOT NULL,
-          pnl_percent DECIMAL(10, 5) NOT NULL
-        )"])
-
-    ;; Convert tables to TimescaleDB hypertables if extension is available
-    (try
-      ;; First, enable the TimescaleDB extension
-      (jdbc/execute! db-spec ["CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE"])
-
-      ;; Convert tables to hypertables
-      (jdbc/execute! db-spec
-                     ["SELECT create_hypertable('account_performance', 'timestamp', if_not_exists => TRUE)"])
-      (jdbc/execute! db-spec
-                     ["SELECT create_hypertable('position_snapshots', 'timestamp', if_not_exists => TRUE)"])
-
-      (println "TimescaleDB hypertables created successfully")
-      (catch Exception e
-        (println "Warning: Could not create TimescaleDB hypertables. This is expected in development: " (.getMessage e))))
-
-    (println "Database initialization completed successfully.")
+    (let [uri (URI. url)
+          host (.getHost uri)
+          port (if (= -1 (.getPort uri)) 5432 (.getPort uri))
+          path (.getPath uri)
+          db-name (subs path 1)
+          userinfo (or (.getUserInfo uri) "")
+          [username password] (if (str/includes? userinfo ":")
+                                (str/split userinfo #":")
+                                [userinfo ""])]
+      (println "Parsed DB components - host:" host "port:" port "db:" db-name "user:" username)
+      {:dbtype "postgresql"
+       :dbname db-name
+       :host host
+       :port port
+       :user username
+       :password password
+       :ssl true
+       :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
     (catch Exception e
-      (println "Error initializing database:" (.getMessage e))
+      (println "Error parsing DB URL:" (.getMessage e))
+      (throw e))))
+
+;; Define database specification
+(def db-spec
+  (let [db-url (System/getenv "DATABASE_URL")]
+    (if db-url
+      (do
+        (println "Using DATABASE_URL from environment")
+        (parse-db-url db-url))
+      (do
+        (println "Using local development database")
+        {:subprotocol "sqlite"
+         :subname "data/performance_history.db"}))))
+
+(defn init-db! []
+  (println "Initializing database with spec:" (pr-str (dissoc db-spec :password)))
+  (try
+    ;; Create performance_history table if it doesn't exist
+    (jdbc/execute! db-spec
+                   ["CREATE TABLE IF NOT EXISTS performance_history (
+                   id SERIAL PRIMARY KEY,
+                   user_id TEXT NOT NULL,
+                   date TEXT NOT NULL,
+                   balance REAL NOT NULL,
+                   equity REAL NOT NULL,
+                   pnl REAL NOT NULL,
+                   drawdown REAL NOT NULL
+                  )"])
+    (println "Performance history table initialized successfully")
+    (catch Exception e
+      (println "Error initializing performance history table:" (.getMessage e))
       (.printStackTrace e))))
+
+;; Save performance history entry
+(defn save-performance! [user-id date balance equity pnl drawdown]
+  (try
+    (jdbc/insert! db-spec :performance_history
+                  {:user_id user-id
+                   :date date
+                   :balance balance
+                   :equity equity
+                   :pnl pnl
+                   :drawdown drawdown})
+    (catch Exception e
+      (println "Error saving performance:" (.getMessage e))
+      nil)))
+
+;; Get all performance history for a user
+(defn get-user-performance [user-id]
+  (try
+    (jdbc/query db-spec
+                ["SELECT * FROM performance_history WHERE user_id = ? ORDER BY date" user-id])
+    (catch Exception e
+      (println "Error retrieving user performance:" (.getMessage e))
+      [])))
 
 ;; Format account data for storage
 (defn format-account-data [account]
