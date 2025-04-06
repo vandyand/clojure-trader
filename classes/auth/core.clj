@@ -57,4 +57,13 @@
 (defn add-auth-middleware [routes]
   (-> routes
       (wrap-authentication auth-backend)
-      (wrap-authorization auth-backend))) 
+      (wrap-authorization auth-backend)))
+
+;; Function to get user from database by username
+(defn get-db-user [db-spec username]
+  (println "Stub get-db-user called for username:" username)
+  {:id 1
+   :username username
+   :password "hashed-password"
+   :email (str username "@example.com")
+   :roles #{"user"}}) 
