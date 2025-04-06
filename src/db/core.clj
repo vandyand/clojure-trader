@@ -4,15 +4,32 @@
    [environ.core :refer [env]]
    [clojure.string :as str]))
 
+;; Parse Heroku DATABASE_URL
+(defn parse-db-url [url]
+  (if (str/starts-with? url "postgres://")
+    (let [uri (java.net.URI. url)
+          userInfo (str/split (.getUserInfo uri) #":")
+          user (first userInfo)
+          password (second userInfo)
+          host (.getHost uri)
+          port (.getPort uri)
+          path (.getPath uri)
+          db-name (subs path 1)]  ; Remove leading '/'
+      {:dbtype "postgresql"
+       :host host
+       :port (if (pos? port) port 5432)
+       :dbname db-name
+       :user user
+       :password password
+       :ssl true})
+    {:connection-uri url}))
+
 ;; Database connection configuration
 (def db-spec
   (if-let [db-url (System/getenv "DATABASE_URL")]
-    ;; Production database URL from Heroku - fix format from postgres:// to jdbc:postgresql://
-    (let [fixed-url (if (str/starts-with? db-url "postgres://")
-                      (str "jdbc:" (str/replace-first db-url #"postgres://" "postgresql://"))
-                      db-url)]
-      (println "Fixed database URL:" fixed-url)
-      {:connection-uri fixed-url})
+    (do
+      (println "Using DATABASE_URL from environment")
+      (parse-db-url db-url))
     ;; Local development database
     {:dbtype "postgresql"
      :dbname "clojure_trader"
