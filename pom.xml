@@ -44,6 +44,7 @@
                 <artifact>
                   <file>target/clojure-trader.jar</file>
                   <type>jar</type>
+                  <classifier>standalone</classifier>
                 </artifact>
               </artifacts>
             </configuration>
