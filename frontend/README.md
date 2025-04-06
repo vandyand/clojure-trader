@@ -26,7 +26,7 @@ A React-based trading dashboard for Clojure Trader.
 
 ## API Integration
 
-The app can switch between mock data and real OANDA API data:
+The app can switch between mock data, real OANDA API data, and the Clojure backend API:
 
 ### Mock Data
 
@@ -40,6 +40,14 @@ The app can switch between mock data and real OANDA API data:
 - Requires an OANDA API key
 - Set your API key in `.env.local`
 - Switch to OANDA data using the "Data Source" toggle in the header
+
+### Clojure API
+
+- Connects to the Clojure trader backend API
+- Provides real trading data and allows managing positions
+- Set the API URL in `.env.local`
+- Default URL is `https://clojure-trader-api-18279899daf7.herokuapp.com`
+- Switch to Clojure API using the "Data Source" toggle in the header
 
 ## Getting an OANDA API Key
 

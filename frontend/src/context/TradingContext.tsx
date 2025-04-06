@@ -7,10 +7,11 @@ import React, {
 } from "react";
 import { mockApiService } from "../api/mockData";
 import oandaApiService from "../api/oandaApiClient";
+import clojureApiService from "../api/clojureApiClient";
 import { Account, Position, Performance } from "../api/tradingService";
 
 // Define API source type
-type ApiSource = "mock" | "oanda";
+type ApiSource = "mock" | "oanda" | "clojure";
 
 // Define the context state interface
 interface TradingContextState {
@@ -27,29 +28,26 @@ interface TradingContextState {
   isLoading: boolean;
   error: string | null;
   apiSource: ApiSource;
-  // Actions
-  setSelectedAccountId: (id: string | null) => void;
-  refreshData: () => void;
+  fetchAccounts: () => Promise<void>;
+  fetchPositions: (accountId?: string) => Promise<void>;
+  fetchPerformance: (days?: number) => Promise<void>;
   setApiSource: (source: ApiSource) => void;
+  setSelectedAccountId: (id: string | null) => void;
 }
 
 // Create the context with default values
-const TradingContext = createContext<TradingContextState>({
-  accounts: [],
-  positions: [],
-  performance: [],
-  accountsWorth: null,
-  selectedAccountId: null,
-  isLoading: false,
-  error: null,
-  apiSource: "mock", // Default to mock data
-  setSelectedAccountId: () => {},
-  refreshData: () => {},
-  setApiSource: () => {},
-});
+const TradingContext = createContext<TradingContextState | undefined>(
+  undefined
+);
 
 // Custom hook to use the context
-export const useTradingContext = () => useContext(TradingContext);
+export const useTradingContext = () => {
+  const context = useContext(TradingContext);
+  if (context === undefined) {
+    throw new Error("useTradingContext must be used within a TradingProvider");
+  }
+  return context;
+};
 
 // Provider component
 interface TradingProviderProps {
@@ -76,110 +74,116 @@ export const TradingProvider: React.FC<TradingProviderProps> = ({
   const [apiSource, setApiSource] = useState<ApiSource>(defaultApiSource);
 
   // Select the appropriate API service based on the source
-  const apiService = apiSource === "mock" ? mockApiService : oandaApiService;
+  const getApiService = () => {
+    switch (apiSource) {
+      case "mock":
+        return mockApiService;
+      case "oanda":
+        return oandaApiService;
+      case "clojure":
+        return clojureApiService;
+      default:
+        return mockApiService;
+    }
+  };
 
-  // Function to fetch all data
-  const fetchData = async () => {
+  // Fetch accounts data
+  const fetchAccounts = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      // Use the selected API service (mock or OANDA)
-      const accountsData = await apiService.getAccounts();
-      const positionsData = await apiService.getPositions();
-      let performanceData: Performance[] = [];
+      const apiService = getApiService();
+      const fetchedAccounts = await apiService.getAccounts();
+      setAccounts(fetchedAccounts);
 
-      // For performance data, if using OANDA and we get empty array, fall back to mock
-      performanceData = await apiService.getPerformance();
-      if (apiSource === "oanda" && performanceData.length === 0) {
-        performanceData = await mockApiService.getPerformance();
+      // If there are accounts and no selectedAccountId yet, set the first one
+      if (fetchedAccounts.length > 0 && !selectedAccountId) {
+        setSelectedAccountId(fetchedAccounts[0].id);
       }
 
-      const accountsWorthData = await apiService.getAccountsWorth();
-
-      setAccounts(accountsData);
-      setPositions(positionsData);
-      setPerformance(performanceData);
-      setAccountsWorth(accountsWorthData);
-
-      // Set default selected account if not already set
-      if (!selectedAccountId && accountsData.length > 0) {
-        setSelectedAccountId(accountsData[0].id);
+      // Fetch accounts worth data if available
+      try {
+        if (apiService.getAccountsWorth) {
+          const worth = await apiService.getAccountsWorth();
+          setAccountsWorth(worth);
+        }
+      } catch (err) {
+        console.error("Error fetching accounts worth:", err);
+        // Don't set error state for worth as it's secondary
       }
     } catch (err) {
-      setError(
-        `Failed to fetch trading data from ${apiSource}. Please try again later.`
-      );
+      setError("Failed to fetch accounts data");
       console.error(err);
-
-      // If OANDA API fails, fall back to mock data
-      if (apiSource === "oanda") {
-        try {
-          const accountsData = await mockApiService.getAccounts();
-          const positionsData = await mockApiService.getPositions();
-          const performanceData = await mockApiService.getPerformance();
-          const accountsWorthData = await mockApiService.getAccountsWorth();
-
-          setAccounts(accountsData);
-          setPositions(positionsData);
-          setPerformance(performanceData);
-          setAccountsWorth(accountsWorthData);
-
-          setError(
-            `Using mock data instead of OANDA API due to connection error.`
-          );
-        } catch (fallbackErr) {
-          console.error("Even fallback to mock data failed:", fallbackErr);
-        }
-      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Effect to fetch data when API source changes
+  // Fetch positions data
+  const fetchPositions = async (accountId?: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const apiService = getApiService();
+      let fetchedPositions;
+
+      if (accountId) {
+        fetchedPositions = await apiService.getPositionsByAccount(accountId);
+      } else if (selectedAccountId) {
+        fetchedPositions = await apiService.getPositionsByAccount(
+          selectedAccountId
+        );
+      } else {
+        fetchedPositions = await apiService.getPositions();
+      }
+
+      setPositions(fetchedPositions);
+    } catch (err) {
+      setError("Failed to fetch positions data");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch performance data
+  const fetchPerformance = async (days: number = 30) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const apiService = getApiService();
+      let fetchedPerformance;
+
+      if (selectedAccountId) {
+        fetchedPerformance = await apiService.getPerformanceByAccount(
+          selectedAccountId,
+          days
+        );
+      } else {
+        fetchedPerformance = await apiService.getPerformance(days);
+      }
+
+      setPerformance(fetchedPerformance);
+    } catch (err) {
+      setError("Failed to fetch performance data");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial data load
   useEffect(() => {
-    fetchData();
+    fetchAccounts();
+  }, [apiSource]);
 
-    // Optional: Set up polling for real-time updates
-    const pollingInterval = setInterval(() => {
-      fetchData();
-    }, 60000); // Poll every minute
-
-    return () => clearInterval(pollingInterval);
-  }, [apiSource]); // Refresh when API source changes
-
-  // Fetch positions when selected account changes
+  // Fetch position data when selectedAccountId changes
   useEffect(() => {
     if (selectedAccountId) {
-      const fetchPositions = async () => {
-        setIsLoading(true);
-        try {
-          const positionsData = await apiService.getPositionsByAccount(
-            selectedAccountId
-          );
-          setPositions(positionsData);
-        } catch (err) {
-          console.error(err);
-          if (apiSource === "oanda") {
-            try {
-              // Fallback to mock data if OANDA API fails
-              const positionsData = await mockApiService.getPositionsByAccount(
-                selectedAccountId
-              );
-              setPositions(positionsData);
-            } catch (fallbackErr) {
-              console.error("Fallback positions fetch failed:", fallbackErr);
-            }
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchPositions();
+      fetchPositions(selectedAccountId);
+      fetchPerformance();
     }
-  }, [selectedAccountId, apiSource]);
+  }, [selectedAccountId]);
 
   // Provide the context value
   const contextValue: TradingContextState = {
@@ -191,9 +195,11 @@ export const TradingProvider: React.FC<TradingProviderProps> = ({
     isLoading,
     error,
     apiSource,
-    setSelectedAccountId,
-    refreshData: fetchData,
+    fetchAccounts,
+    fetchPositions,
+    fetchPerformance,
     setApiSource,
+    setSelectedAccountId,
   };
 
   return (

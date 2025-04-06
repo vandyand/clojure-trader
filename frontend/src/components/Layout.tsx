@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTradingContext } from "../context/TradingContext";
+import { useAuth } from "../context/AuthContext";
 
 interface NavItem {
   path: string;
@@ -16,6 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { apiSource, setApiSource, isLoading } = useTradingContext();
+  const { user, logout } = useAuth();
 
   const navItems: NavItem[] = [
     {
@@ -78,23 +80,49 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="ml-4 flex items-center">
                 <span className="mr-2 text-sm text-gray-600">Data Source:</span>
                 <button
-                  onClick={toggleDataSource}
+                  onClick={() => {
+                    const nextSource =
+                      apiSource === "mock"
+                        ? "oanda"
+                        : apiSource === "oanda"
+                        ? "clojure"
+                        : "mock";
+                    setApiSource(nextSource);
+                  }}
                   disabled={isLoading}
                   className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                     isLoading ? "opacity-50 cursor-not-allowed" : ""
                   } ${
                     apiSource === "mock"
                       ? "bg-gray-200 text-gray-800"
-                      : "bg-blue-600 text-white"
+                      : apiSource === "oanda"
+                      ? "bg-blue-600 text-white"
+                      : "bg-green-600 text-white"
                   }`}
                 >
                   {isLoading
                     ? "Loading..."
                     : apiSource === "mock"
                     ? "Mock"
-                    : "OANDA"}
+                    : apiSource === "oanda"
+                    ? "OANDA"
+                    : "Clojure API"}
                 </button>
               </div>
+
+              {user && (
+                <div className="ml-4 flex items-center">
+                  <span className="text-sm text-gray-600 mr-2">
+                    {user.username}
+                  </span>
+                  <button
+                    onClick={logout}
+                    className="px-3 py-1 rounded-md text-sm font-medium bg-red-600 text-white hover:bg-red-700"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center md:hidden">
@@ -155,23 +183,49 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="px-3 py-2 flex items-center justify-between">
                 <span className="text-base text-gray-600">Data Source:</span>
                 <button
-                  onClick={toggleDataSource}
+                  onClick={() => {
+                    const nextSource =
+                      apiSource === "mock"
+                        ? "oanda"
+                        : apiSource === "oanda"
+                        ? "clojure"
+                        : "mock";
+                    setApiSource(nextSource);
+                  }}
                   disabled={isLoading}
                   className={`px-3 py-1 rounded-md text-sm font-medium ${
                     isLoading ? "opacity-50 cursor-not-allowed" : ""
                   } ${
                     apiSource === "mock"
                       ? "bg-gray-200 text-gray-800"
-                      : "bg-blue-600 text-white"
+                      : apiSource === "oanda"
+                      ? "bg-blue-600 text-white"
+                      : "bg-green-600 text-white"
                   }`}
                 >
                   {isLoading
                     ? "Loading..."
                     : apiSource === "mock"
                     ? "Mock"
-                    : "OANDA"}
+                    : apiSource === "oanda"
+                    ? "OANDA"
+                    : "Clojure API"}
                 </button>
               </div>
+
+              {user && (
+                <div className="px-3 py-2 flex items-center justify-between">
+                  <span className="text-base text-gray-600">
+                    {user.username}
+                  </span>
+                  <button
+                    onClick={logout}
+                    className="px-3 py-1 rounded-md text-sm font-medium bg-red-600 text-white hover:bg-red-700"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
