@@ -28,6 +28,20 @@ echo "Your application is now available at:"
 echo "- Backend: https://clojure-trader-api-18279899daf7.herokuapp.com"
 echo "- Frontend: https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com"
 echo ""
+
+# Step 3: Update GitHub repository (optional)
+if command -v gh &> /dev/null; then
+    echo "Step 3: Updating GitHub repository information..."
+    if ./update-github-urls.sh; then
+        echo "✅ GitHub repository updated successfully"
+    else
+        echo "⚠️ Failed to update GitHub repository. You can run './update-github-urls.sh' manually later."
+    fi
+else
+    echo "GitHub CLI not found. If you want to update your GitHub repository with deployment URLs,"
+    echo "install GitHub CLI and run './update-github-urls.sh'"
+fi
+
 echo "Next steps:"
 echo "1. Register an account at the frontend"
 echo "2. Configure your trading accounts"

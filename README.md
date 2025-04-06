@@ -263,3 +263,9 @@ git push
 2. The workflow will run automatically on pushes to the main branch, or you can trigger it manually from the Actions tab in your repository.
 
 The GitHub Environments feature provides deployment history and quick links to your applications from the repository page.
+
+## Deployment Status
+
+[![Frontend](https://img.shields.io/badge/Frontend-Deployed-brightgreen)](https://clojure-trader-dashboard-c45d41aa0c18.herokuapp.com)
+[![Backend](https://img.shields.io/badge/Backend-Deployed-brightgreen)](https://clojure-trader-api-18279899daf7.herokuapp.com)
+
