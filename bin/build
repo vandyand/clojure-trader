@@ -1,32 +1,41 @@
 #!/usr/bin/env bash
-# bin/build - Heroku custom build script
+# bin/build - Heroku build script
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e
 
 echo "----> Running custom build script for Clojure Trader"
 
-# Find lein executable - either use system lein or local lein
+# Use system lein if available, otherwise use the one in .lein/bin
 if command -v lein &> /dev/null; then
   echo "----> Using system lein"
-  LEIN_CMD="lein"
-elif [[ -f ./lein && -x ./lein ]]; then
-  echo "----> Using local lein"
-  chmod +x ./lein
-  LEIN_CMD="./lein"
+  LEIN_CMD=lein
 else
-  echo "ERROR: No lein executable found"
-  exit 1
+  echo "----> Using lein from .lein/bin"
+  LEIN_CMD=.lein/bin/lein
 fi
 
-# Build the uberjar
+# Print versions for debugging
+echo "----> Java version:"
+java -version
+
 echo "----> Building uberjar with $LEIN_CMD"
-$LEIN_CMD clean
 $LEIN_CMD uberjar
 
-# Verify uberjar was built
-if [[ ! -f target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
-  echo "ERROR: Failed to build uberjar"
+# Verify the JAR was created
+if [[ -f target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar ]]; then
+  echo "----> Successfully built target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar"
+  ls -lh target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar
+else
+  echo "----> Failed to build JAR. Contents of target/:"
+  ls -la target/
+  echo "----> Contents of target/uberjar/ (if it exists):"
+  if [[ -d target/uberjar ]]; then
+    ls -la target/uberjar/
+  fi
   exit 1
 fi
 
-echo "----> Custom build completed successfully" 
+# Make the build script executable
+chmod +x bin/release
+
+echo "----> Build completed successfully" 
