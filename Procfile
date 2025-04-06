@@ -1,1 +1,1 @@
-web: java -cp target/clojure-trader.jar clojure.main -m nean.server 
+web: java -jar target/uberjar/clojure-trader-0.1.0-SNAPSHOT-standalone.jar 
