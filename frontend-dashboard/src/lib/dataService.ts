@@ -62,16 +62,31 @@ export async function saveAccountSnapshot(): Promise<boolean> {
   }
 }
 
-export async function getAccountHistory(days = 30): Promise<AccountSnapshot[]> {
+export async function getAccountHistory(
+  days = 30,
+  startDateStr?: string,
+  endDateStr?: string
+): Promise<AccountSnapshot[]> {
   try {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+    let query = supabase.from("account_snapshots").select("*");
 
-    const { data, error } = await supabase
-      .from("account_snapshots")
-      .select("*")
-      .gte("timestamp", startDate.toISOString())
-      .order("timestamp", { ascending: true });
+    // Use date range if provided, otherwise use days
+    if (startDateStr && endDateStr) {
+      const startDate = new Date(startDateStr);
+      const endDate = new Date(endDateStr);
+      // Set end date to end of day to include all data from that day
+      endDate.setHours(23, 59, 59, 999);
+
+      query = query
+        .gte("timestamp", startDate.toISOString())
+        .lte("timestamp", endDate.toISOString());
+    } else {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      query = query.gte("timestamp", startDate.toISOString());
+    }
+
+    const { data, error } = await query.order("timestamp", { ascending: true });
 
     if (error) {
       console.error("Error fetching account history:", error);
@@ -97,33 +112,76 @@ export async function getAccountHistory(days = 30): Promise<AccountSnapshot[]> {
 }
 
 export async function getDailyPerformance(
-  days = 30
+  days = 30,
+  granularity: "daily" | "hourly" = "daily"
 ): Promise<PerformanceData[]> {
   const snapshots = await getAccountHistory(days);
+  return processSnapshotsByGranularity(snapshots, granularity);
+}
 
+export async function getPerformanceByDateRange(
+  startDate: string,
+  endDate: string,
+  granularity: "daily" | "hourly" = "daily"
+): Promise<PerformanceData[]> {
+  const snapshots = await getAccountHistory(0, startDate, endDate);
+  return processSnapshotsByGranularity(snapshots, granularity);
+}
+
+function processSnapshotsByGranularity(
+  snapshots: AccountSnapshot[],
+  granularity: "daily" | "hourly"
+): PerformanceData[] {
   if (snapshots.length === 0) {
     return [];
   }
 
-  // Group by day and get last snapshot for each day
-  const dailySnapshots = snapshots.reduce(
+  const getTimeKey = (timestamp: string) => {
+    if (granularity === "daily") {
+      // Group by day (YYYY-MM-DD)
+      return timestamp.split("T")[0];
+    } else {
+      // Group by hour (YYYY-MM-DDTHH)
+      return timestamp.substring(0, 13);
+    }
+  };
+
+  const formatDate = (key: string) => {
+    if (granularity === "daily") {
+      // Return as is for daily (already in YYYY-MM-DD format)
+      return key;
+    } else {
+      // Add minutes and seconds for hourly (YYYY-MM-DDTHH:00:00)
+      return `${key}:00:00`;
+    }
+  };
+
+  // Group by selected granularity and get last snapshot for each period
+  const groupedSnapshots = snapshots.reduce(
     (acc: { [key: string]: AccountSnapshot }, snapshot) => {
-      const date = snapshot.timestamp.split("T")[0];
-      acc[date] = snapshot;
+      const timeKey = getTimeKey(snapshot.timestamp);
+      acc[timeKey] = snapshot;
       return acc;
     },
     {}
   );
 
-  // Convert to array of daily performance data
-  return Object.values(dailySnapshots).map((snapshot, index, arr) => {
+  // Sort keys to ensure chronological order
+  const sortedKeys = Object.keys(groupedSnapshots).sort();
+  const sortedSnapshots = sortedKeys.map((key) => groupedSnapshots[key]);
+
+  // Convert to array of performance data
+  return sortedSnapshots.map((snapshot, index, arr) => {
     const prevValue = index > 0 ? arr[index - 1].nav : snapshot.nav;
     const dailyChange = snapshot.nav - prevValue;
     const dailyChangePercent =
       prevValue !== 0 ? (dailyChange / prevValue) * 100 : 0;
 
+    // Use the timestamp key format based on granularity
+    const timeKey = getTimeKey(snapshot.timestamp);
+
     return {
-      date: snapshot.timestamp.split("T")[0],
+      date: formatDate(timeKey),
       nav: snapshot.nav,
       dailyChange,
       dailyChangePercent,
