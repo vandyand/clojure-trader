@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as oandaApi from "../lib/oanda";
 import * as dataService from "../lib/dataService";
+import { useDataSource } from "../lib/DataSourceContext";
 
 interface AccountSummaryProps {
   refreshInterval?: number;
@@ -22,34 +23,34 @@ interface AccountData {
 export const AccountSummary: React.FC<AccountSummaryProps> = ({
   refreshInterval = 60000, // 1 minute default refresh
 }) => {
+  const { dataSource } = useDataSource();
+
   const {
     data: accountSummary,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["accountSummary"],
-    queryFn: oandaApi.getAccountSummary,
+    queryKey: ["accountSummary", dataSource],
+    queryFn: () => oandaApi.getAccountSummary(dataSource),
     refetchInterval: refreshInterval,
   });
 
   // Use useEffect to save data when accountSummary changes
   useEffect(() => {
     if (accountSummary) {
-      dataService.saveAccountSnapshot();
+      dataService.saveAccountSnapshot(dataSource);
     }
-  }, [accountSummary]);
+  }, [accountSummary, dataSource]);
 
   if (isLoading) return <div>Loading account data...</div>;
   if (error) return <div>Error loading account data</div>;
   if (!accountSummary) return <div>No account data available</div>;
 
   const account = accountSummary.account;
-  const env =
-    process.env.REACT_APP_OANDA_LIVE_OR_DEMO === "LIVE" ? "LIVE" : "DEMO";
 
   return (
     <div className="account-summary">
-      <h2>Account Summary ({env})</h2>
+      <h2>Account Summary ({dataSource})</h2>
       <div className="summary-grid">
         <div className="summary-item">
           <h3>Account ID</h3>

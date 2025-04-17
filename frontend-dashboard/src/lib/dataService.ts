@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import * as oandaApi from "./oanda";
+import { DataSource } from "./DataSourceContext";
 
 export interface AccountSnapshot {
   timestamp: string;
@@ -20,16 +21,16 @@ export interface PerformanceData {
   dailyChangePercent: number;
 }
 
-export async function saveAccountSnapshot(): Promise<boolean> {
+export async function saveAccountSnapshot(
+  dataSource: DataSource
+): Promise<boolean> {
   try {
     // Fetch current account data
-    const accountSummary = await oandaApi.getAccountSummary();
-    const openPositions = await oandaApi.getOpenPositions();
+    const accountSummary = await oandaApi.getAccountSummary(dataSource);
+    const openPositions = await oandaApi.getOpenPositions(dataSource);
 
     // Extract relevant data
     const account = accountSummary.account;
-    const environment =
-      process.env.REACT_APP_OANDA_LIVE_OR_DEMO === "LIVE" ? "LIVE" : "DEMO";
 
     // Create snapshot object with snake_case keys for Supabase
     const snapshot = {
@@ -41,7 +42,7 @@ export async function saveAccountSnapshot(): Promise<boolean> {
       margin_used: parseFloat(account.marginUsed),
       margin_available: parseFloat(account.marginAvailable),
       positions: openPositions.positions,
-      environment: environment as "LIVE" | "DEMO",
+      environment: dataSource,
     };
 
     console.log("Saving snapshot to Supabase:", snapshot);
@@ -65,10 +66,16 @@ export async function saveAccountSnapshot(): Promise<boolean> {
 export async function getAccountHistory(
   days = 30,
   startDateStr?: string,
-  endDateStr?: string
+  endDateStr?: string,
+  dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
     let query = supabase.from("account_snapshots").select("*");
+
+    // Filter by data source if provided
+    if (dataSource) {
+      query = query.eq("environment", dataSource);
+    }
 
     // Use date range if provided, otherwise use days
     if (startDateStr && endDateStr) {
@@ -113,18 +120,25 @@ export async function getAccountHistory(
 
 export async function getDailyPerformance(
   days = 30,
-  granularity: "daily" | "hourly" = "daily"
+  granularity: "daily" | "hourly" = "daily",
+  dataSource?: DataSource
 ): Promise<PerformanceData[]> {
-  const snapshots = await getAccountHistory(days);
+  const snapshots = await getAccountHistory(
+    days,
+    undefined,
+    undefined,
+    dataSource
+  );
   return processSnapshotsByGranularity(snapshots, granularity);
 }
 
 export async function getPerformanceByDateRange(
   startDate: string,
   endDate: string,
-  granularity: "daily" | "hourly" = "daily"
+  granularity: "daily" | "hourly" = "daily",
+  dataSource?: DataSource
 ): Promise<PerformanceData[]> {
-  const snapshots = await getAccountHistory(0, startDate, endDate);
+  const snapshots = await getAccountHistory(0, startDate, endDate, dataSource);
   return processSnapshotsByGranularity(snapshots, granularity);
 }
 

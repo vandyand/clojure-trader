@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as oandaApi from "../lib/oanda";
+import { useDataSource } from "../lib/DataSourceContext";
 
 interface PositionsListProps {
   refreshInterval?: number;
@@ -26,9 +27,11 @@ interface PositionsData {
 export const PositionsList: React.FC<PositionsListProps> = ({
   refreshInterval = 60000, // 1 minute default refresh
 }) => {
+  const { dataSource } = useDataSource();
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["openPositions"],
-    queryFn: oandaApi.getOpenPositions,
+    queryKey: ["openPositions", dataSource],
+    queryFn: () => oandaApi.getOpenPositions(dataSource),
     refetchInterval: refreshInterval,
   });
 
@@ -53,7 +56,7 @@ export const PositionsList: React.FC<PositionsListProps> = ({
         </thead>
         <tbody>
           {data.positions.map((position) => {
-            const { instrument, long, short } = position;
+            const { instrument, long, short, currentPrice } = position;
             const hasLong = long.units !== "0";
             const hasShort = short.units !== "0";
 
@@ -66,7 +69,7 @@ export const PositionsList: React.FC<PositionsListProps> = ({
                       {parseFloat(long.units).toFixed(0)}
                     </td>
                     <td>{parseFloat(long.averagePrice).toFixed(5)}</td>
-                    <td>{position.currentPrice || "N/A"}</td>
+                    <td>{currentPrice}</td>
                     <td
                       className={
                         parseFloat(long.unrealizedPL) >= 0
@@ -85,7 +88,7 @@ export const PositionsList: React.FC<PositionsListProps> = ({
                       {parseFloat(short.units).toFixed(0)}
                     </td>
                     <td>{parseFloat(short.averagePrice).toFixed(5)}</td>
-                    <td>{position.currentPrice || "N/A"}</td>
+                    <td>{currentPrice}</td>
                     <td
                       className={
                         parseFloat(short.unrealizedPL) >= 0

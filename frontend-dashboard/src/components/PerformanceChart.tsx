@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { format, subDays } from "date-fns";
 import * as dataService from "../lib/dataService";
+import { useDataSource } from "../lib/DataSourceContext";
 
 interface PerformanceChartProps {
   refreshInterval?: number;
@@ -29,6 +30,8 @@ type GranularityType = "daily" | "hourly";
 export const PerformanceChart: React.FC<PerformanceChartProps> = ({
   refreshInterval = 60000 * 5, // 5 minutes default refresh
 }) => {
+  const { dataSource } = useDataSource();
+
   // State for time range type (preset days or custom date range)
   const [timeRangeType, setTimeRangeType] = useState<TimeRangeType>("preset");
 
@@ -88,6 +91,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
       startDate,
       endDate,
       timeRangeType,
+      dataSource,
     ],
     queryFn: () => {
       // If custom date range, pass start and end dates to the API
@@ -95,11 +99,16 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
         return dataService.getPerformanceByDateRange(
           startDate,
           endDate,
-          granularity
+          granularity,
+          dataSource
         );
       }
       // Otherwise use preset days
-      return dataService.getDailyPerformance(getDaysForQuery(), granularity);
+      return dataService.getDailyPerformance(
+        getDaysForQuery(),
+        granularity,
+        dataSource
+      );
     },
     refetchInterval: refreshInterval,
   });
@@ -109,7 +118,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
   if (!data || data.length === 0) {
     return (
       <div className="performance-chart empty">
-        <h2>Account Performance</h2>
+        <h2>Account Performance ({dataSource})</h2>
         <p>
           No performance data available. Data will be collected as you use the
           dashboard.
