@@ -19,41 +19,44 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Configure OANDA client
-const ENV =
-  process.env.REACT_APP_OANDA_LIVE_OR_DEMO === "LIVE" ? "LIVE" : "DEMO";
-const config = {
+// Configure OANDA clients for both environments
+const demoConfig = {
   baseURL:
-    ENV === "LIVE"
-      ? process.env.REACT_APP_OANDA_LIVE_URL ||
-        "https://api-fxtrade.oanda.com/v3/"
-      : process.env.REACT_APP_OANDA_DEMO_URL ||
-        "https://api-fxpractice.oanda.com/v3/",
-  apiKey:
-    ENV === "LIVE"
-      ? process.env.REACT_APP_OANDA_LIVE_KEY || ""
-      : process.env.REACT_APP_OANDA_DEMO_KEY || "",
-  accountId:
-    ENV === "LIVE"
-      ? process.env.REACT_APP_OANDA_LIVE_ACCOUNT_ID || ""
-      : process.env.REACT_APP_OANDA_DEMO_ACCOUNT_ID || "",
+    process.env.REACT_APP_OANDA_DEMO_URL ||
+    "https://api-fxpractice.oanda.com/v3/",
+  apiKey: process.env.REACT_APP_OANDA_DEMO_KEY || "",
+  accountId: process.env.REACT_APP_OANDA_DEMO_ACCOUNT_ID || "",
 };
 
-const oandaClient = axios.create({
-  baseURL: config.baseURL,
+const liveConfig = {
+  baseURL:
+    process.env.REACT_APP_OANDA_LIVE_URL || "https://api-fxtrade.oanda.com/v3/",
+  apiKey: process.env.REACT_APP_OANDA_LIVE_KEY || "",
+  accountId: process.env.REACT_APP_OANDA_LIVE_ACCOUNT_ID || "",
+};
+
+const demoClient = axios.create({
+  baseURL: demoConfig.baseURL,
   headers: {
-    Authorization: `Bearer ${config.apiKey}`,
+    Authorization: `Bearer ${demoConfig.apiKey}`,
+    "Content-Type": "application/json",
+    "Accept-Datetime-Format": "RFC3339",
+  },
+});
+
+const liveClient = axios.create({
+  baseURL: liveConfig.baseURL,
+  headers: {
+    Authorization: `Bearer ${liveConfig.apiKey}`,
     "Content-Type": "application/json",
     "Accept-Datetime-Format": "RFC3339",
   },
 });
 
 // Function to fetch account summary from OANDA
-async function getAccountSummary() {
+async function getAccountSummary(client, accountId) {
   try {
-    const response = await oandaClient.get(
-      `accounts/${config.accountId}/summary`
-    );
+    const response = await client.get(`accounts/${accountId}/summary`);
     return response.data;
   } catch (error) {
     console.error("Error fetching account summary:", error);
@@ -62,11 +65,9 @@ async function getAccountSummary() {
 }
 
 // Function to fetch open positions from OANDA
-async function getOpenPositions() {
+async function getOpenPositions(client, accountId) {
   try {
-    const response = await oandaClient.get(
-      `accounts/${config.accountId}/openPositions`
-    );
+    const response = await client.get(`accounts/${accountId}/openPositions`);
     return response.data;
   } catch (error) {
     console.error("Error fetching open positions:", error);
@@ -74,14 +75,16 @@ async function getOpenPositions() {
   }
 }
 
-// Function to save account snapshot to Supabase
-async function saveAccountSnapshot() {
+// Function to save account snapshot to Supabase for a specific environment
+async function saveAccountSnapshot(client, config, environment) {
   try {
-    console.log("Fetching account data from OANDA...");
+    console.log(
+      `Fetching account data from OANDA ${environment} environment...`
+    );
 
     // Fetch current account data
-    const accountSummary = await getAccountSummary();
-    const openPositions = await getOpenPositions();
+    const accountSummary = await getAccountSummary(client, config.accountId);
+    const openPositions = await getOpenPositions(client, config.accountId);
 
     // Extract relevant data
     const account = accountSummary.account;
@@ -96,23 +99,23 @@ async function saveAccountSnapshot() {
       margin_used: parseFloat(account.marginUsed),
       margin_available: parseFloat(account.marginAvailable),
       positions: openPositions.positions,
-      environment: ENV,
+      environment: environment,
     };
 
-    console.log("Saving snapshot to Supabase:", snapshot);
+    console.log(`Saving ${environment} snapshot to Supabase:`, snapshot);
 
     // Save to Supabase
     const { error } = await supabase.from("account_snapshots").insert(snapshot);
 
     if (error) {
-      console.error("Error saving account snapshot:", error);
+      console.error(`Error saving ${environment} account snapshot:`, error);
       return false;
     }
 
-    console.log("Snapshot saved successfully!");
+    console.log(`${environment} snapshot saved successfully!`);
     return true;
   } catch (error) {
-    console.error("Error in saveAccountSnapshot:", error);
+    console.error(`Error in saveAccountSnapshot for ${environment}:`, error);
     return false;
   }
 }
@@ -124,10 +127,37 @@ async function runDataCollection() {
   );
 
   try {
-    await saveAccountSnapshot();
-    console.log(
-      `[${new Date().toISOString()}] Data collection completed successfully`
+    // Process demo account
+    const demoResult = await saveAccountSnapshot(
+      demoClient,
+      demoConfig,
+      "DEMO"
     );
+
+    // Process live account
+    const liveResult = await saveAccountSnapshot(
+      liveClient,
+      liveConfig,
+      "LIVE"
+    );
+
+    if (demoResult && liveResult) {
+      console.log(
+        `[${new Date().toISOString()}] Data collection completed successfully for both environments`
+      );
+    } else if (demoResult) {
+      console.log(
+        `[${new Date().toISOString()}] Data collection completed successfully for DEMO environment only`
+      );
+    } else if (liveResult) {
+      console.log(
+        `[${new Date().toISOString()}] Data collection completed successfully for LIVE environment only`
+      );
+    } else {
+      console.log(
+        `[${new Date().toISOString()}] Data collection failed for both environments`
+      );
+    }
   } catch (error) {
     console.error(
       `[${new Date().toISOString()}] Error in data collection:`,
