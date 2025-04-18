@@ -49,6 +49,10 @@ app.all("/api/oanda/:endpoint(*)", async (req, res) => {
 
     const url = `${baseURL}${endpoint}`;
 
+    if (req.method === "POST") {
+      throw new Error("POST requests are not allowed");
+    }
+
     // Forward the request to Oanda with the appropriate headers
     const response = await axios({
       method: req.method,
