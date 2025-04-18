@@ -383,7 +383,7 @@ export const D3PositionsPerformanceChart: React.FC<
               // Get mouse position in chart coordinates
               const [mouseX] = d3.pointer(event, this);
 
-              // Find the closest data point to mouse position
+              // Find the closest data point to mouse position using the UPDATED scale
               const bisectDate = d3.bisector(
                 (d: { date: Date }) => d.date
               ).left;
@@ -403,6 +403,7 @@ export const D3PositionsPerformanceChart: React.FC<
 
               const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
               const formattedValue = d3.format("$,.2f")(d.value);
+              const color = getColorForInstrument(position.instrument);
 
               tooltip.html(`
                 <div class="tooltip-title" style="color: ${color};">${position.instrument.replace(
@@ -912,6 +913,86 @@ export const D3PositionsPerformanceChart: React.FC<
           chart
             .select(`.line-${position.instrument.replace("_", "-")}`)
             .attr("d", updatedLine(position.values));
+
+          // Update the invisible hover areas for each line
+          if (!showDots) {
+            const lineHover = chart.select(
+              `.line-hover-${position.instrument.replace("_", "-")}`
+            );
+
+            lineHover.attr("d", updatedLine(position.values));
+
+            // Update the mousemove event handler to use new scales
+            lineHover.on("mousemove", function (event) {
+              if (tooltipRef.current) {
+                // Get mouse position in chart coordinates
+                const [mouseX] = d3.pointer(event, this);
+
+                // Find the closest data point to mouse position using the UPDATED scale
+                const bisectDate = d3.bisector(
+                  (d: { date: Date }) => d.date
+                ).left;
+                const x0 = newX.invert(mouseX); // Use newX instead of x
+                const i = bisectDate(position.values, x0, 1);
+                const d0 = position.values[i - 1];
+                const d1 = position.values[i] || d0;
+                const d =
+                  x0.getTime() - d0.date.getTime() >
+                  d1.date.getTime() - x0.getTime()
+                    ? d1
+                    : d0;
+
+                // Display the tooltip
+                const tooltip = d3.select(tooltipRef.current);
+                tooltip.style("opacity", 1);
+
+                const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
+                const formattedValue = d3.format("$,.2f")(d.value);
+                const color = getColorForInstrument(position.instrument);
+
+                tooltip.html(`
+                    <div class="tooltip-title" style="color: ${color};">${position.instrument.replace(
+                  "_",
+                  "/"
+                )}</div>
+                    <div class="tooltip-date">${displayDate}</div>
+                    <div class="tooltip-value">P/L: ${formattedValue}</div>
+                  `);
+
+                // Position the tooltip using chart container coordinates
+                const tooltipWidth = tooltipRef.current.offsetWidth;
+                const tooltipHeight = tooltipRef.current.offsetHeight;
+
+                // Get the position of the chart container for correct offset calculation
+                const chartRect =
+                  chartContainerRef.current?.getBoundingClientRect();
+                if (chartRect) {
+                  // Calculate position relative to the chart container
+                  const xPosition = event.clientX - chartRect.left;
+                  const yPosition =
+                    event.clientY - chartRect.top - tooltipHeight - 10;
+
+                  tooltip
+                    .style("left", `${xPosition - tooltipWidth / 2}px`)
+                    .style("top", `${yPosition}px`);
+                }
+
+                // Highlight the corresponding line
+                chart
+                  .select(`.line-${position.instrument.replace("_", "-")}`)
+                  .attr("stroke-width", 3);
+
+                // Dim other lines
+                positionData.forEach((p) => {
+                  if (p.instrument !== position.instrument) {
+                    chart
+                      .select(`.line-${p.instrument.replace("_", "-")}`)
+                      .attr("opacity", 0.3);
+                  }
+                });
+              }
+            });
+          }
 
           // Update data points if they're visible
           if (showDots) {
