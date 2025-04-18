@@ -119,9 +119,9 @@
 (defn run-backtest [instruments]
   ;; Run backtests on instruments to get "buy sell scores"
   (let [backtest-params {:instruments instruments
-                         :granularity "H1"
-                         :num-backtests-per-instrument 3
-                         :xindy-config {:num-shifts 10
+                         :granularity "H4"
+                         :num-backtests-per-instrument 7
+                         :xindy-config {:num-shifts 14
                                         :max-shift 77}
                          :pop-config {:pop-size 77
                                       :num-parents 44
@@ -131,7 +131,8 @@
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
+(shoot-money-x-from-backtest-y 25 "994fe90")
+#_(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
 #_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
 #_(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 

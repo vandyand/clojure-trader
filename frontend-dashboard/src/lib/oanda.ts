@@ -2,9 +2,7 @@ import axios from "axios";
 import { DataSource } from "./DataSourceContext";
 
 interface OandaConfig {
-  baseURL: string;
-  apiKey: string;
-  accountId: string;
+  dataSource: DataSource;
 }
 
 export interface AccountSummary {
@@ -76,30 +74,19 @@ export interface TransactionsResponse {
 // Get configuration based on data source
 export function getConfig(dataSource: DataSource): OandaConfig {
   return {
-    baseURL:
-      dataSource === "LIVE"
-        ? process.env.REACT_APP_OANDA_LIVE_URL ||
-          "https://api-fxtrade.oanda.com/v3/"
-        : process.env.REACT_APP_OANDA_DEMO_URL ||
-          "https://api-fxpractice.oanda.com/v3/",
-    apiKey:
-      dataSource === "LIVE"
-        ? process.env.REACT_APP_OANDA_LIVE_KEY || ""
-        : process.env.REACT_APP_OANDA_DEMO_KEY || "",
-    accountId:
-      dataSource === "LIVE"
-        ? process.env.REACT_APP_OANDA_LIVE_ACCOUNT_ID || ""
-        : process.env.REACT_APP_OANDA_DEMO_ACCOUNT_ID || "",
+    dataSource,
   };
 }
 
 // Create Axios client with the given config
 export function createOandaClient(config: OandaConfig) {
   return axios.create({
-    baseURL: config.baseURL,
+    baseURL: "/api/oanda/",
     headers: {
-      Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
+    },
+    params: {
+      dataSource: config.dataSource,
     },
   });
 }
@@ -111,9 +98,7 @@ export async function getAccountSummary(
     const config = getConfig(dataSource);
     const oandaClient = createOandaClient(config);
 
-    const response = await oandaClient.get(
-      `accounts/${config.accountId}/summary`
-    );
+    const response = await oandaClient.get(`accounts/{accountId}/summary`);
     return response.data;
   } catch (error) {
     console.error("Error fetching account summary:", error);
@@ -171,7 +156,7 @@ export async function getOpenPositions(
     const oandaClient = createOandaClient(config);
 
     const response = await oandaClient.get(
-      `accounts/${config.accountId}/openPositions`
+      `accounts/{accountId}/openPositions`
     );
 
     let positions = response.data;
@@ -218,7 +203,7 @@ export async function getAccountHistory(
     };
 
     const response = await oandaClient.get(
-      `accounts/${config.accountId}/transactions`,
+      `accounts/{accountId}/transactions`,
       { params }
     );
     return response.data;

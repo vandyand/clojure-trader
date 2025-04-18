@@ -95,42 +95,55 @@ npm start
 npm run build
 ```
 
-## Deployment to Heroku
+## API Key Security Update
 
-### Prerequisites
+We've improved security by moving all Oanda API keys to the server side only. The application now uses a simple Express server that proxies requests to Oanda, keeping API keys secure.
 
-- Heroku CLI installed
-- Heroku account
+### Local Development
 
-### Steps
+1. Create `.env.server` file with your Oanda API keys (this file should never be committed):
 
-1. Create a new Heroku app:
-
-```bash
-heroku create your-app-name
+```
+# Oanda API Settings
+REACT_APP_OANDA_LIVE_OR_DEMO=LIVE
+REACT_APP_OANDA_LIVE_URL=https://api-fxtrade.oanda.com/v3/
+REACT_APP_OANDA_DEMO_URL=https://api-fxpractice.oanda.com/v3/
+REACT_APP_OANDA_LIVE_ACCOUNT_ID=your-live-account-id
+REACT_APP_OANDA_DEMO_ACCOUNT_ID=your-demo-account-id
+REACT_APP_OANDA_LIVE_KEY=your-live-api-key
+REACT_APP_OANDA_DEMO_KEY=your-demo-api-key
 ```
 
-2. Set the buildpack:
+2. For development with hot reloading (React frontend only):
 
-```bash
-heroku buildpacks:set heroku/nodejs
+```
+npm run dev
 ```
 
-3. Set environment variables:
+3. To run both server and frontend (after build):
 
-```bash
-heroku config:set REACT_APP_SUPABASE_URL=your_supabase_url
-heroku config:set REACT_APP_SUPABASE_API_KEY=your_supabase_api_key
-heroku config:set REACT_APP_OANDA_LIVE_OR_DEMO=LIVE_OR_DEMO
-heroku config:set REACT_APP_OANDA_LIVE_KEY=your_oanda_live_key
-heroku config:set REACT_APP_OANDA_DEMO_KEY=your_oanda_demo_key
+```
+npm run build
+npm start
 ```
 
-4. Deploy the app:
+### Heroku Deployment
 
-```bash
-git add .
-git commit -m "Initial deploy"
+1. Add your environment variables to Heroku:
+
+```
+heroku config:set REACT_APP_OANDA_LIVE_OR_DEMO=LIVE
+heroku config:set REACT_APP_OANDA_LIVE_URL=https://api-fxtrade.oanda.com/v3/
+heroku config:set REACT_APP_OANDA_DEMO_URL=https://api-fxpractice.oanda.com/v3/
+heroku config:set REACT_APP_OANDA_LIVE_ACCOUNT_ID=your-live-account-id
+heroku config:set REACT_APP_OANDA_DEMO_ACCOUNT_ID=your-demo-account-id
+heroku config:set REACT_APP_OANDA_LIVE_KEY=your-live-api-key
+heroku config:set REACT_APP_OANDA_DEMO_KEY=your-demo-api-key
+```
+
+2. Deploy to Heroku:
+
+```
 git push heroku main
 ```
 

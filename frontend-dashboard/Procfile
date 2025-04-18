@@ -1,2 +1,2 @@
-web: npm install -g serve && serve -s build
+web: node server.js
 worker: node worker.js 
