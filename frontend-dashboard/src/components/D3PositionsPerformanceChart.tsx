@@ -63,6 +63,7 @@ export const D3PositionsPerformanceChart: React.FC<
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const currentZoomTransformRef = useRef<d3.ZoomTransform | null>(null);
 
   // Fetch account snapshots with positions data
   const {
@@ -844,6 +845,9 @@ export const D3PositionsPerformanceChart: React.FC<
         [width, height],
       ])
       .on("zoom", (event) => {
+        // Store the current transform for later use
+        currentZoomTransformRef.current = event.transform;
+
         // Get the new scales from the transform event
         const newX = event.transform.rescaleX(x);
         const newY = event.transform.rescaleY(y);
@@ -1035,9 +1039,16 @@ export const D3PositionsPerformanceChart: React.FC<
     // Apply zoom behavior to chart area
     svg.call(zoom);
 
+    // If we have a stored transform, apply it to maintain zoom/pan state
+    if (currentZoomTransformRef.current) {
+      svg.call(zoom.transform, currentZoomTransformRef.current);
+    }
+
     // Add reset zoom button functionality
     d3.select(".reset-zoom-button").on("click", function () {
       svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+      // Clear the stored transform when reset is clicked
+      currentZoomTransformRef.current = null;
     });
   }, [snapshots, isLoading, error, timeRange, showDots]);
 
