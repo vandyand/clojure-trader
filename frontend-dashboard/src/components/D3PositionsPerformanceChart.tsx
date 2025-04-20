@@ -88,6 +88,7 @@ export const D3PositionsPerformanceChart: React.FC<
   });
 
   useEffect(() => {
+    console.log("[Chart Effect] Running effect...");
     if (
       isLoading ||
       error ||
@@ -95,8 +96,24 @@ export const D3PositionsPerformanceChart: React.FC<
       snapshots.length === 0 ||
       !svgRef.current
     ) {
+      console.log("[Chart Effect] Exiting early:", {
+        isLoading,
+        error,
+        hasSnapshots: !!snapshots,
+        snapshotsLength: snapshots?.length,
+        hasSvgRef: !!svgRef.current,
+      });
       return;
     }
+
+    console.log(
+      "[Chart Effect] Received Snapshots:",
+      snapshots.length,
+      "items. First:",
+      snapshots[0],
+      "Last:",
+      snapshots[snapshots.length - 1]
+    );
 
     // Set up container dimensions
     const containerWidth = chartContainerRef.current?.clientWidth || 800;
@@ -128,13 +145,36 @@ export const D3PositionsPerformanceChart: React.FC<
     snapshots.forEach((snapshot) => {
       if (snapshot.positions && snapshot.positions.length > 0) {
         snapshot.positions.forEach((position) => {
-          instrumentSet.add(position.instrument);
+          // Ensure position and instrument are valid before adding
+          if (position && position.instrument) {
+            instrumentSet.add(position.instrument);
+          }
         });
       }
     });
 
+    console.log(
+      "[Chart Effect] Identified Instruments:",
+      Array.from(instrumentSet)
+    );
+
     // Convert Set to Array for easier handling
     const instruments = Array.from(instrumentSet);
+
+    // Exit if no instruments found
+    if (instruments.length === 0) {
+      console.log(
+        "[Chart Effect] No instruments found in snapshots. Exiting chart draw."
+      );
+      // Optionally display a message in the chart area
+      chart
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .text("No position data available for the selected period.");
+      return;
+    }
 
     // Create a data structure for each instrument
     const positionData: PositionData[] = instruments.map((instrument) => ({
@@ -155,32 +195,69 @@ export const D3PositionsPerformanceChart: React.FC<
       // Update P/L values for positions that exist in this snapshot
       if (snapshot.positions && snapshot.positions.length > 0) {
         snapshot.positions.forEach((position) => {
-          const instrument = position.instrument;
-          let totalPL = 0;
+          // Add safety checks for position and instrument existence
+          if (position && position.instrument) {
+            const instrument = position.instrument;
+            let totalPL = 0;
 
-          // Sum up P/L from both long and short positions if they exist
-          if (position.long && position.long.units !== "0") {
-            totalPL += parseFloat(position.long.unrealizedPL || "0");
-          }
-          if (position.short && position.short.units !== "0") {
-            totalPL += parseFloat(position.short.unrealizedPL || "0");
-          }
+            // Sum up P/L from both long and short positions if they exist
+            if (position.long && position.long.units !== "0") {
+              totalPL += parseFloat(position.long.unrealizedPL || "0");
+            }
+            if (position.short && position.short.units !== "0") {
+              totalPL += parseFloat(position.short.unrealizedPL || "0");
+            }
 
-          instrumentValueMap.set(instrument, totalPL);
+            // Ensure the instrument exists in our map before setting
+            if (instrumentValueMap.has(instrument)) {
+              instrumentValueMap.set(instrument, totalPL);
+            }
+          } else {
+            // Log if a position is missing an instrument
+            console.warn(
+              "[Chart Effect] Position missing instrument:",
+              position
+            );
+          }
         });
       }
 
       // Add values to each position data
       positionData.forEach((position) => {
         const value = instrumentValueMap.get(position.instrument) || 0;
-        position.values.push({ date, value });
+        // Only push if date is valid
+        if (date instanceof Date && !isNaN(date.valueOf())) {
+          position.values.push({ date, value });
+        } else {
+          console.warn(
+            "[Chart Effect] Invalid date encountered:",
+            snapshot.timestamp
+          );
+        }
       });
     });
+
+    console.log("[Chart Effect] Processed Position Data:", positionData);
 
     // Sort data chronologically
     positionData.forEach((position) => {
       position.values.sort((a, b) => a.date.getTime() - b.date.getTime());
     });
+
+    // Check if any position has valid data
+    const hasValidPositionData = positionData.some((p) => p.values.length > 0);
+    if (!hasValidPositionData) {
+      console.log(
+        "[Chart Effect] No valid data points found after processing snapshots. Exiting chart draw."
+      );
+      chart
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .text("No processable position data found.");
+      return;
+    }
 
     // Create data for cumulative performances (average and sum of all instruments at each timestamp)
     const timestampMap = new Map<number, { total: number; count: number }>();
@@ -219,41 +296,94 @@ export const D3PositionsPerformanceChart: React.FC<
     cumulativeData.sort((a, b) => a.date.getTime() - b.date.getTime());
     sumData.sort((a, b) => a.date.getTime() - b.date.getTime());
 
+    console.log(
+      "[Chart Effect] Calculated Cumulative Data (Avg):",
+      cumulativeData.length,
+      "points. Sum:",
+      sumData.length,
+      "points."
+    );
+
     // Set up scales
-    const x = d3
-      .scaleTime()
-      .domain(d3.extent(positionData[0].values, (d) => d.date) as [Date, Date])
-      .range([0, width]);
+    const firstPositionWithData = positionData.find((p) => p.values.length > 0);
+    if (!firstPositionWithData) {
+      console.error(
+        "[Chart Effect] Could not find any position with data for x-scale domain."
+      );
+      return; // Cannot proceed without data for scales
+    }
+
+    const xDomain = d3.extent(firstPositionWithData.values, (d) => d.date) as [
+      Date,
+      Date
+    ];
+    if (
+      !xDomain ||
+      xDomain.some((d) => !(d instanceof Date) || isNaN(d.valueOf()))
+    ) {
+      console.error("[Chart Effect] Invalid xDomain calculated:", xDomain);
+      return; // Cannot proceed with invalid domain
+    }
+
+    const x = d3.scaleTime().domain(xDomain).range([0, width]);
+
+    console.log("[Chart Effect] X Scale Domain:", x.domain());
 
     // Find the min and max values across all positions and cumulative data
-    let minY = 0,
-      maxY = 0;
+    let minY = Infinity, // Start with Infinity to correctly find minimum
+      maxY = -Infinity; // Start with -Infinity to correctly find maximum
+
+    let hasNumericValue = false;
     positionData.forEach((position) => {
       position.values.forEach((v) => {
-        if (v.value < minY) minY = v.value;
-        if (v.value > maxY) maxY = v.value;
+        if (typeof v.value === "number" && !isNaN(v.value)) {
+          if (v.value < minY) minY = v.value;
+          if (v.value > maxY) maxY = v.value;
+          hasNumericValue = true;
+        }
       });
     });
 
     // Check cumulative data for min/max as well
     cumulativeData.forEach((v) => {
-      if (v.value < minY) minY = v.value;
-      if (v.value > maxY) maxY = v.value;
+      if (typeof v.value === "number" && !isNaN(v.value)) {
+        if (v.value < minY) minY = v.value;
+        if (v.value > maxY) maxY = v.value;
+        hasNumericValue = true;
+      }
     });
 
     // Check sum data for min/max
     sumData.forEach((v) => {
-      if (v.value < minY) minY = v.value;
-      if (v.value > maxY) maxY = v.value;
+      if (typeof v.value === "number" && !isNaN(v.value)) {
+        if (v.value < minY) minY = v.value;
+        if (v.value > maxY) maxY = v.value;
+        hasNumericValue = true;
+      }
     });
 
+    // Handle case where no numeric data was found or min/max are still initial values
+    if (!hasNumericValue || minY === Infinity || maxY === -Infinity) {
+      console.warn(
+        "[Chart Effect] No valid numeric data found for y-scale. Setting default domain [0, 1]."
+      );
+      minY = 0;
+      maxY = 1;
+    } else if (minY === maxY) {
+      // Handle case where all values are the same
+      minY = minY - 1; // Give some space below
+      maxY = maxY + 1; // Give some space above
+    }
+
     // Add some padding to the y-axis
-    const yPadding = (maxY - minY) * 0.1;
+    const yPadding = (maxY - minY) * 0.1 || 0.1; // Ensure padding is not zero if maxY=minY
 
     const y = d3
       .scaleLinear()
       .domain([minY - yPadding, maxY + yPadding])
       .range([height, 0]);
+
+    console.log("[Chart Effect] Y Scale Domain:", y.domain());
 
     // Create a clip path to ensure content stays within the chart area
     chart
