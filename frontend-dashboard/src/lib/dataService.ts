@@ -70,18 +70,7 @@ export async function getAccountHistory(
   dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
-    // Use a random parameter in headers to bust cache
-    const timestamp = new Date().getTime();
-    const customHeaders = {
-      "Cache-Control": "no-cache",
-      Pragma: "no-cache",
-      "X-Cache-Buster": `${timestamp}`,
-    };
-
-    // Apply headers to supabase client
-    const supabaseWithHeaders = supabase.headers(customHeaders);
-
-    let query = supabaseWithHeaders.from("account_snapshots").select("*");
+    let query = supabase.from("account_snapshots").select("*");
 
     // Filter by data source if provided
     if (dataSource) {
@@ -99,12 +88,19 @@ export async function getAccountHistory(
         .gte("timestamp", startDate.toISOString())
         .lte("timestamp", endDate.toISOString());
     } else {
+      // Calculate fresh dates using current time
+      const endDate = new Date();
       const startDate = new Date();
-      const endDate = new Date(); // Define the end date as current time
       startDate.setDate(startDate.getDate() - days);
-      query = query
-        .gte("timestamp", startDate.toISOString())
-        .lte("timestamp", endDate.toISOString()); // Add lte for current time
+
+      // Add milliseconds to ensure we have the most current time
+      // This forces reevaluation of the time on each call
+      const endTimeIso = new Date(endDate.getTime()).toISOString();
+      const startTimeIso = new Date(startDate.getTime()).toISOString();
+
+      console.log("Using date range:", startTimeIso, "to", endTimeIso);
+
+      query = query.gte("timestamp", startTimeIso).lte("timestamp", endTimeIso);
     }
 
     const { data, error } = await query.order("timestamp", { ascending: true });

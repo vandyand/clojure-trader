@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import * as d3 from "d3";
 import * as dataService from "../lib/dataService";
 import { useDataSource } from "../lib/DataSourceContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface D3PositionsPerformanceChartProps {
   refreshInterval?: number;
@@ -64,6 +65,7 @@ export const D3PositionsPerformanceChart: React.FC<
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const currentZoomTransformRef = useRef<d3.ZoomTransform | null>(null);
+  const queryClient = useQueryClient();
 
   // Fetch account snapshots with positions data
   const {
@@ -1055,6 +1057,25 @@ export const D3PositionsPerformanceChart: React.FC<
       currentZoomTransformRef.current = null;
     });
   }, [snapshots, isLoading, error, timeRange, showDots]);
+
+  // Add periodic refresh for the chart data
+  useEffect(() => {
+    // Set up interval to refresh data every 30 seconds
+    const refreshIntervalId = setInterval(() => {
+      // Force refresh the query
+      queryClient.invalidateQueries({
+        queryKey: ["accountSnapshots"],
+      });
+      console.log(
+        "Refreshed position performance data at",
+        new Date().toISOString()
+      );
+    }, 30000); // 30 seconds
+
+    // Clean up interval on component unmount
+    return () => clearInterval(refreshIntervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Toggle dots visibility
   const handleToggleDots = () => {
