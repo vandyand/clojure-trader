@@ -70,17 +70,18 @@ export async function getAccountHistory(
   dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
-    // Add timestamp query parameter as cache buster
+    // Use a random parameter in headers to bust cache
     const timestamp = new Date().getTime();
+    const customHeaders = {
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      "X-Cache-Buster": `${timestamp}`,
+    };
 
-    let query = supabase
-      .from("account_snapshots")
-      .select("*")
-      // Add a unique parameter that will change on each request
-      .eq("cache_buster", `${timestamp}`.substring(0, 10))
-      // The above parameter will fail but that's OK - it forces a fresh query
-      // .then() still works even though the filter will be ignored
-      .then((result) => result);
+    // Apply headers to supabase client
+    const supabaseWithHeaders = supabase.headers(customHeaders);
+
+    let query = supabaseWithHeaders.from("account_snapshots").select("*");
 
     // Filter by data source if provided
     if (dataSource) {
