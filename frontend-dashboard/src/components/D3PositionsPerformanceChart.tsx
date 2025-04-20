@@ -73,7 +73,7 @@ export const D3PositionsPerformanceChart: React.FC<
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["accountSnapshots", timeRange, dataSource, Date.now()],
+    queryKey: ["accountSnapshots", timeRange, dataSource],
     queryFn: () =>
       dataService.getAccountHistory(
         timeRange,
@@ -81,7 +81,6 @@ export const D3PositionsPerformanceChart: React.FC<
         undefined,
         dataSource
       ),
-    refetchInterval: refreshInterval,
     staleTime: 0,
     cacheTime: 60 * 1000,
     refetchOnMount: true,
