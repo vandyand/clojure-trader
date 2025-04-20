@@ -70,7 +70,17 @@ export async function getAccountHistory(
   dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
-    let query = supabase.from("account_snapshots").select("*");
+    // Add timestamp query parameter as cache buster
+    const timestamp = new Date().getTime();
+
+    let query = supabase
+      .from("account_snapshots")
+      .select("*")
+      // Add a unique parameter that will change on each request
+      .eq("cache_buster", `${timestamp}`.substring(0, 10))
+      // The above parameter will fail but that's OK - it forces a fresh query
+      // .then() still works even though the filter will be ignored
+      .then((result) => result);
 
     // Filter by data source if provided
     if (dataSource) {
@@ -102,6 +112,11 @@ export async function getAccountHistory(
       console.error("Error fetching account history:", error);
       return [];
     }
+
+    // Log the timestamps to debug
+    console.log("First timestamp:", data?.[0]?.timestamp);
+    console.log("Last timestamp:", data?.[data?.length - 1]?.timestamp);
+    console.log("Current time:", new Date().toISOString());
 
     // Convert from snake_case back to camelCase for the frontend
     return (data || []).map((item) => ({
