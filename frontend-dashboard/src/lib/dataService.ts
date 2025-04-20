@@ -89,8 +89,11 @@ export async function getAccountHistory(
         .lte("timestamp", endDate.toISOString());
     } else {
       const startDate = new Date();
+      const endDate = new Date(); // Define the end date as current time
       startDate.setDate(startDate.getDate() - days);
-      query = query.gte("timestamp", startDate.toISOString());
+      query = query
+        .gte("timestamp", startDate.toISOString())
+        .lte("timestamp", endDate.toISOString()); // Add lte for current time
     }
 
     const { data, error } = await query.order("timestamp", { ascending: true });
