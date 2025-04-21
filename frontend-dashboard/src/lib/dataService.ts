@@ -103,7 +103,10 @@ export async function getAccountHistory(
       query = query.gte("timestamp", startTimeIso).lte("timestamp", endTimeIso);
     }
 
-    const { data, error } = await query.order("timestamp", { ascending: true });
+    // Increase the row limit and order by timestamp
+    const { data, error } = await query
+      .limit(5000) // Fetch up to 5000 rows
+      .order("timestamp", { ascending: true });
 
     if (error) {
       console.error("Error fetching account history:", error);
