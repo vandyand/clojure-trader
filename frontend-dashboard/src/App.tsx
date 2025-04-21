@@ -16,7 +16,6 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: true,
       staleTime: 5 * 60 * 1000, // Consider data stale after 5 minutes
       cacheTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
-      refetchInterval: 60 * 1000, // Refetch data every minute
     },
   },
 });
