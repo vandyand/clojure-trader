@@ -1043,15 +1043,17 @@ export const D3PositionsPerformanceChart: React.FC<
 
         // Update line positions with both new X and new Y scales
         positionData.forEach((position) => {
+          // Define the line generator *using the new scales* within the zoom handler
           const updatedLine = d3
             .line<{ date: Date; value: number }>()
-            .x((d) => newX(d.date))
-            .y((d) => newY(d.value))
-            .curve(d3.curveLinear); // Changed from d3.curveMonotoneX to d3.curveLinear for straight lines
+            .x((d) => newX(d.date)) // Use newX
+            .y((d) => newY(d.value)) // Use newY
+            .curve(d3.curveLinear);
 
+          // Update the visible line path
           chart
             .select(`.line-${position.instrument.replace("_", "-")}`)
-            .attr("d", updatedLine(position.values));
+            .attr("d", updatedLine(position.values)); // Apply the updated generator
 
           // Update the invisible hover areas for each line
           if (!showDots) {
@@ -1059,6 +1061,7 @@ export const D3PositionsPerformanceChart: React.FC<
               `.line-hover-${position.instrument.replace("_", "-")}`
             );
 
+            // Also update the hover line path with the new generator
             lineHover.attr("d", updatedLine(position.values));
 
             // Update the mousemove event handler to use new scales
@@ -1137,37 +1140,36 @@ export const D3PositionsPerformanceChart: React.FC<
           if (showDots) {
             chart
               .selectAll(`.dot-${position.instrument.replace("_", "-")}`)
-              .attr("cx", (d) => newX((d as any).date))
-              .attr("cy", (d) => newY((d as any).value));
+              .attr("cx", (d) => newX((d as any).date)) // Use newX
+              .attr("cy", (d) => newY((d as any).value)); // Use newY
           }
         });
 
-        // Update cumulative line
+        // Update cumulative line using the new scales
         const updatedCumulativeLine = d3
           .line<{ date: Date; value: number }>()
-          .x((d) => newX(d.date))
-          .y((d) => newY(d.value))
+          .x((d) => newX(d.date)) // Use newX
+          .y((d) => newY(d.value)) // Use newY
           .curve(d3.curveLinear);
 
         chart
           .select(".line-cumulative")
           .attr("d", updatedCumulativeLine(cumulativeData));
 
-        // Update sum line
-        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData));
+        // Update sum line using the new scales
+        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData)); // Re-use the same generator
 
-        // Update cumulative data points if they're visible
+        // Update cumulative and sum data points if they're visible
         if (showDots) {
           chart
             .selectAll(".dot-cumulative")
-            .attr("cx", (d) => newX((d as any).date))
-            .attr("cy", (d) => newY((d as any).value));
+            .attr("cx", (d) => newX((d as any).date)) // Use newX
+            .attr("cy", (d) => newY((d as any).value)); // Use newY
 
-          // Update sum data points
           chart
             .selectAll(".dot-sum")
-            .attr("cx", (d) => newX((d as any).date))
-            .attr("cy", (d) => newY((d as any).value));
+            .attr("cx", (d) => newX((d as any).date)) // Use newX
+            .attr("cy", (d) => newY((d as any).value)); // Use newY
         }
       });
 
