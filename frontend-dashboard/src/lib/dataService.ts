@@ -71,92 +71,127 @@ export async function getAccountHistory(
   dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
-    let startTimeISO: string;
-    let endTimeISO: string;
+    let requestedStartTimeISO: string;
+    let requestedEndTimeISO: string;
     const currentEnvironment = dataSource || "DEMO"; // Default to DEMO if not specified
 
-    // Determine date range
+    // Determine the full requested date range
     if (startDateStr && endDateStr) {
       const startDate = new Date(startDateStr);
       const endDate = new Date(endDateStr);
       endDate.setHours(23, 59, 59, 999);
-      startTimeISO = startDate.toISOString();
-      endTimeISO = endDate.toISOString();
+      requestedStartTimeISO = startDate.toISOString();
+      requestedEndTimeISO = endDate.toISOString();
     } else {
       const endDate = new Date();
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
-      startTimeISO = startDate.toISOString();
-      endTimeISO = endDate.toISOString();
+      requestedStartTimeISO = startDate.toISOString();
+      requestedEndTimeISO = endDate.toISOString();
     }
 
-    // 1. Try fetching from IndexedDB first
-    const cachedSnapshots = await getSnapshotsFromDB(
-      startTimeISO,
-      endTimeISO,
-      currentEnvironment
-    );
-
-    // Basic check: If we found *any* data in DB for the range, return it
-    // A more advanced check might look at the latest timestamp in cache
-    if (cachedSnapshots.length > 0) {
-      console.log(
-        `[Data Service] Using ${cachedSnapshots.length} snapshots from IndexedDB cache.`
+    // 1. Fetch existing data from IndexedDB for the requested range
+    const { snapshots: cachedSnapshots, latestTimestamp: latestTimestampInDB } =
+      await getSnapshotsFromDB(
+        requestedStartTimeISO,
+        requestedEndTimeISO,
+        currentEnvironment
       );
-      return cachedSnapshots;
+
+    // 2. Determine the start time for the Supabase fetch
+    let fetchStartTimeISO = requestedStartTimeISO; // Default to fetching the whole range
+    if (latestTimestampInDB) {
+      const fetchStartDate = new Date(latestTimestampInDB);
+      // Add 1ms to avoid fetching the last cached record again
+      fetchStartDate.setMilliseconds(fetchStartDate.getMilliseconds() + 1);
+      // Only adjust fetch start time if it's later than the initially requested start time
+      if (fetchStartDate.toISOString() > requestedStartTimeISO) {
+        fetchStartTimeISO = fetchStartDate.toISOString();
+      }
+      console.log(
+        `[Data Service] Latest cache timestamp: ${latestTimestampInDB}. Fetching from: ${fetchStartTimeISO}`
+      );
+    } else {
+      console.log(
+        "[Data Service] No cache found. Fetching full range from Supabase."
+      );
     }
 
-    // 2. If not in DB or insufficient, fetch from Supabase
-    console.log(
-      "[Data Service] No suitable cache in IndexedDB, fetching from Supabase..."
-    );
-    let query = supabase.from("account_snapshots").select("*");
+    let newlyFetchedSnapshots: AccountSnapshot[] = [];
 
-    if (dataSource) {
-      query = query.eq("environment", dataSource);
+    // 3. Fetch from Supabase only if the fetch start time is before the requested end time
+    if (fetchStartTimeISO < requestedEndTimeISO) {
+      console.log(
+        `[Data Service] Fetching from Supabase from ${fetchStartTimeISO} to ${requestedEndTimeISO}...`
+      );
+      let query = supabase.from("account_snapshots").select("*");
+
+      if (dataSource) {
+        query = query.eq("environment", dataSource);
+      }
+
+      // Fetch data from the calculated start time to the requested end time
+      query = query
+        .gte("timestamp", fetchStartTimeISO)
+        .lte("timestamp", requestedEndTimeISO);
+
+      const { data, error } = await query
+        .limit(10000) // Keep the increased limit
+        .order("timestamp", { ascending: false }); // Fetch newest first within the range
+
+      if (error) {
+        console.error("Error fetching account history from Supabase:", error);
+        // Return cache even if fetch fails, better than nothing
+        return cachedSnapshots;
+      }
+
+      // Convert snake_case to camelCase
+      newlyFetchedSnapshots = (data || []).map((item) => ({
+        timestamp: item.timestamp,
+        accountId: item.account_id,
+        balance: item.balance,
+        unrealizedPL: item.unrealized_pl,
+        nav: item.nav,
+        marginUsed: item.margin_used,
+        marginAvailable: item.margin_available,
+        positions: item.positions,
+        environment: item.environment,
+      }));
+
+      // 4. Save *only the newly fetched* data to IndexedDB
+      if (newlyFetchedSnapshots.length > 0) {
+        await saveSnapshotsToDB(newlyFetchedSnapshots);
+      } else {
+        console.log("[Data Service] No new snapshots fetched from Supabase.");
+      }
+    } else {
+      console.log(
+        "[Data Service] Cache is up to date. No Supabase fetch needed."
+      );
     }
 
-    query = query.gte("timestamp", startTimeISO).lte("timestamp", endTimeISO);
+    // 5. Combine cached and newly fetched data
+    // Use a Map to handle potential duplicates if fetch range overlaps slightly
+    const combinedMap = new Map<string, AccountSnapshot>();
+    cachedSnapshots.forEach((s) => combinedMap.set(s.timestamp, s));
+    newlyFetchedSnapshots.forEach((s) => combinedMap.set(s.timestamp, s));
 
-    const { data, error } = await query
-      .limit(10000) // Use the increased limit
-      .order("timestamp", { ascending: false }); // Fetch newest first
+    const combinedSnapshots = Array.from(combinedMap.values());
 
-    if (error) {
-      console.error("Error fetching account history from Supabase:", error);
-      return [];
-    }
-
-    // Convert snake_case to camelCase for consistency
-    const fetchedSnapshots: AccountSnapshot[] = (data || []).map((item) => ({
-      timestamp: item.timestamp,
-      accountId: item.account_id,
-      balance: item.balance,
-      unrealizedPL: item.unrealized_pl,
-      nav: item.nav,
-      marginUsed: item.margin_used,
-      marginAvailable: item.margin_available,
-      positions: item.positions,
-      environment: item.environment,
-    }));
-
-    // Sort back to ascending order for chart processing
-    fetchedSnapshots.sort(
+    // 6. Sort the final combined array ascending for chart processing
+    combinedSnapshots.sort(
       (a, b) =>
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
-    // 3. Save the newly fetched data to IndexedDB
-    await saveSnapshotsToDB(fetchedSnapshots);
-
-    console.log("First timestamp fetched:", fetchedSnapshots?.[0]?.timestamp);
+    console.log("Final combined snapshots count:", combinedSnapshots.length);
+    console.log("First timestamp returned:", combinedSnapshots?.[0]?.timestamp);
     console.log(
-      "Last timestamp fetched:",
-      fetchedSnapshots?.[fetchedSnapshots?.length - 1]?.timestamp
+      "Last timestamp returned:",
+      combinedSnapshots?.[combinedSnapshots?.length - 1]?.timestamp
     );
-    console.log("Current time:", new Date().toISOString());
 
-    return fetchedSnapshots;
+    return combinedSnapshots;
   } catch (error) {
     console.error("Error in getAccountHistory:", error);
     return [];

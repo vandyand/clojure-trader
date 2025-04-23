@@ -55,7 +55,7 @@ export async function getSnapshotsFromDB(
   startTimeISO: string,
   endTimeISO: string,
   environment: string
-): Promise<AccountSnapshot[]> {
+): Promise<{ snapshots: AccountSnapshot[]; latestTimestamp: string | null }> {
   try {
     const db = await initDB();
     const tx = db.transaction(STORE_NAME, "readonly");
@@ -68,18 +68,29 @@ export async function getSnapshotsFromDB(
     const results = await index.getAll(range);
     await tx.done;
 
-    // Filter results by environment client-side as compound index is not straightforward
+    // Filter results by environment client-side
     const filteredResults = results.filter(
       (snapshot) => snapshot.environment === environment
     );
 
-    console.log(
-      `[DB] Retrieved ${filteredResults.length} snapshots from IndexedDB for range ${startTimeISO} to ${endTimeISO} [${environment}].`
+    // Sort ascending to easily find the latest timestamp
+    filteredResults.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
-    return filteredResults;
+
+    const latestTimestamp =
+      filteredResults.length > 0
+        ? filteredResults[filteredResults.length - 1].timestamp
+        : null;
+
+    console.log(
+      `[DB] Retrieved ${filteredResults.length} snapshots from IndexedDB for range ${startTimeISO} to ${endTimeISO} [${environment}]. Latest: ${latestTimestamp}`
+    );
+    return { snapshots: filteredResults, latestTimestamp };
   } catch (error) {
     console.error("[DB] Error getting snapshots:", error);
-    return [];
+    return { snapshots: [], latestTimestamp: null };
   }
 }
 
