@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import * as oandaApi from "./oanda";
 import { DataSource } from "./DataSourceContext";
+import { getSnapshotsFromDB, saveSnapshotsToDB } from "./db"; // Import DB functions
 
 export interface AccountSnapshot {
   timestamp: string;
@@ -70,56 +71,64 @@ export async function getAccountHistory(
   dataSource?: DataSource
 ): Promise<AccountSnapshot[]> {
   try {
+    let startTimeISO: string;
+    let endTimeISO: string;
+    const currentEnvironment = dataSource || "DEMO"; // Default to DEMO if not specified
+
+    // Determine date range
+    if (startDateStr && endDateStr) {
+      const startDate = new Date(startDateStr);
+      const endDate = new Date(endDateStr);
+      endDate.setHours(23, 59, 59, 999);
+      startTimeISO = startDate.toISOString();
+      endTimeISO = endDate.toISOString();
+    } else {
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      startTimeISO = startDate.toISOString();
+      endTimeISO = endDate.toISOString();
+    }
+
+    // 1. Try fetching from IndexedDB first
+    const cachedSnapshots = await getSnapshotsFromDB(
+      startTimeISO,
+      endTimeISO,
+      currentEnvironment
+    );
+
+    // Basic check: If we found *any* data in DB for the range, return it
+    // A more advanced check might look at the latest timestamp in cache
+    if (cachedSnapshots.length > 0) {
+      console.log(
+        `[Data Service] Using ${cachedSnapshots.length} snapshots from IndexedDB cache.`
+      );
+      return cachedSnapshots;
+    }
+
+    // 2. If not in DB or insufficient, fetch from Supabase
+    console.log(
+      "[Data Service] No suitable cache in IndexedDB, fetching from Supabase..."
+    );
     let query = supabase.from("account_snapshots").select("*");
 
-    // Filter by data source if provided
     if (dataSource) {
       query = query.eq("environment", dataSource);
     }
 
-    // Use date range if provided, otherwise use days
-    if (startDateStr && endDateStr) {
-      const startDate = new Date(startDateStr);
-      const endDate = new Date(endDateStr);
-      // Set end date to end of day to include all data from that day
-      endDate.setHours(23, 59, 59, 999);
+    query = query.gte("timestamp", startTimeISO).lte("timestamp", endTimeISO);
 
-      query = query
-        .gte("timestamp", startDate.toISOString())
-        .lte("timestamp", endDate.toISOString());
-    } else {
-      // Calculate fresh dates using current time
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
-
-      // Add milliseconds to ensure we have the most current time
-      // This forces reevaluation of the time on each call
-      const endTimeIso = new Date(endDate.getTime()).toISOString();
-      const startTimeIso = new Date(startDate.getTime()).toISOString();
-
-      console.log("Using date range:", startTimeIso, "to", endTimeIso);
-
-      query = query.gte("timestamp", startTimeIso).lte("timestamp", endTimeIso);
-    }
-
-    // Increase the row limit and order by timestamp (descending)
     const { data, error } = await query
-      .limit(5000) // Fetch up to 5000 rows
+      .limit(10000) // Use the increased limit
       .order("timestamp", { ascending: false }); // Fetch newest first
 
     if (error) {
-      console.error("Error fetching account history:", error);
+      console.error("Error fetching account history from Supabase:", error);
       return [];
     }
 
-    // Log the timestamps to debug
-    console.log("First timestamp:", data?.[0]?.timestamp);
-    console.log("Last timestamp:", data?.[data?.length - 1]?.timestamp);
-    console.log("Current time:", new Date().toISOString());
-
-    // Convert from snake_case back to camelCase for the frontend
-    return (data || []).map((item) => ({
+    // Convert snake_case to camelCase for consistency
+    const fetchedSnapshots: AccountSnapshot[] = (data || []).map((item) => ({
       timestamp: item.timestamp,
       accountId: item.account_id,
       balance: item.balance,
@@ -130,6 +139,24 @@ export async function getAccountHistory(
       positions: item.positions,
       environment: item.environment,
     }));
+
+    // Sort back to ascending order for chart processing
+    fetchedSnapshots.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    // 3. Save the newly fetched data to IndexedDB
+    await saveSnapshotsToDB(fetchedSnapshots);
+
+    console.log("First timestamp fetched:", fetchedSnapshots?.[0]?.timestamp);
+    console.log(
+      "Last timestamp fetched:",
+      fetchedSnapshots?.[fetchedSnapshots?.length - 1]?.timestamp
+    );
+    console.log("Current time:", new Date().toISOString());
+
+    return fetchedSnapshots;
   } catch (error) {
     console.error("Error in getAccountHistory:", error);
     return [];

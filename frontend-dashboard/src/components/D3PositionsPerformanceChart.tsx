@@ -60,7 +60,7 @@ export const D3PositionsPerformanceChart: React.FC<
 }) => {
   const { dataSource } = useDataSource();
   const [timeRange, setTimeRange] = useState(30); // Default to 30 days
-  const [showDots, setShowDots] = useState(true); // Toggle for showing data points
+  const [showDots, setShowDots] = useState(false); // Default to false (dots hidden)
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -672,7 +672,7 @@ export const D3PositionsPerformanceChart: React.FC<
       }
     });
 
-    // Draw cumulative performance line (average of all instruments)
+    // Draw cumulative line with thicker stroke - now solid instead of dashed
     const cumulativeColor = "#000000"; // Black color for cumulative line
     const sumColor = "#000000"; // Black color for sum line
 
@@ -680,21 +680,165 @@ export const D3PositionsPerformanceChart: React.FC<
     chartContent
       .append("path")
       .datum(cumulativeData)
-      .attr("class", "line-cumulative")
+      .attr("class", "line-cumulative") // Visible line
       .attr("d", line)
       .attr("fill", "none")
       .attr("stroke", cumulativeColor)
       .attr("stroke-width", 3);
 
+    // Add invisible hover area for cumulative line
+    chartContent
+      .append("path")
+      .datum(cumulativeData)
+      .attr("class", "line-hover-cumulative") // Hover line
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke", "transparent")
+      .attr("stroke-width", 10) // Wider hover area
+      .style("pointer-events", "stroke")
+      .on("mousemove", function (event) {
+        // Tooltip logic for cumulative line
+        if (tooltipRef.current) {
+          const [mouseX] = d3.pointer(event, this);
+          const x0 = x.invert(mouseX);
+          const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
+          const i = bisectDate(cumulativeData, x0, 1);
+          const d0 = cumulativeData[i - 1];
+          const d1 = cumulativeData[i] || d0;
+          const d =
+            x0.getTime() - d0.date.getTime() > d1.date.getTime() - x0.getTime()
+              ? d1
+              : d0;
+
+          const tooltip = d3.select(tooltipRef.current);
+          tooltip.style("opacity", 1);
+          const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
+          const formattedValue = d3.format("$,.2f")(d.value);
+
+          tooltip.html(`
+            <div class="tooltip-title" style="color: ${cumulativeColor};">Average Performance</div>
+            <div class="tooltip-date">${displayDate}</div>
+            <div class="tooltip-value">P/L: ${formattedValue}</div>
+          `);
+
+          // Position tooltip (logic adapted from instrument hover)
+          const tooltipWidth = tooltipRef.current.offsetWidth;
+          const tooltipHeight = tooltipRef.current.offsetHeight;
+          const chartRect = chartContainerRef.current?.getBoundingClientRect();
+          if (chartRect) {
+            const xPosition = event.clientX - chartRect.left;
+            const yPosition =
+              event.clientY - chartRect.top - tooltipHeight - 10;
+            tooltip
+              .style("left", `${xPosition - tooltipWidth / 2}px`)
+              .style("top", `${yPosition}px`);
+          }
+
+          // Highlight cumulative line, dim others
+          chart.select(".line-cumulative").attr("stroke-width", 5);
+          chart.select(".line-sum").attr("opacity", 0.3);
+          positionData.forEach((p) => {
+            chart
+              .select(`.line-${p.instrument.replace("_", "-")}`)
+              .attr("opacity", 0.3);
+          });
+        }
+      })
+      .on("mouseout", function () {
+        // Hide tooltip and reset line styles
+        if (tooltipRef.current) {
+          d3.select(tooltipRef.current).style("opacity", 0);
+        }
+        chart.select(".line-cumulative").attr("stroke-width", 3);
+        chart.select(".line-sum").attr("opacity", 1);
+        positionData.forEach((p) => {
+          chart
+            .select(`.line-${p.instrument.replace("_", "-")}`)
+            .attr("opacity", 1);
+        });
+      });
+
     // Draw sum line with thicker stroke - solid
     chartContent
       .append("path")
       .datum(sumData)
-      .attr("class", "line-sum")
+      .attr("class", "line-sum") // Visible line
       .attr("d", line)
       .attr("fill", "none")
       .attr("stroke", sumColor)
       .attr("stroke-width", 3);
+
+    // Add invisible hover area for sum line
+    chartContent
+      .append("path")
+      .datum(sumData)
+      .attr("class", "line-hover-sum") // Hover line
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke", "transparent")
+      .attr("stroke-width", 10) // Wider hover area
+      .style("pointer-events", "stroke")
+      .on("mousemove", function (event) {
+        // Tooltip logic for sum line (similar to cumulative)
+        if (tooltipRef.current) {
+          const [mouseX] = d3.pointer(event, this);
+          const x0 = x.invert(mouseX);
+          const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
+          const i = bisectDate(sumData, x0, 1);
+          const d0 = sumData[i - 1];
+          const d1 = sumData[i] || d0;
+          const d =
+            x0.getTime() - d0.date.getTime() > d1.date.getTime() - x0.getTime()
+              ? d1
+              : d0;
+
+          const tooltip = d3.select(tooltipRef.current);
+          tooltip.style("opacity", 1);
+          const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
+          const formattedValue = d3.format("$,.2f")(d.value);
+
+          tooltip.html(`
+            <div class="tooltip-title" style="color: ${sumColor};">Total Performance</div>
+            <div class="tooltip-date">${displayDate}</div>
+            <div class="tooltip-value">P/L: ${formattedValue}</div>
+          `);
+
+          // Position tooltip
+          const tooltipWidth = tooltipRef.current.offsetWidth;
+          const tooltipHeight = tooltipRef.current.offsetHeight;
+          const chartRect = chartContainerRef.current?.getBoundingClientRect();
+          if (chartRect) {
+            const xPosition = event.clientX - chartRect.left;
+            const yPosition =
+              event.clientY - chartRect.top - tooltipHeight - 10;
+            tooltip
+              .style("left", `${xPosition - tooltipWidth / 2}px`)
+              .style("top", `${yPosition}px`);
+          }
+
+          // Highlight sum line, dim others
+          chart.select(".line-sum").attr("stroke-width", 5);
+          chart.select(".line-cumulative").attr("opacity", 0.3);
+          positionData.forEach((p) => {
+            chart
+              .select(`.line-${p.instrument.replace("_", "-")}`)
+              .attr("opacity", 0.3);
+          });
+        }
+      })
+      .on("mouseout", function () {
+        // Hide tooltip and reset line styles
+        if (tooltipRef.current) {
+          d3.select(tooltipRef.current).style("opacity", 0);
+        }
+        chart.select(".line-sum").attr("stroke-width", 3);
+        chart.select(".line-cumulative").attr("opacity", 1);
+        positionData.forEach((p) => {
+          chart
+            .select(`.line-${p.instrument.replace("_", "-")}`)
+            .attr("opacity", 1);
+        });
+      });
 
     // Add data points for cumulative line if showDots is true
     if (showDots) {
@@ -897,80 +1041,6 @@ export const D3PositionsPerformanceChart: React.FC<
       .style("font-size", "12px")
       .style("font-weight", "bold");
 
-    // Add hover interaction with the cumulative legend
-    cumulativeLegendItem
-      .style("cursor", "pointer")
-      .on("mouseover", function () {
-        // Highlight cumulative line
-        chart.select(".line-cumulative").attr("stroke-width", 5);
-
-        // Dim individual lines and sum line
-        chart.select(".line-sum").attr("opacity", 0.3);
-        positionData.forEach((p) => {
-          chart
-            .select(`.line-${p.instrument.replace("_", "-")}`)
-            .attr("opacity", 0.3);
-        });
-      })
-      .on("mouseout", function () {
-        // Reset all lines
-        chart.select(".line-cumulative").attr("stroke-width", 3);
-        chart.select(".line-sum").attr("opacity", 1);
-
-        positionData.forEach((p) => {
-          chart
-            .select(`.line-${p.instrument.replace("_", "-")}`)
-            .attr("opacity", 1);
-        });
-      });
-
-    // Add hover interaction with the sum legend
-    sumLegendItem
-      .style("cursor", "pointer")
-      .on("mouseover", function () {
-        // Highlight sum line
-        chart.select(".line-sum").attr("stroke-width", 5);
-
-        // Dim individual lines and cumulative line
-        chart.select(".line-cumulative").attr("opacity", 0.3);
-        positionData.forEach((p) => {
-          chart
-            .select(`.line-${p.instrument.replace("_", "-")}`)
-            .attr("opacity", 0.3);
-        });
-      })
-      .on("mouseout", function () {
-        // Reset all lines
-        chart.select(".line-sum").attr("stroke-width", 3);
-        chart.select(".line-cumulative").attr("opacity", 1);
-
-        positionData.forEach((p) => {
-          chart
-            .select(`.line-${p.instrument.replace("_", "-")}`)
-            .attr("opacity", 1);
-        });
-      });
-
-    // Add individual instrument entries to the legend (after the cumulative entry)
-    positionData.forEach((position, i) => {
-      const legendItem = legend
-        .append("g")
-        .attr("transform", `translate(0, ${(i + 2) * 20})`); // +2 to account for cumulative and sum legend items
-
-      legendItem
-        .append("rect")
-        .attr("width", 10)
-        .attr("height", 10)
-        .attr("fill", getColorForInstrument(position.instrument));
-
-      legendItem
-        .append("text")
-        .attr("x", 15)
-        .attr("y", 10)
-        .text(position.instrument.replace("_", "/"))
-        .style("font-size", "12px");
-    });
-
     // Add zoom behavior with both X and Y axis support
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
@@ -1145,19 +1215,25 @@ export const D3PositionsPerformanceChart: React.FC<
           }
         });
 
-        // Update cumulative line using the new scales
+        // Update cumulative line and its hover area
         const updatedCumulativeLine = d3
           .line<{ date: Date; value: number }>()
-          .x((d) => newX(d.date)) // Use newX
-          .y((d) => newY(d.value)) // Use newY
+          .x((d) => newX(d.date))
+          .y((d) => newY(d.value))
           .curve(d3.curveLinear);
 
         chart
           .select(".line-cumulative")
           .attr("d", updatedCumulativeLine(cumulativeData));
+        chart // Also update the hover line
+          .select(".line-hover-cumulative")
+          .attr("d", updatedCumulativeLine(cumulativeData));
 
-        // Update sum line using the new scales
-        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData)); // Re-use the same generator
+        // Update sum line and its hover area
+        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData)); // Re-use generator
+        chart // Also update the hover line
+          .select(".line-hover-sum")
+          .attr("d", updatedCumulativeLine(sumData));
 
         // Update cumulative and sum data points if they're visible
         if (showDots) {
