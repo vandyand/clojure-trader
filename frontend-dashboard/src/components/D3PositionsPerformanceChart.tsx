@@ -1225,15 +1225,112 @@ export const D3PositionsPerformanceChart: React.FC<
         chart
           .select(".line-cumulative")
           .attr("d", updatedCumulativeLine(cumulativeData));
-        chart // Also update the hover line
-          .select(".line-hover-cumulative")
-          .attr("d", updatedCumulativeLine(cumulativeData));
+
+        const cumulativeHoverLine = chart.select(".line-hover-cumulative");
+        cumulativeHoverLine.attr("d", updatedCumulativeLine(cumulativeData));
+
+        // Re-attach mousemove for cumulative hover line using newX
+        cumulativeHoverLine.on("mousemove", function (event) {
+          if (tooltipRef.current) {
+            const [mouseX] = d3.pointer(event, this);
+            const x0 = newX.invert(mouseX); // Use newX here
+            const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
+            const i = bisectDate(cumulativeData, x0, 1);
+            const d0 = cumulativeData[i - 1];
+            const d1 = cumulativeData[i] || d0;
+            const d =
+              x0.getTime() - d0.date.getTime() >
+              d1.date.getTime() - x0.getTime()
+                ? d1
+                : d0;
+
+            const tooltip = d3.select(tooltipRef.current);
+            tooltip.style("opacity", 1);
+            const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
+            const formattedValue = d3.format("$,.2f")(d.value);
+
+            tooltip.html(`
+                    <div class="tooltip-title" style="color: ${cumulativeColor};">Average Performance</div>
+                    <div class="tooltip-date">${displayDate}</div>
+                    <div class="tooltip-value">P/L: ${formattedValue}</div>
+                `);
+
+            const tooltipWidth = tooltipRef.current.offsetWidth;
+            const tooltipHeight = tooltipRef.current.offsetHeight;
+            const chartRect =
+              chartContainerRef.current?.getBoundingClientRect();
+            if (chartRect) {
+              const xPosition = event.clientX - chartRect.left;
+              const yPosition =
+                event.clientY - chartRect.top - tooltipHeight - 10;
+              tooltip
+                .style("left", `${xPosition - tooltipWidth / 2}px`)
+                .style("top", `${yPosition}px`);
+            }
+
+            chart.select(".line-cumulative").attr("stroke-width", 5);
+            chart.select(".line-sum").attr("opacity", 0.3);
+            positionData.forEach((p) => {
+              chart
+                .select(`.line-${p.instrument.replace("_", "-")}`)
+                .attr("opacity", 0.3);
+            });
+          }
+        }); // Note: mouseout remains attached from initial setup
 
         // Update sum line and its hover area
-        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData)); // Re-use generator
-        chart // Also update the hover line
-          .select(".line-hover-sum")
-          .attr("d", updatedCumulativeLine(sumData));
+        const sumHoverLine = chart.select(".line-hover-sum");
+        sumHoverLine.attr("d", updatedCumulativeLine(sumData)); // Re-use generator
+        chart.select(".line-sum").attr("d", updatedCumulativeLine(sumData));
+
+        // Re-attach mousemove for sum hover line using newX
+        sumHoverLine.on("mousemove", function (event) {
+          if (tooltipRef.current) {
+            const [mouseX] = d3.pointer(event, this);
+            const x0 = newX.invert(mouseX); // Use newX here
+            const bisectDate = d3.bisector((d: { date: Date }) => d.date).left;
+            const i = bisectDate(sumData, x0, 1);
+            const d0 = sumData[i - 1];
+            const d1 = sumData[i] || d0;
+            const d =
+              x0.getTime() - d0.date.getTime() >
+              d1.date.getTime() - x0.getTime()
+                ? d1
+                : d0;
+
+            const tooltip = d3.select(tooltipRef.current);
+            tooltip.style("opacity", 1);
+            const displayDate = d3.timeFormat("%b %d, %Y %H:%M")(d.date);
+            const formattedValue = d3.format("$,.2f")(d.value);
+
+            tooltip.html(`
+                    <div class="tooltip-title" style="color: ${sumColor};">Total Performance</div>
+                    <div class="tooltip-date">${displayDate}</div>
+                    <div class="tooltip-value">P/L: ${formattedValue}</div>
+                `);
+
+            const tooltipWidth = tooltipRef.current.offsetWidth;
+            const tooltipHeight = tooltipRef.current.offsetHeight;
+            const chartRect =
+              chartContainerRef.current?.getBoundingClientRect();
+            if (chartRect) {
+              const xPosition = event.clientX - chartRect.left;
+              const yPosition =
+                event.clientY - chartRect.top - tooltipHeight - 10;
+              tooltip
+                .style("left", `${xPosition - tooltipWidth / 2}px`)
+                .style("top", `${yPosition}px`);
+            }
+
+            chart.select(".line-sum").attr("stroke-width", 5);
+            chart.select(".line-cumulative").attr("opacity", 0.3);
+            positionData.forEach((p) => {
+              chart
+                .select(`.line-${p.instrument.replace("_", "-")}`)
+                .attr("opacity", 0.3);
+            });
+          }
+        }); // Note: mouseout remains attached from initial setup
 
         // Update cumulative and sum data points if they're visible
         if (showDots) {
