@@ -1,0 +1,7 @@
+psycopg2-binary
+sqlalchemy
+pandas
+ta
+oandapyV20
+alembic
+jupyter 
