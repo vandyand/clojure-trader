@@ -2,6 +2,7 @@
   (:require [nean.arena :as arena]
             [api.oanda_api :as oanda_api]
             [stats :as stats]
+            [util :as util]
             [constants :as constants]))
 
 (def instrument-scores-cache (atom {}))
