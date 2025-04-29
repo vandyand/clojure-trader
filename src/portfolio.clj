@@ -120,19 +120,19 @@
 (defn run-backtest [instruments]
   ;; Run backtests on instruments to get "buy sell scores"
   (let [backtest-params {:instruments instruments
-                         :granularity "H1"
-                         :num-backtests-per-instrument 3
-                         :xindy-config {:num-shifts 10
+                         :granularity "D"
+                         :num-backtests-per-instrument 7
+                         :xindy-config {:num-shifts 14
                                         :max-shift 77}
                          :pop-config {:pop-size 77
                                       :num-parents 44
                                       :num-children 33}
                          :ga-config {:num-generations 7
                                      :stream-count 3333
-                                     :back-pct 0.77}}]
+                                     :back-pct 0.9}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
+#_(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
 #_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
 #_(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 
@@ -152,3 +152,6 @@
 #_(oanda_api/get-account-nav)
 
 #_(oanda_api/get-binance-account-usd-amount)
+
+(defn -main [& args]
+  (shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda)))

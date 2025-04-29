@@ -6,7 +6,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
-from rl.data.autoencoder import fetch_selected_features, fetch_data, Autoencoder
+from .autoencoder import fetch_selected_features, fetch_data, Autoencoder, train_autoencoder
+import time
 
 # --- Custom Reward Function (from reward-info.md, numpy version) ---
 def trading_reward_pipeline(raw_outputs, price_changes, mu_prev, sigma_sq_prev, beta=0.95):
@@ -60,15 +61,18 @@ class PolicyNet(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, output_dim),
-            nn.Tanh()  # Output in [-1, 1] for long/short
+            nn.Linear(hidden_dim, output_dim * 2)  # Output mean and std
         )
+        
     def forward(self, x):
         if self.use_attention:
             x = x.unsqueeze(1)
             x, _ = self.attn(x, x, x)
             x = x.squeeze(1)
-        return self.mlp(x)
+        out = self.mlp(x)
+        mean = out[:, 0]
+        std = torch.exp(out[:, 1])  # Ensure std is positive
+        return mean, std
 
 # --- Utility to get bottleneck features from autoencoder ---
 def get_bottleneck_features(X, autoencoder_path="autoencoder.pt", bottleneck_dim=20):
@@ -82,64 +86,208 @@ def get_bottleneck_features(X, autoencoder_path="autoencoder.pt", bottleneck_dim
         z = model.encoder(model.input_layer(X_tensor))
     return z.cpu().numpy()
 
+# --- Single-Instrument DSR Reward Function ---
+def single_instrument_sharpe_reward(r_t, mu_prev, sigma_prev, beta=0.95):
+    mu_t = mu_prev + beta * (r_t - mu_prev)
+    sigma_t = np.sqrt(sigma_prev**2 + beta * ((r_t - mu_prev)**2 - sigma_prev**2))
+    dsr = (mu_t / (sigma_t + 1e-8)) - (mu_prev / (sigma_prev + 1e-8))
+    return dsr, mu_t, sigma_t
+
 # --- PPO Training Loop Skeleton ---
-def ppo_train(policy_net, get_bottleneck_features, fetch_features_and_log_returns_single, fetch_selected_features, autoencoder_path, n_epochs=10, batch_size=256, lr=3e-4, weight_decay=1e-4):
+def ppo_train(policy_net, get_bottleneck_features, fetch_features_and_log_returns_single, fetch_selected_features, autoencoder_path, n_epochs=100, batch_size=256, lr=3e-4, weight_decay=1e-4):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
+    
     feature_names = fetch_selected_features()
+    print(f"Selected features: {feature_names}")
+    
+    print("Fetching data...")
     X, log_returns = fetch_features_and_log_returns_single(feature_names, n_rows=2000, instrument='EUR_USD', granularity='H1')
+    print(f"Data shape - Features: {X.shape}, Log returns: {log_returns.shape}")
+    
+    print("Getting bottleneck features...")
     Z = get_bottleneck_features(X, autoencoder_path=autoencoder_path, bottleneck_dim=20)
     Z = torch.tensor(Z, dtype=torch.float32, device=device)
     log_returns = torch.tensor(log_returns, dtype=torch.float32, device=device)
+    
+    # Initialize networks
     policy_net = policy_net.to(device)
     optimizer = optim.Adam(policy_net.parameters(), lr=lr, weight_decay=weight_decay)
     value_net = nn.Sequential(
         nn.Linear(20, 64), nn.ReLU(), nn.Linear(64, 1)
     ).to(device)
     value_optimizer = optim.Adam(value_net.parameters(), lr=lr, weight_decay=weight_decay)
+    
+    # Learning rate scheduler (less aggressive)
+    policy_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.8, patience=20, verbose=True)
+    value_scheduler = optim.lr_scheduler.ReduceLROnPlateau(value_optimizer, mode='min', factor=0.5, patience=5, verbose=True)
+    
+    # Training parameters
     clip_epsilon = 0.2
     gamma = 0.99
     lam = 0.95
+    max_grad_norm = 0.5
+    reward_clip = 10.0  # Clip rewards to [-10, 10]
+    
+    # Reward normalization with running statistics
+    reward_mean = 0.0
+    reward_std = 1.0
+    reward_momentum = 0.99  # Increased momentum for more stable statistics
+    
+    # Early stopping
+    best_sharpe = float('-inf')
+    patience = 10
+    patience_counter = 0
+    best_policy_state = None
+    
+    print("\nStarting training...")
     for epoch in range(n_epochs):
-        logits = policy_net(Z).squeeze(-1)  # shape (N,)
-        actions = logits  # Already in [-1, 1]
-        mu_prev, sigma_sq_prev = 0.0, 0.0001
+        epoch_start_time = time.time()
+        
+        # Get policy distribution
+        mean, std = policy_net(Z)
+        dist = torch.distributions.Normal(mean, std)
+        actions = dist.sample()
+        log_probs = dist.log_prob(actions)
+        
+        # Calculate rewards using DSR for single instrument
+        mu_prev, sigma_prev = 0.0, 1e-4
         rewards = []
         for i in range(actions.shape[0]):
-            raw_outputs = np.array([actions[i].detach().cpu().numpy()])  # shape (1,)
-            reward, mu_prev, sigma_sq_prev = trading_reward_pipeline(raw_outputs, np.array([log_returns[i].cpu().numpy()]), mu_prev, sigma_sq_prev)
-            rewards.append(reward)
+            # For single instrument, action is scalar, log_return is scalar
+            r_t = float(actions[i].detach().cpu().numpy() * log_returns[i].cpu().numpy())
+            dsr, mu_prev, sigma_prev = single_instrument_sharpe_reward(r_t, mu_prev, sigma_prev)
+            rewards.append(dsr)
+        
         rewards = torch.tensor(rewards, dtype=torch.float32, device=device)
+        
+        # Clip rewards
+        rewards = torch.clamp(rewards, -reward_clip, reward_clip)
+        
+        # Update reward normalization
+        reward_mean = reward_momentum * reward_mean + (1 - reward_momentum) * rewards.mean().item()
+        reward_std = reward_momentum * reward_std + (1 - reward_momentum) * rewards.std().item()
+        normalized_rewards = (rewards - reward_mean) / (reward_std + 1e-8)
+        
+        # Calculate advantages
         values = value_net(Z).squeeze(-1)
-        advantages = (rewards - values.detach()).detach()
-        actions_detached = actions.detach()
-        old_log_probs = -((actions_detached - logits.detach())**2)
+        advantages = (normalized_rewards - values.detach()).detach()
+        
+        # Normalize advantages
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+        
+        # Store old log probs
+        old_log_probs = log_probs.detach()
+        
+        # PPO updates
+        policy_losses = []
+        value_losses = []
         for _ in range(4):
-            logits_new = policy_net(Z).squeeze(-1)
-            log_probs = -((actions_detached - logits_new)**2)
-            ratio = torch.exp(log_probs - old_log_probs)
+            # Get new policy distribution
+            mean_new, std_new = policy_net(Z)
+            dist_new = torch.distributions.Normal(mean_new, std_new)
+            log_probs_new = dist_new.log_prob(actions)
+            
+            # Calculate ratio and surrogate losses
+            ratio = torch.exp(log_probs_new - old_log_probs)
             surr1 = ratio * advantages
             surr2 = torch.clamp(ratio, 1.0 - clip_epsilon, 1.0 + clip_epsilon) * advantages
             policy_loss = -torch.min(surr1, surr2).mean()
+            
+            # Value loss
             value_pred = value_net(Z).squeeze(-1)
-            value_loss = (rewards - value_pred).pow(2).mean()
+            value_loss = (normalized_rewards - value_pred).pow(2).mean()
+            
+            # Total loss
             loss = policy_loss + 0.5 * value_loss
+            
+            # Update with gradient clipping
             optimizer.zero_grad()
             value_optimizer.zero_grad()
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(policy_net.parameters(), max_grad_norm)
+            torch.nn.utils.clip_grad_norm_(value_net.parameters(), max_grad_norm)
             optimizer.step()
             value_optimizer.step()
-        if (epoch+1) % 2 == 0 or epoch == 0:
-            print(f"Epoch {epoch+1}/{n_epochs} - Policy loss: {policy_loss.item():.4f} - Value loss: {value_loss.item():.4f}")
-    print("PPO training complete.")
+            
+            policy_losses.append(policy_loss.item())
+            value_losses.append(value_loss.item())
+        
+        # Update learning rates
+        mean_policy_loss = np.mean(policy_losses)
+        mean_value_loss = np.mean(value_losses)
+        policy_scheduler.step(mean_policy_loss)
+        value_scheduler.step(mean_value_loss)
+        
+        # Calculate performance metrics
+        with torch.no_grad():
+            # Sharpe ratio of normalized rewards
+            sharpe = normalized_rewards.mean() / (normalized_rewards.std() + 1e-8)
+            # Average position size
+            avg_position = actions.abs().mean()
+            # Policy entropy
+            entropy = dist.entropy().mean()
+            
+            epoch_time = time.time() - epoch_start_time
+            
+            print(f"\nEpoch {epoch+1}/{n_epochs} (Time: {epoch_time:.2f}s)")
+            print(f"Policy loss: {mean_policy_loss:.4f} ± {np.std(policy_losses):.4f}")
+            print(f"Value loss: {mean_value_loss:.4f} ± {np.std(value_losses):.4f}")
+            print(f"Sharpe ratio: {sharpe.item():.4f}")
+            print(f"Avg position: {avg_position.item():.4f}")
+            print(f"Policy entropy: {entropy.item():.4f}")
+            print(f"Reward mean: {reward_mean:.4f}, std: {reward_std:.4f}")
+            print(f"Learning rates - Policy: {optimizer.param_groups[0]['lr']:.6f}, Value: {value_optimizer.param_groups[0]['lr']:.6f}")
+            print("---")
+            
+            # Early stopping check
+            if sharpe > best_sharpe:
+                best_sharpe = sharpe
+                best_policy_state = {
+                    'policy_state': policy_net.state_dict(),
+                    'value_state': value_net.state_dict(),
+                    'epoch': epoch,
+                    'sharpe': sharpe.item()
+                }
+                patience_counter = 0
+            else:
+                patience_counter += 1
+            
+            if patience_counter >= patience:
+                print(f"\nEarly stopping triggered! Best Sharpe: {best_sharpe:.4f} at epoch {best_policy_state['epoch']+1}")
+                # Restore best model
+                policy_net.load_state_dict(best_policy_state['policy_state'])
+                value_net.load_state_dict(best_policy_state['value_state'])
+                break
+    
+    print("\nPPO training complete.")
+    # Save the best model
+    torch.save(best_policy_state, 'best_policy.pt')
+    print("Best model saved as best_policy.pt")
 
 # --- Main: Validation Run ---
 def main():
-    feature_names = fetch_selected_features()
-    X, log_returns = fetch_features_and_log_returns_single(feature_names, n_rows=2000, instrument='EUR_USD', granularity='H1')
-    Z = get_bottleneck_features(X, autoencoder_path="autoencoder.pt", bottleneck_dim=20)
-    print(f"Bottleneck features shape: {Z.shape}")
+    train_autoencoder_and_ppo()
+
+def train_autoencoder_and_ppo(n_epochs_autoencoder=400, n_epochs_ppo=100, batch_size=256, lr=3e-4, weight_decay=1e-4):
+    if not os.path.exists("autoencoder.pt"):
+        print("=== Starting Autoencoder Training ===")
+        feature_names = fetch_selected_features()
+        print("Selected features:", feature_names)
+        print("Fetching data...")
+        X = fetch_data(feature_names, n_rows=50000)
+        print(f"Training autoencoder on {X.shape[0]} samples, {X.shape[1]} features")
+        model = train_autoencoder(X, n_epochs=n_epochs_autoencoder, batch_size=batch_size, lr=lr, bottleneck_dim=20, weight_decay=weight_decay)
+        print("Autoencoder training complete.")
+        torch.save(model.state_dict(), "autoencoder.pt")
+        print("Model saved as autoencoder.pt")
+    else:
+        print("Using existing autoencoder.pt")
+    
+    print("\n=== Starting PPO Training ===")
     policy_net = PolicyNet(input_dim=20, hidden_dim=128, output_dim=1, use_attention=True)
-    ppo_train(policy_net, get_bottleneck_features, fetch_features_and_log_returns_single, fetch_selected_features, autoencoder_path="autoencoder.pt", n_epochs=10, batch_size=256, lr=3e-4, weight_decay=1e-4)
+    ppo_train(policy_net, get_bottleneck_features, fetch_features_and_log_returns_single, fetch_selected_features, 
+              autoencoder_path="autoencoder.pt", n_epochs=n_epochs_ppo, batch_size=batch_size, lr=lr, weight_decay=weight_decay)
 
 if __name__ == '__main__':
     main() 
