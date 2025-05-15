@@ -1,0 +1,42 @@
+2025-05-10 07:33:25,561 - TradingSystem - INFO - Trading system initialized with 20 instruments
+2025-05-10 07:33:25,561 - TradingSystem - INFO - Running 30 day trading simulation...
+2025-05-10 07:33:25,579 - TradingSystem - INFO - Day 1: Return = -0.000020, Cumulative = 0.999980
+2025-05-10 07:33:25,834 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:25,962 - TradingSystem - INFO - Day 2: Return = 0.000134, Cumulative = 1.000114
+2025-05-10 07:33:25,962 - TradingSystem - INFO - Day 3: Return = -0.000398, Cumulative = 0.999717
+2025-05-10 07:33:25,963 - TradingSystem - INFO - Day 4: Return = 0.000039, Cumulative = 0.999756
+2025-05-10 07:33:25,963 - TradingSystem - INFO - Day 5: Return = 0.000003, Cumulative = 0.999758
+2025-05-10 07:33:25,963 - TradingSystem - INFO - Day 6: Return = -0.000215, Cumulative = 0.999544
+2025-05-10 07:33:26,089 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:26,228 - TradingSystem - INFO - Day 7: Return = 0.000024, Cumulative = 0.999567
+2025-05-10 07:33:26,228 - TradingSystem - INFO - Day 8: Return = 0.000010, Cumulative = 0.999578
+2025-05-10 07:33:26,229 - TradingSystem - INFO - Day 9: Return = -0.000085, Cumulative = 0.999492
+2025-05-10 07:33:26,229 - TradingSystem - INFO - Day 10: Return = 0.000066, Cumulative = 0.999558
+2025-05-10 07:33:26,229 - TradingSystem - INFO - Day 11: Return = -0.000039, Cumulative = 0.999519
+2025-05-10 07:33:26,356 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:26,496 - TradingSystem - INFO - Day 12: Return = -0.000116, Cumulative = 0.999403
+2025-05-10 07:33:26,497 - TradingSystem - INFO - Day 13: Return = -0.000186, Cumulative = 0.999217
+2025-05-10 07:33:26,497 - TradingSystem - INFO - Day 14: Return = 0.000046, Cumulative = 0.999264
+2025-05-10 07:33:26,497 - TradingSystem - INFO - Day 15: Return = -0.000387, Cumulative = 0.998877
+2025-05-10 07:33:26,498 - TradingSystem - INFO - Day 16: Return = -0.000194, Cumulative = 0.998683
+2025-05-10 07:33:26,623 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:26,765 - TradingSystem - INFO - Day 17: Return = -0.000263, Cumulative = 0.998421
+2025-05-10 07:33:26,765 - TradingSystem - INFO - Day 18: Return = -0.000285, Cumulative = 0.998136
+2025-05-10 07:33:26,766 - TradingSystem - INFO - Day 19: Return = -0.000045, Cumulative = 0.998091
+2025-05-10 07:33:26,766 - TradingSystem - INFO - Day 20: Return = -0.000036, Cumulative = 0.998055
+2025-05-10 07:33:26,766 - TradingSystem - INFO - Day 21: Return = 0.000106, Cumulative = 0.998161
+2025-05-10 07:33:26,894 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:27,035 - TradingSystem - INFO - Day 22: Return = -0.000082, Cumulative = 0.998079
+2025-05-10 07:33:27,035 - TradingSystem - INFO - Day 23: Return = 0.000010, Cumulative = 0.998090
+2025-05-10 07:33:27,036 - TradingSystem - INFO - Day 24: Return = -0.000198, Cumulative = 0.997893
+2025-05-10 07:33:27,036 - TradingSystem - INFO - Day 25: Return = -0.000140, Cumulative = 0.997753
+2025-05-10 07:33:27,036 - TradingSystem - INFO - Day 26: Return = 0.000297, Cumulative = 0.998050
+2025-05-10 07:33:27,167 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:27,364 - TradingSystem - INFO - Day 27: Return = -0.000168, Cumulative = 0.997882
+2025-05-10 07:33:27,364 - TradingSystem - INFO - Day 28: Return = 0.000063, Cumulative = 0.997944
+2025-05-10 07:33:27,365 - TradingSystem - INFO - Day 29: Return = -0.000015, Cumulative = 0.997929
+2025-05-10 07:33:27,365 - TradingSystem - INFO - Day 30: Return = 0.000054, Cumulative = 0.997983
+2025-05-10 07:33:27,492 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-10 07:33:27,637 - TradingSystem - INFO - Simulation completed:
+2025-05-10 07:33:27,637 - TradingSystem - INFO - Total Return: -0.0020
+2025-05-10 07:33:27,637 - TradingSystem - INFO - Sharpe Ratio: -7.0223

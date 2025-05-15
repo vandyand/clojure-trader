@@ -34,7 +34,7 @@
     (mapv (fn [item] (- item first-val)) stream)))
 
 (defn zero-instrument [instrument]
-  (vec (for [price (map :o instrument)] (- price (:o (first instrument))))))
+  (vec (for [price (map :c instrument)] (- price (:c (first instrument))))))
 
 (defn plot-gaustrindies [gaustrindies]
   (let [streams (map #(-> % :fore-return-stream :beck) gaustrindies)

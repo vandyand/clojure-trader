@@ -1,0 +1,18 @@
+2025-05-07 06:34:51,407 - TradingSystem - INFO - Trading system initialized with 20 instruments
+2025-05-07 06:34:51,407 - TradingSystem - INFO - Running 10 day trading simulation...
+2025-05-07 06:34:51,414 - TradingSystem - INFO - Day 1: Return = 0.000025, Cumulative = 1.000025
+2025-05-07 06:34:51,650 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-07 06:34:51,775 - TradingSystem - INFO - Day 2: Return = -0.000048, Cumulative = 0.999977
+2025-05-07 06:34:51,776 - TradingSystem - INFO - Day 3: Return = -0.000078, Cumulative = 0.999899
+2025-05-07 06:34:51,776 - TradingSystem - INFO - Day 4: Return = -0.000141, Cumulative = 0.999758
+2025-05-07 06:34:51,777 - TradingSystem - INFO - Day 5: Return = -0.000025, Cumulative = 0.999732
+2025-05-07 06:34:51,777 - TradingSystem - INFO - Day 6: Return = -0.000029, Cumulative = 0.999704
+2025-05-07 06:34:51,905 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-07 06:34:52,046 - TradingSystem - INFO - Day 7: Return = 0.000049, Cumulative = 0.999753
+2025-05-07 06:34:52,047 - TradingSystem - INFO - Day 8: Return = -0.000148, Cumulative = 0.999605
+2025-05-07 06:34:52,047 - TradingSystem - INFO - Day 9: Return = 0.000220, Cumulative = 0.999825
+2025-05-07 06:34:52,047 - TradingSystem - INFO - Day 10: Return = -0.000032, Cumulative = 0.999793
+2025-05-07 06:34:52,173 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'
+2025-05-07 06:34:52,312 - TradingSystem - INFO - Simulation completed:
+2025-05-07 06:34:52,312 - TradingSystem - INFO - Total Return: -0.0002
+2025-05-07 06:34:52,312 - TradingSystem - INFO - Sharpe Ratio: -3.2930

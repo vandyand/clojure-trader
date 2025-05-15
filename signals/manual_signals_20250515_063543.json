@@ -1,0 +1,120 @@
+{
+  "account_size": 1000.0,
+  "risk_amount": 50.0,
+  "positions": [
+    {
+      "instrument": "EUR_USD",
+      "direction": "SHORT",
+      "position_size": 6.896,
+      "usd_amount": 0.31
+    },
+    {
+      "instrument": "EUR_GBP",
+      "direction": "SHORT",
+      "position_size": 57,
+      "usd_amount": 2.5
+    },
+    {
+      "instrument": "EUR_AUD",
+      "direction": "LONG",
+      "position_size": 50,
+      "usd_amount": 0.39
+    },
+    {
+      "instrument": "EUR_CAD",
+      "direction": "SHORT",
+      "position_size": 34,
+      "usd_amount": 1.58
+    },
+    {
+      "instrument": "EUR_CHF",
+      "direction": "LONG",
+      "position_size": 10,
+      "usd_amount": 3.03
+    },
+    {
+      "instrument": "EUR_JPY",
+      "direction": "LONG",
+      "position_size": 6,
+      "usd_amount": 1.67
+    },
+    {
+      "instrument": "USD_CAD",
+      "direction": "LONG",
+      "position_size": 116,
+      "usd_amount": 4.7
+    },
+    {
+      "instrument": "USD_CHF",
+      "direction": "SHORT",
+      "position_size": 93,
+      "usd_amount": 7.7
+    },
+    {
+      "instrument": "USD_JPY",
+      "direction": "LONG",
+      "position_size": 15530,
+      "usd_amount": 0.43
+    },
+    {
+      "instrument": "GBP_USD",
+      "direction": "SHORT",
+      "position_size": 1,
+      "usd_amount": 1.69
+    },
+    {
+      "instrument": "GBP_AUD",
+      "direction": "LONG",
+      "position_size": 65,
+      "usd_amount": 1.56
+    },
+    {
+      "instrument": "GBP_CHF",
+      "direction": "LONG",
+      "position_size": 43,
+      "usd_amount": 5.79
+    },
+    {
+      "instrument": "GBP_JPY",
+      "direction": "SHORT",
+      "position_size": 18,
+      "usd_amount": 2.52
+    },
+    {
+      "instrument": "AUD_USD",
+      "direction": "SHORT",
+      "position_size": 16,
+      "usd_amount": 0.15
+    },
+    {
+      "instrument": "AUD_CHF",
+      "direction": "SHORT",
+      "position_size": 13,
+      "usd_amount": 6.11
+    },
+    {
+      "instrument": "AUD_JPY",
+      "direction": "LONG",
+      "position_size": 20,
+      "usd_amount": 2.19
+    },
+    {
+      "instrument": "CAD_JPY",
+      "direction": "LONG",
+      "position_size": 4,
+      "usd_amount": 3.5
+    },
+    {
+      "instrument": "NZD_USD",
+      "direction": "LONG",
+      "position_size": 11,
+      "usd_amount": 0.75
+    },
+    {
+      "instrument": "NZD_JPY",
+      "direction": "LONG",
+      "position_size": 37,
+      "usd_amount": 0.92
+    }
+  ]
+}

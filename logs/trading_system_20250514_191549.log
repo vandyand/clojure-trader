@@ -1,0 +1,31 @@
+[2025-05-14 19:15:49] Starting trading cycle with account size $1000.0 and risk 5.0%
+[2025-05-14 19:15:49] Market regime detection: Enabled
+[2025-05-14 19:15:49] Adaptive position sizing: Enabled
+[2025-05-14 19:15:49] ETF data refresh: Enabled
+[2025-05-14 19:15:49] Refreshing ETF data from yfinance
+[2025-05-14 19:15:49] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py --period 1y --generate-features
+[2025-05-14 19:15:50] Command errors:
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py", line 15, in <module>
+    from rl.data.fetch_etf_data import fetch_multiple_etfs, fetch_historical_etf_data
+  File "/Users/kingjames/clojure-trader/rl/data/fetch_etf_data.py", line 5, in <module>
+    import yfinance as yf
+ModuleNotFoundError: No module named 'yfinance'
+
+[2025-05-14 19:15:50] Command failed with exit code 1
+[2025-05-14 19:15:50] Warning: Failed to refresh ETF data. Continuing with existing data.
+[2025-05-14 19:15:50] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/generate_signals.py --account-size 1000.0 --risk-percent 5.0 --model-path models/rl_trader.pt --use-regime-detection --adapt-position-sizing
+[2025-05-14 19:15:51] Command errors:
+2025-05-14 19:15:51,635 - oandapyV20.oandapyV20 - INFO - setting up API-client for environment practice
+2025-05-14 19:15:51,635 - oanda_api - INFO - OANDA API client initialized in practice mode
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/generate_signals.py", line 17, in <module>
+    from rl.data_fetcher import MarketDataFetcher
+  File "/Users/kingjames/clojure-trader/rl/data_fetcher.py", line 18, in <module>
+    from rl.data.fetch_etf_data import fetch_historical_etf_data, fetch_latest_etf_price
+  File "/Users/kingjames/clojure-trader/rl/data/fetch_etf_data.py", line 5, in <module>
+    import yfinance as yf
+ModuleNotFoundError: No module named 'yfinance'
+
+[2025-05-14 19:15:51] Command failed with exit code 1
+[2025-05-14 19:15:51] Failed to generate trading signals - aborting cycle

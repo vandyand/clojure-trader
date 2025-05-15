@@ -111,7 +111,7 @@
                       ;;  :from (str (- 1717704000 (* 60 60 5000)) ".000000000")
                        }
         stream (oa/get-instrument-stream stream-config)]
-    (mapv :o stream)))
+    (mapv :c stream)))
 
 ;; (def big-stream (get-big-stream "EUR_USD", "H1", 7777))
 ;; (count big-stream)

@@ -1,0 +1,400 @@
+Fetched 5000 rows for EUR_USD up to 2007-10-21 21:00:00+00:00
+Fetched 1793 rows for EUR_USD up to 2002-05-06 21:00:00+00:00
+Total rows fetched for EUR_USD: 6793
+Pre-ingest NaN for EUR_USD: 0.0026
+First 3 rows for EUR_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  0.91535  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  0.90435  ...                   1.0             0.0
+2 2002-05-08 21:00:00+00:00  0.90935  ...                   1.0             0.0
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6790 2025-04-29 21:00:00+00:00  1.13881  ...              1.007294        -0.00052
+6791 2025-04-30 21:00:00+00:00  1.13293  ...              1.006684         0.00038
+6792 2025-05-01 21:00:00+00:00  1.12900  ...              1.009482         0.00003
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_USD (D), 377 rows dropped.
+Ingested 6793 rows for EUR_USD.
+Fetched 5000 rows for USD_JPY up to 2007-11-07 22:00:00+00:00
+Fetched 1793 rows for USD_JPY up to 2002-05-06 21:00:00+00:00
+Total rows fetched for USD_JPY: 6793
+Pre-ingest NaN for USD_JPY: 0.0026
+First 3 rows for USD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  127.92  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  128.92  ...                   1.0             0.0
+2 2002-05-08 21:00:00+00:00  128.38  ...                   1.0             0.0
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6790 2025-04-29 21:00:00+00:00  142.282  ...              1.007228          -0.004
+6791 2025-04-30 21:00:00+00:00  143.000  ...              1.019989          -0.013
+6792 2025-05-01 21:00:00+00:00  145.450  ...              1.015282           0.056
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_JPY (D), 377 rows dropped.
+Ingested 6793 rows for USD_JPY.
+Fetched 5000 rows for GBP_USD up to 2007-10-17 21:00:00+00:00
+Fetched 1769 rows for GBP_USD up to 2002-05-06 21:00:00+00:00
+Total rows fetched for GBP_USD: 6769
+Pre-ingest NaN for GBP_USD: 0.0026
+First 3 rows for GBP_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  1.46810  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  1.45585  ...                   1.0          0.0001
+2 2002-05-08 21:00:00+00:00  1.46000  ...                   1.0         -0.0001
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6766 2025-04-29 21:00:00+00:00  1.34048  ...              1.008070         0.00003
+6767 2025-04-30 21:00:00+00:00  1.33285  ...              1.006436         0.00000
+6768 2025-05-01 21:00:00+00:00  1.32784  ...              1.005173         0.00083
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_USD (D), 377 rows dropped.
+Ingested 6769 rows for GBP_USD.
+Fetched 5000 rows for AUD_USD up to 2007-09-23 21:00:00+00:00
+Fetched 1732 rows for AUD_USD up to 2002-05-06 21:00:00+00:00
+Total rows fetched for AUD_USD: 6732
+Pre-ingest NaN for AUD_USD: 0.0026
+First 3 rows for AUD_USD:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  0.5395  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  0.5397  ...                   1.0    1.110223e-16
+2 2002-05-08 21:00:00+00:00  0.5440  ...                   1.0    0.000000e+00
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6729 2025-04-29 21:00:00+00:00  0.63848  ...              1.009731        -0.00001
+6730 2025-04-30 21:00:00+00:00  0.64000  ...              1.009685         0.00009
+6731 2025-05-01 21:00:00+00:00  0.63763  ...              1.015101         0.00050
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_USD (D), 377 rows dropped.
+Ingested 6732 rows for AUD_USD.
+Fetched 5000 rows for USD_CHF up to 2007-10-18 21:00:00+00:00
+Fetched 1776 rows for USD_CHF up to 2002-05-06 21:00:00+00:00
+Total rows fetched for USD_CHF: 6776
+Pre-ingest NaN for USD_CHF: 0.0026
+First 3 rows for USD_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  1.58845  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  1.60955  ...                   1.0    0.000000e+00
+2 2002-05-08 21:00:00+00:00  1.59785  ...                   1.0    2.220446e-16
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6773 2025-04-29 21:00:00+00:00  0.82434  ...              1.007165         0.00000
+6774 2025-04-30 21:00:00+00:00  0.82630  ...              1.009663         0.00025
+6775 2025-05-01 21:00:00+00:00  0.83043  ...              1.013746         0.00013
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_CHF (D), 377 rows dropped.
+Ingested 6776 rows for USD_CHF.
+Fetched 5000 rows for USD_CAD up to 2007-10-22 21:00:00+00:00
+Fetched 1755 rows for USD_CAD up to 2002-05-07 21:00:00+00:00
+Total rows fetched for USD_CAD: 6755
+Pre-ingest NaN for USD_CAD: 0.0026
+First 3 rows for USD_CAD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-07 21:00:00+00:00  1.57005  ...                   1.0             NaN
+1 2002-05-08 21:00:00+00:00  1.56525  ...                   1.0          0.0000
+2 2002-05-09 21:00:00+00:00  1.55850  ...                   1.0          0.0005
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_CAD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6752 2025-04-29 21:00:00+00:00  1.38334  ...              1.006224         0.00001
+6753 2025-04-30 21:00:00+00:00  1.37972  ...              1.005666         0.00000
+6754 2025-05-01 21:00:00+00:00  1.38551  ...              1.007046         0.00084
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_CAD (D), 377 rows dropped.
+Ingested 6755 rows for USD_CAD.
+Fetched 5000 rows for NZD_USD up to 2007-09-26 21:00:00+00:00
+Fetched 1610 rows for NZD_USD up to 2002-09-23 21:00:00+00:00
+Total rows fetched for NZD_USD: 6610
+Pre-ingest NaN for NZD_USD: 0.0027
+First 3 rows for NZD_USD:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-09-23 21:00:00+00:00  0.4701  ...                   1.0             NaN
+1 2002-09-24 21:00:00+00:00  0.4720  ...                   1.0    0.000000e+00
+2 2002-09-25 21:00:00+00:00  0.4703  ...                   1.0    5.551115e-17
+
+[3 rows x 2462 columns]
+Last 3 rows for NZD_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6607 2025-04-29 21:00:00+00:00  0.59373  ...              1.008791        -0.00005
+6608 2025-04-30 21:00:00+00:00  0.59357  ...              1.009781         0.00004
+6609 2025-05-01 21:00:00+00:00  0.59080  ...              1.013015         0.00062
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for NZD_USD (D), 377 rows dropped.
+Ingested 6610 rows for NZD_USD.
+Fetched 5000 rows for EUR_JPY up to 2007-11-04 22:00:00+00:00
+Fetched 1799 rows for EUR_JPY up to 2002-05-06 21:00:00+00:00
+Total rows fetched for EUR_JPY: 6799
+Pre-ingest NaN for EUR_JPY: 0.0026
+First 3 rows for EUR_JPY:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  117.105  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  116.590  ...                   1.0    1.000000e-02
+2 2002-05-08 21:00:00+00:00  116.720  ...                   1.0   -1.421085e-14
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6796 2025-04-29 21:00:00+00:00  162.008  ...              1.005866          -0.023
+6797 2025-04-30 21:00:00+00:00  162.028  ...              1.016358           0.023
+6798 2025-05-01 21:00:00+00:00  164.190  ...              1.007240           0.019
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_JPY (D), 377 rows dropped.
+Ingested 6799 rows for EUR_JPY.
+Fetched 5000 rows for GBP_JPY up to 2007-11-04 22:00:00+00:00
+Fetched 1796 rows for GBP_JPY up to 2002-05-07 21:00:00+00:00
+Total rows fetched for GBP_JPY: 6796
+Pre-ingest NaN for GBP_JPY: 0.0026
+First 3 rows for GBP_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-07 21:00:00+00:00  187.70  ...                   1.0             NaN
+1 2002-05-08 21:00:00+00:00  187.42  ...                   1.0             0.0
+2 2002-05-09 21:00:00+00:00  186.81  ...                   1.0             0.1
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6793 2025-04-29 21:00:00+00:00  190.676  ...              1.006729           0.008
+6794 2025-04-30 21:00:00+00:00  190.590  ...              1.016386           0.032
+6795 2025-05-01 21:00:00+00:00  193.076  ...              1.011955           0.032
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_JPY (D), 377 rows dropped.
+Ingested 6796 rows for GBP_JPY.
+Fetched 5000 rows for EUR_GBP up to 2007-10-29 21:00:00+00:00
+Fetched 1780 rows for EUR_GBP up to 2002-05-07 21:00:00+00:00
+Total rows fetched for EUR_GBP: 6780
+Pre-ingest NaN for EUR_GBP: 0.0026
+First 3 rows for EUR_GBP:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-07 21:00:00+00:00  0.62125  ...                   1.0             NaN
+1 2002-05-08 21:00:00+00:00  0.62295  ...                   1.0          0.0000
+2 2002-05-09 21:00:00+00:00  0.62450  ...                   1.0          0.0007
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_GBP:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6777 2025-04-29 21:00:00+00:00  0.84913  ...              1.006916        -0.00012
+6778 2025-04-30 21:00:00+00:00  0.85004  ...              1.003785        -0.00003
+6779 2025-05-01 21:00:00+00:00  0.84980  ...              1.006031         0.00036
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_GBP (D), 377 rows dropped.
+Ingested 6780 rows for EUR_GBP.
+Fetched 5000 rows for EUR_CHF up to 2007-10-13 21:00:00+00:00
+Fetched 1754 rows for EUR_CHF up to 2002-05-06 21:00:00+00:00
+Total rows fetched for EUR_CHF: 6754
+Pre-ingest NaN for EUR_CHF: 0.0026
+First 3 rows for EUR_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-06 21:00:00+00:00  1.45365  ...                   1.0             NaN
+1 2002-05-07 21:00:00+00:00  1.45515  ...                   1.0             0.0
+2 2002-05-08 21:00:00+00:00  1.45285  ...                   1.0             0.0
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6751 2025-04-29 21:00:00+00:00  0.93860  ...              1.007112        -0.00019
+6752 2025-04-30 21:00:00+00:00  0.93530  ...              1.005560         0.00028
+6753 2025-05-01 21:00:00+00:00  0.93719  ...              1.007818         0.00003
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_CHF (D), 377 rows dropped.
+Ingested 6754 rows for EUR_CHF.
+Fetched 5000 rows for EUR_AUD up to 2007-10-29 21:00:00+00:00
+Fetched 1114 rows for EUR_AUD up to 2004-05-31 21:00:00+00:00
+Total rows fetched for EUR_AUD: 6114
+Pre-ingest NaN for EUR_AUD: 0.0029
+First 3 rows for EUR_AUD:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  1.7308  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  1.7549  ...                   1.0             0.0
+2 2004-06-02 21:00:00+00:00  1.7752  ...                   1.0             0.0
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_AUD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6111 2025-04-29 21:00:00+00:00  1.78354  ...              1.012090        -0.00058
+6112 2025-04-30 21:00:00+00:00  1.76992  ...              1.008745         0.00058
+6113 2025-05-01 21:00:00+00:00  1.76866  ...              1.011160         0.00000
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_AUD (D), 377 rows dropped.
+Ingested 6114 rows for EUR_AUD.
+Fetched 5000 rows for EUR_CAD up to 2007-10-18 21:00:00+00:00
+Fetched 1134 rows for EUR_CAD up to 2004-05-31 21:00:00+00:00
+Total rows fetched for EUR_CAD: 6134
+Pre-ingest NaN for EUR_CAD: 0.0029
+First 3 rows for EUR_CAD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  1.67590  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  1.66305  ...                   1.0          0.0001
+2 2004-06-02 21:00:00+00:00  1.66640  ...                   1.0         -0.0001
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_CAD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6131 2025-04-29 21:00:00+00:00  1.57538  ...              1.010263        -0.00035
+6132 2025-04-30 21:00:00+00:00  1.56300  ...              1.005338         0.00035
+6133 2025-05-01 21:00:00+00:00  1.56382  ...              1.006162         0.00008
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_CAD (D), 377 rows dropped.
+Ingested 6134 rows for EUR_CAD.
+Fetched 5000 rows for GBP_CHF up to 2007-11-04 22:00:00+00:00
+Fetched 1792 rows for GBP_CHF up to 2002-05-07 21:00:00+00:00
+Total rows fetched for GBP_CHF: 6792
+Pre-ingest NaN for GBP_CHF: 0.0026
+First 3 rows for GBP_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2002-05-07 21:00:00+00:00  2.34295  ...                   1.0             NaN
+1 2002-05-08 21:00:00+00:00  2.33265  ...                   1.0          0.0000
+2 2002-05-09 21:00:00+00:00  2.32910  ...                   1.0          0.0011
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6789 2025-04-29 21:00:00+00:00  1.10472  ...              1.009866        -0.00032
+6790 2025-04-30 21:00:00+00:00  1.10138  ...              1.007797         0.00032
+6791 2025-05-01 21:00:00+00:00  1.10097  ...              1.011125         0.00016
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_CHF (D), 377 rows dropped.
+Ingested 6792 rows for GBP_CHF.
+Fetched 5000 rows for AUD_JPY up to 2007-10-31 21:00:00+00:00
+Fetched 1119 rows for AUD_JPY up to 2004-05-31 21:00:00+00:00
+Total rows fetched for AUD_JPY: 6119
+Pre-ingest NaN for AUD_JPY: 0.0029
+First 3 rows for AUD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  78.260  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  76.490  ...                   1.0            0.02
+2 2004-06-02 21:00:00+00:00  76.275  ...                   1.0           -0.01
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_JPY:
+                      timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+6116 2025-04-29 21:00:00+00:00  90.842  ...              1.011551           0.002
+6117 2025-04-30 21:00:00+00:00  91.541  ...              1.017000           0.019
+6118 2025-05-01 21:00:00+00:00  92.818  ...              1.009598           0.189
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_JPY (D), 377 rows dropped.
+Ingested 6119 rows for AUD_JPY.
+Fetched 5000 rows for AUD_CHF up to 2007-10-23 21:00:00+00:00
+Fetched 1145 rows for AUD_CHF up to 2004-05-31 21:00:00+00:00
+Total rows fetched for AUD_CHF: 6145
+Pre-ingest NaN for AUD_CHF: 0.0029
+First 3 rows for AUD_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  0.88195  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  0.87017  ...                   1.0         0.00006
+2 2004-06-02 21:00:00+00:00  0.86092  ...                   1.0        -0.00008
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6142 2025-04-29 21:00:00+00:00  0.52600  ...              1.013353        -0.00007
+6143 2025-04-30 21:00:00+00:00  0.52899  ...              1.008533         0.00038
+6144 2025-05-01 21:00:00+00:00  0.52937  ...              1.010736         0.00063
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_CHF (D), 377 rows dropped.
+Ingested 6145 rows for AUD_CHF.
+Fetched 5000 rows for CAD_JPY up to 2007-10-29 21:00:00+00:00
+Fetched 1139 rows for CAD_JPY up to 2004-05-31 21:00:00+00:00
+Total rows fetched for CAD_JPY: 6139
+Pre-ingest NaN for CAD_JPY: 0.0029
+First 3 rows for CAD_JPY:
+                   timestamp   open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  80.84  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  80.72  ...                   1.0   -1.421085e-14
+2 2004-06-02 21:00:00+00:00  81.30  ...                   1.0    0.000000e+00
+
+[3 rows x 2462 columns]
+Last 3 rows for CAD_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6136 2025-04-29 21:00:00+00:00  102.834  ...              1.010461           0.006
+6137 2025-04-30 21:00:00+00:00  103.672  ...              1.016324           0.013
+6138 2025-05-01 21:00:00+00:00  104.975  ...              1.011030           0.014
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for CAD_JPY (D), 377 rows dropped.
+Ingested 6139 rows for CAD_JPY.
+Fetched 5000 rows for NZD_JPY up to 2007-11-06 22:00:00+00:00
+Fetched 1151 rows for NZD_JPY up to 2004-05-31 21:00:00+00:00
+Total rows fetched for NZD_JPY: 6151
+Pre-ingest NaN for NZD_JPY: 0.0029
+First 3 rows for NZD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  69.535  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  68.290  ...                   1.0            0.01
+2 2004-06-02 21:00:00+00:00  68.425  ...                   1.0           -0.01
+
+[3 rows x 2462 columns]
+Last 3 rows for NZD_JPY:
+                      timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+6148 2025-04-29 21:00:00+00:00  84.429  ...              1.009078           0.028
+6149 2025-04-30 21:00:00+00:00  84.844  ...              1.015445          -0.015
+6150 2025-05-01 21:00:00+00:00  85.876  ...              1.007894           0.027
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for NZD_JPY (D), 377 rows dropped.
+Ingested 6151 rows for NZD_JPY.
+Fetched 5000 rows for GBP_AUD up to 2007-11-05 22:00:00+00:00
+Fetched 1156 rows for GBP_AUD up to 2004-05-31 21:00:00+00:00
+Total rows fetched for GBP_AUD: 6156
+Pre-ingest NaN for GBP_AUD: 0.0029
+First 3 rows for GBP_AUD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-31 21:00:00+00:00  2.59950  ...                   1.0             NaN
+1 2004-06-01 21:00:00+00:00  2.63585  ...                   1.0          0.0001
+2 2004-06-02 21:00:00+00:00  2.67235  ...                   1.0         -0.0002
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_AUD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6153 2025-04-29 21:00:00+00:00  2.10044  ...              1.010587        -0.00005
+6154 2025-04-30 21:00:00+00:00  2.08212  ...              1.008458         0.00012
+6155 2025-05-01 21:00:00+00:00  2.08012  ...              1.012286         0.00049
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_AUD (D), 377 rows dropped.
+Ingested 6156 rows for GBP_AUD.
+Fetched 5000 rows for AUD_NZD up to 2007-10-04 21:00:00+00:00
+Fetched 1098 rows for AUD_NZD up to 2004-05-03 21:00:00+00:00
+Total rows fetched for AUD_NZD: 6098
+Pre-ingest NaN for AUD_NZD: 0.0029
+First 3 rows for AUD_NZD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2004-05-03 21:00:00+00:00  1.15345  ...                   1.0             NaN
+1 2004-05-04 21:00:00+00:00  1.15200  ...                   1.0         -0.0003
+2 2004-05-05 21:00:00+00:00  1.14430  ...                   1.0          0.0002
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_NZD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+6095 2025-04-29 21:00:00+00:00  1.07632  ...              1.005903        -0.00012
+6096 2025-04-30 21:00:00+00:00  1.07897  ...              1.003886         0.00015
+6097 2025-05-01 21:00:00+00:00  1.08050  ...              1.004672         0.00033
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_NZD (D), 377 rows dropped.
+Ingested 6098 rows for AUD_NZD.

@@ -1,0 +1,2 @@
+2025-05-07 06:35:00,931 - TradingSystem - INFO - Trading system initialized with 20 instruments
+2025-05-07 06:35:01,173 - TradingSystem - INFO - Position visualization saved to 'current_positions.png'

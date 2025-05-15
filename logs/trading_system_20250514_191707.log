@@ -1,0 +1,30 @@
+[2025-05-14 19:17:07] Starting trading cycle with account size $1000.0 and risk 5.0%
+[2025-05-14 19:17:07] Market regime detection: Enabled
+[2025-05-14 19:17:07] Adaptive position sizing: Enabled
+[2025-05-14 19:17:07] ETF data refresh: Enabled
+[2025-05-14 19:17:07] Refreshing ETF data from yfinance
+[2025-05-14 19:17:07] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py --period 1y --generate-features
+[2025-05-14 19:17:09] Command errors:
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py", line 18, in <module>
+    from rl.data.generate_etf_features import generate_features
+  File "/Users/kingjames/clojure-trader/rl/data/generate_etf_features.py", line 6, in <module>
+    import pandas_ta as ta # Using pandas_ta for a wide range of features
+    ^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'pandas_ta'
+
+[2025-05-14 19:17:09] Command failed with exit code 1
+[2025-05-14 19:17:09] Warning: Failed to refresh ETF data. Continuing with existing data.
+[2025-05-14 19:17:09] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/generate_signals.py --account-size 1000.0 --risk-percent 5.0 --model-path models/rl_trader.pt --use-regime-detection --adapt-position-sizing
+[2025-05-14 19:17:13] Command errors:
+2025-05-14 19:17:10,548 - oandapyV20.oandapyV20 - INFO - setting up API-client for environment practice
+2025-05-14 19:17:10,548 - oanda_api - INFO - OANDA API client initialized in practice mode
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/generate_signals.py", line 19, in <module>
+    from rl.market_regime import MarketRegimeDetector, AdaptivePositionSizer, calculate_volatilities
+  File "/Users/kingjames/clojure-trader/rl/market_regime.py", line 12, in <module>
+    from hmmlearn import hmm
+ModuleNotFoundError: No module named 'hmmlearn'
+
+[2025-05-14 19:17:13] Command failed with exit code 1
+[2025-05-14 19:17:13] Failed to generate trading signals - aborting cycle

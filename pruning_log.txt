@@ -1,0 +1,631 @@
+Processing feature pruning for GBP_USD...
+Fetching data for GBP_USD...
+[WARN] Used fallback open_ema_2 for missing open in GBP_USD
+[WARN] Used fallback high_ema_2 for missing high in GBP_USD
+[WARN] Used fallback low_ema_2 for missing low in GBP_USD
+[WARN] Used fallback close_ema_2 for missing close in GBP_USD
+[WARN] Used fallback volume_ema_2 for missing volume in GBP_USD
+Feature selection on 2471 features, 6392 rows for GBP_USD
+Selected features for GBP_USD:
+mid_close_adx_34 107.5
+volume_rel_vol_89 147.5
+volume_rel_vol_55 174.25
+spread_bb_bbl_144 213.25
+volume_roll_min_2 213.5
+volume_rel_vol_13 216.25
+volume_roll_max_5 225.25
+volume_rel_vol_2 241.5
+volume_bb_bbl_233 241.75
+volume_rel_vol_34 248.25
+spread_bb_bbl_55 268.75
+volume_roll_max_3 273.5
+spread_bb_bbl_21 273.75
+mid_close_adx_13 295.5
+mid_high_bb_bbm_2 295.75
+volume_bb_bbl_21 295.75
+volume_rel_vol_21 298.75
+spread_bb_bbh_377 310.5
+volume_roll_min_5 314.75
+volume_bb_bbl_13 318.75
+bid_open_roll_max_89 325.0
+spread_bb_bbl_34 338.75
+close_roll_min_13 342.75
+Saved selected features for GBP_USD to DB.
+Completed GBP_USD
+------------------------------
+Processing feature pruning for AUD_USD...
+Fetching data for AUD_USD...
+[WARN] Used fallback open_ema_2 for missing open in AUD_USD
+[WARN] Used fallback high_ema_2 for missing high in AUD_USD
+[WARN] Used fallback low_ema_2 for missing low in AUD_USD
+[WARN] Used fallback close_ema_2 for missing close in AUD_USD
+[WARN] Used fallback volume_ema_2 for missing volume in AUD_USD
+Feature selection on 2471 features, 6355 rows for AUD_USD
+Selected features for AUD_USD:
+volume_bb_bbl_377 153.0
+volume_rel_vol_89 153.0
+volume_rel_vol_34 163.5
+volume_rel_vol_13 172.0
+volume_rel_vol_55 197.25
+spread_bb_bbl_377 197.75
+volume_rel_vol_21 199.5
+volume_roll_min_2 215.75
+bid_close_bb_bbl_3 221.75
+spread_bb_bbl_21 234.5
+volume_roll_max_3 236.75
+volume_roll_min_5 246.25
+spread_bb_bbl_144 248.5
+mid_high_div_mid_low 256.75
+volume_rel_vol_2 283.25
+volume_rel_vol_5 306.25
+volume_rel_vol_8 315.5
+spread_bb_bbl_34 320.75
+mid_close_williams_r_3 335.75
+mid_close_adx_34 337.5
+volume_bb_bbl_55 339.5
+volume_roll_max_5 341.5
+mid_close_adx_144 342.75
+Saved selected features for AUD_USD to DB.
+Completed AUD_USD
+------------------------------
+Processing feature pruning for USD_CHF...
+Fetching data for USD_CHF...
+[WARN] Used fallback open_ema_2 for missing open in USD_CHF
+[WARN] Used fallback high_ema_2 for missing high in USD_CHF
+[WARN] Used fallback low_ema_2 for missing low in USD_CHF
+[WARN] Used fallback close_ema_2 for missing close in USD_CHF
+[WARN] Used fallback volume_ema_2 for missing volume in USD_CHF
+Feature selection on 2471 features, 6399 rows for USD_CHF
+Selected features for USD_CHF:
+volume_rel_vol_21 118.25
+volume_rel_vol_13 151.75
+volume_roll_min_8 207.75
+volume_rel_vol_2 236.5
+volume_roll_max_5 238.0
+volume_roll_max_8 245.75
+mid_close_adx_55 246.5
+volume_rel_vol_89 257.0
+volume_roll_max_3 275.0
+volume_rel_vol_34 277.75
+mid_close_adx_13 279.0
+spread_bb_bbl_34 287.0
+mid_close_adx_89 290.0
+volume_rel_vol_55 303.5
+vol_x_spread_377 306.5
+spread_roll_max_8 308.25
+volume_bb_bbh_233 310.75
+volume_rel_vol_233 321.0
+mid_low 328.75
+volume_roc_377 331.5
+volume_bb_bbl_13 339.75
+mid_close_williams_r_2 342.25
+spread_bb_bbl_377 348.25
+Saved selected features for USD_CHF to DB.
+Completed USD_CHF
+------------------------------
+Processing feature pruning for USD_CAD...
+Fetching data for USD_CAD...
+[WARN] Used fallback open_ema_2 for missing open in USD_CAD
+[WARN] Used fallback high_ema_2 for missing high in USD_CAD
+[WARN] Used fallback low_ema_2 for missing low in USD_CAD
+[WARN] Used fallback close_ema_2 for missing close in USD_CAD
+[WARN] Used fallback volume_ema_2 for missing volume in USD_CAD
+Feature selection on 2471 features, 6378 rows for USD_CAD
+Selected features for USD_CAD:
+volume_rel_vol_89 83.25
+volume_rel_vol_34 155.5
+spread_bb_bbl_377 177.5
+volume_rel_vol_21 184.5
+spread_bb_bbl_144 189.5
+volume_rel_vol_13 215.5
+volume_roll_max_3 225.25
+volume_roll_max_8 239.75
+spread_roll_min_8 260.0
+volume_rel_vol_8 268.0
+volume_rel_vol_3 268.75
+volume_bb_bbl_34 281.25
+spread_bb_bbl_89 285.5
+ask_open_bb_bbl_3 297.0
+volume_bb_bbh_144 297.25
+volume_rel_vol_5 299.5
+volume_roll_min_3 306.5
+bid_close_williams_r_2 306.75
+mid_close_adx_13 316.0
+ask_open_div_bid_open 316.5
+spread_roll_min_5 336.75
+volume_rel_vol_55 361.0
+bid_close_adx_233 361.75
+Saved selected features for USD_CAD to DB.
+Completed USD_CAD
+------------------------------
+Processing feature pruning for NZD_USD...
+Fetching data for NZD_USD...
+[WARN] Used fallback open_ema_2 for missing open in NZD_USD
+[WARN] Used fallback high_ema_2 for missing high in NZD_USD
+[WARN] Used fallback low_ema_2 for missing low in NZD_USD
+[WARN] Used fallback close_ema_2 for missing close in NZD_USD
+[WARN] Used fallback volume_ema_2 for missing volume in NZD_USD
+Feature selection on 2471 features, 6233 rows for NZD_USD
+Selected features for NZD_USD:
+bid_close_ema_2 27.25
+ask_close_adx_55 111.5
+volume_rel_vol_2 134.0
+spread_roc_144 157.5
+spread_bb_bbh_377 173.5
+volume_rel_vol_89 180.5
+volume_rel_vol_21 184.0
+volume_bb_bbh_34 203.0
+volume_roll_min_3 204.25
+spread_roll_min_8 211.5
+volume_roc_55 212.0
+volume_rel_vol_34 213.5
+volume_rel_vol_55 257.5
+volume_bb_bbl_13 262.0
+vol_x_spread_233 285.75
+spread_bb_bbl_89 288.75
+volume_bb_bbl_55 292.75
+ask_open_div_bid_open 292.75
+volume_rel_vol_3 304.5
+spread_bb_bbl_55 309.5
+volume_bb_bbl_233 324.25
+bid_close_bb_bbl_2 343.25
+ask_close_williams_r_5 344.0
+Saved selected features for NZD_USD to DB.
+Completed NZD_USD
+------------------------------
+Processing feature pruning for EUR_JPY...
+Fetching data for EUR_JPY...
+[WARN] Used fallback open_ema_2 for missing open in EUR_JPY
+[WARN] Used fallback high_ema_2 for missing high in EUR_JPY
+[WARN] Used fallback low_ema_2 for missing low in EUR_JPY
+[WARN] Used fallback close_ema_2 for missing close in EUR_JPY
+[WARN] Used fallback volume_ema_2 for missing volume in EUR_JPY
+Feature selection on 2493 features, 6422 rows for EUR_JPY
+Selected features for EUR_JPY:
+mid_low 39.0
+volume_rel_vol_21 141.0
+ask_close_bb_bbl_8 161.0
+volume_rel_vol_34 162.0
+spread_bb_bbl_233 180.5
+volume_rel_vol_13 189.25
+volume_rel_vol_55 197.5
+volume_roll_min_8 236.75
+mid_high_div_ask_high 241.25
+volume_bb_bbl_377 250.0
+volume_rel_vol_3 286.25
+volume_rel_vol_5 293.75
+volume_roll_min_3 317.75
+close_roll_max_13 318.5
+volume_rel_vol_2 319.75
+spread_roll_min_8 327.0
+spread_roll_min_5 333.25
+vol_x_spread_144 350.0
+ask_low_div_bid_low 356.75
+bid_close_williams_r_144 369.75
+spread_bb_bbm_144 377.75
+ask_close_bb_bbm_2 381.25
+close_roll_max_34 382.25
+Saved selected features for EUR_JPY to DB.
+Completed EUR_JPY
+------------------------------
+Processing feature pruning for GBP_JPY...
+Fetching data for GBP_JPY...
+[WARN] Used fallback open_ema_2 for missing open in GBP_JPY
+[WARN] Used fallback high_ema_2 for missing high in GBP_JPY
+[WARN] Used fallback low_ema_2 for missing low in GBP_JPY
+[WARN] Used fallback close_ema_2 for missing close in GBP_JPY
+[WARN] Used fallback volume_ema_2 for missing volume in GBP_JPY
+Feature selection on 2493 features, 6419 rows for GBP_JPY
+Selected features for GBP_JPY:
+volume_roll_min_8 135.75
+volume_rel_vol_55 150.0
+volume_bb_bbl_144 207.5
+volume_rel_vol_89 213.75
+spread_roll_min_2 227.5
+bid_open_bb_bbh_3 231.5
+volume_rel_vol_34 241.75
+ask_low_roll_min_8 249.0
+volume_bb_bbl_55 254.75
+volume_bb_bbh_233 256.5
+volume_roll_min_2 263.0
+spread_roll_min_8 271.5
+spread_bb_bbl_233 282.75
+mid_high_div_ask_high 287.5
+mid_close_adx_13 294.25
+volume_rel_vol_2 306.0
+mid_low_bb_bbm_13 312.5
+volume_rel_vol_3 335.25
+volume_rel_vol_5 337.0
+volume_rel_vol_21 338.0
+volume_roll_max_8 351.0
+ask_close_williams_r_5 352.25
+spread_roll_min_5 359.0
+Saved selected features for GBP_JPY to DB.
+Completed GBP_JPY
+------------------------------
+Processing feature pruning for EUR_GBP...
+Fetching data for EUR_GBP...
+[WARN] Used fallback open_ema_2 for missing open in EUR_GBP
+[WARN] Used fallback high_ema_2 for missing high in EUR_GBP
+[WARN] Used fallback low_ema_2 for missing low in EUR_GBP
+[WARN] Used fallback close_ema_2 for missing close in EUR_GBP
+[WARN] Used fallback volume_ema_2 for missing volume in EUR_GBP
+Feature selection on 2471 features, 6403 rows for EUR_GBP
+Selected features for EUR_GBP:
+ask_close_ema_2 24.5
+volume_bb_bbl_377 135.0
+volume_rel_vol_13 152.0
+mid_close_adx_34 159.0
+volume_roll_min_3 163.75
+volume_roll_max_5 173.75
+volume_rel_vol_34 212.25
+bid_close_adx_89 217.25
+volume_roll_max_2 227.75
+volume_rel_vol_55 238.5
+volume_rel_vol_3 253.0
+vol_x_spread_89 253.25
+spread_roc_89 265.0
+spread_bb_bbl_89 270.75
+ask_close_bb_bbm_5 272.25
+spread_bb_bbh_13 277.0
+volume_rel_vol_21 278.25
+volume_bb_bbl_13 291.0
+spread_bb_bbh_144 303.0
+volume_rel_vol_8 303.5
+volume_bb_bbl_21 306.5
+volume_roll_min_8 307.5
+mid_open_div_ask_open 308.5
+Saved selected features for EUR_GBP to DB.
+Completed EUR_GBP
+------------------------------
+Processing feature pruning for EUR_CHF...
+Fetching data for EUR_CHF...
+[WARN] Used fallback open_ema_2 for missing open in EUR_CHF
+[WARN] Used fallback high_ema_2 for missing high in EUR_CHF
+[WARN] Used fallback low_ema_2 for missing low in EUR_CHF
+[WARN] Used fallback close_ema_2 for missing close in EUR_CHF
+[WARN] Used fallback volume_ema_2 for missing volume in EUR_CHF
+Feature selection on 2471 features, 6377 rows for EUR_CHF
+Selected features for EUR_CHF:
+low_ema_3 44.5
+volume_rel_vol_21 178.25
+vol_x_spread_55 189.0
+volume_rel_vol_13 211.25
+ask_open_bb_bbh_5 219.0
+volume_rel_vol_34 221.25
+spread_roll_min_2 235.25
+volume_rel_vol_5 248.5
+volume_bb_bbl_377 248.5
+volume_rel_vol_89 256.75
+spread_roll_min_55 256.75
+volume_roll_min_8 263.75
+volume_bb_bbh_377 278.25
+volume_bb_bbh_13 291.0
+spread_roll_max_8 292.5
+mid_close_adx_89 297.75
+mid_high_div_ask_high 299.75
+mid_close_adx_55 321.5
+volume_roll_max_5 330.0
+spread_roll_min_5 338.5
+mid_close_williams_r_2 359.25
+spread_bb_bbl_55 361.0
+spread_bb_bbh_13 368.0
+Saved selected features for EUR_CHF to DB.
+Completed EUR_CHF
+------------------------------
+Processing feature pruning for EUR_AUD...
+Fetching data for EUR_AUD...
+[WARN] Used fallback open_ema_2 for missing open in EUR_AUD
+[WARN] Used fallback high_ema_2 for missing high in EUR_AUD
+[WARN] Used fallback low_ema_2 for missing low in EUR_AUD
+[WARN] Used fallback close_ema_2 for missing close in EUR_AUD
+[WARN] Used fallback volume_ema_2 for missing volume in EUR_AUD
+Feature selection on 2471 features, 5737 rows for EUR_AUD
+Selected features for EUR_AUD:
+volume_rel_vol_21 131.25
+ask_high_div_bid_high 144.0
+volume_rel_vol_89 147.5
+spread_roll_min_8 191.75
+bid_high_bb_bbl_2 194.25
+volume_rel_vol_13 230.25
+spread_roll_min_3 242.5
+volume_rel_vol_2 264.75
+volume_roll_max_5 268.75
+volume_bb_bbl_233 281.25
+volume_rel_vol_34 282.0
+volume_roll_min_8 282.25
+spread_bb_bbh_233 286.5
+mid_close_adx_13 298.75
+spread_roll_max_5 302.25
+volume_bb_bbh_233 304.5
+bid_high_div_bid_low 306.0
+volume_roll_max_8 306.25
+volume_bb_bbl_55 337.25
+ask_open_div_bid_open 349.5
+volume_rel_vol_55 354.5
+ask_high_bb_bbl_13 361.25
+mid_close_williams_r_2 367.75
+Saved selected features for EUR_AUD to DB.
+Completed EUR_AUD
+------------------------------
+Processing feature pruning for EUR_CAD...
+Fetching data for EUR_CAD...
+[WARN] Used fallback open_ema_2 for missing open in EUR_CAD
+[WARN] Used fallback high_ema_2 for missing high in EUR_CAD
+[WARN] Used fallback low_ema_2 for missing low in EUR_CAD
+[WARN] Used fallback close_ema_2 for missing close in EUR_CAD
+[WARN] Used fallback volume_ema_2 for missing volume in EUR_CAD
+Feature selection on 2471 features, 5757 rows for EUR_CAD
+Selected features for EUR_CAD:
+volume_rel_vol_144 169.25
+volume_rel_vol_34 197.25
+volume_bb_bbl_55 212.5
+spread_roll_min_5 220.5
+volume_rel_vol_21 229.75
+spread_bb_bbl_144 230.0
+volume_rel_vol_55 235.75
+spread_bb_bbl_21 239.0
+volume_bb_bbl_233 239.75
+volume_bb_bbh_21 241.25
+volume_rel_vol_13 245.75
+spread_bb_bbl_34 253.25
+bid_close_williams_r_3 272.75
+spread_roll_min_13 285.0
+volume_roll_min_34 291.25
+volume_rel_vol_8 297.0
+ask_high_div_bid_high 302.25
+volume_rel_vol_5 312.5
+spread_roll_max_55 313.75
+volume_roll_max_5 315.25
+volume_bb_bbh_377 316.5
+volume_bb_bbm_377 318.25
+ask_close_bb_bbh_21 319.25
+Saved selected features for EUR_CAD to DB.
+Completed EUR_CAD
+------------------------------
+Processing feature pruning for GBP_CHF...
+Fetching data for GBP_CHF...
+[WARN] Used fallback open_ema_2 for missing open in GBP_CHF
+[WARN] Used fallback high_ema_2 for missing high in GBP_CHF
+[WARN] Used fallback low_ema_2 for missing low in GBP_CHF
+[WARN] Used fallback close_ema_2 for missing close in GBP_CHF
+[WARN] Used fallback volume_ema_2 for missing volume in GBP_CHF
+Feature selection on 2471 features, 6415 rows for GBP_CHF
+Selected features for GBP_CHF:
+volume_rel_vol_13 172.25
+volume_rel_vol_34 217.5
+volume_bb_bbl_89 225.5
+mid_low 256.0
+volume_roll_min_8 264.5
+bid_open_bb_bbh_8 276.5
+volume_roll_min_3 277.25
+volume_bb_bbh_55 292.5
+spread_bb_bbl_55 297.5
+bid_close_adx_55 303.0
+volume_rel_vol_2 303.5
+spread_bb_bbl_233 329.5
+volume_bb_bbl_21 343.0
+spread_bb_bbl_13 343.75
+volume_roll_max_2 344.75
+ask_close_williams_r_2 352.25
+vol_x_spread_144 354.25
+volume_rel_vol_21 357.5
+ask_close_bb_bbl_2 373.25
+mid_close_adx_89 382.25
+ask_high_div_bid_high 387.0
+spread_bb_bbm_144 391.0
+volume_rel_vol_3 392.0
+Saved selected features for GBP_CHF to DB.
+Completed GBP_CHF
+------------------------------
+Processing feature pruning for AUD_JPY...
+Fetching data for AUD_JPY...
+[WARN] Used fallback open_ema_2 for missing open in AUD_JPY
+[WARN] Used fallback high_ema_2 for missing high in AUD_JPY
+[WARN] Used fallback low_ema_2 for missing low in AUD_JPY
+[WARN] Used fallback close_ema_2 for missing close in AUD_JPY
+[WARN] Used fallback volume_ema_2 for missing volume in AUD_JPY
+Feature selection on 2493 features, 5742 rows for AUD_JPY
+Selected features for AUD_JPY:
+mid_low 82.25
+spread_roll_min_5 176.5
+volume_roll_min_2 179.75
+volume_bb_bbh_233 180.0
+spread_bb_bbl_377 180.75
+volume_bb_bbl_377 181.5
+volume_rel_vol_34 193.5
+volume_roll_max_5 224.0
+volume_roll_min_8 224.75
+ask_close_bb_bbh_2 227.25
+spread_bb_bbh_144 229.0
+volume_rel_vol_13 245.25
+volume_rel_vol_21 245.5
+volume_bb_bbl_21 246.25
+spread_roll_min_13 288.75
+volume_rel_vol_55 303.75
+mid_high_minus_mid_low 310.5
+ask_close_bb_bbl_2 313.75
+spread_bb_bbl_89 325.0
+volume_rel_vol_89 332.5
+mid_close_williams_r_2 334.25
+volume_roll_max_21 336.75
+spread_roll_max_13 341.25
+Saved selected features for AUD_JPY to DB.
+Completed AUD_JPY
+------------------------------
+Processing feature pruning for AUD_CHF...
+Fetching data for AUD_CHF...
+[WARN] Used fallback open_ema_2 for missing open in AUD_CHF
+[WARN] Used fallback high_ema_2 for missing high in AUD_CHF
+[WARN] Used fallback low_ema_2 for missing low in AUD_CHF
+[WARN] Used fallback close_ema_2 for missing close in AUD_CHF
+[WARN] Used fallback volume_ema_2 for missing volume in AUD_CHF
+Feature selection on 2471 features, 5768 rows for AUD_CHF
+Selected features for AUD_CHF:
+ask_close_bb_bbh_2 145.75
+bid_close_williams_r_2 156.75
+volume_rel_vol_34 169.5
+volume_rel_vol_89 182.75
+spread_bb_bbl_377 188.0
+volume_rel_vol_55 199.25
+volume_rel_vol_21 208.5
+volume_roll_min_3 228.75
+spread_roll_max_8 229.0
+volume_roll_max_3 240.0
+volume_rel_vol_2 252.0
+spread_roll_min_5 256.25
+spread_roll_min_2 260.25
+volume_bb_bbl_13 269.0
+volume_bb_bbl_377 281.75
+volume_roll_min_5 299.0
+bid_close_williams_r_3 308.25
+mid_low 310.75
+mid_close_adx_21 317.25
+mid_close_cci_233 325.5
+mid_close_adx_34 327.25
+mid_close_adx_13 335.5
+mid_high_div_ask_high 344.25
+Saved selected features for AUD_CHF to DB.
+Completed AUD_CHF
+------------------------------
+Processing feature pruning for CAD_JPY...
+Fetching data for CAD_JPY...
+[WARN] Used fallback open_ema_2 for missing open in CAD_JPY
+[WARN] Used fallback high_ema_2 for missing high in CAD_JPY
+[WARN] Used fallback low_ema_2 for missing low in CAD_JPY
+[WARN] Used fallback close_ema_2 for missing close in CAD_JPY
+[WARN] Used fallback volume_ema_2 for missing volume in CAD_JPY
+Feature selection on 2493 features, 5762 rows for CAD_JPY
+Selected features for CAD_JPY:
+mid_open 55.0
+volume_roll_min_2 99.75
+volume_sma_144 115.0
+ask_low_div_bid_low 144.0
+volume_bb_bbl_233 163.75
+spread_bb_bbl_55 186.25
+bid_low_roll_max_5 211.5
+volume_bb_bbh_89 224.25
+volume_rel_vol_8 225.0
+vol_x_spread_8 230.25
+volume_rel_vol_13 231.25
+volume_bb_bbl_2 232.0
+bid_close_williams_r_3 238.5
+volume_bb_bbl_55 243.75
+volume_roll_min_21 245.0
+spread_roll_max_55 255.0
+volume_std_233 258.0
+spread_roll_min_3 262.5
+volume_rel_vol_34 271.25
+vol_x_spread_13 274.75
+volume_rel_vol_5 278.5
+spread_roll_min_2 283.0
+volume_rel_vol_55 292.25
+Saved selected features for CAD_JPY to DB.
+Completed CAD_JPY
+------------------------------
+Processing feature pruning for NZD_JPY...
+Fetching data for NZD_JPY...
+[WARN] Used fallback open_ema_2 for missing open in NZD_JPY
+[WARN] Used fallback high_ema_2 for missing high in NZD_JPY
+[WARN] Used fallback low_ema_2 for missing low in NZD_JPY
+[WARN] Used fallback close_ema_2 for missing close in NZD_JPY
+[WARN] Used fallback volume_ema_2 for missing volume in NZD_JPY
+Feature selection on 2493 features, 5774 rows for NZD_JPY
+Selected features for NZD_JPY:
+volume_rel_vol_144 121.0
+ask_high_div_bid_high 180.75
+mid_close_adx_21 195.5
+volume_roc_5 199.0
+volume_rel_vol_21 204.75
+ask_open_minus_bid_open 215.25
+volume_bb_bbl_377 216.5
+volume_rel_vol_34 219.75
+volume_ema_3 226.0
+volume_roll_max_55 231.25
+bid_high_bb_bbh_2 235.25
+spread_roc_233 241.0
+spread_roc_21 241.75
+bid_high_minus_bid_low 242.0
+spread_ema_233 252.5
+volume_roc_144 252.75
+volume_rel_vol_13 279.25
+close_roc_89 285.5
+volume_rel_vol_8 293.25
+spread_bb_bbl_55 296.5
+volume_roll_min_8 300.5
+volume_roll_min_21 314.0
+volume_rel_vol_3 333.25
+Saved selected features for NZD_JPY to DB.
+Completed NZD_JPY
+------------------------------
+Processing feature pruning for GBP_AUD...
+Fetching data for GBP_AUD...
+[WARN] Used fallback open_ema_2 for missing open in GBP_AUD
+[WARN] Used fallback high_ema_2 for missing high in GBP_AUD
+[WARN] Used fallback low_ema_2 for missing low in GBP_AUD
+[WARN] Used fallback close_ema_2 for missing close in GBP_AUD
+[WARN] Used fallback volume_ema_2 for missing volume in GBP_AUD
+Feature selection on 2471 features, 5779 rows for GBP_AUD
+Selected features for GBP_AUD:
+volume_rel_vol_144 163.25
+ask_high_bb_bbh_3 178.75
+ask_low_div_bid_low 183.0
+spread_roll_max_34 189.75
+volume_roll_max_55 199.75
+spread_roll_min_21 215.5
+volume_rel_vol_21 235.75
+volume_roll_min_13 256.75
+volume_roll_min_5 257.25
+spread_roll_min_55 264.0
+volume_bb_bbl_144 266.5
+spread_roc_55 290.75
+volume_roll_min_3 299.0
+ask_open_roll_min_5 311.75
+spread_roc_144 314.0
+spread_roc_34 318.5
+spread_bb_bbh_144 321.25
+spread_roc_21 328.5
+spread_roll_max_55 330.25
+spread_roll_min_144 331.5
+volume_roc_21 336.5
+spread_roll_min_34 343.75
+spread_bb_bbl_377 344.5
+Saved selected features for GBP_AUD to DB.
+Completed GBP_AUD
+------------------------------
+Processing feature pruning for AUD_NZD...
+Fetching data for AUD_NZD...
+[WARN] Used fallback open_ema_2 for missing open in AUD_NZD
+[WARN] Used fallback high_ema_2 for missing high in AUD_NZD
+[WARN] Used fallback low_ema_2 for missing low in AUD_NZD
+[WARN] Used fallback close_ema_2 for missing close in AUD_NZD
+[WARN] Used fallback volume_ema_2 for missing volume in AUD_NZD
+Feature selection on 2471 features, 5721 rows for AUD_NZD
+Selected features for AUD_NZD:
+ask_close_ema_2 43.0
+volume_rel_vol_3 147.0
+vol_x_spread_55 156.0
+volume_roc_2 184.25
+volume_roc_34 188.25
+spread_sma_5 190.75
+volume_bb_bbl_144 203.0
+volume_mfi_2 217.0
+volume_rel_vol_13 224.75
+spread_bb_bbl_377 233.0
+volume_rel_vol_55 244.5
+volume_rel_vol_34 244.75
+volume_roll_max_5 255.75
+spread_roll_min_8 265.25
+volume_roc_5 268.75
+ask_high_bb_bbl_3 284.5
+bid_close_adx_8 285.5
+mid_close_adx_55 286.0
+bid_open_roll_min_2 303.0
+volume_rel_vol_8 303.5
+vol_x_spread_144 305.75
+volume_roll_min_8 313.0
+volume_rel_vol_5 313.5
+Saved selected features for AUD_NZD to DB.
+Completed AUD_NZD
+------------------------------
+All forex instruments processed!

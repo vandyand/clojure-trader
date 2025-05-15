@@ -1,0 +1,10 @@
+Processing feature pruning for GBP_USD...
+/Users/kingjames/clojure-trader/rl/data/feature_pruning.py:118: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(f"""
+Fetching data for GBP_USD...
+[WARN] Used fallback open_ema_2 for missing open in GBP_USD
+[WARN] Used fallback high_ema_2 for missing high in GBP_USD
+[WARN] Used fallback low_ema_2 for missing low in GBP_USD
+[WARN] Used fallback close_ema_2 for missing close in GBP_USD
+[WARN] Used fallback volume_ema_2 for missing volume in GBP_USD
+Feature selection on 2471 features, 6392 rows for GBP_USD

@@ -1,0 +1,69 @@
+{
+  "account_size": 10000.0,
+  "risk_amount": 500.0,
+  "positions": [
+    {
+      "instrument": "SPY",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.08814702928066254,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "QQQ",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.08272208273410797,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "IWM",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.039839811623096466,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "GLD",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.029396027326583862,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "SLV",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.07204243540763855,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "VXX",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.05454351752996445,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "EEM",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.062485381960868835,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "XLF",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.013619660399854183,
+      "usd_amount": 0.0
+    },
+    {
+      "instrument": "XLE",
+      "direction": "NEUTRAL",
+      "position_size": 0.0,
+      "strength": 0.0851556807756424,
+      "usd_amount": 0.0
+    }
+  ]
+}

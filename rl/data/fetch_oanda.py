@@ -5,15 +5,27 @@ import pandas as pd
 
 client = oandapyV20.API(access_token=OANDA_API_KEY, environment="practice")
 
-def fetch_candles(instrument, granularity="H1", count=500):
+def fetch_candles(instrument, granularity="H1", count=500, to=None):
+    """
+    Fetch candlestick data from OANDA for a given instrument and granularity.
+    Supported granularities include 'S5', 'M1', 'M5', 'M15', 'H1', 'D' (daily), etc.
+    For daily signals, use granularity='D'.
+    Optionally fetch candles up to a specific end time (ISO8601 string or pandas.Timestamp) using 'to'.
+    """
     params = {
         "granularity": granularity,
         "count": count,
         "price": "MBA"  # Fetch mid, bid, ask
     }
+    if to is not None:
+        if isinstance(to, pd.Timestamp):
+            to = to.isoformat()
+        params["to"] = to
     r = instruments.InstrumentsCandles(instrument=instrument, params=params)
     response = client.request(r)
     candles = response["candles"]
+    if not candles:
+        return pd.DataFrame()
     data = []
     for c in candles:
         if not c["complete"]:
@@ -39,6 +51,8 @@ def fetch_candles(instrument, granularity="H1", count=500):
             "volume": float(c.get("volume", 'nan'))
         })
     df = pd.DataFrame(data)
+    if df.empty or 'timestamp' not in df.columns:
+        return pd.DataFrame()
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     # Ensure 'volume' column exists for indicator compatibility
     if 'volume' not in df.columns and 'tick_volume' in df.columns:
