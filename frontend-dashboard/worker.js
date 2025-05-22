@@ -169,9 +169,9 @@ async function runDataCollection() {
 // Run immediately on start
 runDataCollection();
 
-// Then run every 5 minutes
-const FIVE_MINUTES = 5 * 60 * 1000;
-setInterval(runDataCollection, FIVE_MINUTES);
+// Then run every 15 minutes
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
+setInterval(runDataCollection, FIFTEEN_MINUTES);
 
 // Keep the process alive
 process.on("SIGTERM", () => {
