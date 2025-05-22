@@ -2,7 +2,8 @@
   (:require [api.oanda_api :as oa]
             [api.order_types :as ot]
             [clojure.core.async :as async]
-            [config :as config]
+            [clojure.java.io :as clojure.java.io]
+            [clojure.string :as clojure.string]
             [env :as env]
             [file :as file]
             [nean.ga :as ga]
@@ -399,46 +400,3 @@
       (stop-trading account-id))))
 
 #_(stop-all-trading)
-
-(comment
-  ;; -----------------------------------------------------------------------------------------------------------------------------
-  (async/go-loop [i 0]
-    (if (>= i 1)
-      "done"
-      (do
-        (async/go
-          (let [instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                             "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                             "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                             "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                             "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                             "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"]
-                num-backtests-per-instrument 7
-                granularity "M5"
-                xindy-config (config/xindy-config 7 777)
-                ga-config (config/xindy-ga-config 15 20000 0.75)
-                pop-config (config/xindy-pop-config 300 0.5)
-                wrifts (generate-wrifts instruments xindy-config pop-config granularity ga-config num-backtests-per-instrument)]
-            (save-backtest wrifts xindy-config granularity "data/wrifts/")))
-        (recur (inc i)))))
-
-  ;;end comment
-  )
-
-(comment
-  (def instruments ["AUD_CAD" "AUD_CHF" "AUD_JPY" "AUD_NZD" "AUD_SGD" "AUD_USD" "CAD_CHF" "CAD_JPY"
-                    "CAD_SGD" "CHF_JPY" "CHF_ZAR" "EUR_AUD" "EUR_CAD" "EUR_CHF" "EUR_CZK" "EUR_GBP"
-                    "EUR_JPY" "EUR_NZD" "EUR_SEK" "EUR_SGD" "EUR_USD" "EUR_ZAR" "GBP_AUD" "GBP_CAD"
-                    "GBP_CHF" "GBP_JPY" "GBP_NZD" "GBP_SGD" "GBP_USD" "GBP_ZAR" "NZD_CAD" "NZD_CHF"
-                    "NZD_JPY" "NZD_SGD" "NZD_USD" "SGD_CHF" "SGD_JPY" "USD_CAD" "USD_CHF" "USD_CNH"
-                    "USD_CZK" "USD_DKK" "USD_JPY" "USD_SEK" "USD_SGD" "USD_THB" "USD_ZAR" "ZAR_JPY"])
-
-  (oa/get-some-account-ids 5)
-
-  ;; this randomly updates instrument position sizes
-  (doseq [x (repeatedly 1000 #(rand-int 100))]
-    (post-target-positions
-     [{:instrument (rand-nth instruments) :target-position x}]
-     (rand-nth (oa/get-some-account-ids 5)))))
-
-

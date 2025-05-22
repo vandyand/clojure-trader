@@ -1,0 +1,166 @@
+2025-05-14 18:40:12,538 - data_fetcher - INFO - Getting latest features for EUR_USD
+2025-05-14 18:40:12,538 - data_fetcher - INFO - Fetching price data for EUR_USD
+2025-05-14 18:40:12,568 - data_fetcher - INFO - Fetched 101 candles for EUR_USD
+2025-05-14 18:40:12,569 - data_fetcher - INFO - Calculating features for EUR_USD
+2025-05-14 18:40:12,603 - data_fetcher - INFO - Calculated 147 features for EUR_USD
+2025-05-14 18:40:12,603 - data_fetcher - INFO - Getting latest features for USD_JPY
+2025-05-14 18:40:12,603 - data_fetcher - INFO - Fetching price data for USD_JPY
+2025-05-14 18:40:12,625 - data_fetcher - INFO - Fetched 101 candles for USD_JPY
+2025-05-14 18:40:12,625 - data_fetcher - INFO - Calculating features for USD_JPY
+2025-05-14 18:40:12,654 - data_fetcher - INFO - Calculated 147 features for USD_JPY
+2025-05-14 18:40:12,654 - data_fetcher - INFO - Getting latest features for GBP_USD
+2025-05-14 18:40:12,654 - data_fetcher - INFO - Fetching price data for GBP_USD
+2025-05-14 18:40:12,675 - data_fetcher - INFO - Fetched 101 candles for GBP_USD
+2025-05-14 18:40:12,675 - data_fetcher - INFO - Calculating features for GBP_USD
+2025-05-14 18:40:12,702 - data_fetcher - INFO - Calculated 147 features for GBP_USD
+2025-05-14 18:40:12,702 - data_fetcher - INFO - Getting latest features for AUD_USD
+2025-05-14 18:40:12,702 - data_fetcher - INFO - Fetching price data for AUD_USD
+2025-05-14 18:40:12,722 - data_fetcher - INFO - Fetched 101 candles for AUD_USD
+2025-05-14 18:40:12,722 - data_fetcher - INFO - Calculating features for AUD_USD
+2025-05-14 18:40:12,748 - data_fetcher - INFO - Calculated 147 features for AUD_USD
+2025-05-14 18:40:12,748 - data_fetcher - INFO - Getting latest features for USD_CAD
+2025-05-14 18:40:12,749 - data_fetcher - INFO - Fetching price data for USD_CAD
+2025-05-14 18:40:12,769 - data_fetcher - INFO - Fetched 101 candles for USD_CAD
+2025-05-14 18:40:12,770 - data_fetcher - INFO - Calculating features for USD_CAD
+2025-05-14 18:40:12,798 - data_fetcher - INFO - Calculated 147 features for USD_CAD
+2025-05-14 18:40:30,177 - generate_signals - INFO - Starting trading signal generation
+2025-05-14 18:40:30,187 - generate_signals - INFO - Loading trained model from models/rl_trader.pt
+2025-05-14 18:40:30,813 - generate_signals - INFO - Model loaded successfully
+2025-05-14 18:40:30,813 - generate_signals - INFO - Fetching latest market data and calculating features
+2025-05-14 18:40:30,813 - data_fetcher - INFO - Getting latest features for EUR_USD
+2025-05-14 18:40:30,813 - data_fetcher - INFO - Fetching price data for EUR_USD
+2025-05-14 18:40:30,885 - data_fetcher - INFO - Fetched 401 candles for EUR_USD
+2025-05-14 18:40:30,885 - data_fetcher - INFO - Calculating features for EUR_USD
+2025-05-14 18:40:30,913 - data_fetcher - INFO - Calculated 147 features for EUR_USD
+2025-05-14 18:40:30,913 - data_fetcher - INFO - Getting latest features for USD_JPY
+2025-05-14 18:40:30,913 - data_fetcher - INFO - Fetching price data for USD_JPY
+2025-05-14 18:40:30,983 - data_fetcher - INFO - Fetched 401 candles for USD_JPY
+2025-05-14 18:40:30,983 - data_fetcher - INFO - Calculating features for USD_JPY
+2025-05-14 18:40:31,009 - data_fetcher - INFO - Calculated 147 features for USD_JPY
+2025-05-14 18:40:31,010 - data_fetcher - INFO - Getting latest features for GBP_USD
+2025-05-14 18:40:31,010 - data_fetcher - INFO - Fetching price data for GBP_USD
+2025-05-14 18:40:31,081 - data_fetcher - INFO - Fetched 401 candles for GBP_USD
+2025-05-14 18:40:31,081 - data_fetcher - INFO - Calculating features for GBP_USD
+2025-05-14 18:40:31,107 - data_fetcher - INFO - Calculated 147 features for GBP_USD
+2025-05-14 18:40:31,107 - data_fetcher - INFO - Getting latest features for AUD_USD
+2025-05-14 18:40:31,107 - data_fetcher - INFO - Fetching price data for AUD_USD
+2025-05-14 18:40:31,177 - data_fetcher - INFO - Fetched 401 candles for AUD_USD
+2025-05-14 18:40:31,177 - data_fetcher - INFO - Calculating features for AUD_USD
+2025-05-14 18:40:31,202 - data_fetcher - INFO - Calculated 147 features for AUD_USD
+2025-05-14 18:40:31,202 - data_fetcher - INFO - Getting latest features for USD_CHF
+2025-05-14 18:40:31,202 - data_fetcher - INFO - Fetching price data for USD_CHF
+2025-05-14 18:40:31,271 - data_fetcher - INFO - Fetched 401 candles for USD_CHF
+2025-05-14 18:40:31,271 - data_fetcher - INFO - Calculating features for USD_CHF
+2025-05-14 18:40:31,296 - data_fetcher - INFO - Calculated 147 features for USD_CHF
+2025-05-14 18:40:31,296 - data_fetcher - INFO - Getting latest features for USD_CAD
+2025-05-14 18:40:31,296 - data_fetcher - INFO - Fetching price data for USD_CAD
+2025-05-14 18:40:31,365 - data_fetcher - INFO - Fetched 401 candles for USD_CAD
+2025-05-14 18:40:31,365 - data_fetcher - INFO - Calculating features for USD_CAD
+2025-05-14 18:40:31,390 - data_fetcher - INFO - Calculated 147 features for USD_CAD
+2025-05-14 18:40:31,390 - data_fetcher - INFO - Getting latest features for NZD_USD
+2025-05-14 18:40:31,390 - data_fetcher - INFO - Fetching price data for NZD_USD
+2025-05-14 18:40:31,459 - data_fetcher - INFO - Fetched 401 candles for NZD_USD
+2025-05-14 18:40:31,459 - data_fetcher - INFO - Calculating features for NZD_USD
+2025-05-14 18:40:31,484 - data_fetcher - INFO - Calculated 147 features for NZD_USD
+2025-05-14 18:40:31,484 - data_fetcher - INFO - Getting latest features for EUR_JPY
+2025-05-14 18:40:31,484 - data_fetcher - INFO - Fetching price data for EUR_JPY
+2025-05-14 18:40:31,554 - data_fetcher - INFO - Fetched 401 candles for EUR_JPY
+2025-05-14 18:40:31,554 - data_fetcher - INFO - Calculating features for EUR_JPY
+2025-05-14 18:40:31,579 - data_fetcher - INFO - Calculated 147 features for EUR_JPY
+2025-05-14 18:40:31,579 - data_fetcher - INFO - Getting latest features for GBP_JPY
+2025-05-14 18:40:31,579 - data_fetcher - INFO - Fetching price data for GBP_JPY
+2025-05-14 18:40:31,648 - data_fetcher - INFO - Fetched 401 candles for GBP_JPY
+2025-05-14 18:40:31,648 - data_fetcher - INFO - Calculating features for GBP_JPY
+2025-05-14 18:40:31,673 - data_fetcher - INFO - Calculated 147 features for GBP_JPY
+2025-05-14 18:40:31,673 - data_fetcher - INFO - Getting latest features for EUR_GBP
+2025-05-14 18:40:31,673 - data_fetcher - INFO - Fetching price data for EUR_GBP
+2025-05-14 18:40:31,742 - data_fetcher - INFO - Fetched 401 candles for EUR_GBP
+2025-05-14 18:40:31,742 - data_fetcher - INFO - Calculating features for EUR_GBP
+2025-05-14 18:40:31,767 - data_fetcher - INFO - Calculated 147 features for EUR_GBP
+2025-05-14 18:40:31,767 - data_fetcher - INFO - Getting latest features for EUR_CHF
+2025-05-14 18:40:31,767 - data_fetcher - INFO - Fetching price data for EUR_CHF
+2025-05-14 18:40:31,877 - data_fetcher - INFO - Fetched 401 candles for EUR_CHF
+2025-05-14 18:40:31,877 - data_fetcher - INFO - Calculating features for EUR_CHF
+2025-05-14 18:40:31,902 - data_fetcher - INFO - Calculated 147 features for EUR_CHF
+2025-05-14 18:40:31,902 - data_fetcher - INFO - Getting latest features for EUR_AUD
+2025-05-14 18:40:31,902 - data_fetcher - INFO - Fetching price data for EUR_AUD
+2025-05-14 18:40:31,971 - data_fetcher - INFO - Fetched 401 candles for EUR_AUD
+2025-05-14 18:40:31,971 - data_fetcher - INFO - Calculating features for EUR_AUD
+2025-05-14 18:40:31,997 - data_fetcher - INFO - Calculated 147 features for EUR_AUD
+2025-05-14 18:40:31,997 - data_fetcher - INFO - Getting latest features for EUR_CAD
+2025-05-14 18:40:31,997 - data_fetcher - INFO - Fetching price data for EUR_CAD
+2025-05-14 18:40:32,067 - data_fetcher - INFO - Fetched 401 candles for EUR_CAD
+2025-05-14 18:40:32,067 - data_fetcher - INFO - Calculating features for EUR_CAD
+2025-05-14 18:40:32,092 - data_fetcher - INFO - Calculated 147 features for EUR_CAD
+2025-05-14 18:40:32,092 - data_fetcher - INFO - Getting latest features for GBP_CHF
+2025-05-14 18:40:32,092 - data_fetcher - INFO - Fetching price data for GBP_CHF
+2025-05-14 18:40:32,162 - data_fetcher - INFO - Fetched 401 candles for GBP_CHF
+2025-05-14 18:40:32,162 - data_fetcher - INFO - Calculating features for GBP_CHF
+2025-05-14 18:40:32,187 - data_fetcher - INFO - Calculated 147 features for GBP_CHF
+2025-05-14 18:40:32,187 - data_fetcher - INFO - Getting latest features for AUD_JPY
+2025-05-14 18:40:32,187 - data_fetcher - INFO - Fetching price data for AUD_JPY
+2025-05-14 18:40:32,257 - data_fetcher - INFO - Fetched 401 candles for AUD_JPY
+2025-05-14 18:40:32,257 - data_fetcher - INFO - Calculating features for AUD_JPY
+2025-05-14 18:40:32,284 - data_fetcher - INFO - Calculated 147 features for AUD_JPY
+2025-05-14 18:40:32,284 - data_fetcher - INFO - Getting latest features for AUD_CHF
+2025-05-14 18:40:32,284 - data_fetcher - INFO - Fetching price data for AUD_CHF
+2025-05-14 18:40:32,355 - data_fetcher - INFO - Fetched 401 candles for AUD_CHF
+2025-05-14 18:40:32,355 - data_fetcher - INFO - Calculating features for AUD_CHF
+2025-05-14 18:40:32,380 - data_fetcher - INFO - Calculated 147 features for AUD_CHF
+2025-05-14 18:40:32,380 - data_fetcher - INFO - Getting latest features for CAD_JPY
+2025-05-14 18:40:32,381 - data_fetcher - INFO - Fetching price data for CAD_JPY
+2025-05-14 18:40:32,450 - data_fetcher - INFO - Fetched 401 candles for CAD_JPY
+2025-05-14 18:40:32,450 - data_fetcher - INFO - Calculating features for CAD_JPY
+2025-05-14 18:40:32,475 - data_fetcher - INFO - Calculated 147 features for CAD_JPY
+2025-05-14 18:40:32,475 - data_fetcher - INFO - Getting latest features for NZD_JPY
+2025-05-14 18:40:32,475 - data_fetcher - INFO - Fetching price data for NZD_JPY
+2025-05-14 18:40:32,549 - data_fetcher - INFO - Fetched 401 candles for NZD_JPY
+2025-05-14 18:40:32,549 - data_fetcher - INFO - Calculating features for NZD_JPY
+2025-05-14 18:40:32,575 - data_fetcher - INFO - Calculated 147 features for NZD_JPY
+2025-05-14 18:40:32,575 - data_fetcher - INFO - Getting latest features for GBP_AUD
+2025-05-14 18:40:32,575 - data_fetcher - INFO - Fetching price data for GBP_AUD
+2025-05-14 18:40:32,644 - data_fetcher - INFO - Fetched 401 candles for GBP_AUD
+2025-05-14 18:40:32,644 - data_fetcher - INFO - Calculating features for GBP_AUD
+2025-05-14 18:40:32,669 - data_fetcher - INFO - Calculated 147 features for GBP_AUD
+2025-05-14 18:40:32,669 - data_fetcher - INFO - Getting latest features for AUD_NZD
+2025-05-14 18:40:32,669 - data_fetcher - INFO - Fetching price data for AUD_NZD
+2025-05-14 18:40:32,739 - data_fetcher - INFO - Fetched 401 candles for AUD_NZD
+2025-05-14 18:40:32,739 - data_fetcher - INFO - Calculating features for AUD_NZD
+2025-05-14 18:40:32,764 - data_fetcher - INFO - Calculated 147 features for AUD_NZD
+2025-05-14 18:40:32,767 - generate_signals - INFO - Generating trading signals with RL model
+2025-05-14 18:40:32,775 - generate_signals - ERROR - Error generating trading signals: mat1 and mat2 shapes cannot be multiplied (1x2940 and 1084x256)
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/generate_signals.py", line 75, in generate_trading_signals
+    action, _ = trader.get_action(feature_tensor, training=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/policy_network.py", line 613, in get_action
+    means = self.actor(state)
+            ^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/policy_network.py", line 119, in forward
+    x = self.hidden_layers(x)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 117, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (1x2940 and 1084x256)

@@ -1,0 +1,1547 @@
+Fetching selected features per instrument...
+Fetching FX data...
+Training autoencoder on 5612 samples, 460 features (20x29)
+Input data statistics:
+EUR_USD__volume_rel_vol_13     mean=1.0475 std=0.4878 min=0.0000 max=6.4435 %zero=0.1
+EUR_USD__spread_bb_bbl_144     mean=-0.0699 std=0.0229 min=-0.1800 max=0.0000 %zero=0.1
+EUR_USD__volume_rel_vol_21     mean=1.0216 std=0.6690 min=0.0000 max=10.3313 %zero=0.1
+EUR_USD__volume_roll_max_8     mean=121597.8359 std=96860.6641 min=0.0000 max=1032876.0000 %zero=0.1
+EUR_USD__volume_bb_bbl_377     mean=-28222.9004 std=33820.4062 min=-226801.4375 max=67341.8828 %zero=0.1
+EUR_USD__volume_rel_vol_34     mean=1.0843 std=0.8682 min=0.0000 max=14.4212 %zero=0.1
+EUR_USD__close_roll_max_8      mean=133.1350 std=17.8457 min=0.0000 max=175.1320 %zero=0.1
+EUR_USD__volume_rel_vol_55     mean=1.1061 std=0.9604 min=0.0000 max=10.0053 %zero=0.1
+EUR_USD__spread_bb_bbl_21      mean=-0.0609 std=0.0346 min=-0.2141 max=0.0000 %zero=0.1
+EUR_USD__mid_close_adx_55      mean=0.9956 std=0.3734 min=0.0000 max=2.4611 %zero=11.3
+EUR_USD__spread_roc_144        mean=-0.3653 std=0.6731 min=-0.9995 max=10.1111 %zero=16.0
+EUR_USD__volume_rel_vol_2      mean=1.0077 std=0.3145 min=0.0000 max=1.9614 %zero=0.1
+EUR_USD__volume_bb_bbl_13      mean=-13418.7500 std=33144.5664 min=-284729.3438 max=113986.8594 %zero=0.1
+EUR_USD__volume_rel_vol_5      mean=0.9935 std=0.3822 min=0.0000 max=3.8046 %zero=0.1
+EUR_USD__volume_rel_vol_89     mean=1.0398 std=0.7557 min=0.0000 max=8.2229 %zero=0.1
+EUR_USD__bid_close_williams_r_2 mean=-99.9429 std=2.3114 min=-100.0000 max=0.0000 %zero=0.1
+EUR_USD__volume_bb_bbl_34      mean=-20604.1602 std=34558.3398 min=-245639.9844 max=86003.1328 %zero=0.1
+EUR_USD__spread_bb_bbl_89      mean=-0.0677 std=0.0254 min=-0.1823 max=0.0000 %zero=0.1
+EUR_USD__spread_bb_bbh_55      mean=0.1070 std=0.0491 min=0.0000 max=0.3815 %zero=0.1
+EUR_USD__volume_rel_vol_3      mean=1.1505 std=0.4250 min=0.0000 max=2.8956 %zero=0.1
+EUR_USD__mid_close_adx_21      mean=3.0868 std=0.6682 min=0.0000 max=5.4369 %zero=4.1
+EUR_USD__bid_low_bb_bbl_2      mean=-118.7388 std=16.2635 min=-157.3357 max=0.0000 %zero=0.1
+EUR_USD__volume_roll_max_2     mean=79068.9609 std=80491.6953 min=0.0000 max=629582.0000 %zero=0.1
+USD_JPY__ask_close_bb_bbh_3    mean=161.8015 std=28.7512 min=0.0000 max=240.1129 %zero=0.1
+USD_JPY__volume_rel_vol_89     mean=0.8362 std=0.5134 min=0.0000 max=4.0337 %zero=0.1
+USD_JPY__mid_high_div_ask_high mean=0.9999 std=0.0002 min=0.9981 max=1.0000 %zero=0.0
+USD_JPY__volume_rel_vol_55     mean=0.8337 std=0.5290 min=0.0000 max=3.4527 %zero=0.1
+USD_JPY__spread_bb_bbl_233     mean=-0.0711 std=0.0228 min=-0.1927 max=0.0000 %zero=0.1
+USD_JPY__volume_bb_bbl_233     mean=-28107.9062 std=33706.4062 min=-217687.4531 max=52017.1797 %zero=0.1
+USD_JPY__volume_rel_vol_8      mean=0.8501 std=0.4027 min=0.0000 max=3.7699 %zero=0.1
+USD_JPY__mid_close_adx_55      mean=1.0233 std=0.3706 min=0.0000 max=2.4991 %zero=10.6
+USD_JPY__volume_roll_max_5     mean=87878.9453 std=78917.7031 min=0.0000 max=1081787.0000 %zero=0.1
+USD_JPY__volume_rel_vol_3      mean=1.2231 std=0.4119 min=0.0000 max=2.8433 %zero=0.1
+USD_JPY__volume_rel_vol_21     mean=0.8085 std=0.4028 min=0.0000 max=2.4941 %zero=0.1
+USD_JPY__volume_roll_min_2     mean=27027.0449 std=28763.6367 min=0.0000 max=481534.0000 %zero=0.1
+USD_JPY__volume_rel_vol_13     mean=0.8283 std=0.3886 min=0.0000 max=5.7627 %zero=0.1
+USD_JPY__volume_rel_vol_5      mean=1.0772 std=0.4471 min=0.0000 max=2.5355 %zero=0.1
+USD_JPY__volume_rel_vol_34     mean=0.8258 std=0.4740 min=0.0000 max=3.8055 %zero=0.1
+USD_JPY__volume_rel_vol_377    mean=0.8419 std=0.5545 min=0.0000 max=6.0499 %zero=0.1
+USD_JPY__volume_roll_min_5     mean=22948.9609 std=25536.7852 min=0.0000 max=296450.0000 %zero=0.1
+USD_JPY__spread_bb_bbl_89      mean=-0.0711 std=0.0256 min=-0.1927 max=0.0000 %zero=0.1
+USD_JPY__spread_roll_max_8     mean=0.1311 std=0.0948 min=0.0000 max=0.6000 %zero=0.1
+USD_JPY__mid_close_williams_r_3 mean=-0.3859 std=0.4171 min=-4.3893 max=0.0000 %zero=2.1
+USD_JPY__volume_bb_bbm_377     mean=61940.3672 std=44052.6055 min=0.0000 max=317917.2188 %zero=0.1
+USD_JPY__ask_high_bb_bbl_5     mean=-65.9342 std=11.0335 min=-103.2476 max=0.0000 %zero=0.1
+USD_JPY__vol_x_spread_233      mean=1711.1058 std=1459.9144 min=0.0000 max=18865.5859 %zero=0.1
+GBP_USD__mid_close_adx_34      mean=1.8301 std=0.5020 min=0.0000 max=3.1980 %zero=6.5
+GBP_USD__volume_rel_vol_89     mean=0.8176 std=0.4576 min=0.0000 max=5.4442 %zero=0.0
+GBP_USD__volume_rel_vol_55     mean=0.8282 std=0.5225 min=0.0000 max=4.5730 %zero=0.0
+GBP_USD__spread_bb_bbl_144     mean=-0.0707 std=0.0226 min=-0.2296 max=0.0000 %zero=0.0
+GBP_USD__volume_roll_min_2     mean=53618.8398 std=60691.1133 min=0.0000 max=711858.0000 %zero=0.0
+GBP_USD__volume_rel_vol_13     mean=0.7270 std=0.2840 min=0.0000 max=2.3166 %zero=0.0
+GBP_USD__volume_roll_max_5     mean=157107.4844 std=122210.0859 min=0.0000 max=1350782.0000 %zero=0.0
+GBP_USD__volume_rel_vol_2      mean=0.6670 std=0.2264 min=0.0000 max=1.9333 %zero=0.0
+GBP_USD__volume_bb_bbl_233     mean=-28140.3730 std=34078.1914 min=-220144.6406 max=67419.0625 %zero=0.0
+GBP_USD__volume_rel_vol_34     mean=0.7959 std=0.4351 min=0.0000 max=3.8075 %zero=0.0
+GBP_USD__spread_bb_bbl_55      mean=-0.0639 std=0.0294 min=-0.2296 max=0.0000 %zero=0.0
+GBP_USD__volume_roll_max_3     mean=127943.7109 std=96782.3281 min=0.0000 max=1350782.0000 %zero=0.0
+GBP_USD__spread_bb_bbl_21      mean=-0.0614 std=0.0346 min=-0.2363 max=0.0000 %zero=0.0
+GBP_USD__mid_close_adx_13      mean=5.6823 std=0.9170 min=0.0000 max=10.0880 %zero=2.3
+GBP_USD__mid_high_bb_bbm_2     mean=82.9746 std=16.0005 min=0.0000 max=126.5869 %zero=0.0
+GBP_USD__volume_bb_bbl_21      mean=-19509.4316 std=37467.6641 min=-361789.4062 max=117708.2656 %zero=0.0
+GBP_USD__volume_rel_vol_21     mean=0.7862 std=0.3380 min=0.0000 max=2.9142 %zero=0.0
+GBP_USD__spread_bb_bbh_377     mean=0.1186 std=0.0339 min=0.0000 max=0.4338 %zero=0.0
+GBP_USD__volume_roll_min_5     mean=41758.4102 std=38340.8125 min=0.0000 max=327857.0000 %zero=0.0
+GBP_USD__volume_bb_bbl_13      mean=-17856.7402 std=43108.0938 min=-253046.4688 max=152731.9844 %zero=0.0
+GBP_USD__bid_open_roll_max_89  mean=164.6436 std=31.8996 min=0.0000 max=250.3950 %zero=0.0
+GBP_USD__spread_bb_bbl_34      mean=-0.0603 std=0.0312 min=-0.2296 max=0.0000 %zero=0.0
+GBP_USD__close_roll_min_13     mean=0.7526 std=0.0857 min=0.0000 max=1.9837 %zero=0.0
+AUD_USD__volume_bb_bbl_377     mean=-28731.0449 std=33758.3906 min=-216805.2656 max=91329.5703 %zero=0.0
+AUD_USD__volume_rel_vol_89     mean=0.5050 std=0.4263 min=0.0000 max=7.2452 %zero=0.0
+AUD_USD__volume_rel_vol_34     mean=0.6371 std=0.9811 min=0.0000 max=7.4077 %zero=0.0
+AUD_USD__volume_rel_vol_13     mean=0.5767 std=0.5608 min=0.0000 max=3.9839 %zero=0.0
+AUD_USD__volume_rel_vol_55     mean=0.5275 std=0.5093 min=0.0000 max=7.2452 %zero=0.0
+AUD_USD__spread_bb_bbl_377     mean=-0.0710 std=0.0221 min=-0.1574 max=0.0001 %zero=0.0
+AUD_USD__volume_rel_vol_21     mean=0.6661 std=0.8421 min=0.0000 max=6.3933 %zero=0.0
+AUD_USD__volume_roll_min_2     mean=24849.2773 std=27871.8457 min=0.0000 max=552666.0000 %zero=0.0
+AUD_USD__bid_close_bb_bbl_3    mean=-68.9812 std=7.9435 min=-87.9733 max=0.4701 %zero=0.0
+AUD_USD__spread_bb_bbl_21      mean=-0.0603 std=0.0354 min=-0.2272 max=0.0001 %zero=0.0
+AUD_USD__volume_roll_max_3     mean=88548.7969 std=68664.3594 min=0.0000 max=751928.0000 %zero=0.0
+AUD_USD__volume_roll_min_5     mean=21510.9785 std=24809.9023 min=0.0000 max=300366.0000 %zero=0.0
+AUD_USD__spread_bb_bbl_144     mean=-0.0706 std=0.0232 min=-0.1768 max=0.0001 %zero=0.0
+AUD_USD__mid_high_div_mid_low  mean=1.0103 std=0.0074 min=1.0000 max=1.1158 %zero=0.0
+AUD_USD__volume_rel_vol_2      mean=0.6756 std=0.3794 min=0.0000 max=1.7866 %zero=0.0
+AUD_USD__volume_rel_vol_5      mean=0.5164 std=0.2658 min=0.0000 max=1.5459 %zero=0.0
+AUD_USD__volume_rel_vol_8      mean=0.6138 std=0.3619 min=0.0000 max=2.4661 %zero=0.0
+AUD_USD__spread_bb_bbl_34      mean=-0.0658 std=0.0343 min=-0.2251 max=0.0001 %zero=0.0
+AUD_USD__mid_close_williams_r_3 mean=-99.8168 std=4.2173 min=-100.0000 max=0.0000 %zero=0.2
+AUD_USD__mid_close_adx_34      mean=1.7735 std=0.4856 min=0.0000 max=3.1747 %zero=6.5
+AUD_USD__volume_bb_bbl_55      mean=-25004.8066 std=35017.4883 min=-251304.5938 max=91329.5703 %zero=0.0
+AUD_USD__volume_roll_max_5     mean=98310.3047 std=82357.1875 min=0.0000 max=1081787.0000 %zero=0.0
+AUD_USD__mid_close_adx_144     mean=0.3752 std=0.2811 min=0.0000 max=1.7824 %zero=28.5
+USD_CHF__volume_rel_vol_21     mean=0.4955 std=0.3165 min=0.0000 max=3.7035 %zero=0.1
+USD_CHF__volume_rel_vol_13     mean=0.4924 std=0.3084 min=0.0000 max=3.1697 %zero=0.1
+USD_CHF__volume_roll_min_8     mean=23365.0625 std=25287.5742 min=0.0000 max=296450.0000 %zero=0.1
+USD_CHF__volume_rel_vol_2      mean=0.8218 std=0.3656 min=0.0000 max=1.9812 %zero=0.1
+USD_CHF__volume_roll_max_5     mean=83842.7969 std=67877.4219 min=0.0000 max=1350782.0000 %zero=0.1
+USD_CHF__volume_roll_max_8     mean=156822.7656 std=122391.1875 min=0.0000 max=1350782.0000 %zero=0.1
+USD_CHF__mid_close_adx_55      mean=0.9995 std=0.3636 min=0.0000 max=2.4596 %zero=10.5
+USD_CHF__volume_rel_vol_89     mean=0.5120 std=0.4126 min=0.0000 max=3.6769 %zero=0.1
+USD_CHF__volume_roll_max_3     mean=50419.9102 std=45200.2305 min=0.0000 max=1012467.0000 %zero=0.1
+USD_CHF__volume_rel_vol_34     mean=0.5081 std=0.4010 min=0.0000 max=5.9822 %zero=0.1
+USD_CHF__mid_close_adx_13      mean=5.1374 std=0.8438 min=0.0000 max=8.7419 %zero=2.4
+USD_CHF__spread_bb_bbl_34      mean=-0.0647 std=0.0355 min=-0.2461 max=0.0002 %zero=0.1
+USD_CHF__mid_close_adx_89      mean=0.5667 std=0.2940 min=0.0000 max=2.0074 %zero=17.8
+USD_CHF__volume_rel_vol_55     mean=0.5112 std=0.4399 min=0.0000 max=3.6658 %zero=0.1
+USD_CHF__vol_x_spread_377      mean=1695.0067 std=1416.2858 min=0.0000 max=18025.2969 %zero=0.1
+USD_CHF__spread_roll_max_8     mean=0.1308 std=0.0950 min=0.0000 max=0.6000 %zero=0.1
+USD_CHF__volume_bb_bbh_233     mean=152182.6562 std=99595.0156 min=0.0000 max=881742.8125 %zero=0.1
+USD_CHF__volume_rel_vol_233    mean=0.5077 std=0.3995 min=0.0000 max=3.0741 %zero=0.1
+USD_CHF__mid_low               mean=0.9959 std=0.1161 min=0.7069 max=1.3185 %zero=0.0
+USD_CHF__volume_roc_377        mean=350.5150 std=3467.7935 min=-1.0000 max=93109.0000 %zero=37.8
+USD_CHF__volume_bb_bbl_13      mean=-21701.3691 std=42970.3828 min=-296267.4062 max=133531.2188 %zero=0.1
+USD_CHF__mid_close_williams_r_2 mean=-78.6231 std=36.8805 min=-100.0000 max=0.0000 %zero=0.4
+USD_CHF__spread_bb_bbl_377     mean=-0.0713 std=0.0224 min=-0.2107 max=0.0002 %zero=0.1
+USD_CAD__volume_rel_vol_89     mean=0.7102 std=0.3992 min=0.0000 max=2.6516 %zero=0.0
+USD_CAD__volume_rel_vol_34     mean=0.6718 std=0.3469 min=0.0000 max=3.0996 %zero=0.0
+USD_CAD__spread_bb_bbl_377     mean=-0.0714 std=0.0224 min=-0.2119 max=0.0005 %zero=0.0
+USD_CAD__volume_rel_vol_21     mean=0.6718 std=0.3105 min=0.0000 max=2.0599 %zero=0.0
+USD_CAD__spread_bb_bbl_144     mean=-0.0717 std=0.0240 min=-0.2119 max=0.0005 %zero=0.0
+USD_CAD__volume_rel_vol_13     mean=0.6292 std=0.2660 min=0.0000 max=2.5366 %zero=0.0
+USD_CAD__volume_roll_max_3     mean=76807.3047 std=55937.5859 min=0.0000 max=584290.0000 %zero=0.0
+USD_CAD__volume_roll_max_8     mean=157157.9688 std=122098.8906 min=0.0000 max=1350782.0000 %zero=0.0
+USD_CAD__spread_roll_min_8     mean=0.0004 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+USD_CAD__volume_rel_vol_8      mean=0.5843 std=0.2424 min=0.0000 max=2.0499 %zero=0.0
+USD_CAD__volume_rel_vol_3      mean=0.8168 std=0.2861 min=0.0000 max=2.0582 %zero=0.0
+USD_CAD__volume_bb_bbl_34      mean=-20809.6289 std=38305.6914 min=-272544.3750 max=111391.7578 %zero=0.0
+USD_CAD__spread_bb_bbl_89      mean=-0.0716 std=0.0256 min=-0.2119 max=0.0005 %zero=0.0
+USD_CAD__ask_open_bb_bbl_3     mean=-60.6787 std=8.4202 min=-79.3776 max=0.5190 %zero=0.0
+USD_CAD__volume_bb_bbh_144     mean=150631.8750 std=98774.1484 min=0.0000 max=926247.5625 %zero=0.0
+USD_CAD__volume_rel_vol_5      mean=0.6780 std=0.2472 min=0.0000 max=2.2222 %zero=0.0
+USD_CAD__volume_roll_min_3     mean=31728.8945 std=28518.2578 min=0.0000 max=334960.0000 %zero=0.0
+USD_CAD__bid_close_williams_r_2 mean=-1.0786 std=1.1416 min=-11.6766 max=0.0000 %zero=2.6
+USD_CAD__mid_close_adx_13      mean=5.2824 std=0.8546 min=0.0000 max=8.9302 %zero=2.3
+USD_CAD__ask_open_div_bid_open mean=1.0006 std=0.0003 min=1.0000 max=1.0026 %zero=0.0
+USD_CAD__spread_roll_min_5     mean=0.0005 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+USD_CAD__volume_rel_vol_55     mean=0.7136 std=0.4366 min=0.0000 max=3.1011 %zero=0.0
+USD_CAD__bid_close_adx_233     mean=0.2518 std=0.2757 min=0.0000 max=1.6507 %zero=46.4
+NZD_USD__bid_close_ema_2       mean=21.5357 std=2.8680 min=0.0000 max=28.6024 %zero=0.1
+NZD_USD__ask_close_adx_55      mean=1.0176 std=0.3711 min=0.0000 max=2.4949 %zero=10.7
+NZD_USD__volume_rel_vol_2      mean=0.6317 std=0.2489 min=0.0000 max=1.6000 %zero=0.1
+NZD_USD__spread_roc_144        mean=-0.0650 std=0.9306 min=-1.0000 max=15.6667 %zero=15.8
+NZD_USD__spread_bb_bbh_377     mean=0.1203 std=0.0353 min=0.0000 max=0.4399 %zero=0.1
+NZD_USD__volume_rel_vol_89     mean=0.5721 std=0.3666 min=0.0000 max=3.0055 %zero=0.1
+NZD_USD__volume_rel_vol_21     mean=0.5491 std=0.2625 min=0.0000 max=2.6199 %zero=0.1
+NZD_USD__volume_bb_bbh_34      mean=149893.7188 std=105468.9844 min=0.0000 max=973747.9375 %zero=0.1
+NZD_USD__volume_roll_min_3     mean=31629.7188 std=29140.3652 min=0.0000 max=334960.0000 %zero=0.1
+NZD_USD__spread_roll_min_8     mean=0.0004 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+NZD_USD__volume_roc_55         mean=247.8040 std=2518.7610 min=-1.0000 max=84731.0000 %zero=5.7
+NZD_USD__volume_rel_vol_34     mean=0.5545 std=0.3346 min=0.0000 max=4.2293 %zero=0.1
+NZD_USD__volume_rel_vol_55     mean=0.5742 std=0.4117 min=0.0000 max=3.9661 %zero=0.1
+NZD_USD__volume_bb_bbl_13      mean=-15137.4971 std=42806.7031 min=-250327.4062 max=156868.6406 %zero=0.1
+NZD_USD__vol_x_spread_233      mean=1732.4323 std=1487.6276 min=0.0000 max=24017.6934 %zero=0.1
+NZD_USD__spread_bb_bbl_89      mean=-0.0717 std=0.0256 min=-0.2113 max=0.0000 %zero=0.1
+NZD_USD__volume_bb_bbl_55      mean=-24110.0391 std=36465.8750 min=-243334.9844 max=74749.3984 %zero=0.1
+NZD_USD__ask_open_div_bid_open mean=1.0014 std=0.0008 min=1.0000 max=1.0071 %zero=0.0
+NZD_USD__volume_rel_vol_3      mean=0.6342 std=0.2331 min=0.0000 max=2.0000 %zero=0.1
+NZD_USD__spread_bb_bbl_55      mean=-0.0670 std=0.0316 min=-0.2126 max=0.0000 %zero=0.1
+NZD_USD__volume_bb_bbl_233     mean=-27937.6875 std=33893.5977 min=-217194.0312 max=61061.6016 %zero=0.1
+NZD_USD__bid_close_bb_bbl_2    mean=-68.0167 std=9.3602 min=-89.1298 max=0.0000 %zero=0.1
+NZD_USD__ask_close_williams_r_5 mean=-99.7658 std=4.8073 min=-100.0000 max=0.0000 %zero=0.2
+EUR_JPY__mid_low               mean=132.5433 std=17.5433 min=94.1195 max=174.3925 %zero=0.0
+EUR_JPY__volume_rel_vol_21     mean=1.0899 std=0.7904 min=0.0000 max=5.5356 %zero=0.2
+EUR_JPY__ask_close_bb_bbl_8    mean=-76.4031 std=10.6870 min=-146.8742 max=0.0000 %zero=0.2
+EUR_JPY__volume_rel_vol_34     mean=1.1535 std=0.9695 min=0.0000 max=6.4007 %zero=0.2
+EUR_JPY__spread_bb_bbl_233     mean=-0.0699 std=0.0226 min=-0.1630 max=0.0000 %zero=0.2
+EUR_JPY__volume_rel_vol_13     mean=1.1156 std=0.6169 min=0.0000 max=6.3948 %zero=0.2
+EUR_JPY__volume_rel_vol_55     mean=1.1400 std=0.9350 min=0.0000 max=6.7477 %zero=0.2
+EUR_JPY__volume_roll_min_8     mean=22403.9863 std=23786.5488 min=0.0000 max=213112.0000 %zero=0.2
+EUR_JPY__mid_high_div_ask_high mean=0.9999 std=0.0001 min=0.9986 max=1.0000 %zero=0.0
+EUR_JPY__volume_bb_bbl_377     mean=-28392.3535 std=33826.5234 min=-231342.5625 max=64285.5000 %zero=0.2
+EUR_JPY__volume_rel_vol_3      mean=1.3254 std=0.3537 min=0.0000 max=2.9016 %zero=0.2
+EUR_JPY__volume_rel_vol_5      mean=1.0322 std=0.4835 min=0.0000 max=4.2228 %zero=0.2
+EUR_JPY__volume_roll_min_3     mean=30396.3965 std=33453.8008 min=0.0000 max=329920.0000 %zero=0.2
+EUR_JPY__close_roll_max_13     mean=133.1822 std=19.4598 min=0.0000 max=243.9460 %zero=0.2
+EUR_JPY__volume_rel_vol_2      mean=1.1863 std=0.2399 min=0.0000 max=1.9386 %zero=0.2
+EUR_JPY__spread_roll_min_8     mean=0.0004 std=0.0003 min=0.0000 max=0.0020 %zero=0.3
+EUR_JPY__spread_roll_min_5     mean=0.0005 std=0.0003 min=0.0000 max=0.0020 %zero=0.3
+EUR_JPY__vol_x_spread_144      mean=1667.7473 std=1442.6698 min=0.0000 max=16251.4668 %zero=0.2
+EUR_JPY__ask_low_div_bid_low   mean=1.0003 std=0.0003 min=1.0001 max=1.0023 %zero=0.0
+EUR_JPY__bid_close_williams_r_144 mean=-16.0534 std=9.1978 min=-37.4653 max=0.0000 %zero=14.4
+EUR_JPY__spread_bb_bbm_144     mean=0.0239 std=0.0069 min=0.0000 max=0.0639 %zero=0.2
+EUR_JPY__ask_close_bb_bbm_2    mean=66.8762 std=9.3870 min=0.0000 max=88.0060 %zero=0.2
+EUR_JPY__close_roll_max_34     mean=162.8234 std=32.7684 min=0.0000 max=250.4080 %zero=0.2
+GBP_JPY__volume_roll_min_8     mean=28296.9238 std=28799.7539 min=1.0000 max=306989.0000 %zero=0.0
+GBP_JPY__volume_rel_vol_55     mean=1.7730 std=1.1831 min=0.0000 max=8.8664 %zero=0.0
+GBP_JPY__volume_bb_bbl_144     mean=-27585.8730 std=34087.0195 min=-220351.2969 max=70210.8047 %zero=0.0
+GBP_JPY__volume_rel_vol_89     mean=1.7430 std=1.0114 min=0.0000 max=6.5763 %zero=0.0
+GBP_JPY__spread_roll_min_2     mean=0.0011 std=0.0007 min=0.0000 max=0.0050 %zero=0.0
+GBP_JPY__bid_open_bb_bbh_3     mean=242.6765 std=47.2107 min=173.2745 max=395.1682 %zero=0.0
+GBP_JPY__volume_rel_vol_34     mean=1.7209 std=0.9912 min=0.0000 max=7.5940 %zero=0.0
+GBP_JPY__ask_low_roll_min_8    mean=0.8238 std=0.0791 min=0.6538 max=2.0456 %zero=0.0
+GBP_JPY__volume_bb_bbl_55      mean=-24574.1465 std=36764.0781 min=-231994.8750 max=72531.6172 %zero=0.0
+GBP_JPY__volume_bb_bbh_233     mean=153768.7969 std=101214.0156 min=5.6720 max=1099499.5000 %zero=0.0
+GBP_JPY__volume_roll_min_2     mean=72355.1172 std=49994.6172 min=1.0000 max=711858.0000 %zero=0.0
+GBP_JPY__spread_roll_min_8     mean=0.0004 std=0.0003 min=0.0000 max=0.0020 %zero=0.1
+GBP_JPY__spread_bb_bbl_233     mean=-0.0707 std=0.0221 min=-0.2330 max=-0.0130 %zero=0.0
+GBP_JPY__mid_high_div_ask_high mean=0.9998 std=0.0002 min=0.9986 max=1.0000 %zero=0.0
+GBP_JPY__mid_close_adx_13      mean=5.8524 std=0.9638 min=0.0000 max=7.9702 %zero=2.5
+GBP_JPY__volume_rel_vol_2      mean=1.0229 std=0.2888 min=0.0200 max=1.8545 %zero=0.0
+GBP_JPY__mid_low_bb_bbm_13     mean=37.3418 std=5.2843 min=26.0707 max=102.7636 %zero=0.0
+GBP_JPY__volume_rel_vol_3      mean=1.0378 std=0.3973 min=0.0162 max=2.2625 %zero=0.0
+GBP_JPY__volume_rel_vol_5      mean=1.1881 std=0.4366 min=0.0226 max=2.5639 %zero=0.0
+GBP_JPY__volume_rel_vol_21     mean=1.6261 std=0.7147 min=0.0000 max=4.6905 %zero=0.0
+GBP_JPY__volume_roll_max_8     mean=160120.2500 std=123912.4062 min=1.0000 max=1032876.0000 %zero=0.0
+GBP_JPY__ask_close_williams_r_5 mean=-0.4626 std=0.5502 min=-12.7580 max=0.0000 %zero=2.4
+GBP_JPY__spread_roll_min_5     mean=0.0004 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+EUR_GBP__ask_close_ema_2       mean=1.7577 std=0.1048 min=0.0000 max=2.0301 %zero=0.1
+EUR_GBP__volume_bb_bbl_377     mean=-28438.7090 std=33771.4258 min=-231149.6094 max=66444.4922 %zero=0.1
+EUR_GBP__volume_rel_vol_13     mean=0.7408 std=0.4387 min=0.0000 max=4.4260 %zero=0.1
+EUR_GBP__mid_close_adx_34      mean=1.6996 std=0.4871 min=0.0000 max=3.0476 %zero=7.0
+EUR_GBP__volume_roll_min_3     mean=29131.0508 std=29263.9512 min=0.0000 max=284114.0000 %zero=0.1
+EUR_GBP__volume_roll_max_5     mean=112552.6250 std=89540.2969 min=0.0000 max=1032876.0000 %zero=0.1
+EUR_GBP__volume_rel_vol_34     mean=0.7485 std=0.7799 min=0.0000 max=7.3911 %zero=0.1
+EUR_GBP__bid_close_adx_89      mean=0.5624 std=0.2907 min=0.0000 max=2.0001 %zero=17.6
+EUR_GBP__volume_roll_max_2     mean=39240.2852 std=39040.5820 min=0.0000 max=548423.0000 %zero=0.1
+EUR_GBP__volume_rel_vol_55     mean=0.7282 std=0.6896 min=0.0000 max=7.8005 %zero=0.1
+EUR_GBP__volume_rel_vol_3      mean=0.7021 std=0.3336 min=0.0000 max=2.8448 %zero=0.1
+EUR_GBP__vol_x_spread_89       mean=1617.8101 std=1431.5652 min=0.0000 max=18063.6875 %zero=0.1
+EUR_GBP__spread_roc_89         mean=-0.7490 std=0.6347 min=-1.0000 max=10.1111 %zero=9.7
+EUR_GBP__spread_bb_bbl_89      mean=-0.0679 std=0.0258 min=-0.1824 max=0.0011 %zero=0.1
+EUR_GBP__ask_close_bb_bbm_5    mean=19.3418 std=2.3904 min=0.0000 max=25.6443 %zero=0.1
+EUR_GBP__spread_bb_bbh_13      mean=0.0762 std=0.0477 min=0.0000 max=0.3628 %zero=0.1
+EUR_GBP__volume_rel_vol_21     mean=0.7171 std=0.6191 min=0.0000 max=7.1362 %zero=0.1
+EUR_GBP__volume_bb_bbl_13      mean=-15320.4531 std=32434.3477 min=-318967.2500 max=112239.8750 %zero=0.1
+EUR_GBP__spread_bb_bbh_144     mean=0.1168 std=0.0359 min=0.0000 max=0.2924 %zero=0.1
+EUR_GBP__volume_rel_vol_8      mean=0.6755 std=0.3599 min=0.0000 max=7.2607 %zero=0.1
+EUR_GBP__volume_bb_bbl_21      mean=-22330.8672 std=37496.8086 min=-312581.2500 max=97633.2578 %zero=0.1
+EUR_GBP__volume_roll_min_8     mean=22447.0586 std=23780.9082 min=0.0000 max=213112.0000 %zero=0.1
+EUR_GBP__mid_open_div_ask_open mean=0.9995 std=0.0003 min=0.9980 max=1.0000 %zero=0.0
+EUR_CHF__low_ema_3             mean=7.8049 std=0.8528 min=0.0000 max=10.4424 %zero=0.0
+EUR_CHF__volume_rel_vol_21     mean=0.7204 std=0.7833 min=0.0000 max=8.5187 %zero=0.0
+EUR_CHF__vol_x_spread_55       mean=1738.9369 std=1605.4595 min=0.0000 max=19749.5449 %zero=0.0
+EUR_CHF__volume_rel_vol_13     mean=0.7083 std=0.5825 min=0.0000 max=5.2827 %zero=0.0
+EUR_CHF__ask_open_bb_bbh_5     mean=100.3370 std=12.8568 min=0.0000 max=144.6846 %zero=0.0
+EUR_CHF__volume_rel_vol_34     mean=0.7569 std=0.9853 min=0.0000 max=9.3177 %zero=0.0
+EUR_CHF__spread_roll_min_2     mean=0.0006 std=0.0004 min=0.0000 max=0.0035 %zero=0.1
+EUR_CHF__volume_rel_vol_5      mean=0.6327 std=0.4094 min=0.0000 max=3.5329 %zero=0.0
+EUR_CHF__volume_bb_bbl_377     mean=-28463.0469 std=33973.4258 min=-230525.1250 max=62344.1719 %zero=0.0
+EUR_CHF__volume_rel_vol_89     mean=0.6730 std=0.6935 min=0.0000 max=10.4199 %zero=0.0
+EUR_CHF__spread_roll_min_55    mean=0.0002 std=0.0001 min=0.0000 max=0.0015 %zero=0.2
+EUR_CHF__volume_roll_min_8     mean=22292.1680 std=24078.1309 min=0.0000 max=211188.0000 %zero=0.0
+EUR_CHF__volume_bb_bbh_377     mean=152073.2031 std=99326.7656 min=0.0000 max=847519.5000 %zero=0.0
+EUR_CHF__volume_bb_bbh_13      mean=121889.5625 std=90221.6094 min=0.0000 max=953479.6250 %zero=0.0
+EUR_CHF__spread_roll_max_8     mean=0.0813 std=0.0556 min=0.0000 max=0.4080 %zero=0.0
+EUR_CHF__mid_close_adx_89      mean=0.5661 std=0.2924 min=0.0000 max=2.0071 %zero=17.7
+EUR_CHF__mid_high_div_ask_high mean=0.9998 std=0.0001 min=0.9983 max=1.0000 %zero=0.0
+EUR_CHF__mid_close_adx_55      mean=0.9822 std=0.3661 min=0.0000 max=2.4310 %zero=11.1
+EUR_CHF__volume_roll_max_5     mean=112326.9141 std=89386.1797 min=0.0000 max=1032876.0000 %zero=0.0
+EUR_CHF__spread_roll_min_5     mean=0.0004 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+EUR_CHF__mid_close_williams_r_2 mean=-78.9566 std=38.2668 min=-100.0000 max=0.0000 %zero=0.4
+EUR_CHF__spread_bb_bbl_55      mean=-0.0674 std=0.0302 min=-0.2127 max=0.0010 %zero=0.0
+EUR_CHF__spread_bb_bbh_13      mean=0.1060 std=0.0658 min=0.0000 max=0.3656 %zero=0.0
+EUR_AUD__volume_rel_vol_21     mean=1.1229 std=1.0752 min=0.0000 max=8.0338 %zero=0.1
+EUR_AUD__ask_high_div_bid_high mean=1.0005 std=0.0005 min=1.0001 max=1.0035 %zero=0.0
+EUR_AUD__volume_rel_vol_89     mean=0.9758 std=0.7023 min=0.0000 max=8.9356 %zero=0.1
+EUR_AUD__spread_roll_min_8     mean=0.0003 std=0.0002 min=0.0000 max=0.0020 %zero=0.2
+EUR_AUD__bid_high_bb_bbl_2     mean=-81.2985 std=10.4184 min=-109.8877 max=0.0000 %zero=0.1
+EUR_AUD__volume_rel_vol_13     mean=1.0699 std=0.7296 min=0.0000 max=5.0006 %zero=0.1
+EUR_AUD__spread_roll_min_3     mean=0.0005 std=0.0004 min=0.0000 max=0.0030 %zero=0.1
+EUR_AUD__volume_rel_vol_2      mean=0.8219 std=0.3672 min=0.0000 max=1.9527 %zero=0.1
+EUR_AUD__volume_roll_max_5     mean=96569.4062 std=75403.9453 min=0.0000 max=751928.0000 %zero=0.1
+EUR_AUD__volume_bb_bbl_233     mean=-27595.1641 std=33177.8320 min=-212440.8125 max=164610.2344 %zero=0.1
+EUR_AUD__volume_rel_vol_34     mean=1.1079 std=1.1959 min=0.0000 max=8.6802 %zero=0.1
+EUR_AUD__volume_roll_min_8     mean=19306.1953 std=22244.3672 min=0.0000 max=211188.0000 %zero=0.1
+EUR_AUD__spread_bb_bbh_233     mean=0.1198 std=0.0355 min=0.0000 max=0.3394 %zero=0.1
+EUR_AUD__mid_close_adx_13      mean=5.0760 std=0.9250 min=0.0000 max=7.6967 %zero=3.1
+EUR_AUD__spread_roll_max_5     mean=0.0813 std=0.0556 min=0.0000 max=0.4080 %zero=0.1
+EUR_AUD__volume_bb_bbh_233     mean=150585.0625 std=98386.8594 min=0.0000 max=823742.8750 %zero=0.1
+EUR_AUD__bid_high_div_bid_low  mean=1.0087 std=0.0062 min=1.0000 max=1.1102 %zero=0.0
+EUR_AUD__volume_roll_max_8     mean=104426.6953 std=87210.1250 min=0.0000 max=1081787.0000 %zero=0.1
+EUR_AUD__volume_bb_bbl_55      mean=-24375.8594 std=34877.5195 min=-254485.5156 max=164610.2344 %zero=0.1
+EUR_AUD__ask_open_div_bid_open mean=1.0010 std=0.0006 min=1.0000 max=1.0035 %zero=0.0
+EUR_AUD__volume_rel_vol_55     mean=1.0104 std=0.8232 min=0.0000 max=8.9356 %zero=0.1
+EUR_AUD__ask_high_bb_bbl_13    mean=-72.1596 std=12.3642 min=-107.9172 max=0.0000 %zero=0.1
+EUR_AUD__mid_close_williams_r_2 mean=-99.8678 std=3.5293 min=-100.0000 max=0.0000 %zero=0.1
+EUR_CAD__volume_rel_vol_144    mean=1.5384 std=0.8801 min=0.0000 max=6.4881 %zero=0.0
+EUR_CAD__volume_rel_vol_34     mean=1.7107 std=1.1547 min=0.0000 max=8.7883 %zero=0.0
+EUR_CAD__volume_bb_bbl_55      mean=-22992.5254 std=33310.0195 min=-244299.2656 max=120925.8281 %zero=0.0
+EUR_CAD__spread_roll_min_5     mean=0.0005 std=0.0003 min=0.0000 max=0.0025 %zero=0.1
+EUR_CAD__volume_rel_vol_21     mean=1.6132 std=0.9077 min=0.0000 max=7.5188 %zero=0.0
+EUR_CAD__spread_bb_bbl_144     mean=-0.0702 std=0.0230 min=-0.1742 max=0.0014 %zero=0.0
+EUR_CAD__volume_rel_vol_55     mean=1.6255 std=0.9562 min=0.0000 max=6.9967 %zero=0.0
+EUR_CAD__spread_bb_bbl_21      mean=-0.0608 std=0.0349 min=-0.2326 max=0.0014 %zero=0.0
+EUR_CAD__volume_bb_bbl_233     mean=-27394.2715 std=33438.2969 min=-229480.1094 max=120925.8281 %zero=0.0
+EUR_CAD__volume_bb_bbh_21      mean=147394.3125 std=106476.5000 min=0.0000 max=1105373.3750 %zero=0.0
+EUR_CAD__volume_rel_vol_13     mean=1.7483 std=0.9083 min=0.0000 max=5.6355 %zero=0.0
+EUR_CAD__spread_bb_bbl_34      mean=-0.0656 std=0.0336 min=-0.2271 max=0.0014 %zero=0.0
+EUR_CAD__bid_close_williams_r_3 mean=-99.8249 std=4.0009 min=-100.0000 max=0.0000 %zero=0.2
+EUR_CAD__spread_roll_min_13    mean=0.0003 std=0.0002 min=0.0000 max=0.0015 %zero=0.1
+EUR_CAD__volume_roll_min_34    mean=14989.3711 std=18939.1641 min=0.0000 max=141778.0000 %zero=0.0
+EUR_CAD__volume_rel_vol_8      mean=1.5354 std=0.7828 min=0.0000 max=4.4916 %zero=0.0
+EUR_CAD__ask_high_div_bid_high mean=1.0004 std=0.0004 min=1.0001 max=1.0036 %zero=0.0
+EUR_CAD__volume_rel_vol_5      mean=1.4217 std=0.4911 min=0.0000 max=4.7368 %zero=0.0
+EUR_CAD__spread_roll_max_55    mean=0.2012 std=0.1021 min=0.0000 max=0.6000 %zero=0.0
+EUR_CAD__volume_roll_max_5     mean=110739.7188 std=89525.6484 min=0.0000 max=1032876.0000 %zero=0.0
+EUR_CAD__volume_bb_bbh_377     mean=152342.1719 std=99605.4922 min=0.0000 max=853315.5000 %zero=0.0
+EUR_CAD__volume_bb_bbm_377     mean=62060.3047 std=44063.1914 min=0.0000 max=323903.5000 %zero=0.0
+EUR_CAD__ask_close_bb_bbh_21   mean=138.4542 std=20.7494 min=0.0000 max=230.8655 %zero=0.0
+GBP_CHF__volume_rel_vol_13     mean=1.5093 std=0.5604 min=0.0000 max=4.1798 %zero=0.0
+GBP_CHF__volume_rel_vol_34     mean=1.6590 std=0.9891 min=0.0000 max=7.4862 %zero=0.0
+GBP_CHF__volume_bb_bbl_89      mean=-26367.6406 std=35973.7070 min=-224683.7656 max=315025.9062 %zero=0.0
+GBP_CHF__mid_low               mean=1.5234 std=0.3847 min=1.0173 max=2.4784 %zero=0.0
+GBP_CHF__volume_roll_min_8     mean=28313.3906 std=29736.2891 min=0.0000 max=564310.0000 %zero=0.0
+GBP_CHF__bid_open_bb_bbh_8     mean=110.9558 std=15.6300 min=0.0000 max=177.3942 %zero=0.0
+GBP_CHF__volume_roll_min_3     mean=49471.8008 std=43325.4844 min=0.0000 max=564310.0000 %zero=0.0
+GBP_CHF__volume_bb_bbh_55      mean=148895.6094 std=102340.8594 min=0.0000 max=1086270.1250 %zero=0.0
+GBP_CHF__spread_bb_bbl_55      mean=-0.0612 std=0.0296 min=-0.2158 max=0.0020 %zero=0.0
+GBP_CHF__bid_close_adx_55      mean=0.9746 std=0.3665 min=0.0000 max=2.4291 %zero=11.3
+GBP_CHF__volume_rel_vol_2      mean=0.9786 std=0.3141 min=0.0000 max=1.8091 %zero=0.0
+GBP_CHF__spread_bb_bbl_233     mean=-0.0697 std=0.0226 min=-0.1635 max=0.0020 %zero=0.0
+GBP_CHF__volume_bb_bbl_21      mean=-20202.2266 std=37193.3281 min=-359127.0938 max=315025.9062 %zero=0.0
+GBP_CHF__spread_bb_bbl_13      mean=-0.0447 std=0.0278 min=-0.2277 max=0.0020 %zero=0.0
+GBP_CHF__volume_roll_max_2     mean=139017.3125 std=113950.1719 min=0.0000 max=973384.0000 %zero=0.0
+GBP_CHF__ask_close_williams_r_2 mean=-93.1331 std=17.5020 min=-100.0000 max=0.0000 %zero=0.1
+GBP_CHF__vol_x_spread_144      mean=1650.4111 std=1430.8907 min=0.0000 max=16248.2275 %zero=0.0
+GBP_CHF__volume_rel_vol_21     mean=1.5870 std=0.7423 min=0.0000 max=6.7036 %zero=0.0
+GBP_CHF__ask_close_bb_bbl_2    mean=1.1923 std=0.5751 min=0.0000 max=2.4416 %zero=0.0
+GBP_CHF__mid_close_adx_89      mean=0.5614 std=0.2918 min=0.0000 max=2.0057 %zero=17.8
+GBP_CHF__ask_high_div_bid_high mean=1.0005 std=0.0004 min=1.0001 max=1.0051 %zero=0.0
+GBP_CHF__spread_bb_bbm_144     mean=0.0235 std=0.0069 min=0.0000 max=0.0620 %zero=0.0
+GBP_CHF__volume_rel_vol_3      mean=1.0990 std=0.3347 min=0.0000 max=2.4210 %zero=0.0
+AUD_JPY__mid_low               mean=85.7932 std=9.0277 min=55.0735 max=108.7000 %zero=0.0
+AUD_JPY__spread_roll_min_5     mean=0.0004 std=0.0002 min=0.0000 max=0.0019 %zero=0.2
+AUD_JPY__volume_roll_min_2     mean=35905.2188 std=31359.3145 min=0.0000 max=300366.0000 %zero=0.1
+AUD_JPY__volume_bb_bbh_233     mean=151638.7812 std=99230.4844 min=0.0000 max=830330.1875 %zero=0.1
+AUD_JPY__spread_bb_bbl_377     mean=-0.0712 std=0.0220 min=-0.1623 max=0.0000 %zero=0.1
+AUD_JPY__volume_bb_bbl_377     mean=-28742.7734 std=33939.9414 min=-217016.2344 max=50105.6875 %zero=0.1
+AUD_JPY__volume_rel_vol_34     mean=1.6665 std=2.9344 min=0.0000 max=27.0889 %zero=0.1
+AUD_JPY__volume_roll_max_5     mean=87060.3438 std=83347.5469 min=0.0000 max=1081787.0000 %zero=0.1
+AUD_JPY__volume_roll_min_8     mean=19956.0430 std=22514.3691 min=0.0000 max=211188.0000 %zero=0.1
+AUD_JPY__ask_close_bb_bbh_2    mean=164.3864 std=18.1514 min=0.0000 max=208.3508 %zero=0.1
+AUD_JPY__spread_bb_bbh_144     mean=0.1196 std=0.0362 min=0.0000 max=0.3108 %zero=0.1
+AUD_JPY__volume_rel_vol_13     mean=1.5562 std=1.8073 min=0.0000 max=11.0428 %zero=0.1
+AUD_JPY__volume_rel_vol_21     mean=1.8180 std=2.6628 min=0.0000 max=17.6133 %zero=0.1
+AUD_JPY__volume_bb_bbl_21      mean=-18916.3379 std=36709.4609 min=-218869.1250 max=103067.5391 %zero=0.1
+AUD_JPY__spread_roll_min_13    mean=0.0003 std=0.0002 min=0.0000 max=0.0019 %zero=0.2
+AUD_JPY__volume_rel_vol_55     mean=1.2727 std=1.0440 min=0.0000 max=21.0214 %zero=0.1
+AUD_JPY__mid_high_minus_mid_low mean=1.0175 std=0.7606 min=0.0000 max=11.1265 %zero=1.5
+AUD_JPY__ask_close_bb_bbl_2    mean=-77.3188 std=8.6441 min=-98.6097 max=0.0000 %zero=0.1
+AUD_JPY__spread_bb_bbl_89      mean=-0.0718 std=0.0252 min=-0.1811 max=0.0000 %zero=0.1
+AUD_JPY__volume_rel_vol_89     mean=1.2081 std=0.8658 min=0.0000 max=21.0214 %zero=0.1
+AUD_JPY__mid_close_williams_r_2 mean=-0.5583 std=0.7065 min=-11.4575 max=0.0000 %zero=1.9
+AUD_JPY__volume_roll_max_21    mean=164274.6094 std=124162.0938 min=0.0000 max=1350782.0000 %zero=0.1
+AUD_JPY__spread_roll_max_13    mean=0.1427 std=0.0916 min=0.0000 max=0.5000 %zero=0.1
+AUD_CHF__ask_close_bb_bbh_2    mean=203.9089 std=47.8694 min=0.0000 max=458.5677 %zero=0.0
+AUD_CHF__bid_close_williams_r_2 mean=-99.7293 std=4.7754 min=-100.0000 max=0.0000 %zero=0.0
+AUD_CHF__volume_rel_vol_34     mean=1.5242 std=3.9567 min=0.0000 max=32.9579 %zero=0.0
+AUD_CHF__volume_rel_vol_89     mean=0.8540 std=0.9270 min=0.0000 max=18.1202 %zero=0.0
+AUD_CHF__spread_bb_bbl_377     mean=-0.0711 std=0.0223 min=-0.1686 max=0.0000 %zero=0.0
+AUD_CHF__volume_rel_vol_55     mean=0.9139 std=1.0843 min=0.0000 max=18.1202 %zero=0.0
+AUD_CHF__volume_rel_vol_21     mean=1.9756 std=4.3924 min=0.0000 max=20.9978 %zero=0.0
+AUD_CHF__volume_roll_min_3     mean=23117.9355 std=24878.6113 min=0.0000 max=211188.0000 %zero=0.0
+AUD_CHF__spread_roll_max_8     mean=0.1286 std=0.0924 min=0.0000 max=0.5000 %zero=0.0
+AUD_CHF__volume_roll_max_3     mean=67723.1641 std=76261.7422 min=0.0000 max=1081787.0000 %zero=0.0
+AUD_CHF__volume_rel_vol_2      mean=1.0062 std=0.5241 min=0.0000 max=2.0000 %zero=0.0
+AUD_CHF__spread_roll_min_5     mean=0.0004 std=0.0002 min=0.0000 max=0.0019 %zero=0.1
+AUD_CHF__spread_roll_min_2     mean=0.0008 std=0.0006 min=0.0000 max=0.0058 %zero=0.1
+AUD_CHF__volume_bb_bbl_13      mean=-24098.4141 std=40101.0156 min=-266652.1875 max=93540.8516 %zero=0.0
+AUD_CHF__volume_bb_bbl_377     mean=-28835.5645 std=34014.6055 min=-223076.4219 max=50089.6523 %zero=0.0
+AUD_CHF__volume_roll_min_5     mean=20147.8027 std=22734.7402 min=0.0000 max=211188.0000 %zero=0.0
+AUD_CHF__bid_close_williams_r_3 mean=-99.8024 std=3.7517 min=-100.0000 max=0.0000 %zero=0.1
+AUD_CHF__mid_low               mean=0.8023 std=0.1399 min=0.4999 max=1.0702 %zero=0.0
+AUD_CHF__mid_close_adx_21      mean=3.1234 std=0.6614 min=0.0000 max=5.0909 %zero=4.0
+AUD_CHF__mid_close_cci_233     mean=-37.2729 std=20.2419 min=-49.8622 max=0.0000 %zero=22.8
+AUD_CHF__mid_close_adx_34      mean=1.7990 std=0.4913 min=0.0000 max=3.2791 %zero=6.4
+AUD_CHF__mid_close_adx_13      mean=5.3314 std=0.8498 min=0.0000 max=8.4391 %zero=2.2
+AUD_CHF__mid_high_div_ask_high mean=0.9997 std=0.0003 min=0.9965 max=1.0000 %zero=0.0
+CAD_JPY__mid_open              mean=91.8300 std=11.0114 min=70.8420 max=122.9510 %zero=0.0
+CAD_JPY__volume_roll_min_2     mean=26778.1270 std=29838.3691 min=0.0000 max=382451.0000 %zero=0.6
+CAD_JPY__volume_sma_144        mean=61183.8047 std=44575.4805 min=0.0000 max=362916.4062 %zero=0.6
+CAD_JPY__ask_low_div_bid_low   mean=1.0005 std=0.0004 min=1.0001 max=1.0046 %zero=0.0
+CAD_JPY__volume_bb_bbl_233     mean=-27510.1562 std=32772.9023 min=-211690.2031 max=51550.4844 %zero=0.6
+CAD_JPY__spread_bb_bbl_55      mean=-0.0674 std=0.0304 min=-0.2115 max=0.0000 %zero=0.6
+CAD_JPY__bid_low_roll_max_5    mean=91.1585 std=12.9073 min=0.0000 max=122.5500 %zero=0.6
+CAD_JPY__volume_bb_bbh_89      mean=145810.8125 std=97791.7266 min=0.0000 max=827942.1875 %zero=0.6
+CAD_JPY__volume_rel_vol_8      mean=1.5370 std=0.6068 min=0.0000 max=3.8849 %zero=0.6
+CAD_JPY__vol_x_spread_8        mean=1499.3062 std=1845.9130 min=0.0000 max=27298.4883 %zero=0.6
+CAD_JPY__volume_rel_vol_13     mean=1.4364 std=0.7794 min=0.0000 max=6.2850 %zero=0.6
+CAD_JPY__volume_bb_bbl_2       mean=-15657.6992 std=48199.8281 min=-387952.9062 max=349037.4062 %zero=0.6
+CAD_JPY__bid_close_williams_r_3 mean=-0.5201 std=0.5797 min=-6.6094 max=0.0000 %zero=2.7
+CAD_JPY__volume_bb_bbl_55      mean=-24201.6250 std=34262.7305 min=-255591.1719 max=66273.0391 %zero=0.6
+CAD_JPY__volume_roll_min_21    mean=16986.1328 std=20068.5156 min=0.0000 max=152569.0000 %zero=0.6
+CAD_JPY__spread_roll_max_55    mean=0.2013 std=0.1025 min=0.0000 max=0.6000 %zero=0.6
+CAD_JPY__volume_std_233        mean=44309.0078 std=29417.6738 min=0.0000 max=259882.6250 %zero=0.6
+CAD_JPY__spread_roll_min_3     mean=0.0005 std=0.0004 min=0.0000 max=0.0030 %zero=0.6
+CAD_JPY__volume_rel_vol_34     mean=1.4993 std=1.5112 min=0.0000 max=15.5448 %zero=0.6
+CAD_JPY__vol_x_spread_13       mean=2219.8433 std=2341.6470 min=0.0000 max=32558.0664 %zero=0.6
+CAD_JPY__volume_rel_vol_5      mean=1.3481 std=0.4149 min=0.0000 max=4.7407 %zero=0.6
+CAD_JPY__spread_roll_min_2     mean=0.0005 std=0.0004 min=0.0000 max=0.0030 %zero=0.6
+CAD_JPY__volume_rel_vol_55     mean=1.3601 std=0.8582 min=0.0000 max=10.7946 %zero=0.6
+NZD_JPY__volume_rel_vol_144    mean=1.2306 std=0.6151 min=0.0000 max=5.3346 %zero=0.2
+NZD_JPY__ask_high_div_bid_high mean=1.0010 std=0.0013 min=1.0001 max=1.0087 %zero=0.0
+NZD_JPY__mid_close_adx_21      mean=3.2241 std=0.6959 min=0.0000 max=5.1910 %zero=4.2
+NZD_JPY__volume_roc_5          mean=0.7842 std=1.6626 min=-0.9672 max=41.6667 %zero=1.7
+NZD_JPY__volume_rel_vol_21     mean=1.1993 std=0.4721 min=0.0000 max=3.1263 %zero=0.2
+NZD_JPY__ask_open_minus_bid_open mean=0.1366 std=0.0945 min=0.0100 max=0.5000 %zero=0.0
+NZD_JPY__volume_bb_bbl_377     mean=-28411.2852 std=34091.9688 min=-215189.4375 max=65949.4297 %zero=0.2
+NZD_JPY__volume_rel_vol_34     mean=1.2120 std=0.5825 min=0.0000 max=5.0452 %zero=0.2
+NZD_JPY__volume_ema_3          mean=75276.2812 std=54872.7031 min=0.0000 max=619886.0000 %zero=0.2
+NZD_JPY__volume_roll_max_55    mean=188179.6094 std=137114.2656 min=0.0000 max=1350782.0000 %zero=0.2
+NZD_JPY__bid_high_bb_bbh_2     mean=144.5245 std=20.1167 min=0.0000 max=188.3498 %zero=0.2
+NZD_JPY__spread_roc_233        mean=98.6056 std=159.9326 min=-0.9000 max=2320.4285 %zero=23.9
+NZD_JPY__spread_roc_21         mean=211.6505 std=229.1494 min=-0.8732 max=2104.2632 %zero=2.3
+NZD_JPY__bid_high_minus_bid_low mean=0.9231 std=0.6368 min=0.0000 max=8.6640 %zero=1.7
+NZD_JPY__spread_ema_233        mean=0.0249 std=0.0076 min=0.0000 max=0.1312 %zero=0.2
+NZD_JPY__volume_roc_144        mean=205.9900 std=3974.7300 min=-1.0000 max=132397.0000 %zero=14.5
+NZD_JPY__volume_rel_vol_13     mean=1.1085 std=0.3856 min=0.0000 max=3.9245 %zero=0.2
+NZD_JPY__close_roc_89          mean=45.9275 std=21.3024 min=-0.6719 max=124.4314 %zero=8.7
+NZD_JPY__volume_rel_vol_8      mean=1.0162 std=0.3738 min=0.0000 max=6.9660 %zero=0.2
+NZD_JPY__spread_bb_bbl_55      mean=-0.0671 std=0.0317 min=-0.2126 max=0.0000 %zero=0.2
+NZD_JPY__volume_roll_min_8     mean=29636.7559 std=27252.9746 min=0.0000 max=213112.0000 %zero=0.2
+NZD_JPY__volume_roll_min_21    mean=17189.2168 std=20255.1621 min=0.0000 max=196223.0000 %zero=0.2
+NZD_JPY__volume_rel_vol_3      mean=1.0234 std=0.3622 min=0.0000 max=2.9091 %zero=0.2
+GBP_AUD__volume_rel_vol_144    mean=1.8844 std=1.3986 min=0.0000 max=10.1678 %zero=0.1
+GBP_AUD__ask_high_bb_bbh_3     mean=197.9983 std=27.4315 min=0.0000 max=260.3253 %zero=0.1
+GBP_AUD__ask_low_div_bid_low   mean=1.0005 std=0.0004 min=1.0000 max=1.0075 %zero=0.0
+GBP_AUD__spread_roll_max_34    mean=0.1492 std=0.0912 min=0.0000 max=0.5000 %zero=0.1
+GBP_AUD__volume_roll_max_55    mean=185554.3125 std=137354.9219 min=0.0000 max=1350782.0000 %zero=0.1
+GBP_AUD__spread_roll_min_21    mean=0.0003 std=0.0002 min=0.0000 max=0.0015 %zero=0.2
+GBP_AUD__volume_rel_vol_21     mean=1.7808 std=1.1695 min=0.0000 max=10.4943 %zero=0.1
+GBP_AUD__volume_roll_min_13    mean=20039.9961 std=23270.0156 min=0.0000 max=198710.0000 %zero=0.1
+GBP_AUD__volume_roll_min_5     mean=28368.6035 std=28894.8398 min=0.0000 max=213112.0000 %zero=0.1
+GBP_AUD__spread_roll_min_55    mean=0.0002 std=0.0001 min=0.0000 max=0.0015 %zero=0.3
+GBP_AUD__volume_bb_bbl_144     mean=-27676.4941 std=34755.6523 min=-240440.4062 max=63073.3438 %zero=0.1
+GBP_AUD__spread_roc_55         mean=1.4073 std=2.4438 min=-1.0000 max=27.8710 %zero=7.1
+GBP_AUD__volume_roll_min_3     mean=42291.3789 std=46271.5547 min=0.0000 max=512444.0000 %zero=0.1
+GBP_AUD__ask_open_roll_min_5   mean=0.8248 std=0.0805 min=0.0000 max=1.5628 %zero=0.1
+GBP_AUD__spread_roc_144        mean=1.3082 std=2.3982 min=-1.0000 max=30.9643 %zero=15.8
+GBP_AUD__spread_roc_34         mean=1.7627 std=2.7945 min=-1.0000 max=39.2857 %zero=5.0
+GBP_AUD__spread_bb_bbh_144     mean=0.1170 std=0.0358 min=0.0000 max=0.2958 %zero=0.1
+GBP_AUD__spread_roc_21         mean=3.6523 std=4.3243 min=-1.0000 max=53.4118 %zero=2.8
+GBP_AUD__spread_roll_max_55    mean=0.1795 std=0.0993 min=0.0000 max=0.6000 %zero=0.1
+GBP_AUD__spread_roll_min_144   mean=0.0002 std=0.0001 min=0.0000 max=0.0015 %zero=0.4
+GBP_AUD__volume_roc_21         mean=337.0401 std=8206.5498 min=-1.0000 max=372434.0000 %zero=2.2
+GBP_AUD__spread_roll_min_34    mean=0.0002 std=0.0002 min=0.0000 max=0.0015 %zero=0.2
+GBP_AUD__spread_bb_bbl_377     mean=-0.0701 std=0.0222 min=-0.1575 max=0.0000 %zero=0.1
+AUD_NZD__ask_close_ema_2       mean=22.6835 std=2.4549 min=0.0000 max=30.6562 %zero=0.1
+AUD_NZD__volume_rel_vol_3      mean=1.0902 std=0.5803 min=0.0000 max=2.6134 %zero=0.1
+AUD_NZD__vol_x_spread_55       mean=1744.6611 std=1628.2682 min=0.0000 max=20121.8398 %zero=0.1
+AUD_NZD__volume_roc_2          mean=1.3604 std=2.3166 min=-0.9632 max=16.6495 %zero=1.6
+AUD_NZD__volume_roc_34         mean=450.5516 std=4286.0225 min=-1.0000 max=118849.0000 %zero=3.1
+AUD_NZD__spread_sma_5          mean=0.0245 std=0.0144 min=0.0000 max=0.1207 %zero=0.1
+AUD_NZD__volume_bb_bbl_144     mean=-27105.8867 std=33041.5977 min=-214109.7812 max=86683.5781 %zero=0.1
+AUD_NZD__volume_mfi_2          mean=97.9641 std=5.3812 min=0.0000 max=99.9184 %zero=0.3
+AUD_NZD__volume_rel_vol_13     mean=1.1644 std=0.8423 min=0.0000 max=9.9656 %zero=0.1
+AUD_NZD__spread_bb_bbl_377     mean=-0.0711 std=0.0221 min=-0.1598 max=0.0000 %zero=0.1
+AUD_NZD__volume_rel_vol_55     mean=1.0996 std=0.6855 min=0.0000 max=8.1897 %zero=0.1
+AUD_NZD__volume_rel_vol_34     mean=1.2403 std=1.2261 min=0.0000 max=10.0251 %zero=0.1
+AUD_NZD__volume_roll_max_5     mean=98497.2969 std=83026.1797 min=0.0000 max=1081787.0000 %zero=0.1
+AUD_NZD__spread_roll_min_8     mean=0.0004 std=0.0002 min=0.0000 max=0.0030 %zero=0.2
+AUD_NZD__volume_roc_5          mean=365.0115 std=5070.9766 min=-1.0000 max=127156.0000 %zero=0.4
+AUD_NZD__ask_high_bb_bbl_3     mean=-69.4470 std=7.8240 min=-88.3143 max=0.0000 %zero=0.1
+AUD_NZD__bid_close_adx_8       mean=8.7429 std=1.0193 min=0.0000 max=12.4457 %zero=1.2
+AUD_NZD__mid_close_adx_55      mean=1.0142 std=0.3684 min=0.0000 max=2.4821 %zero=10.6
+AUD_NZD__bid_open_roll_min_2   mean=1.1415 std=0.0987 min=0.0000 max=1.3749 %zero=0.1
+AUD_NZD__volume_rel_vol_8      mean=1.3291 std=0.7761 min=0.0000 max=6.1332 %zero=0.1
+AUD_NZD__vol_x_spread_144      mean=1698.6470 std=1473.7212 min=0.0000 max=16652.9375 %zero=0.1
+AUD_NZD__volume_roll_min_8     mean=19028.3555 std=20879.6719 min=0.0000 max=211188.0000 %zero=0.1
+AUD_NZD__volume_rel_vol_5      mean=1.3221 std=0.8367 min=0.0000 max=4.3398 %zero=0.1
+---
+Training autoencoder with bottleneck size 149 for 400 epochs (L2 weight decay 0.0001)...
+Epoch 1/400 - Loss: 2513526092.818247
+Epoch 10/400 - Loss: 885483508.504633
+Epoch 20/400 - Loss: 633346173.080542
+Epoch 30/400 - Loss: 512372986.776907
+Epoch 40/400 - Loss: 468395668.367783
+Epoch 50/400 - Loss: 439898121.853172
+Epoch 60/400 - Loss: 417653316.607270
+Epoch 70/400 - Loss: 401277843.751960
+Epoch 80/400 - Loss: 387581507.330007
+Epoch 90/400 - Loss: 376499533.320028
+Epoch 100/400 - Loss: 367907349.895937
+Epoch 110/400 - Loss: 361966298.708482
+Epoch 120/400 - Loss: 352027834.640057
+Epoch 130/400 - Loss: 344918378.583036
+Epoch 140/400 - Loss: 338808485.588026
+Epoch 150/400 - Loss: 333321810.862438
+Epoch 160/400 - Loss: 327206166.899501
+Epoch 170/400 - Loss: 322885926.956522
+Epoch 180/400 - Loss: 322491274.947969
+Epoch 190/400 - Loss: 312565429.850321
+Epoch 200/400 - Loss: 310845406.220955
+Epoch 210/400 - Loss: 305264074.833927
+Epoch 220/400 - Loss: 301903290.161083
+Epoch 230/400 - Loss: 298863590.454740
+Epoch 240/400 - Loss: 296622930.702780
+Epoch 250/400 - Loss: 292585321.009266
+Epoch 260/400 - Loss: 290114988.521739
+Epoch 270/400 - Loss: 231814561.642195
+Epoch 280/400 - Loss: 176858010.811119
+Epoch 290/400 - Loss: 168435729.060584
+Epoch 300/400 - Loss: 163685653.531005
+Epoch 310/400 - Loss: 159995150.928011
+Epoch 320/400 - Loss: 157046328.404847
+Epoch 330/400 - Loss: 152048215.720599
+Epoch 340/400 - Loss: 148217457.493942
+Epoch 350/400 - Loss: 145475536.239487
+Epoch 360/400 - Loss: 150059977.613685
+Epoch 370/400 - Loss: 139141060.447612
+Epoch 380/400 - Loss: 135365218.731290
+Epoch 390/400 - Loss: 133609890.349252
+Epoch 400/400 - Loss: 129758102.272274
+Training complete.
+Example 1 input:   [ 1.18340003e+00 -5.20999990e-02  1.13390005e+00  4.73511000e+05
+ -2.05654902e+04  1.24329996e+00  1.37675995e+02  1.40699995e+00
+ -3.90000008e-02  1.10049999e+00  8.27600002e-01  8.53200018e-01
+  2.80826504e+04  1.14359999e+00  1.46819997e+00 -9.99954987e+01
+ -1.30666572e+04 -2.94000003e-02  5.81000000e-02  1.04849994e+00
+  3.15499997e+00 -1.22994904e+02  3.84378000e+05  1.93724594e+02
+  1.08519995e+00  9.99899983e-01  9.77599978e-01 -5.31000011e-02
+ -2.56918555e+04  9.77299988e-01  1.10920000e+00  2.22892000e+05
+  1.28849995e+00  8.47899973e-01  8.91410000e+04  8.39699984e-01
+  1.30939996e+00  8.79800022e-01  1.06410003e+00  8.91410000e+04
+ -3.79000008e-02  1.50000006e-01 -2.01399997e-01  2.09467125e+05
+ -7.76707001e+01  5.44927588e+03  1.84889996e+00  1.34290004e+00
+  1.23049998e+00 -5.46000004e-02  2.74966000e+05  9.06799972e-01
+  6.29763000e+05  7.24900007e-01 -2.71945625e+04  1.04600000e+00
+ -4.32999991e-02  4.83682000e+05 -5.93000017e-02  5.64659977e+00
+  8.14244995e+01 -1.47898027e+04  1.06449997e+00  8.79999995e-02
+  2.14769000e+05  9.68564746e+03  1.63203995e+02 -4.89999987e-02
+  7.07700014e-01 -2.23781895e+04  9.17699993e-01  8.03300023e-01
+  7.21599996e-01  8.72099996e-01 -5.20000011e-02  7.22299993e-01
+  1.70733000e+05 -7.41866989e+01 -3.29000019e-02  3.12530000e+05
+  1.56663000e+05 -5.20000011e-02  1.01090002e+00  9.43099976e-01
+  7.83500016e-01  9.45599973e-01 -3.29999998e-02 -9.99981003e+01
+  1.80289996e+00 -2.16676953e+04  3.12530000e+05  0.00000000e+00
+  3.48399997e-01  3.32800001e-01  8.91410000e+04  6.02100015e-01
+  2.74966000e+05  6.29763000e+05  1.07110000e+00  4.35200006e-01
+  2.06944000e+05  3.44500005e-01  5.16370010e+00 -5.18000014e-02
+  0.00000000e+00  3.93099993e-01  5.44281348e+03  1.50000006e-01
+  4.45283219e+05  4.25700009e-01  9.82800007e-01  0.00000000e+00
+ -3.42222852e+04 -9.81027985e+01 -5.33999987e-02  9.99499977e-01
+  7.84900010e-01 -5.35000004e-02  7.96199977e-01 -5.49000017e-02
+  6.95900023e-01  2.06944000e+05  6.29763000e+05  3.99999990e-04
+  6.81800008e-01  1.15160000e+00 -5.07773096e+03 -3.79000008e-02
+ -6.71051025e+01  4.42658406e+05  7.97299981e-01  1.52409000e+05
+ -7.20999986e-02  5.30289984e+00  1.00080001e+00  3.99999990e-04
+  9.12599981e-01  0.00000000e+00  2.31296005e+01  1.10220003e+00
+  9.17699993e-01  1.30770004e+00  8.86000022e-02  7.40899980e-01
+  5.97500026e-01  5.33725438e+05  1.52409000e+05  5.00000024e-04
+ -1.85900003e-01  5.83800018e-01  6.78499997e-01  2.96133740e+03
+  5.51233496e+03 -3.79000008e-02 -3.16173145e+04  1.00220001e+00
+  7.53099978e-01 -4.47999984e-02 -2.64576348e+04 -7.52069016e+01
+ -9.99990997e+01  1.36740494e+02  1.50650001e+00 -8.06122971e+01
+  1.71560001e+00 -5.16000018e-02  1.64909995e+00  1.91980004e+00
+  1.47884000e+05  9.99899983e-01 -2.14866055e+04  1.62320006e+00
+  1.33659995e+00  1.47884000e+05  1.37675995e+02  1.44430006e+00
+  3.99999990e-04  3.99999990e-04  5.27201221e+03  1.00010002e+00
+ -1.62642002e+01  1.70000009e-02  6.92858963e+01  1.60852005e+02
+  1.47884000e+05  2.17919993e+00 -2.91936152e+04  2.35829997e+00
+  1.50000001e-03  2.38675003e+02  1.87510002e+00  8.51000011e-01
+ -3.61687031e+04  4.48827188e+05  2.14769000e+05  3.99999990e-04
+ -5.35999984e-02  9.99899983e-01  5.82940006e+00  1.38499999e+00
+  3.85069008e+01  1.09249997e+00  1.21010005e+00  1.80330002e+00
+  6.29763000e+05 -3.19499999e-01  5.00000024e-04  1.80809999e+00
+ -2.15228770e+04  6.98899984e-01  1.73660004e+00  1.47884000e+05
+  4.73511000e+05  6.84000015e-01  0.00000000e+00  1.78148000e+05
+  7.52799988e-01  7.64900029e-01  3.03382300e+03 -9.85000014e-01
+ -2.82000005e-02  2.11800995e+01  6.32999986e-02  6.06899977e-01
+  6.69877490e+03  8.47999975e-02  5.97199976e-01 -1.24354531e+04
+  1.47884000e+05  9.99199986e-01  8.38169956e+00  7.31800020e-01
+  3.32877319e+03  8.39999974e-01  1.11038300e+02  8.20900023e-01
+  3.99999990e-04  6.70099974e-01 -2.17226016e+04  9.22900021e-01
+  9.99999975e-05  1.56663000e+05  4.30260062e+05  4.16372250e+05
+  8.90000015e-02  0.00000000e+00  9.99899983e-01  1.09089994e+00
+  4.73511000e+05  3.99999990e-04 -9.72124023e+01 -2.99999993e-02
+  6.45999983e-02  1.87039995e+00  1.00020003e+00  2.48219991e+00
+  3.00000014e-04 -9.02463989e+01  2.01570010e+00  6.00000028e-04
+  1.30379999e+00  4.73511000e+05 -2.32671484e+04  2.17670012e+00
+  7.55600000e+04  8.50000009e-02  5.23479986e+00  8.90000015e-02
+  4.31477188e+05  1.01209998e+00  4.73511000e+05 -2.86370332e+04
+  1.00119996e+00  2.35380006e+00 -7.63007965e+01 -9.99888000e+01
+  1.23769999e+00  1.14800000e+00 -2.59966309e+04  3.99999990e-04
+  1.03310001e+00 -5.16000018e-02  1.27730000e+00 -3.31000015e-02
+ -2.22837148e+04  5.00720781e+05  1.16869998e+00 -3.24999988e-02
+ -9.99869003e+01  1.99999995e-04  5.28680000e+04  9.81599987e-01
+  1.00010002e+00  9.45900023e-01  8.90000015e-02  4.73511000e+05
+  4.31181406e+05  2.04448875e+05  1.46294006e+02  7.64400005e-01
+  8.60899985e-01 -2.98305957e+04  1.21089995e+00  1.47884000e+05
+  1.14365196e+02  2.14769000e+05  4.65976312e+05 -3.24999988e-02
+  1.06780005e+00  5.08599997e-01 -5.13000004e-02 -2.03121055e+04
+ -4.69999984e-02  6.29763000e+05 -9.83177032e+01  5.28108105e+03
+  8.44900012e-01  7.40700006e-01  0.00000000e+00  1.00020003e+00
+  1.71000008e-02  5.69899976e-01  9.19944992e+01  1.99999995e-04
+  1.56663000e+05  4.27942406e+05 -5.22000007e-02 -2.36185156e+04
+  1.47809994e+00  3.12530000e+05  7.55600000e+04  1.76266006e+02
+  8.59000012e-02  1.22920001e+00  1.31379998e+00 -1.78375801e+04
+  1.99999995e-04  1.62220001e+00  1.00650001e+00 -8.31490021e+01
+ -3.92000005e-02  1.65100002e+00 -6.80899978e-01  5.59325000e+05
+  8.90000015e-02  2.48569595e+02 -9.99972992e+01  7.63199985e-01
+  8.34999979e-01 -5.18999994e-02  8.25699985e-01  6.86699986e-01
+  7.55600000e+04  4.30000015e-02  2.58228000e+05  7.55200028e-01
+  1.99999995e-04  6.99999975e-04 -4.66190312e+04 -2.44430488e+04
+  7.55600000e+04 -9.99972992e+01  6.95800006e-01  3.22729993e+00
+  0.00000000e+00  1.82889998e+00  5.46990013e+00  9.99899983e-01
+  1.01455002e+02  1.70733000e+05  2.02221078e+05  1.00020003e+00
+ -2.13932988e+04 -3.00999992e-02  1.01012001e+02  3.91775125e+05
+  1.27059996e+00  5.39804639e+03  1.18700004e+00  9.56404141e+04
+ -7.29700029e-01 -2.16615098e+04  7.55600000e+04  8.90000015e-02
+  1.11807195e+05  6.00000028e-04  1.17949998e+00  5.18198779e+03
+  1.16620004e+00  6.00000028e-04  1.29209995e+00  8.56400013e-01
+  1.00030005e+00  3.28530002e+00 -3.71499985e-01  7.04500020e-01
+  2.16000006e-01 -2.66695977e+04  6.92200005e-01  2.61165922e+05
+  6.29763000e+05  1.59868896e+02  0.00000000e+00  3.15000000e+02
+  6.76999986e-01  1.75999999e-02 -5.95099986e-01  5.94500005e-01
+  6.08064995e+01  5.52800000e-01 -4.41999994e-02  1.47884000e+05
+  7.55600000e+04  5.74699998e-01  3.00430012e+00  2.04918396e+02
+  1.00020003e+00  8.90000015e-02  6.29763000e+05  1.99999995e-04
+  2.32739997e+00  1.47884000e+05  1.47884000e+05  9.99999975e-05
+ -2.81155586e+04  4.35710001e+00  2.85992000e+05  8.53399992e-01
+  4.76919985e+00  5.00000000e+00  8.60999972e-02  6.89470005e+00
+  8.90000015e-02  9.99999975e-05  1.58249998e+00  9.99999975e-05
+ -5.13999984e-02  2.45837002e+01  8.69000018e-01  3.30805664e+03
+  2.21300006e-01  1.07029998e+00  2.22999994e-02 -2.28948730e+04
+  9.92738037e+01  7.89900005e-01 -5.20999990e-02  9.84700024e-01
+  8.92700016e-01  3.12530000e+05  1.99999995e-04  9.80999991e-02
+ -7.47474976e+01  8.86530018e+00  1.13769996e+00  1.10430002e+00
+  1.07200003e+00  5.13124561e+03  7.55600000e+04  9.62199986e-01]
+Example 1 recon:   [-5.41533012e+01  1.49885998e+01 -6.16319990e+00  3.95645781e+05
+ -4.47744141e+04  1.49408998e+01  1.18878998e+02  3.49379992e+00
+ -3.59069991e+00 -6.07600021e+00 -3.83100003e-01  1.40781002e+01
+ -3.16238691e+04 -3.69263000e+01  1.09617004e+01 -8.90867004e+01
+ -3.42913125e+04 -5.24700012e+01  1.95944996e+01 -2.30872993e+01
+  2.80639000e+01 -1.07796204e+02  2.93966031e+05  1.67676498e+02
+ -1.23259997e+00 -9.18460999e+01 -1.65863991e+01 -1.64206009e+01
+ -4.41890039e+04 -7.72969971e+01  1.81242008e+01  3.02720688e+05
+ -2.51576004e+01  3.04509997e+00  9.46376172e+04 -5.21210003e+00
+ -1.23729000e+01  4.19718018e+01  3.11403008e+01  8.81851875e+04
+ -2.01802006e+01 -4.01225014e+01 -6.32598000e+01  1.93918266e+05
+ -4.32196007e+01  6.15521094e+03  6.72700024e+00 -4.45733986e+01
+  3.02901993e+01 -1.03872995e+01  2.20589125e+05 -4.12639999e+00
+  4.80514469e+05  1.03079998e+00 -4.31723555e+04 -9.31100011e-01
+  2.09955997e+01  4.02646031e+05 -3.25802994e+01  2.05881996e+01
+  4.71613007e+01 -3.35683008e+04  6.14909983e+00 -2.30011997e+01
+  1.48546562e+05 -3.04324902e+04  1.49888107e+02 -8.65349960e+00
+  1.67229004e+01 -4.49038555e+04 -3.22481003e+01  2.70319996e+01
+ -1.84374008e+01 -2.37360992e+01 -9.82079983e+00 -4.12519979e+00
+  9.47367969e+04 -5.96254005e+01 -1.76804008e+01  2.86713875e+05
+  8.37907422e+04 -3.97399998e+00 -8.75800037e+00 -3.19148006e+01
+  3.69950008e+00  2.57630997e+01 -1.17980003e+00 -9.57694016e+01
+  8.16600025e-01 -3.55171523e+04  3.36335031e+05  6.25540018e+00
+  1.76275997e+01  8.82820034e+00  8.79808281e+04 -4.35440016e+00
+  2.74269781e+05  4.80282125e+05  2.05804996e+01 -4.89720011e+00
+  1.66147953e+05  3.06600004e-01 -5.95120001e+00 -6.57341995e+01
+  5.65549994e+00 -3.33731995e+01  5.76082812e+03  2.90156002e+01
+  4.33904500e+05 -1.10971003e+01  1.11639996e+01  1.56114395e+02
+ -4.38993633e+04 -9.81289978e+01 -5.08060989e+01 -2.81469989e+00
+  5.47349977e+00 -2.63170004e+00 -7.21000004e+00  1.76100001e-01
+  5.01929998e+00  2.24370094e+05  4.80006594e+05  6.49049997e+00
+  1.77966003e+01 -2.40895996e+01 -3.22199492e+04  2.24974003e+01
+ -2.14552002e+01  4.33700250e+05 -2.88910007e+00  1.05790875e+05
+  2.26002007e+01  1.93099999e+00  4.23729992e+00 -1.00018997e+01
+  2.04367008e+01 -4.23540001e+01  4.32541008e+01 -2.48880005e+00
+ -6.98740005e+00 -2.89540005e+00 -1.98703003e+01 -2.09220004e+00
+ -2.19734993e+01  4.53591719e+05  1.09113961e+05  1.42883997e+01
+  6.79236984e+01 -3.08008003e+01 -2.62490010e+00 -2.33727637e+04
+  6.25293066e+03  3.50957985e+01 -3.65448555e+04 -2.18449001e+01
+  1.25909996e+01  1.35305996e+01 -4.27971094e+04 -8.70866013e+01
+ -6.40372009e+01  1.14994797e+02  7.67604980e+01 -8.07770004e+01
+ -5.89589977e+00  6.12639999e+00 -5.24840021e+00 -4.35481987e+01
+  8.05970938e+04  1.77437992e+01 -4.53711992e+04 -3.55755005e+01
+ -9.88980007e+00  9.66428672e+04  1.18017799e+02  4.12699997e-01
+ -2.26299000e+01 -7.52470016e+00  5.99549316e+03 -3.96440005e+00
+ -3.30700010e-01 -1.13550997e+01  8.10217972e+01  1.36685196e+02
+  9.43710391e+04 -2.95897007e+01 -4.08655781e+04  1.91490993e+01
+  8.98439980e+00  1.97348007e+02  3.83030009e+00  4.18809986e+00
+ -3.68790547e+04  4.38336094e+05  1.89787984e+05  5.95130014e+00
+ -9.07299995e+00  1.86725998e+01 -3.59940004e+00  3.43807983e+01
+  1.96376991e+01  6.12440014e+00  2.94496002e+01 -1.52190006e+00
+  4.90961625e+05  4.24850998e+01 -1.18739998e+00 -4.76000023e+00
+ -4.51141914e+04  1.81580009e+01  1.08156996e+01  9.38165938e+04
+  3.54757156e+05  1.08135996e+01 -6.94199991e+00  1.18183805e+05
+ -2.53108006e+01 -1.91373997e+01  5.85421875e+03 -2.78395004e+01
+ -1.51127005e+01  7.54400015e-01 -8.80270004e+00  2.88679008e+01
+ -3.34257148e+04 -1.20309000e+01  2.54391994e+01 -4.03321172e+04
+  8.07705078e+04  8.62129974e+00 -2.99800009e-01  4.31939983e+00
+  6.35543604e+03 -4.80728989e+01  7.40487976e+01 -1.15864000e+01
+ -9.88239956e+00 -5.08010006e+00 -4.50131367e+04 -3.07700005e+01
+ -2.87945004e+01  8.07243125e+04  4.26878188e+05  3.83948000e+05
+  7.13619995e+00 -1.11696997e+01 -6.09079981e+00  3.08220005e+00
+  3.54327969e+05  8.37580013e+00 -9.87806015e+01  3.40229988e+00
+  9.27890015e+00 -4.68238983e+01  5.60799980e+00 -1.54722004e+01
+  2.51429996e+01 -1.13020103e+02 -1.76401997e+01 -1.14600003e+00
+  4.17095985e+01  3.20093656e+05 -4.13904531e+04 -9.07509995e+00
+  7.31707656e+04 -1.92693005e+01  1.97077999e+01 -8.91160011e+00
+  4.26561812e+05  4.61149979e+00  3.62762062e+05 -3.47210352e+04
+  1.21886997e+01  1.37677002e+01 -8.33103027e+01 -3.84957008e+01
+ -9.79944000e+01  2.01349998e+00 -3.24021992e+04  3.45200002e-01
+ -4.87879992e+00 -2.60806999e+01  3.35662994e+01  2.38651009e+01
+ -4.10632305e+04  4.48481031e+05  5.19039001e+01 -1.97138004e+01
+ -7.90992966e+01 -2.37434006e+01  6.18551055e+04 -1.28999996e+00
+  1.21440005e+00 -3.43525009e+01  1.73127003e+01  3.52649250e+05
+  4.27656250e+05  1.92765047e+05  1.28511703e+02 -1.06379998e+00
+  2.02760005e+00 -3.55339961e+04 -2.52357006e+01  9.55254062e+04
+  8.86645966e+01  1.68052500e+05  4.40309250e+05  1.95089996e+00
+ -3.65275002e+01  2.26891003e+01  3.46213989e+01 -3.16746777e+04
+ -5.14900029e-01  4.02270031e+05 -1.31824707e+02  5.88946289e+03
+ -1.37159996e+01 -2.63599992e-01 -1.39336996e+01  1.03701103e+02
+ -1.87679994e+00  1.02178001e+01  6.36717987e+01 -3.77350006e+01
+  1.01284492e+05  4.27996125e+05 -2.88999004e+01 -4.50284414e+04
+  2.00662003e+01  3.22581406e+05  7.60742578e+04  1.43645294e+02
+ -3.29267998e+01 -2.40611000e+01 -8.87370014e+00 -2.72927168e+04
+  1.37524996e+01  1.68843994e+01  8.47140026e+00 -8.46364975e+01
+  2.53547993e+01  2.68792000e+01  9.72005997e+01  4.91197281e+05
+  9.20639038e+01  2.38089996e+02 -9.45606995e+01  6.48397980e+01
+  4.03970985e+01  2.63523006e+01  1.08701000e+01  9.35200024e+00
+  7.90805469e+04 -1.11402998e+01  2.59082344e+05  4.23299980e+00
+  5.80770016e+00 -9.11730003e+00 -4.45876055e+04 -4.56219922e+04
+  7.73399844e+04 -4.56008987e+01  9.65970039e+00 -3.46760011e+00
+ -5.71539001e+01 -1.15040998e+01  6.92350006e+00  2.53605995e+01
+  1.31612305e+02  1.01850008e+05  1.94589391e+05  3.21446991e+01
+ -4.08477188e+04 -6.57679987e+00  1.00668198e+02  4.19846312e+05
+  4.24299985e-01  6.04659082e+03 -2.56723003e+01 -2.47048203e+02
+  8.16895981e+01 -3.35536914e+04  6.69973438e+04  2.24153996e+01
+  1.17559984e+05  2.90021000e+01  1.42719002e+01  8.08065771e+03
+ -9.39750977e+01 -5.11900008e-01 -5.43727989e+01  1.86228008e+01
+ -2.25181999e+01 -1.51344004e+01 -1.34357996e+01  4.59689999e+00
+  2.64503994e+01 -4.50000625e+04  1.90918007e+01  2.33195141e+05
+  5.51019375e+05  1.66178604e+02  1.30941895e+02  2.74385590e+02
+  5.42180014e+00  2.68423996e+01 -3.54481415e+02  2.23171005e+01
+  9.95743027e+01 -1.96154003e+01  1.54677000e+01  9.37603281e+04
+  6.78473906e+04 -7.70398026e+01 -1.12619996e+00  1.86003006e+02
+  4.79589996e+01 -2.42029991e+01  5.42737250e+05  4.22392006e+01
+ -1.52263002e+01  7.77210625e+04  9.34921328e+04  1.04899998e+01
+ -4.14240586e+04  1.39855003e+01  1.61984438e+05  9.84070015e+00
+  1.14208002e+01  1.01821003e+01  1.21069002e+01  3.67089005e+01
+  5.05190010e+01 -3.44140005e+00  9.03130920e+02 -2.49652004e+01
+  1.15122995e+01  1.16050997e+01  1.93640006e+00  6.53945654e+03
+ -4.54000011e-02  1.19488647e+03  6.17140007e+00 -3.94981680e+04
+  5.56333008e+01 -2.54745998e+01  8.26060009e+00  1.26609001e+01
+  1.26177399e+02  3.37284531e+05  3.31781998e+01 -2.96894501e+02
+ -3.46680984e+01  1.46342001e+01 -1.36063995e+01 -9.06700039e+00
+ -7.87997971e+01  6.11628320e+03  7.19567188e+04  4.07579994e+00]
+Diff: [ 5.5336700e+01 -1.5040600e+01  7.2971001e+00  7.7865219e+04
+  2.4208924e+04 -1.3697600e+01  1.8797001e+01 -2.0868001e+00
+  3.5517001e+00  7.1766000e+00  1.2107000e+00 -1.3224900e+01
+  5.9706523e+04  3.8069901e+01 -9.4934998e+00 -1.0908900e+01
+  2.1224656e+04  5.2440601e+01 -1.9536400e+01  2.4135799e+01
+ -2.4908800e+01 -1.5198700e+01  9.0411969e+04  2.6048100e+01
+  2.3178000e+00  9.2846100e+01  1.7563900e+01  1.6367500e+01
+  1.8497148e+04  7.8274300e+01 -1.7014999e+01 -7.9828688e+04
+  2.6445999e+01 -2.1972001e+00 -5.4966172e+03  6.0517998e+00
+  1.3682300e+01 -4.1091900e+01 -3.0076200e+01  9.5581250e+02
+  2.0142401e+01  4.0272499e+01  6.3058399e+01  1.5548859e+04
+ -3.4451099e+01 -7.0593500e+02 -4.8782001e+00  4.5916302e+01
+ -2.9059700e+01  1.0332700e+01  5.4376875e+04  5.0331001e+00
+  1.4924853e+05 -3.0590001e-01  1.5977790e+04  1.9771000e+00
+ -2.1038900e+01  8.1035969e+04  3.2521000e+01 -1.4941600e+01
+  3.4263199e+01  1.8778496e+04 -5.0846000e+00  2.3089199e+01
+  6.6222438e+04  4.0118137e+04  1.3315900e+01  8.6044998e+00
+ -1.6015200e+01  2.2525666e+04  3.3165798e+01 -2.6228701e+01
+  1.9159000e+01  2.4608200e+01  9.7686996e+00  4.8476000e+00
+  7.5996203e+04 -1.4561400e+01  1.7647600e+01  2.5816125e+04
+  7.2872258e+04  3.9219999e+00  9.7687998e+00  3.2857899e+01
+ -2.9159999e+00 -2.4817499e+01  1.1468000e+00 -4.2287002e+00
+  9.8629999e-01  1.3849458e+04 -2.3805031e+04 -6.2554002e+00
+ -1.7279200e+01 -8.4953003e+00  1.1601719e+03  4.9566002e+00
+  6.9621881e+02  1.4948088e+05 -1.9509300e+01  5.3323998e+00
+  4.0796047e+04  3.7900001e-02  1.1115000e+01  6.5682404e+01
+ -5.6554999e+00  3.3766201e+01 -3.1801459e+02 -2.8865601e+01
+  1.1378750e+04  1.1522800e+01 -1.0181200e+01 -1.5611440e+02
+  9.6770781e+03  2.6200000e-02  5.0752701e+01  3.8141999e+00
+ -4.6886001e+00  2.5783000e+00  8.0061998e+00 -2.3109999e-01
+ -4.3234000e+00 -1.7426109e+04  1.4975641e+05 -6.4900999e+00
+ -1.7114799e+01  2.5241199e+01  2.7142217e+04 -2.2535299e+01
+ -4.5649899e+01  8.9581562e+03  3.6863999e+00  4.6618125e+04
+ -2.2672300e+01  3.3717999e+00 -3.2365000e+00  1.0002300e+01
+ -1.9524099e+01  4.2354000e+01 -2.0124500e+01  3.5911000e+00
+  7.9050999e+00  4.2031002e+00  1.9958900e+01  2.8331001e+00
+  2.2570999e+01  8.0133719e+04  4.3295039e+04 -1.4287900e+01
+ -6.8109596e+01  3.1384701e+01  3.3034000e+00  2.6334102e+04
+ -7.4059570e+02 -3.5133701e+01  4.9275391e+03  2.2847099e+01
+ -1.1837900e+01 -1.3575400e+01  1.6339476e+04  1.1879700e+01
+ -3.5962002e+01  2.1745701e+01 -7.5253998e+01  1.6470000e-01
+  7.6114998e+00 -6.1778998e+00  6.8976002e+00  4.5467999e+01
+  6.7286906e+04 -1.6743900e+01  2.3884594e+04  3.7198700e+01
+  1.1226400e+01  5.1241133e+04  1.9658199e+01  1.0316000e+00
+  2.2630301e+01  7.5250001e+00 -7.2348102e+02  4.9646001e+00
+ -1.5933500e+01  1.1372200e+01 -1.1736000e+01  2.4166800e+01
+  5.3512961e+04  3.1768999e+01  1.1671961e+04 -1.6790899e+01
+ -8.9828997e+00  4.1327000e+01 -1.9552000e+00 -3.3371000e+00
+  7.1035162e+02  1.0491094e+04  2.4981016e+04 -5.9509001e+00
+  9.0193996e+00 -1.7672800e+01  9.4287996e+00 -3.2995800e+01
+  1.8869101e+01 -5.0318999e+00 -2.8239500e+01  3.3252001e+00
+  1.3880138e+05 -4.2804501e+01  1.1878999e+00  6.5681000e+00
+  2.3591314e+04 -1.7459101e+01 -9.0790997e+00  5.4067406e+04
+  1.1875384e+05 -1.0129500e+01  6.9419999e+00  5.9964199e+04
+  2.6063601e+01  1.9902399e+01 -2.8203958e+03  2.6854500e+01
+  1.5084500e+01  2.0425800e+01  8.8661003e+00 -2.8261101e+01
+  4.0124488e+04  1.2115700e+01 -2.4841999e+01  2.7896666e+04
+  6.7113492e+04 -7.6220999e+00  8.6815004e+00 -3.5876000e+00
+ -3.0266628e+03  4.8912899e+01  3.6989498e+01  1.2407300e+01
+  9.8828001e+00  5.7501998e+00  2.3290535e+04  3.1692801e+01
+  2.8794600e+01  7.5938688e+04  3.3818752e+03  3.2424250e+04
+ -7.0472002e+00  1.1169700e+01  7.0907001e+00 -1.9912000e+00
+  1.1918302e+05 -8.3753996e+00  1.5681000e+00 -3.4323001e+00
+ -9.2142000e+00  4.8694302e+01 -4.6078000e+00  1.7954399e+01
+ -2.5142700e+01  2.2773701e+01  1.9655800e+01  1.1466000e+00
+ -4.0405899e+01  1.5341734e+05  1.8123305e+04  1.1251800e+01
+  2.3892344e+03  1.9354300e+01 -1.4473000e+01  9.0005999e+00
+  4.9154062e+03 -3.5994000e+00  1.1074894e+05  6.0840000e+03
+ -1.1187400e+01 -1.1413900e+01  7.0093999e+00 -6.1493099e+01
+  9.9232101e+01 -8.6549997e-01  6.4055684e+03 -3.4480000e-01
+  5.9119000e+00  2.6029100e+01 -3.2288898e+01 -2.3898199e+01
+  1.8779516e+04  5.2239781e+04 -5.0735298e+01  1.9681400e+01
+ -2.0887600e+01  2.3743601e+01 -8.9871016e+03  2.2716000e+00
+ -2.1430001e-01  3.5298401e+01 -1.7223700e+01  1.2086175e+05
+  3.5251875e+03  1.1683828e+04  1.7782200e+01  1.8282000e+00
+ -1.1666000e+00  5.7034004e+03  2.6446600e+01  5.2358594e+04
+  2.5700600e+01  4.6716500e+04  2.5667062e+04 -1.9834000e+00
+  3.7595299e+01 -2.2180500e+01 -3.4672699e+01  1.1362572e+04
+  4.6790001e-01  2.2749297e+05  3.3506901e+01 -6.0838177e+02
+  1.4560900e+01  1.0044000e+00  1.3933700e+01 -1.0270090e+02
+  1.8939000e+00 -9.6478996e+00  2.8322599e+01  3.7735199e+01
+  5.5378508e+04 -5.3718800e+01  2.8847700e+01  2.1409926e+04
+ -1.8587999e+01 -1.0051406e+04 -5.1425781e+02  3.2620701e+01
+  3.3012699e+01  2.5290300e+01  1.0187500e+01  9.4551367e+03
+ -1.3752300e+01 -1.5262200e+01 -7.4649000e+00  1.4874001e+00
+ -2.5393999e+01 -2.5228300e+01 -9.7881500e+01  6.8127719e+04
+ -9.1974899e+01  1.0479700e+01 -5.4366999e+00 -6.4076599e+01
+ -3.9562099e+01 -2.6404200e+01 -1.0044300e+01 -8.6653004e+00
+ -3.5205469e+03  1.1183300e+01 -8.5434381e+02 -3.4777999e+00
+ -5.8074999e+00  9.1180000e+00 -2.0314258e+03  2.1178943e+04
+ -1.7799844e+03 -5.4396400e+01 -8.9638996e+00  6.6949000e+00
+  5.7153900e+01  1.3332900e+01 -1.4536000e+00 -2.4360701e+01
+ -3.0157301e+01  6.8882992e+04  7.6316870e+03 -3.1144501e+01
+  1.9454420e+04  6.5467000e+00  3.4380001e-01 -2.8071188e+04
+  8.4630001e-01 -6.4854437e+02  2.6859301e+01  9.5887461e+04
+ -8.2419296e+01  1.1892182e+04  8.5626562e+03 -2.2326401e+01
+ -5.7528047e+03 -2.9001499e+01 -1.3092400e+01 -2.8986699e+03
+  9.5141403e+01  5.1260000e-01  5.5664902e+01 -1.7766399e+01
+  2.3518499e+01  1.8419701e+01  1.3064300e+01 -3.8924000e+00
+ -2.6234400e+01  1.8330465e+04 -1.8399599e+01  2.7970781e+04
+  7.8743625e+04 -6.3097000e+00 -1.3094189e+02  4.0614399e+01
+ -4.7448001e+00 -2.6824800e+01  3.5388620e+02 -2.1722601e+01
+ -3.8767799e+01  2.0168200e+01 -1.5511900e+01  5.4123672e+04
+  7.7126094e+03  7.7614502e+01  4.1304998e+00  1.8915400e+01
+ -4.6958801e+01  2.4292000e+01  8.7025750e+04 -4.2238998e+01
+  1.7553699e+01  7.0162938e+04  5.4391867e+04 -1.0489800e+01
+  1.3308500e+04 -9.6282997e+00  1.2400756e+05 -8.9874001e+00
+ -6.6515999e+00 -5.1820998e+00 -1.2020700e+01 -2.9814199e+01
+ -5.0430000e+01  3.4416001e+00 -9.0154840e+02  2.4965300e+01
+ -1.1563700e+01  1.2978700e+01 -1.0674000e+00 -3.2313999e+03
+  2.6670000e-01 -1.1938162e+03 -6.1490998e+00  1.6603295e+04
+  4.3640499e+01  2.6264500e+01 -8.3127003e+00 -1.1676200e+01
+ -1.2528480e+02 -2.4754531e+04 -3.3178001e+01  2.9699261e+02
+ -4.0079300e+01 -5.7690001e+00  1.4744000e+01  1.0171300e+01
+  7.9871803e+01 -9.8503760e+02  3.6032812e+03 -3.1136999e+00]
+
+Example 2 input:   [ 5.89999974e-01 -5.73999994e-02  4.27100003e-01  1.03211000e+05
+ -3.56800430e+04  4.80100006e-01  1.15403999e+02  4.50700015e-01
+ -3.22000012e-02  1.11339998e+00 -3.01899999e-01  1.05019999e+00
+ -2.90153848e+04  5.76600015e-01  4.14600015e-01 -9.99970016e+01
+ -3.16685723e+04 -6.93000033e-02  6.15999997e-02  1.06540000e+00
+  3.22110009e+00 -1.02710197e+02  1.94830000e+04  1.53353806e+02
+  5.35700023e-01  9.99899983e-01  5.74500024e-01 -5.60000017e-02
+ -3.78832422e+04  4.81200010e-01  1.13699996e+00  9.29680000e+04
+  9.29899991e-01  5.55199981e-01  8.43500000e+03  5.24399996e-01
+  6.56199992e-01  5.44600010e-01  5.73800027e-01  8.43500000e+03
+ -6.88000023e-02  4.80000004e-02 -1.08199999e-01  4.76440703e+04
+ -6.24814987e+01  1.38102246e+03  1.95969999e+00  4.53799993e-01
+  4.78700012e-01 -5.73999994e-02  2.27190000e+04  3.91799986e-01
+  1.57530000e+05  3.14300001e-01 -3.80729336e+04  4.57199991e-01
+ -2.97999997e-02  1.21846000e+05 -2.70000007e-02  5.74280024e+00
+  6.86109009e+01 -3.97489219e+04  4.75100011e-01  1.08499996e-01
+  1.94830000e+04 -4.31861797e+04  1.34557999e+02 -3.33999991e-02
+  7.51699984e-01 -3.67222773e+04  2.29000002e-01  2.28000000e-01
+  2.05200002e-01  2.10800007e-01 -6.50999993e-02  2.40300000e-01
+  1.06400000e+04 -6.22202988e+01 -3.79999988e-02  7.36590000e+04
+  1.06400000e+04 -5.73999994e-02  1.00569999e+00  2.52400011e-01
+  3.40400010e-01  3.72299999e-01 -3.33999991e-02 -9.99964981e+01
+  1.91849995e+00 -3.65087031e+04  7.36590000e+04  4.12699997e-01
+  1.74700007e-01  1.45500004e-01  8.43500000e+03  2.77200013e-01
+  9.29680000e+04  1.57530000e+05  1.10679996e+00  1.65700004e-01
+  5.24310000e+04  1.69200003e-01  5.27909994e+00 -3.39000002e-02
+  6.13900006e-01  1.74099997e-01  1.52090576e+03  4.80000004e-02
+  1.40182062e+05  1.65099993e-01  9.81800020e-01 -6.84099972e-01
+ -4.33442422e+04 -9.93796005e+01 -6.35000020e-02  1.02900004e+00
+  1.01139998e+00 -6.49999976e-02  1.05260003e+00 -5.73999994e-02
+  8.93599987e-01  9.29680000e+04  1.57530000e+05  1.99999995e-04
+  7.03999996e-01  9.11700010e-01 -3.50618516e+04 -6.87000006e-02
+ -5.92910004e+01  1.29856062e+05  8.26699972e-01  2.71310020e+04
+ -7.06600010e-01  5.42250013e+00  1.00049996e+00  1.99999995e-04
+  1.08130002e+00  3.71300012e-01  2.06431007e+01  1.13020003e+00
+  4.51799989e-01 -5.53600013e-01  1.08599998e-01  5.37199974e-01
+  5.59599996e-01  1.38695062e+05  2.27190000e+04  1.99999995e-04
+  8.10000002e-02  5.36499977e-01  5.55100024e-01 -3.97552188e+04
+  1.40032080e+03 -6.87000006e-02 -3.39852344e+04  1.00160003e+00
+  5.69899976e-01 -3.00999992e-02 -3.79089102e+04 -6.71355972e+01
+ -9.99975967e+01  1.14688499e+02  3.86500001e-01 -6.59236984e+01
+  4.31600004e-01 -5.60000017e-02  5.08800030e-01  3.91600013e-01
+  1.06400000e+04  9.99899983e-01 -3.61445820e+04  1.14320004e+00
+  5.27499974e-01  1.08650000e+04  1.15403999e+02  9.96200025e-01
+  1.99999995e-04  3.00000014e-04  1.24810413e+03  1.00020003e+00
+ -1.45179996e+01  1.75000001e-02  5.81338005e+01  1.34682007e+02
+  1.08650000e+04  2.54859996e+00 -3.57118242e+04  2.43939996e+00
+  5.00000024e-04  1.99489197e+02  2.46199989e+00  8.47400010e-01
+ -3.43557070e+04  1.40754297e+05  1.01659000e+05  3.00000014e-04
+ -5.59000000e-02  9.99899983e-01  5.92609978e+00  1.09029996e+00
+  3.19964008e+01  9.59299982e-01  1.45700002e+00  2.34480000e+00
+  1.57530000e+05 -1.26000000e-02  3.99999990e-04  1.63540006e+00
+ -3.61268984e+04  5.04899979e-01  1.84739995e+00  1.08650000e+04
+  1.03211000e+05  4.14299995e-01  6.05700016e-01  1.77570000e+04
+  3.92100006e-01  4.04100001e-01  1.54390808e+03 -9.78500009e-01
+ -6.92000017e-02  1.67681007e+01  4.17000018e-02  3.90500009e-01
+ -2.59096523e+04  9.21000019e-02  4.19600010e-01 -3.46635273e+04
+  1.06400000e+04  9.99400020e-01  6.86859989e+00  2.41099998e-01
+  1.73533118e+03  2.68500000e-01  8.60328979e+01  2.53100008e-01
+  3.00000014e-04  2.45299995e-01 -3.65965234e+04  2.31199995e-01
+  1.99999995e-04  1.06400000e+04  1.32578094e+05  1.06710633e+05
+  4.39999998e-02  6.10700011e-01  9.99899983e-01  1.09679997e+00
+  1.03211000e+05  1.99999995e-04 -9.89281006e+01 -6.43000007e-02
+  5.53999990e-02  3.91900003e-01  1.00020003e+00  3.79700005e-01
+  1.99999995e-04 -6.93168030e+01  4.21999991e-01  1.99999995e-04
+  3.63299996e-01  7.91700000e+04 -3.74451289e+04  3.89899999e-01
+  7.29300000e+03  9.36999992e-02  5.25070000e+00  4.39999998e-02
+  1.37817984e+05  1.00380003e+00  7.91700000e+04 -3.63296406e+04
+  1.00129998e+00  3.43800008e-01 -6.18041000e+01 -9.99945984e+01
+  2.17600012e+00  2.26430011e+00 -3.11905352e+04  1.99999995e-04
+  2.10590005e+00 -5.73999994e-02  2.07879996e+00 -3.77000012e-02
+ -3.75004492e+04  1.30844148e+05  2.50970006e+00 -3.29000019e-02
+ -9.99932022e+01  1.99999995e-04  7.08700000e+03  2.31769991e+00
+  1.00020003e+00  1.81550002e+00  2.00000003e-01  1.03211000e+05
+  1.32567750e+05  4.80077734e+04  1.20877701e+02  2.02279997e+00
+  2.17750001e+00 -3.58488867e+04  1.28520000e+00  1.08650000e+04
+  9.56602020e+01  1.94830000e+04  1.25917016e+05 -3.40000018e-02
+  1.09060001e+00  7.84399986e-01 -5.60999997e-02 -3.64869258e+04
+ -2.22999994e-02  1.57530000e+05 -9.84128036e+01  1.24970532e+03
+  2.01139998e+00  8.76399994e-01  6.06599987e-01  1.00030005e+00
+  1.75000001e-02  1.09440005e+00  7.73140030e+01  3.00000014e-04
+  1.85070000e+04  1.38064641e+05 -6.50999993e-02 -3.67376992e+04
+  5.68300009e-01  4.04540000e+04  7.29300000e+03  1.48184402e+02
+  9.31999981e-02  5.32199979e-01  5.75999975e-01 -3.35235977e+04
+  3.00000014e-04  5.17000020e-01  4.88999993e-01 -6.96785965e+01
+ -6.84999973e-02  5.47299981e-01 -6.88000023e-02  1.37584000e+05
+  7.90000036e-02  1.96455093e+02 -9.99981995e+01  4.14499998e-01
+  3.89099985e-01 -6.50999993e-02  3.59600008e-01  4.19699997e-01
+  7.29300000e+03  7.59999976e-02  2.78230020e+04  7.98900008e-01
+  3.00000014e-04  5.00000024e-04 -3.90862188e+04 -3.66334766e+04
+  7.29300000e+03 -9.99981995e+01  7.37600029e-01  3.28970003e+00
+ -4.82999992e+01  1.94589996e+00  5.51779985e+00  9.99800026e-01
+  7.86110001e+01  1.06400000e+04  4.72707344e+04  1.00119996e+00
+ -3.71641641e+04 -6.41999990e-02  7.85110016e+01  1.26948266e+05
+  2.23629999e+00  6.73427124e+02  1.67170000e+00 -5.20110547e+04
+ -3.70999984e-02 -3.56453477e+04  7.29300000e+03  2.00000003e-01
+  4.37690625e+04  1.99999995e-04  1.63419998e+00  1.44766479e+03
+  1.90639997e+00  1.99999995e-04  1.53939998e+00  1.91740000e+00
+  1.00030005e+00  3.37490010e+00  3.77169991e+00  1.81180000e+00
+  2.00000003e-01 -3.61191133e+04  1.79779994e+00  7.93396484e+04
+  1.57530000e+05  1.42569901e+02  5.32168999e+01  9.90000000e+01
+  8.70999992e-01  1.94000006e-02 -3.30100000e-01  1.56340003e+00
+  5.04090996e+01  1.34840000e+00 -2.96999998e-02  1.76220000e+04
+  7.29300000e+03  1.17420006e+00  3.31699991e+00  1.71083405e+02
+  1.00030005e+00  7.90000036e-02  1.57530000e+05  1.99999995e-04
+  3.01480007e+00  1.06400000e+04  1.08650000e+04  1.99999995e-04
+ -3.58982852e+04 -2.70000011e-01  1.76220000e+04  8.52400005e-01
+  2.94589996e+00  4.84000015e+00  9.22999978e-02  4.61539984e+00
+  1.00000001e-01  1.99999995e-04  7.61530018e+00  1.99999995e-04
+ -6.49999976e-02  2.06102009e+01  1.87530005e+00  1.73096936e+03
+  2.98009992e+00  4.19460011e+00  1.38999997e-02 -3.42420352e+04
+  9.63059998e+01  1.40460002e+00 -6.50999993e-02  1.45290005e+00
+  1.57019997e+00  7.36590000e+04  3.00000014e-04  8.20800006e-01
+ -6.22911987e+01  8.92920017e+00  1.12709999e+00  1.03929996e+00
+  1.93490005e+00  1.26026685e+03  7.29300000e+03  2.40799999e+00]
+Example 2 recon:   [-1.34848003e+01 -1.23360002e+00 -1.38080001e+00  1.18897367e+05
+ -4.50386211e+04  4.98360014e+00  1.15431999e+02  8.32599998e-01
+ -2.87890005e+00  7.89000019e-02 -1.60590005e+00 -2.52640009e+00
+ -2.92603320e+04 -1.64489994e+01  2.78899997e-01 -8.89972000e+01
+ -3.73670352e+04 -2.07511005e+01  7.82530022e+00 -9.97830009e+00
+  1.10738001e+01 -1.05536301e+02  5.20941211e+04  1.46580795e+02
+ -7.14299977e-01 -2.78847008e+01 -6.00509977e+00 -7.68400002e+00
+ -4.47841602e+04 -2.32404995e+01  9.58479977e+00  7.99855234e+04
+ -7.85809994e+00  2.03090000e+00  1.51821807e+04 -2.34999990e+00
+ -6.96740007e+00  1.46526003e+01  2.84270000e+00  1.24122412e+04
+ -4.79059982e+00 -1.16253004e+01 -2.22915001e+01  5.07503711e+04
+ -5.64411011e+01  1.73570605e+03 -3.02500010e-01 -1.64892998e+01
+  8.31639957e+00 -5.13229990e+00  3.16452773e+04  2.68009996e+00
+  1.64743859e+05  1.30550003e+00 -4.53292344e+04  6.57899976e-01
+  3.24090004e+00  1.16453234e+05 -1.09652004e+01  1.13402004e+01
+  6.02022018e+01 -3.83551289e+04  4.23909998e+00 -8.70540047e+00
+  2.88876602e+04 -4.00409766e+04  1.41227402e+02 -1.57949996e+00
+  4.17369986e+00 -4.54792109e+04 -9.89540005e+00  4.04629993e+00
+ -6.02880001e+00 -8.28250027e+00  3.87600005e-01  7.24900007e-01
+  1.32919854e+04 -5.82181015e+01 -5.15689993e+00  8.26410859e+04
+  1.04007920e+04  3.88599992e-01 -1.45029998e+00 -1.25166998e+01
+ -2.14910007e+00  8.23480034e+00 -1.07990003e+00 -9.51803970e+01
+  5.28800011e+00 -4.28337695e+04  8.73568906e+04  3.51020002e+00
+  4.65929985e+00  6.02449989e+00  1.32084326e+04 -1.47370005e+00
+  7.63800625e+04  1.64664031e+05  1.15268002e+01 -7.04530001e+00
+  4.07319883e+04 -6.74399972e-01  1.89699996e+00 -1.90377007e+01
+  1.69239998e+00 -1.02529001e+01  1.72268616e+03  8.27740002e+00
+  1.47710625e+05 -1.12520003e+00  3.91930008e+00  5.53199829e+02
+ -4.28212773e+04 -7.68600006e+01 -1.42809000e+01 -1.23640001e+00
+ -1.45999998e-01  1.55200005e+00 -1.12370002e+00 -7.33999982e-02
+  2.67699987e-01  7.61201953e+04  1.64872031e+05  1.92859995e+00
+  5.79260015e+00 -5.43809986e+00 -3.93796484e+04  1.08365002e+01
+ -4.45371017e+01  1.46037000e+05 -5.68879986e+00  2.44051387e+04
+  6.12239981e+00 -4.73899990e-01  1.63820004e+00 -2.06270003e+00
+  8.07400036e+00 -1.15815001e+01  2.59323006e+01  4.27899981e+00
+ -6.49550009e+00 -2.30739999e+00 -6.28450012e+00 -6.37999997e-02
+ -9.06789970e+00  1.49098297e+05  2.23032441e+04  6.08120012e+00
+  2.32307007e+02 -1.08178997e+01 -3.47709990e+00 -3.75769883e+04
+  1.79461743e+03  1.32209997e+01 -4.15086016e+04 -9.40909958e+00
+  2.26640010e+00  4.03550005e+00 -4.50083398e+04 -7.41063995e+01
+ -8.44515991e+01  1.11799400e+02  2.45772991e+01 -6.47686996e+01
+ -2.43339992e+00  1.53310001e+00 -4.58650017e+00 -1.30823002e+01
+  1.21068135e+04  8.31149960e+00 -4.51892148e+04 -1.30798998e+01
+ -1.11280000e+00  1.85317754e+04  1.18530899e+02  4.80830002e+00
+ -5.17679977e+00 -3.43510008e+00  1.66394275e+03 -2.55699992e-01
+ -1.47730999e+01 -3.19880009e+00  6.72098007e+01  1.42634995e+02
+  1.67302637e+04 -6.15810013e+00 -4.48656289e+04  8.85809994e+00
+ -3.20100009e-01  1.96956604e+02  3.87829995e+00  3.16330004e+00
+ -4.25427734e+04  1.49512500e+05  6.52529453e+04  6.72100008e-01
+ -3.59010005e+00  9.15260029e+00  8.71200025e-01  1.01942997e+01
+  3.02371006e+01  2.48909998e+00  7.18590021e+00  2.77940011e+00
+  1.68046203e+05  1.39729004e+01  2.12389994e+00 -2.38969994e+00
+ -4.52551328e+04  1.28530002e+00  3.13490009e+00  1.76739980e+04
+  1.14953219e+05  6.13990021e+00 -2.18689990e+00  2.62909316e+04
+ -3.05599999e+00 -8.64200020e+00  1.58055627e+03 -7.63310003e+00
+ -6.85370016e+00  3.45350003e+00 -1.00619996e+00  1.04330997e+01
+ -3.06622520e+04 -8.20000023e-02  7.34929991e+00 -4.03783242e+04
+  1.21524121e+04  3.33049989e+00  5.51160002e+00 -1.12930000e+00
+  1.72627063e+03 -1.51761999e+01  8.51123962e+01 -9.87200022e-01
+ -3.46359992e+00  2.51800001e-01 -4.54245078e+04 -7.91499996e+00
+ -1.09364004e+01  1.16635039e+04  1.47686938e+05  1.18611430e+05
+  2.19490004e+00 -3.92129993e+00  1.53950000e+00  1.78610003e+00
+  1.14803273e+05  4.50040007e+00 -7.88786011e+01 -6.53500021e-01
+  3.29299986e-01 -1.81250000e+01  1.10370004e+00 -5.85850000e+00
+  9.41349983e+00 -8.49198990e+01 -4.81440020e+00 -3.25399995e-01
+  1.40818005e+01  8.76713203e+04 -4.45310430e+04 -3.85549998e+00
+  9.12678809e+03 -7.12970018e+00  9.04030037e+00 -5.49100018e+00
+  1.45426891e+05  6.95900023e-01  9.13593984e+04 -4.19838516e+04
+  4.98899984e+00  5.58960009e+00 -7.49889984e+01 -7.38963013e+01
+ -3.01504993e+01  1.40000004e-02 -4.00292969e+04 -2.70479989e+00
+  3.56410003e+00 -8.53110027e+00  1.33799000e+01  8.27649975e+00
+ -4.44959766e+04  1.47746812e+05  1.49520998e+01 -8.99720001e+00
+ -9.05053024e+01 -5.99230003e+00  6.40502588e+03  3.79799992e-01
+ -5.64000010e-01 -8.58790016e+00  3.71269989e+00  1.13719602e+05
+  1.48096719e+05  5.10077188e+04  1.16244102e+02  2.86849999e+00
+  4.57840014e+00 -4.50473203e+04 -3.79419994e+00  1.67286172e+04
+  9.12321014e+01  3.99317773e+04  1.46555953e+05  8.94800007e-01
+ -1.32852001e+01  5.10270023e+00  8.60680008e+00 -3.84550508e+04
+ -1.16380000e+00  1.56505172e+05 -9.96225967e+01  1.62529395e+03
+ -1.73000002e+00  7.21599996e-01 -5.00780010e+00  3.51479988e+01
+  3.77000004e-01  1.29670000e+00  7.33034973e+01 -1.30776997e+01
+  2.38794062e+04  1.46895938e+05 -9.59899998e+00 -4.56074570e+04
+  7.35410023e+00  6.80599141e+04  1.03202637e+04  1.35781998e+02
+ -1.00806999e+01 -8.65260029e+00 -2.24130011e+00 -3.80934961e+04
+  6.10659981e+00  9.95540047e+00 -5.01200020e-01 -7.05059967e+01
+  1.05778999e+01  1.06863003e+01  3.32207985e+01  1.70196797e+05
+  2.90014000e+01  1.96410797e+02 -8.75299988e+01  1.86767006e+01
+  1.39092999e+01  9.53409958e+00 -1.02520001e+00  3.90580010e+00
+  1.23013525e+04 -3.93549991e+00  4.61922695e+04 -2.08640003e+00
+  2.50489998e+00 -1.58600003e-01 -4.33116836e+04 -4.57002383e+04
+  1.04338594e+04 -8.07080994e+01  4.63259983e+00 -3.77060008e+00
+ -4.74096985e+01 -3.33179998e+00  7.87330008e+00  7.80249977e+00
+  1.00550598e+02  1.32156318e+04  4.99817070e+04  1.01374998e+01
+ -4.41011016e+04 -5.16580009e+00  8.65205994e+01  1.41180625e+05
+  2.87360001e+00  1.65933972e+03 -7.38950014e+00 -3.91066445e+04
+  2.94645996e+01 -4.14900664e+04  7.89153906e+03  6.62169981e+00
+  4.69184492e+04  1.13511000e+01  5.76009989e+00  2.43736475e+03
+ -3.19972000e+01  4.71700013e-01 -1.38044004e+01  4.63000011e+00
+ -7.57940006e+00 -1.98140001e+00 -6.65600002e-01 -1.43509996e+00
+  8.01560020e+00 -4.53120703e+04  7.98400021e+00  6.88019609e+04
+  1.95540172e+05  1.36576294e+02  7.18240967e+01  2.04375397e+02
+  3.39560008e+00  1.29716997e+01 -5.50239992e+00  8.65110016e+00
+  6.19280014e+01 -6.36000013e+00  6.48810005e+00  1.90298984e+04
+  8.04273340e+03 -2.20582008e+01 -2.03160000e+00  1.74541107e+02
+  1.69664001e+01 -7.01700020e+00  1.93097219e+05  1.45288000e+01
+ -2.73359990e+00  9.47162207e+03  1.68231230e+04  1.77119994e+00
+ -4.52164062e+04  7.62190008e+00  2.49244023e+04  4.42140007e+00
+  3.61279988e+00  8.11989975e+00  7.27689981e+00  1.71452007e+01
+  1.80219994e+01  1.97300002e-01  4.63555695e+02 -7.57639980e+00
+  9.74300027e-01  1.57170000e+01  1.68219995e+00  1.71058325e+03
+  3.16129994e+00  8.04133606e+02  3.33839989e+00 -4.39096836e+04
+  7.94599991e+01 -6.16900015e+00  2.48309994e+00  9.68560028e+00
+  3.80181007e+01  8.76063984e+04  9.03859997e+00  2.56545197e+02
+ -4.83247986e+01  8.68439960e+00 -2.33969998e+00  4.55000013e-01
+ -2.22056999e+01  1.70919299e+03  1.07976113e+04  2.77900004e+00]
+Diff: [ 1.40748997e+01  1.17620003e+00  1.80789995e+00 -1.56863740e+04
+  9.35857812e+03 -4.50349998e+00 -2.80000009e-02 -3.81900012e-01
+  2.84669995e+00  1.03439999e+00  1.30400002e+00  3.57649994e+00
+  2.44945297e+02  1.70256004e+01  1.35700002e-01 -1.09998999e+01
+  5.69846289e+03  2.06818008e+01 -7.76370001e+00  1.10437002e+01
+ -7.85270023e+00  2.82610011e+00 -3.26111191e+04  6.77299976e+00
+  1.25000000e+00  2.88845997e+01  6.57959986e+00  7.62799978e+00
+  6.90091748e+03  2.37217007e+01 -8.44789982e+00  1.29824766e+04
+  8.78800011e+00 -1.47570002e+00 -6.74718066e+03  2.87439990e+00
+  7.62360001e+00 -1.41079998e+01 -2.26889992e+00 -3.97724121e+03
+  4.72179985e+00  1.16732998e+01  2.21833000e+01 -3.10630078e+03
+ -6.04050016e+00 -3.54683594e+02  2.26220012e+00  1.69431992e+01
+ -7.83769989e+00  5.07499981e+00 -8.92627539e+03 -2.28819990e+00
+ -7.21385938e+03 -9.91199970e-01  7.25630078e+03 -2.00700000e-01
+ -3.27069998e+00  5.39276562e+03  1.09382000e+01 -5.59749985e+00
+  8.40869999e+00 -1.39379297e+03 -3.76399994e+00  8.81389999e+00
+ -9.40466016e+03 -3.14520312e+03 -6.66940022e+00  1.54620004e+00
+ -3.42199993e+00  8.75693359e+03  1.01244001e+01 -3.81830001e+00
+  6.23400021e+00  8.49330044e+00 -4.52600002e-01 -4.84600008e-01
+ -2.65198535e+03 -4.00220013e+00  5.11889982e+00 -8.98208594e+03
+  2.39207993e+02 -4.45899993e-01  2.45600009e+00  1.27691002e+01
+  2.48950005e+00 -7.86250019e+00  1.04659998e+00 -4.81610012e+00
+ -3.36949992e+00  6.32506641e+03 -1.36978916e+04 -3.09750009e+00
+ -4.48460007e+00 -5.87900019e+00 -4.77343262e+03  1.75080001e+00
+  1.65879375e+04 -7.13403125e+03 -1.04200001e+01  7.21110010e+00
+  1.16990117e+04  8.43500018e-01  3.38210011e+00  1.90037994e+01
+ -1.07850003e+00  1.04270000e+01 -2.01780502e+02 -8.22939968e+00
+ -7.52856250e+03  1.29030001e+00 -2.93750000e+00 -5.53883911e+02
+ -5.22964783e+02 -2.25195007e+01  1.42173004e+01  2.26530004e+00
+  1.15730000e+00 -1.61699998e+00  2.17630005e+00  1.61000006e-02
+  6.25800014e-01  1.68478047e+04 -7.34203125e+03 -1.92840004e+00
+ -5.08850002e+00  6.34980011e+00  4.31779688e+03 -1.09052000e+01
+ -1.47538996e+01 -1.61809375e+04  6.51550007e+00  2.72586133e+03
+ -6.82889986e+00  5.89629984e+00 -6.37700021e-01  2.06290007e+00
+ -6.99270010e+00  1.19526997e+01 -5.28919983e+00 -3.14870000e+00
+  6.94729996e+00  1.75390005e+00  6.39309978e+00  6.00899994e-01
+  9.62749958e+00 -1.04032344e+04  4.15755798e+02 -6.08099985e+00
+ -2.32225998e+02  1.13543997e+01  4.03230000e+00 -2.17823047e+03
+ -3.94296600e+02 -1.32896996e+01  7.52336719e+03  1.04106998e+01
+ -1.69649994e+00 -4.06559992e+00  7.09942969e+03  6.97079992e+00
+ -1.55459995e+01  2.88910007e+00 -2.41907997e+01 -1.15499997e+00
+  2.86500001e+00 -1.58910000e+00  5.09530020e+00  1.34738998e+01
+ -1.46681348e+03 -7.31160021e+00  9.04463281e+03  1.42230997e+01
+  1.64030004e+00 -7.66677539e+03 -3.12689996e+00 -3.81209993e+00
+  5.17710018e+00  3.43540001e+00 -4.15838593e+02  1.25590003e+00
+  2.54999995e-01  3.21630001e+00 -9.07610035e+00 -7.95289993e+00
+ -5.86526367e+03  8.70670033e+00  9.15380469e+03 -6.41860008e+00
+  3.20699990e-01  2.53259993e+00 -1.41620004e+00 -2.31590009e+00
+  8.18706641e+03 -8.75820312e+03  3.64060547e+04 -6.71800017e-01
+  3.53419995e+00 -8.15270042e+00  5.05490017e+00 -9.10400009e+00
+  1.75929999e+00 -1.52980006e+00 -5.72889996e+00 -4.34599996e-01
+ -1.05162031e+04 -1.39855003e+01 -2.12350011e+00  4.02510023e+00
+  9.12823438e+03 -7.80399978e-01 -1.28750002e+00 -6.80899854e+03
+ -1.17422188e+04 -5.72559977e+00  2.79259992e+00 -8.53393164e+03
+  3.44799995e+00  9.04609966e+00 -3.66482010e+01  6.65460014e+00
+  6.78450012e+00  1.33147001e+01  1.04789996e+00 -1.00425997e+01
+  4.75260156e+03  1.74099997e-01 -6.92969990e+00  5.71479688e+03
+ -1.51241211e+03 -2.33109999e+00  1.35699999e+00  1.37039995e+00
+  9.06050014e+00  1.54447002e+01  9.20499980e-01  1.24020004e+00
+  3.46399999e+00 -6.50000013e-03  8.82798438e+03  8.14620018e+00
+  1.09365997e+01 -1.02350391e+03 -1.51088428e+04 -1.19007969e+04
+ -2.15089989e+00  4.53200006e+00 -5.39600015e-01 -6.89300001e-01
+ -1.15922812e+04 -4.50010014e+00 -2.00496006e+01  5.89200020e-01
+ -2.73900002e-01  1.85168991e+01 -1.03500001e-01  6.23820019e+00
+ -9.41329956e+00  1.56032000e+01  5.23640013e+00  3.25700015e-01
+ -1.37185001e+01 -8.50132031e+03  7.08591455e+03  4.24529982e+00
+ -1.83378796e+03  7.22329998e+00 -3.78959990e+00  5.53499985e+00
+ -7.60890625e+03  3.07900012e-01 -1.21893984e+04  5.65421094e+03
+ -3.98769999e+00 -5.24580002e+00  1.31849003e+01 -2.60984001e+01
+  3.23264008e+01  2.25029993e+00  8.83876367e+03  2.70499992e+00
+ -1.45819998e+00  8.47369957e+00 -1.13010998e+01 -8.31429958e+00
+  6.99552734e+03 -1.69026641e+04 -1.24424000e+01  8.96430016e+00
+ -9.48789978e+00  5.99259996e+00  6.81974121e+02  1.93789995e+00
+  1.56420004e+00  1.04034004e+01 -3.51270008e+00 -1.05086016e+04
+ -1.55289678e+04 -2.99994531e+03  4.63360023e+00 -8.45700026e-01
+ -2.40089989e+00  9.19843359e+03  5.07950020e+00 -5.86361719e+03
+  4.42810011e+00 -2.04487773e+04 -2.06389375e+04 -9.28799987e-01
+  1.43758001e+01 -4.31820011e+00 -8.66279984e+00  1.96812500e+03
+  1.14150000e+00  1.02482812e+03  1.20990002e+00 -3.75588593e+02
+  3.74140000e+00  1.54799998e-01  5.61439991e+00 -3.41477013e+01
+ -3.59499991e-01 -2.02299997e-01  4.01049995e+00  1.30778999e+01
+ -5.37240625e+03 -8.83129688e+03  9.53390026e+00  8.86975781e+03
+ -6.78579998e+00 -2.76059141e+04 -3.02726367e+03  1.24024000e+01
+  1.01739998e+01  9.18490028e+00  2.81730008e+00  4.56989844e+03
+ -6.10629988e+00 -9.43840027e+00  9.90199983e-01  8.27400029e-01
+ -1.06463003e+01 -1.01389999e+01 -3.32896004e+01 -3.26127969e+04
+ -2.89223995e+01  4.43000011e-02 -1.24681997e+01 -1.82623005e+01
+ -1.35202999e+01 -9.59920025e+00  1.38479996e+00 -3.48609996e+00
+ -5.00835254e+03  4.01149988e+00 -1.83692695e+04  2.88529992e+00
+ -2.50460005e+00  1.59099996e-01  4.22546484e+03  9.06676172e+03
+ -3.14085938e+03 -1.92901001e+01 -3.89499998e+00  7.06029987e+00
+ -8.90299976e-01  5.27769995e+00 -2.35549998e+00 -6.80280018e+00
+ -2.19396992e+01 -2.57563184e+03 -2.71097266e+03 -9.13640022e+00
+  6.93693750e+03  5.10160017e+00 -8.00959969e+00 -1.42323604e+04
+ -6.37300014e-01 -9.85912598e+02  9.06120014e+00 -1.29044102e+04
+ -2.95016994e+01  5.84471875e+03 -5.98539612e+02 -6.42170000e+00
+ -3.14938672e+03 -1.13507996e+01 -4.12589979e+00 -9.89700012e+02
+  3.39035988e+01 -4.71399993e-01  1.53437996e+01 -2.71259999e+00
+  8.57979965e+00  5.35629988e+00  4.43730021e+00  3.24690008e+00
+ -7.81559992e+00  9.19295703e+03 -6.18610001e+00  1.05376875e+04
+ -3.80101719e+04  5.99359989e+00 -1.86072998e+01 -1.05375397e+02
+ -2.52460003e+00 -1.29524002e+01  5.17229986e+00 -7.08769989e+00
+ -1.15188999e+01  7.70839977e+00 -6.51770020e+00 -1.40789844e+03
+ -7.49733887e+02  2.32322998e+01  5.34859991e+00 -3.45779991e+00
+ -1.59660997e+01  7.09600019e+00 -3.55672188e+04 -1.45284996e+01
+  5.74840021e+00  1.16837793e+03 -5.95812305e+03 -1.77100003e+00
+  9.31812109e+03 -7.89190006e+00 -7.30240234e+03 -3.56900001e+00
+ -6.66899979e-01 -3.27990007e+00 -7.18459988e+00 -1.25298004e+01
+ -1.79220009e+01 -1.97099999e-01 -4.55940399e+02  7.57660007e+00
+ -1.03929996e+00  4.89319992e+00  1.93100005e-01  2.03861008e+01
+ -1.81199998e-01 -7.99939026e+02 -3.32450008e+00  9.66764844e+03
+  1.68460007e+01  7.57359982e+00 -2.54809999e+00 -8.23270035e+00
+ -3.64480019e+01 -1.39473984e+04 -9.03839970e+00 -2.55724396e+02
+ -1.39664001e+01  2.44800001e-01  3.46679997e+00  5.84299982e-01
+  2.41406002e+01 -4.48926208e+02 -3.50461108e+03 -3.70999992e-01]
+
+Example 3 input:   [ 8.9859998e-01 -6.8400003e-02  8.7470001e-01  7.1774000e+04
+ -1.8122166e+04  8.7739998e-01  1.3825000e+02  9.6719998e-01
+ -2.9600000e-02  1.1445000e+00 -6.9999999e-01  9.2030001e-01
+  1.1708805e+04  8.3740002e-01  1.5571001e+00 -9.9996597e+01
+  1.1027303e+04 -6.8000004e-02  5.9400000e-02  9.3870002e-01
+  3.1795001e+00 -1.2353910e+02  4.4744000e+04  1.7428650e+02
+  1.5729001e+00  9.9989998e-01  1.0495000e+00 -6.7699999e-02
+ -1.8019379e+04  1.1351000e+00  1.1673000e+00  6.8343000e+04
+  1.3333000e+00  1.0475000e+00  3.0503002e+04  1.0628000e+00
+  1.1746000e+00  1.0227000e+00  1.7187001e+00  2.2886000e+04
+ -6.6399999e-02  5.9999999e-02 -1.9300000e-01  2.6448822e+04
+ -7.0369301e+01  5.4700562e+02  1.9967999e+00  1.7015001e+00
+  1.0570000e+00 -6.8300001e-02  4.5481000e+04  1.0302000e+00
+  7.2420000e+04  9.7409999e-01 -1.9100705e+04  1.0204999e+00
+ -2.8999999e-02  4.7899000e+04 -2.8600000e-02  5.9301000e+00
+  1.0340310e+02  1.1867538e+04  1.0414000e+00  1.1840000e-01
+  3.3490000e+04  1.0102914e+04  2.0696500e+02 -2.9300001e-02
+  6.7479998e-01 -1.7978934e+04  1.1921000e+00  6.3849998e-01
+  6.4600003e-01  8.0589998e-01 -7.0600003e-02  6.1150002e-01
+  1.4018000e+04 -6.9442802e+01 -2.9600000e-02  3.9743000e+04
+  1.4018000e+04 -6.8300001e-02  1.0082000e+00  1.3155000e+00
+  7.2890002e-01  7.9339999e-01 -2.9899999e-02 -9.9994797e+01
+  1.9208000e+00 -1.1183710e+04  5.7441996e+04  3.7930000e-01
+  7.1249998e-01  6.8959999e-01  2.2886000e+04  1.0737000e+00
+  6.8343000e+04  7.2420000e+04  1.1444000e+00  1.0743999e+00
+  3.0503002e+04  6.9059998e-01  5.3281002e+00 -2.9500000e-02
+  6.6890001e-01  6.9679999e-01  5.6287439e+02  5.9999999e-02
+  7.1648977e+04  1.1430000e+00  1.3084000e+00 -2.7860001e-01
+  1.2856929e+04 -4.3267002e+00 -6.8499997e-02  9.3830001e-01
+  5.7770002e-01 -6.8499997e-02  6.1430001e-01 -6.8300001e-02
+  5.9109998e-01  6.8343000e+04  7.2420000e+04  1.9999999e-04
+  5.9310001e-01  6.7170000e-01  1.2434602e+04 -6.7000002e-02
+ -6.4165497e+01  7.3943109e+04  6.2379998e-01  2.2886000e+04
+ -7.6410002e-01  5.4731998e+00  1.0003000e+00  3.0000001e-04
+  6.0519999e-01  3.4270000e-01  2.3638300e+01  1.1662000e+00
+  5.0169998e-01 -2.3080000e-01  1.1850000e-01  8.2459998e-01
+  5.3649998e-01  7.8669750e+04  2.2886000e+04  1.9999999e-04
+ -3.1160000e-01  5.0220001e-01  5.2910000e-01  1.5785556e+04
+  5.4302759e+02 -6.7000002e-02  9.5634355e+03  1.0007000e+00
+  5.0220001e-01 -2.9400000e-02 -1.8786693e+04 -7.2426697e+01
+ -9.9997101e+01  1.3759750e+02  1.0161000e+00 -8.0230301e+01
+  1.0495000e+00 -6.8999998e-02  1.0678000e+00  1.1548001e+00
+  1.4018000e+04  9.9989998e-01 -1.8131371e+04  1.0730000e+00
+  9.9970001e-01  3.9001000e+04  1.3825000e+02  1.0686001e+00
+  1.9999999e-04  1.9999999e-04  6.3710132e+02  1.0002000e+00
+ -3.3684601e+01  2.4300000e-02  6.9468903e+01  2.0460800e+02
+  3.3490000e+04  1.1348000e+00 -1.5989493e+04  1.8269000e+00
+  6.0000003e-04  3.0327850e+02  1.0647000e+00  6.7400002e-01
+  7.6221807e+03  7.1063367e+04  3.3490000e+04  1.9999999e-04
+ -6.8800002e-02  9.9989998e-01  6.1252999e+00  1.1770000e+00
+  4.1426800e+01  9.3430001e-01  1.0118999e+00  1.0911000e+00
+  7.2420000e+04 -8.0899999e-02  1.9999999e-04  1.7842000e+00
+ -1.8124648e+04  9.7039998e-01  1.8511000e+00  3.9001000e+04
+  7.1774000e+04  9.0869999e-01  6.6170001e-01  4.1354000e+04
+  1.0282000e+00  8.0800003e-01  3.7418091e+02 -9.9849999e-01
+ -7.0400000e-02  2.0850300e+01  4.2900000e-02  8.8819999e-01
+  7.1812441e+03  1.1700000e-01  9.4120002e-01  1.2679214e+04
+  1.4018000e+04  9.9989998e-01  8.4316998e+00  9.3820000e-01
+  6.0129041e+02  9.7289997e-01  1.0828110e+02  9.5899999e-01
+  3.9999999e-04  8.6610001e-01 -1.8130066e+04  1.7501000e+00
+  1.9999999e-04  1.4018000e+04  7.0514070e+04  7.9184133e+04
+  5.0000001e-02  6.6619998e-01  9.9989998e-01  1.1318001e+00
+  7.1774000e+04  1.9999999e-04 -1.5992000e+00 -5.7700001e-02
+  5.3199999e-02  7.7569997e-01  1.0005000e+00  1.4821000e+00
+  1.9999999e-04 -8.7736099e+01  8.2330000e-01  1.9999999e-04
+  6.4579999e-01  7.1774000e+04 -1.9450609e+04  8.0640000e-01
+  1.4018000e+04  1.2460000e-01  5.1668000e+00  5.0000001e-02
+  6.9972688e+04  1.0066000e+00  7.1774000e+04 -8.5199541e+03
+  1.0005000e+00  9.6859998e-01 -8.6021698e+01 -9.9997803e+01
+  2.2435000e+00  1.4878000e+00 -6.9804663e+03  1.9999999e-04
+  1.4170001e+00 -6.8300001e-02  1.7658000e+00 -2.9600000e-02
+ -1.9589312e+04  7.8728055e+04  1.5107000e+00 -2.9999999e-02
+ -9.9994698e+01  1.9999999e-04  9.8430000e+03  1.4514000e+00
+  1.0003999e+00  1.5243000e+00  2.0000000e-01  7.1774000e+04
+  7.0514688e+04  2.6192260e+04  1.5551970e+02  7.5360000e-01
+  7.4599999e-01 -2.3477029e+04  2.2806001e+00  3.3490000e+04
+  1.1521710e+02  3.3490000e+04  7.7676211e+04 -3.2800000e-02
+  1.1227000e+00  6.3239998e-01 -6.8999998e-02  1.1433432e+04
+ -2.5599999e-02  7.2420000e+04 -9.5386200e+01  6.3723102e+02
+  7.7139997e-01  2.2102001e+00  6.6020000e-01  1.0003000e+00
+  2.4300000e-02  6.9749999e-01  8.5910004e+01  3.0000001e-04
+  3.9743000e+04  6.9785406e+04 -7.0600003e-02 -1.8098088e+04
+  9.1520000e-01  5.7441996e+04  2.2485000e+04  1.6486900e+02
+  1.1720000e-01  8.7840003e-01  8.8660002e-01  1.1957435e+04
+  1.9999999e-04  1.2146000e+00  8.5000002e-01 -7.7313301e+01
+ -7.6700002e-02  1.7136000e+00 -2.2139999e-01  7.7819000e+04
+  6.4999998e-02  2.2365450e+02 -9.9996201e+01  1.3234000e+00
+  2.4821000e+00 -7.0699997e-02  1.7945000e+00  1.2546999e+00
+  3.3204000e+04  6.4999998e-02  5.7441996e+04  1.1036000e+00
+  3.0000001e-04  3.0000001e-04  1.7591557e+04 -1.8162385e+04
+  2.2485000e+04 -9.9996201e+01  9.6100003e-01  3.2709999e+00
+ -4.8146500e+01  1.9607000e+00  5.4438000e+00  9.9989998e-01
+  9.9025002e+01  2.6939002e+04  2.8310660e+04  1.0005000e+00
+ -1.9453396e+04 -5.7599999e-02  9.8419998e+01  7.0953867e+04
+  1.7891001e+00  7.7100909e+02  1.7154000e+00 -1.4049765e+04
+ -3.4480000e-01 -1.0129225e+04  1.4018000e+04  2.0000000e-01
+  2.2352467e+04  1.9999999e-04  1.6608000e+00  9.9547449e+02
+  1.7096000e+00  1.9999999e-04  2.0671000e+00  2.3534999e+00
+  1.0006000e+00  3.3912001e+00  7.9210001e-01  1.5233999e+00
+  5.0000001e-02 -1.8288102e+04  1.5068001e+00  5.7167941e+04
+  7.7819000e+04  1.5299570e+02  1.9000000e+01  1.6566670e+02
+  9.8000002e-01  2.3100000e-02  1.6200000e-01  1.4141999e+00
+  5.6718700e+01  1.4037000e+00 -2.9200001e-02  3.3490000e+04
+  1.4018000e+04  1.2678000e+00  2.5077000e+00  2.0514450e+02
+  1.0002000e+00  6.4999998e-02  7.7819000e+04  1.9999999e-04
+  1.6038001e+00  1.4018000e+04  3.8135000e+04  1.9999999e-04
+ -1.5962872e+04 -5.0000000e-01  3.8135000e+04  6.7549998e-01
+  1.5000000e+00  2.5000000e-01  1.1700000e-01  2.3333001e+00
+  1.0000000e-01  1.9999999e-04  8.2160002e-01  1.9999999e-04
+ -7.0400000e-02  2.2971800e+01  3.7819999e-01  5.3549280e+02
+ -7.5599998e-01 -6.3940001e-01  1.2300000e-02 -1.5902323e+04
+  9.9563400e+01  3.2839999e-01 -7.0600003e-02  4.2539999e-01
+  3.2830000e-01  5.7441996e+04  3.0000001e-04 -5.5010003e-01
+ -6.9416100e+01  8.6395998e+00  1.1630000e+00  1.0746000e+00
+  3.5730001e-01  6.4039038e+02  1.4018000e+04  3.6680001e-01]
+Example 3 recon:   [-1.0573100e+01 -3.6236999e+00 -7.1117001e+00  6.4733953e+04
+ -5.7617227e+03  8.9306002e+00  1.4095880e+02  1.4076000e+00
+ -1.2840200e+01  4.5454001e+00  7.3195000e+00  4.7680001e+00
+  7.6303906e+03 -4.6118999e+00  3.5321000e+00 -1.1514440e+02
+  3.7888176e+03 -1.1789500e+01  4.5131998e+00 -8.5618000e+00
+  1.2700400e+01 -1.1928690e+02  6.4974695e+04  1.6757680e+02
+ -1.2970001e+00 -1.3430800e+01  2.7052000e+00 -5.8341999e+00
+ -5.1241382e+03 -9.8881998e+00  5.1356001e+00  5.5659941e+04
+ -1.3067000e+00  9.3537998e+00  2.6559840e+04 -7.4599999e-01
+ -3.2145000e+00  1.1454800e+01 -3.3408999e+00  2.0490314e+04
+ -5.6280999e+00 -8.9948997e+00 -1.3651000e+01  3.8310895e+04
+ -6.7778603e+01  7.4891150e+02 -5.4400003e-01 -7.7807999e+00
+  1.7503999e+00 -1.0151000e+00  4.0710863e+04  7.2800999e+00
+  6.7463648e+04  2.9665999e+00 -5.3087407e+03 -3.2258000e+00
+  2.0083001e+00  8.0625789e+04 -7.7705002e+00  6.6155000e+00
+  8.5571198e+01  6.5103462e+03 -1.1381000e+00 -1.7807000e+00
+  3.2981336e+04  1.1463996e+04  1.7460820e+02 -2.1100000e-02
+ -3.1055000e+00 -6.3446445e+03 -2.4930999e+00  7.5585999e+00
+ -1.5140000e-01 -4.8590001e-01 -1.1639000e+00 -3.5977001e+00
+  2.2289680e+04 -7.9678101e+01 -8.1370002e-01  5.1633914e+04
+  1.8420711e+04 -1.4988000e+00 -2.2945001e+00 -2.3936000e+00
+  1.4894000e+00  2.7976000e+00 -1.2697999e+00 -1.1199790e+02
+  1.2217000e+00 -2.3211790e+03  6.0716453e+04  7.0605001e+00
+  2.8034999e+00  5.7504001e+00  2.1028516e+04  5.4095998e+00
+  5.1517352e+04  6.7114812e+04  3.1452999e+00  1.3437001e+00
+  4.0878473e+04  4.2238002e+00  1.5849000e+00 -7.3325000e+00
+ -2.5581000e+00 -5.6230998e+00  7.9074323e+02  3.9452000e+00
+  8.2625867e+04  1.7766000e+00  8.4700003e-02  7.5657172e+02
+  9.0241270e+03 -5.7832298e+01 -9.5844002e+00 -1.3491000e+00
+  3.0757999e+00  5.6188002e+00  1.0901999e+00  3.6129999e-01
+  1.3717000e+00  4.5954875e+04  6.7557930e+04 -4.4551001e+00
+  2.2304001e+00 -5.4524002e+00  6.5960649e+03  5.4507999e+00
+ -5.8218700e+01  8.1916992e+04 -8.4343996e+00  2.6415410e+04
+  4.3776002e+00  1.4197000e+00  1.5036000e+00  2.9693000e+00
+  8.0580997e+00 -9.9383001e+00  2.7058500e+01 -3.1240001e-01
+ -4.3097000e+00  2.0676000e+00 -1.0156100e+01 -1.0370000e-01
+ -4.3695998e+00  7.7322523e+04  2.6262605e+04  1.1210999e+00
+  2.9359760e+02 -9.7981005e+00 -7.9233999e+00  1.3572824e+04
+  7.5645117e+02  5.3383002e+00  2.0097478e+03 -8.4396000e+00
+ -1.1382000e+00  3.9888000e+00 -5.1482515e+03 -7.9750198e+01
+ -1.0978050e+02  1.3086090e+02  1.2507200e+01 -7.9517601e+01
+ -6.0335999e+00 -1.9685000e+00 -4.2170000e-01 -9.7609997e+00
+  2.1073770e+04  2.5381000e+00 -5.8915103e+03 -3.9560001e+00
+ -8.6530000e-01  3.1070793e+04  1.4617030e+02 -5.8800000e-01
+ -6.9268999e+00 -4.6227999e+00  7.3460883e+02  1.3037000e+00
+ -2.3087400e+01 -8.2728996e+00  7.8009598e+01  1.8878951e+02
+  2.7387229e+04 -5.0163999e+00 -4.7328594e+03  1.4490100e+01
+  2.1831999e+00  2.5777921e+02  2.7060001e+00  8.8076000e+00
+  9.7853003e+02  8.2959391e+04  5.5741094e+04 -2.1010001e+00
+ -4.7582002e+00  1.3458000e+00  1.2400100e+01  7.1989002e+00
+  4.0015301e+01 -2.5827000e+00  1.3866000e+00  2.2019999e+00
+  6.9841922e+04  8.1889000e+00  1.3270000e+00  6.7799997e-01
+ -5.9469902e+03  4.9713001e+00 -6.7729998e-01  2.9238305e+04
+  5.4105922e+04  1.3457000e+00 -3.3629999e+00  3.8677543e+04
+ -8.0499999e-02 -1.3950000e+00  5.8781549e+02 -2.2183001e+00
+ -1.7174000e+00  1.1272000e+01 -1.0632000e+00  4.9275999e+00
+  5.6839199e+03 -5.2950001e-01 -3.1301000e+00  4.5294355e+03
+  2.1117965e+04  5.8091002e+00  1.1017400e+01 -2.8303001e+00
+  5.8312781e+02 -8.3177004e+00  1.0147640e+02  2.4096000e+00
+ -3.8690001e-01  4.7077999e+00 -5.8266528e+03  6.1820002e+00
+ -1.7894000e+00  2.0843834e+04  8.3272883e+04  6.7691117e+04
+ -4.5683999e+00  1.1933000e+00  1.0452000e+00 -4.6701999e+00
+  5.3714324e+04 -1.1019000e+00 -6.7034500e+01  5.0900002e+00
+  5.0611000e+00 -6.0264001e+00  1.6687000e+00  4.6100002e-02
+  8.7557001e+00 -9.4201599e+01  2.1208000e+00 -6.2744999e+00
+  2.9899001e+00  5.7551441e+04 -6.1629199e+03 -2.6421001e+00
+  1.7844312e+04  2.5594001e+00 -1.6660000e-01 -9.8611002e+00
+  8.3371656e+04  5.1901002e+00  6.4453875e+04 -1.5518256e+03
+  1.0003999e+00  6.6520000e+00 -8.5462502e+01 -9.6270500e+01
+ -1.9427000e+01  2.2346001e+00 -1.3715293e+03 -2.3652000e+00
+ -2.2930001e-01 -9.8680000e+00  1.3506000e+00  3.3104999e+00
+ -5.7378662e+03  7.3898445e+04  1.2529100e+01 -1.6309000e+00
+ -1.0095250e+02 -9.5101004e+00  1.2524822e+04 -3.6493001e+00
+ -2.7999999e-03 -1.7312000e+00  3.4044001e+00  5.0951965e+04
+  8.3227203e+04  3.8257242e+04  1.4798390e+02  4.6606002e+00
+  7.1921000e+00 -3.8411685e+03  2.2207000e+00  2.6728340e+04
+  1.1098980e+02  3.2233715e+04  7.6319250e+04  1.4493999e+00
+ -9.4664001e+00  4.2684999e+00  1.0789800e+01  4.7444512e+03
+ -4.1679001e+00  5.0598457e+04 -9.5640800e+01  7.2281439e+02
+  4.5478001e+00  5.3797998e+00 -1.1952000e+00  1.5497700e+01
+ -4.9046001e+00 -5.2507000e+00  9.1406898e+01 -5.8499999e+00
+  3.5730359e+04  8.3462711e+04  2.9480001e-01 -6.2836323e+03
+  1.8586000e+00  5.8307199e+04  1.7622320e+04  1.7841460e+02
+ -4.1988001e+00  2.7393000e+00  3.6275001e+00  5.5238438e+03
+  5.2642002e+00  4.0383000e+00  4.8038001e+00 -8.6412697e+01
+ -1.0618000e+00  5.8938999e+00  2.0369900e+01  7.2618953e+04
+  6.5946002e+00  2.1730299e+02 -1.1139290e+02  8.2567997e+00
+  7.9549999e+00 -6.6119999e-01  2.1914999e+00 -2.0523000e+00
+  2.2771885e+04 -6.7865000e+00  5.3492684e+04 -2.3785999e+00
+  3.9145000e+00 -5.4628000e+00  3.8038096e+03 -6.2512012e+03
+  1.7600861e+04 -9.7646896e+01  6.3697000e+00 -1.9452000e+00
+ -5.1058300e+01 -4.6052999e+00  6.1443000e+00  4.2196999e+00
+  1.0265840e+02  2.4694953e+04  3.7681090e+04  7.3362999e+00
+ -6.3617261e+03  1.6123000e+00  9.5860298e+01  7.9823719e+04
+  5.3909998e+00  6.9005811e+02 -7.6788998e+00  6.4238809e+03
+  1.4718300e+01 -2.0808562e+03  1.5050745e+04  5.6761999e+00
+  2.1643564e+04  1.6983000e+00 -2.5820999e+00  9.7214520e+02
+ -1.8855801e+01  2.5510001e-01 -1.6956699e+01 -5.1899999e-01
+  3.9489999e+00  2.1206000e+00 -4.1119999e-01  4.7073002e+00
+  3.3891001e+00 -5.4859526e+03  3.3970001e+00  4.9047031e+04
+  8.4907914e+04  1.5776199e+02  7.2590897e+01  2.4489020e+02
+  7.3179002e+00  1.1367500e+01  1.9890499e+01  2.2279000e+00
+  6.3817001e+01 -1.7857000e+00  6.2901001e+00  2.8189658e+04
+  1.5028143e+04 -5.4867001e+00  3.7813001e+00  2.1238490e+02
+  7.7575998e+00 -5.5475001e+00  8.3732680e+04  5.3779001e+00
+ -2.1150000e+00  1.7570967e+04  2.8161012e+04  1.7570000e+00
+ -4.4387324e+03 -1.8261000e+00  3.7845520e+04  5.5581999e+00
+  5.4951000e+00  7.3758998e+00  3.5028999e+00  2.1335001e+00
+  1.3410000e+01 -1.6346000e+00  2.0911430e+02 -6.3308001e+00
+  4.3488002e+00  2.6847099e+01  5.3549999e-01  6.2379523e+02
+  9.4679999e-01  6.7541589e+02 -3.6259999e+00 -5.4021382e+03
+  9.8444702e+01  5.1520000e+00 -5.2291999e+00  5.4355001e+00
+  2.4781099e+01  6.0752461e+04  5.4412999e+00  2.9078300e+01
+ -6.5463600e+01  5.6581001e+00 -5.8600998e+00  1.5790001e-01
+ -8.3232002e+00  7.2787799e+02  1.6490562e+04  2.4840000e+00]
+Diff: [ 1.14716997e+01  3.55530000e+00  7.98640013e+00  7.04004736e+03
+ -1.23604434e+04 -8.05329990e+00 -2.70880008e+00 -4.40400004e-01
+  1.28107004e+01 -3.40100002e+00 -8.01949978e+00 -3.84780002e+00
+  4.07841431e+03  5.44939995e+00 -1.97500002e+00  1.51478004e+01
+  7.23848584e+03  1.17214003e+01 -4.45380020e+00  9.50039959e+00
+ -9.52089977e+00 -4.25220013e+00 -2.02306953e+04  6.70970011e+00
+  2.86989999e+00  1.44307003e+01 -1.65569997e+00  5.76650000e+00
+ -1.28952402e+04  1.10232000e+01 -3.96830010e+00  1.26830586e+04
+  2.64010000e+00 -8.30630016e+00  3.94315991e+03  1.80879998e+00
+  4.38910007e+00 -1.04321003e+01  5.05959988e+00  2.39568555e+03
+  5.56160021e+00  9.05490017e+00  1.34580002e+01 -1.18620723e+04
+ -2.59080005e+00 -2.01905899e+02  2.54080009e+00  9.48229980e+00
+ -6.93400025e-01  9.46799994e-01  4.77013672e+03 -6.25000000e+00
+  4.95635156e+03 -1.99249995e+00 -1.37919648e+04  4.24630022e+00
+ -2.03730011e+00 -3.27267910e+04  7.74189997e+00 -6.85299993e-01
+  1.78318996e+01  5.35719189e+03  2.17950010e+00  1.89909995e+00
+  5.08664001e+02 -1.36108203e+03  3.23568001e+01 -8.10000021e-03
+  3.78029990e+00 -1.16342891e+04  3.68519998e+00 -6.92000008e+00
+  7.97399998e-01  1.29180002e+00  1.09329998e+00  4.20919991e+00
+ -8.27167969e+03  1.02353001e+01  7.84099996e-01 -1.18909141e+04
+ -4.40271094e+03  1.43050003e+00  3.30270004e+00  3.70910001e+00
+ -7.60500014e-01 -2.00430012e+00  1.23989999e+00  1.20031996e+01
+  6.99100018e-01 -8.86253125e+03 -3.27445312e+03 -6.68120003e+00
+ -2.09100008e+00 -5.06080008e+00  1.85748438e+03 -4.33599997e+00
+  1.68256484e+04  5.30518750e+03 -2.00090003e+00 -2.69300014e-01
+ -1.03754727e+04 -3.53309989e+00  3.74320006e+00  7.30299997e+00
+  3.22700000e+00  6.32000017e+00 -2.27868698e+02 -3.88520002e+00
+ -1.09768906e+04 -6.33599997e-01  1.22379994e+00 -7.56850403e+02
+  3.83280151e+03  5.35055008e+01  9.51589966e+00  2.28740001e+00
+ -2.49819994e+00 -5.68739986e+00 -4.75899994e-01 -4.29600000e-01
+ -7.80600011e-01  2.23881250e+04  4.86207031e+03  4.45529985e+00
+ -1.63730001e+00  6.12400007e+00  5.83853662e+03 -5.51779985e+00
+ -5.94670010e+00 -7.97388330e+03  9.05830002e+00 -3.52940991e+03
+ -5.14169979e+00  4.05350018e+00 -5.03300011e-01 -2.96900010e+00
+ -7.45289993e+00  1.02810001e+01 -3.42020011e+00  1.47860003e+00
+  4.81150007e+00 -2.29839993e+00  1.02746000e+01  9.28300023e-01
+  4.90609980e+00  1.34722656e+03 -3.37660571e+03 -1.12090003e+00
+ -2.93909210e+02  1.03002996e+01  8.45250034e+00  2.21273145e+03
+ -2.13423492e+02 -5.40530014e+00  7.55368701e+03  9.44029999e+00
+  1.64040005e+00 -4.01819992e+00 -1.36384414e+04  7.32350016e+00
+  9.78339958e+00  6.73659992e+00 -1.14911003e+01 -7.12700009e-01
+  7.08309984e+00  1.89940000e+00  1.48959994e+00  1.09159002e+01
+ -7.05576953e+03 -1.53820002e+00 -1.22398613e+04  5.02899981e+00
+  1.86500001e+00  7.93020459e+03 -7.92030001e+00  1.65660000e+00
+  6.92710018e+00  4.62300014e+00 -9.75074005e+01 -3.03600013e-01
+ -1.05971003e+01  8.29720020e+00 -8.54069996e+00  1.58184996e+01
+  6.10277148e+03  6.15119982e+00 -1.12566338e+04 -1.26632004e+01
+ -2.18260002e+00  4.54992981e+01 -1.64129996e+00 -8.13370037e+00
+  6.64365137e+03 -1.18960234e+04 -2.22510938e+04  2.10109997e+00
+  4.68940020e+00 -3.45899999e-01 -6.27479982e+00 -6.02190018e+00
+  1.41149998e+00  3.51699996e+00 -3.74700010e-01 -1.11099994e+00
+  2.57807812e+03 -8.26980019e+00 -1.32679999e+00  1.10619998e+00
+ -1.21776582e+04 -4.00089979e+00  2.52839994e+00  9.76269727e+03
+  1.76680781e+04 -4.37000006e-01  4.02479982e+00  2.67645703e+03
+  1.10870004e+00  2.20300007e+00 -2.13634598e+02  1.21980000e+00
+  1.64690006e+00  9.57830048e+00  1.10609996e+00 -4.03940010e+00
+  1.49732422e+03  6.46499991e-01  4.07130003e+00  8.14977832e+03
+ -7.09996484e+03 -4.80919981e+00 -2.58570004e+00  3.76850009e+00
+  1.81625004e+01  9.29049969e+00  6.80480003e+00 -1.45060003e+00
+  3.87300014e-01 -3.84170008e+00 -1.23034141e+04 -4.43190002e+00
+  1.78950000e+00 -6.82583350e+03 -1.27588125e+04  1.14930156e+04
+  4.61840010e+00 -5.27000010e-01 -4.52999994e-02  5.80200005e+00
+  1.80596758e+04  1.10210001e+00  6.54353027e+01 -5.14769983e+00
+ -5.00799990e+00  6.80210018e+00 -6.68200016e-01  1.43599999e+00
+ -8.75549984e+00  6.46549988e+00 -1.29750001e+00  6.27470016e+00
+ -2.34410000e+00  1.42225586e+04 -1.32876895e+04  3.44849992e+00
+ -3.82631250e+03 -2.43479991e+00  5.33349991e+00  9.91110039e+00
+ -1.33989688e+04 -4.18349981e+00  7.32012500e+03 -6.96812891e+03
+  9.99999975e-05 -5.68340015e+00 -5.59199989e-01 -3.72720003e+00
+  2.16704998e+01 -7.46800005e-01 -5.60893750e+03  2.36540008e+00
+  1.64629996e+00  9.79969978e+00  4.15199995e-01 -3.34010005e+00
+ -1.38514463e+04  4.82960938e+03 -1.10184002e+01  1.60090005e+00
+  9.57799971e-01  9.51029968e+00 -2.68182227e+03  5.10069990e+00
+  1.00320005e+00  3.25559998e+00 -3.20440006e+00  2.08220352e+04
+ -1.27125156e+04 -1.20649824e+04  7.53579998e+00 -3.90700006e+00
+ -6.44610023e+00 -1.96358613e+04  5.97999990e-02  6.76166016e+03
+  4.22730017e+00  1.25628320e+03  1.35696094e+03 -1.48210001e+00
+  1.05889997e+01 -3.63610005e+00 -1.08587999e+01  6.68898047e+03
+  4.14239979e+00  2.18215430e+04  2.54500002e-01 -8.55833969e+01
+ -3.77649999e+00 -3.16969991e+00  1.85539997e+00 -1.44974003e+01
+  4.92889977e+00  5.94820023e+00 -5.49690008e+00  5.85029984e+00
+  4.01264087e+03 -1.36773037e+04 -3.65399987e-01 -1.18144551e+04
+ -9.43400025e-01 -8.65199219e+02  4.86267969e+03 -1.35455999e+01
+  4.31599998e+00 -1.86099994e+00 -2.74090004e+00  6.43359082e+03
+ -5.26399994e+00 -2.82369995e+00 -3.95379996e+00  9.09939957e+00
+  9.85099971e-01 -4.18030024e+00 -2.05914001e+01  5.20004688e+03
+ -6.52960014e+00  6.35150003e+00  1.13966999e+01 -6.93340015e+00
+ -5.47289991e+00  5.90499997e-01 -3.97000015e-01  3.30690002e+00
+  1.04321152e+04  6.85150003e+00  3.94931641e+03  3.48219991e+00
+ -3.91420007e+00  5.46309996e+00  1.37877471e+04 -1.19111836e+04
+  4.88413867e+03 -2.34929991e+00 -5.40859985e+00  5.21630001e+00
+  2.91190004e+00  6.56599998e+00 -7.00399995e-01 -3.21989989e+00
+ -3.63339996e+00  2.24404688e+03 -9.37042969e+03 -6.33580017e+00
+ -1.30916699e+04 -1.66989994e+00  2.55970001e+00 -8.86985156e+03
+ -3.60190010e+00  8.09509964e+01  9.39430046e+00 -2.04736445e+04
+ -1.50632000e+01 -8.04836816e+03 -1.03274609e+03 -5.47620010e+00
+  7.08902405e+02 -1.69809997e+00  4.24300003e+00  2.33292999e+01
+  2.05653000e+01 -2.54900008e-01  1.90237999e+01  2.87249994e+00
+ -2.94840002e+00  1.27059996e+00  1.20340002e+00 -3.18390012e+00
+ -3.33909988e+00 -1.28021484e+04 -1.89010000e+00  8.12091016e+03
+ -7.08891455e+03 -4.76630020e+00 -5.35909004e+01 -7.92235031e+01
+ -6.33790016e+00 -1.13443003e+01 -1.97285004e+01 -8.13799977e-01
+ -7.09829998e+00  3.18930006e+00 -6.31920004e+00  5.30034375e+03
+ -1.01014258e+03  6.75439978e+00 -1.27359998e+00 -7.24030018e+00
+ -6.75729990e+00  5.61250019e+00 -5.91367969e+03 -5.37769985e+00
+  3.71880007e+00 -3.55296680e+03  9.97398828e+03 -1.75689995e+00
+ -1.15241396e+04  1.32609999e+00  2.89480499e+02 -4.88269997e+00
+ -3.99510002e+00 -7.12589979e+00 -3.38590002e+00  1.99800000e-01
+ -1.33100004e+01  1.63479996e+00 -2.08292694e+02  6.33090019e+00
+ -4.41919994e+00 -3.87520003e+00 -1.57299995e-01 -8.83023987e+01
+ -1.70270002e+00 -6.76055298e+02  3.63829994e+00 -1.05001855e+04
+  1.11870003e+00 -4.82369995e+00  5.15869999e+00 -5.01009989e+00
+ -2.44528008e+01 -3.31046094e+03 -5.44099998e+00 -2.96285000e+01
+ -3.95250010e+00  2.98149991e+00  7.02309990e+00  9.16700006e-01
+  8.68060017e+00 -8.74876022e+01 -2.47256250e+03 -2.11719990e+00]
+
+Model saved as autoencoder_fx.pt, feature order as autoencoder_fx_features.txt

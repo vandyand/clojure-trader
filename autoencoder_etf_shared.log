@@ -1,0 +1,2059 @@
+Fetching ETF data...
+Data shape: (21578, 624)
+ETF Input data statistics:
+low_ema_2                      mean=92.3393 std=57.3154 min=23.0048 max=329.4372 %zero=0.0
+low_ema_3                      mean=92.3363 std=45.7667 min=31.3067 max=284.0135 %zero=0.0
+low_ema_5                      mean=92.3330 std=37.2870 min=35.7664 max=247.9176 %zero=0.0
+low_ema_8                      mean=92.3278 std=33.6246 min=38.7381 max=237.5952 %zero=0.0
+low_roc_2                      mean=2.0205 std=3.5394 min=-0.9409 max=20.5886 %zero=0.2
+low_roc_3                      mean=0.9104 std=2.2358 min=-0.9549 max=12.5646 %zero=0.5
+low_roc_5                      mean=1.4672 std=3.3076 min=-0.9271 max=20.2515 %zero=0.4
+low_roc_8                      mean=0.2951 std=1.4055 min=-0.9294 max=20.1301 %zero=1.9
+low_rsi_2                      mean=47.6937 std=22.9447 min=0.0000 max=100.0000 %zero=0.1
+low_rsi_3                      mean=49.1086 std=14.9639 min=0.0000 max=97.5431 %zero=0.1
+low_rsi_5                      mean=49.5913 std=9.0659 min=0.0000 max=89.9504 %zero=0.3
+low_rsi_8                      mean=49.6062 std=6.6218 min=0.0000 max=79.9265 %zero=0.6
+low_sma_2                      mean=92.3333 std=58.5109 min=13.3119 max=271.0050 %zero=0.0
+low_sma_3                      mean=92.3391 std=38.6882 min=34.0452 max=245.7300 %zero=0.0
+low_sma_5                      mean=92.3439 std=34.8823 min=38.0615 max=245.7300 %zero=0.0
+low_sma_8                      mean=92.3317 std=31.3688 min=44.1197 max=245.7300 %zero=0.0
+low_std_2                      mean=66.1625 std=59.9603 min=0.0000 max=281.6618 %zero=0.0
+low_std_3                      mean=81.7179 std=46.8162 min=0.0651 max=218.9607 %zero=0.0
+low_std_5                      mean=78.0198 std=40.6549 min=0.1105 max=215.5120 %zero=0.0
+low_std_8                      mean=76.1597 std=39.2401 min=0.1105 max=215.5120 %zero=0.0
+high_ema_2                     mean=93.3428 std=57.9010 min=27.4710 max=331.5986 %zero=0.0
+high_ema_3                     mean=93.3398 std=46.2236 min=31.5637 max=285.9582 %zero=0.0
+high_ema_5                     mean=93.3364 std=37.6480 min=36.1072 max=249.6524 %zero=0.0
+high_ema_8                     mean=93.3312 std=33.9436 min=39.1311 max=239.3709 %zero=0.0
+high_roc_2                     mean=2.0090 std=3.5106 min=-0.9222 max=18.8613 %zero=0.2
+high_roc_3                     mean=0.9054 std=2.2200 min=-0.9320 max=11.9681 %zero=0.5
+high_roc_5                     mean=1.4639 std=3.3034 min=-0.9231 max=18.6120 %zero=0.4
+high_roc_8                     mean=0.2876 std=1.3553 min=-0.9247 max=18.8430 %zero=1.9
+high_rsi_2                     mean=47.6601 std=22.9413 min=0.0000 max=100.0000 %zero=0.1
+high_rsi_3                     mean=49.0872 std=14.9650 min=0.0000 max=96.6220 %zero=0.1
+high_rsi_5                     mean=49.5753 std=9.0782 min=0.0000 max=90.1985 %zero=0.3
+high_rsi_8                     mean=49.5945 std=6.6419 min=0.0000 max=81.1807 %zero=0.6
+high_sma_2                     mean=93.3367 std=59.0982 min=17.4813 max=272.9350 %zero=0.0
+high_sma_3                     mean=93.3427 std=39.0699 min=35.4468 max=248.3150 %zero=0.0
+high_sma_5                     mean=93.3476 std=35.2164 min=39.6303 max=248.3150 %zero=0.0
+high_sma_8                     mean=93.3352 std=31.6605 min=44.8115 max=248.3150 %zero=0.0
+high_std_2                     mean=66.8766 std=60.6297 min=0.0000 max=283.5781 %zero=0.0
+high_std_3                     mean=82.5842 std=47.3315 min=0.0625 max=220.1846 %zero=0.0
+high_std_5                     mean=78.8519 std=41.0991 min=0.1607 max=218.3192 %zero=0.0
+high_std_8                     mean=76.9714 std=39.6699 min=0.3813 max=218.3192 %zero=0.0
+low_ema_13                     mean=92.3187 std=31.9937 min=40.8046 max=234.9025 %zero=0.0
+low_ema_21                     mean=92.3043 std=31.3305 min=42.1219 max=238.4733 %zero=0.0
+low_ema_34                     mean=92.2821 std=31.0349 min=42.9613 max=241.2479 %zero=0.0
+low_ema_55                     mean=92.2488 std=30.8603 min=43.4867 max=242.9593 %zero=0.0
+low_ema_89                     mean=92.2000 std=30.6895 min=43.8146 max=244.0177 %zero=0.0
+low_roc_13                     mean=1.5251 std=3.3905 min=-0.9532 max=20.9730 %zero=1.2
+low_roc_21                     mean=1.1555 std=3.0899 min=-0.9235 max=21.1456 %zero=2.1
+low_roc_34                     mean=2.0261 std=3.5870 min=-0.9533 max=15.2682 %zero=3.4
+low_roc_55                     mean=1.2069 std=2.6150 min=-0.9576 max=15.5348 %zero=5.5
+low_roc_89                     mean=1.3376 std=3.1866 min=-0.9396 max=20.5539 %zero=9.0
+low_rsi_13                     mean=49.4016 std=6.2176 min=0.0000 max=72.6329 %zero=1.1
+low_rsi_21                     mean=49.0106 std=7.1991 min=0.0000 max=66.6958 %zero=1.9
+low_rsi_34                     mean=48.3476 std=8.9789 min=0.0000 max=62.0178 %zero=3.3
+low_rsi_55                     mean=47.2829 std=11.3333 min=0.0000 max=58.4483 %zero=5.4
+low_rsi_89                     mean=45.5532 std=14.2230 min=0.0000 max=56.1960 %zero=8.9
+low_sma_13                     mean=92.3202 std=31.5600 min=42.4847 max=245.7300 %zero=0.0
+low_sma_21                     mean=92.3031 std=31.1083 min=43.9790 max=245.7300 %zero=0.0
+low_sma_34                     mean=92.2760 std=31.0253 min=44.3495 max=245.7300 %zero=0.0
+low_sma_55                     mean=92.2405 std=30.8594 min=44.3495 max=245.7300 %zero=0.0
+low_sma_89                     mean=92.1857 std=30.7218 min=44.3495 max=245.7300 %zero=0.0
+low_std_13                     mean=74.0561 std=38.1895 min=0.1105 max=215.5120 %zero=0.0
+low_std_21                     mean=73.0662 std=37.6271 min=0.1105 max=215.5120 %zero=0.0
+low_std_34                     mean=72.3760 std=37.2399 min=0.1105 max=215.5120 %zero=0.0
+low_std_55                     mean=71.9578 std=36.9974 min=0.1105 max=215.5120 %zero=0.0
+low_std_89                     mean=71.6325 std=36.8055 min=0.1105 max=215.5120 %zero=0.0
+open_ema_2                     mean=92.8536 std=57.6171 min=27.3448 max=330.9828 %zero=0.0
+open_ema_3                     mean=92.8506 std=46.0018 min=31.3846 max=285.4020 %zero=0.0
+open_ema_5                     mean=92.8473 std=37.4723 min=35.8777 max=249.0137 %zero=0.0
+open_ema_8                     mean=92.8422 std=33.7880 min=38.8706 max=238.1625 %zero=0.0
+open_roc_2                     mean=2.0140 std=3.5233 min=-0.9250 max=19.8415 %zero=0.2
+open_roc_3                     mean=0.9075 std=2.2267 min=-0.9321 max=12.4558 %zero=0.6
+open_roc_5                     mean=1.4650 std=3.3038 min=-0.9261 max=19.6096 %zero=0.4
+open_roc_8                     mean=0.2909 std=1.3773 min=-0.9272 max=19.8883 %zero=1.9
+open_rsi_2                     mean=47.6800 std=22.9080 min=0.0000 max=100.0000 %zero=0.1
+open_rsi_3                     mean=49.0951 std=14.9196 min=0.0000 max=97.1102 %zero=0.1
+open_rsi_5                     mean=49.5753 std=9.0191 min=0.0000 max=89.0018 %zero=0.3
+open_rsi_8                     mean=49.5928 std=6.5805 min=0.0000 max=78.3186 %zero=0.6
+open_sma_2                     mean=92.8476 std=58.8131 min=17.2154 max=272.1050 %zero=0.0
+open_sma_3                     mean=92.8535 std=38.8848 min=34.5175 max=246.1950 %zero=0.0
+open_sma_5                     mean=92.8583 std=35.0535 min=38.6034 max=246.1950 %zero=0.0
+open_sma_8                     mean=92.8460 std=31.5179 min=44.5203 max=246.1950 %zero=0.0
+open_std_2                     mean=66.5330 std=60.3043 min=0.0000 max=282.8993 %zero=0.0
+open_std_3                     mean=82.1636 std=47.0840 min=0.0477 max=220.1361 %zero=0.0
+open_std_5                     mean=78.4490 std=40.8847 min=0.1731 max=215.9009 %zero=0.0
+open_std_8                     mean=76.5785 std=39.4627 min=0.3363 max=215.9009 %zero=0.0
+close_ema_2                    mean=92.8603 std=57.6236 min=27.4101 max=330.9184 %zero=0.0
+close_ema_3                    mean=92.8574 std=46.0069 min=31.4778 max=285.2097 %zero=0.0
+close_ema_5                    mean=92.8541 std=37.4764 min=35.9959 max=248.8364 %zero=0.0
+close_ema_8                    mean=92.8489 std=33.7916 min=39.0037 max=238.5035 %zero=0.0
+close_roc_2                    mean=2.0146 std=3.5243 min=-0.9245 max=19.6461 %zero=0.2
+close_roc_3                    mean=0.9076 std=2.2271 min=-0.9322 max=12.3402 %zero=0.4
+close_roc_5                    mean=1.4655 std=3.3047 min=-0.9263 max=19.4476 %zero=0.4
+close_roc_8                    mean=0.2913 std=1.3797 min=-0.9270 max=19.4689 %zero=1.8
+close_rsi_2                    mean=47.6722 std=22.8898 min=0.0000 max=100.0000 %zero=0.1
+close_rsi_3                    mean=49.0914 std=14.9011 min=0.0000 max=92.9308 %zero=0.1
+close_rsi_5                    mean=49.5783 std=9.0079 min=0.0000 max=83.2120 %zero=0.3
+close_rsi_8                    mean=49.5972 std=6.5740 min=0.0000 max=75.5825 %zero=0.6
+close_sma_2                    mean=92.8544 std=58.8196 min=17.2716 max=272.5000 %zero=0.0
+close_sma_3                    mean=92.8603 std=38.8886 min=34.6685 max=247.1300 %zero=0.0
+close_sma_5                    mean=92.8652 std=35.0575 min=38.9173 max=247.1300 %zero=0.0
+close_sma_8                    mean=92.8528 std=31.5213 min=44.6791 max=247.1300 %zero=0.0
+close_std_2                    mean=66.5417 std=60.3129 min=0.0000 max=283.1892 %zero=0.0
+close_std_3                    mean=82.1754 std=47.0888 min=0.0625 max=219.9568 %zero=0.0
+close_std_5                    mean=78.4599 std=40.8883 min=0.1218 max=216.6434 %zero=0.0
+close_std_8                    mean=76.5890 std=39.4660 min=0.1989 max=216.6434 %zero=0.0
+high_ema_13                    mean=93.3219 std=32.2940 min=41.2327 max=236.7371 %zero=0.0
+high_ema_21                    mean=93.3069 std=31.6234 min=42.5720 max=240.9638 %zero=0.0
+high_ema_34                    mean=93.2837 std=31.3242 min=43.4252 max=243.7746 %zero=0.0
+high_ema_55                    mean=93.2487 std=31.1467 min=43.9535 max=245.5082 %zero=0.0
+high_ema_89                    mean=93.1974 std=30.9727 min=44.2795 max=246.5804 %zero=0.0
+high_roc_13                    mean=1.5235 std=3.3941 min=-0.9494 max=13.6204 %zero=1.2
+high_roc_21                    mean=1.1595 std=3.1046 min=-0.9203 max=13.6909 %zero=2.1
+high_roc_34                    mean=2.0166 std=3.5658 min=-0.9502 max=14.0048 %zero=3.4
+high_roc_55                    mean=1.1967 std=2.5894 min=-0.9501 max=14.3419 %zero=5.5
+high_roc_89                    mean=1.3348 std=3.1831 min=-0.9363 max=18.8888 %zero=9.0
+high_rsi_13                    mean=49.3929 std=6.2360 min=0.0000 max=71.9361 %zero=1.1
+high_rsi_21                    mean=49.0055 std=7.2088 min=0.0000 max=66.8858 %zero=1.9
+high_rsi_34                    mean=48.3444 std=8.9835 min=0.0000 max=62.2448 %zero=3.3
+high_rsi_55                    mean=47.2815 std=11.3349 min=0.0000 max=58.6522 %zero=5.4
+high_rsi_89                    mean=45.5532 std=14.2235 min=0.0000 max=56.5900 %zero=8.9
+high_sma_13                    mean=93.3236 std=31.8549 min=44.1955 max=248.3150 %zero=0.0
+high_sma_21                    mean=93.3059 std=31.3981 min=44.8115 max=248.3150 %zero=0.0
+high_sma_34                    mean=93.2777 std=31.3139 min=44.8115 max=248.3150 %zero=0.0
+high_sma_55                    mean=93.2399 std=31.1436 min=44.8115 max=248.3150 %zero=0.0
+high_sma_89                    mean=93.1823 std=31.0012 min=44.8115 max=248.3150 %zero=0.0
+high_std_13                    mean=74.8443 std=38.6079 min=0.5142 max=218.3192 %zero=0.0
+high_std_21                    mean=73.8429 std=38.0386 min=0.7424 max=218.3192 %zero=0.0
+high_std_34                    mean=73.1439 std=37.6457 min=0.7424 max=218.3192 %zero=0.0
+high_std_55                    mean=72.7181 std=37.3972 min=0.7424 max=218.3192 %zero=0.0
+high_std_89                    mean=72.3849 std=37.2003 min=0.7424 max=218.3192 %zero=0.0
+low_ema_144                    mean=92.1290 std=30.4545 min=44.0182 max=244.6717 %zero=0.0
+low_ema_233                    mean=92.0266 std=30.1095 min=44.1445 max=245.0760 %zero=0.0
+low_ema_377                    mean=91.9000 std=29.6674 min=44.2227 max=245.3258 %zero=0.0
+low_roc_144                    mean=0.0256 std=0.4952 min=-0.9066 max=14.5155 %zero=14.8
+low_roc_233                    mean=1.1109 std=2.9361 min=-0.9423 max=22.2547 %zero=23.7
+low_roc_377                    mean=0.8967 std=2.6797 min=-0.9569 max=21.1671 %zero=38.3
+low_rsi_144                    mean=42.7436 std=17.5905 min=0.0000 max=51.4423 %zero=14.5
+low_rsi_233                    mean=38.2120 std=21.2108 min=0.0000 max=50.4967 %zero=23.6
+low_rsi_377                    mean=30.8770 std=24.2931 min=0.0000 max=50.2872 %zero=38.2
+low_sma_144                    mean=92.1038 std=30.4969 min=44.3495 max=245.7300 %zero=0.0
+low_sma_233                    mean=91.9988 std=30.1436 min=44.3495 max=245.7300 %zero=0.0
+low_sma_377                    mean=91.8237 std=29.5644 min=44.3495 max=245.7300 %zero=0.0
+low_std_144                    mean=71.3374 std=36.6193 min=0.1105 max=215.5120 %zero=0.0
+low_std_233                    mean=71.0206 std=36.3939 min=0.1105 max=215.5120 %zero=0.0
+low_std_377                    mean=70.6123 std=36.0707 min=0.1105 max=215.5120 %zero=0.0
+open_ema_13                    mean=92.8330 std=32.1473 min=40.9514 max=235.4519 %zero=0.0
+open_ema_21                    mean=92.8183 std=31.4801 min=42.2777 max=238.9252 %zero=0.0
+open_ema_34                    mean=92.7956 std=31.1825 min=43.1228 max=241.7048 %zero=0.0
+open_ema_55                    mean=92.7615 std=31.0063 min=43.6518 max=243.4193 %zero=0.0
+open_ema_89                    mean=92.7116 std=30.8337 min=43.9818 max=244.4797 %zero=0.0
+open_roc_13                    mean=1.5238 std=3.3911 min=-0.9519 max=13.8473 %zero=1.2
+open_roc_21                    mean=1.1573 std=3.0963 min=-0.9226 max=13.5844 %zero=2.2
+open_roc_34                    mean=2.0207 std=3.5753 min=-0.9529 max=14.7181 %zero=3.4
+open_roc_55                    mean=1.2010 std=2.6004 min=-0.9528 max=15.2289 %zero=5.5
+open_roc_89                    mean=1.3355 std=3.1825 min=-0.9392 max=20.1691 %zero=9.0
+open_rsi_13                    mean=49.3909 std=6.1949 min=0.0000 max=68.6780 %zero=1.1
+open_rsi_21                    mean=49.0048 std=7.1880 min=0.0000 max=63.0941 %zero=1.9
+open_rsi_34                    mean=48.3448 std=8.9747 min=0.0000 max=59.9503 %zero=3.3
+open_rsi_55                    mean=47.2814 std=11.3316 min=0.0000 max=57.3192 %zero=5.4
+open_rsi_89                    mean=45.5530 std=14.2220 min=0.0000 max=55.4434 %zero=8.9
+open_sma_13                    mean=92.8346 std=31.7107 min=43.3094 max=246.1950 %zero=0.0
+open_sma_21                    mean=92.8172 std=31.2562 min=44.5203 max=246.1950 %zero=0.0
+open_sma_34                    mean=92.7895 std=31.1722 min=44.5203 max=246.1950 %zero=0.0
+open_sma_55                    mean=92.7530 std=31.0040 min=44.5203 max=246.1950 %zero=0.0
+open_sma_89                    mean=92.6968 std=30.8637 min=44.5203 max=246.1950 %zero=0.0
+open_std_13                    mean=74.4628 std=38.4062 min=0.7091 max=215.9009 %zero=0.0
+open_std_21                    mean=73.4670 std=37.8403 min=0.7091 max=215.9009 %zero=0.0
+open_std_34                    mean=72.7722 std=37.4501 min=0.7091 max=215.9009 %zero=0.0
+open_std_55                    mean=72.3501 std=37.2048 min=0.7091 max=215.9009 %zero=0.0
+open_std_89                    mean=72.0207 std=37.0102 min=0.7091 max=215.9009 %zero=0.0
+close_ema_13                   mean=92.8397 std=32.1508 min=41.0943 max=235.8472 %zero=0.0
+close_ema_21                   mean=92.8250 std=31.4836 min=42.4267 max=239.8352 %zero=0.0
+close_ema_34                   mean=92.8022 std=31.1860 min=43.2755 max=242.6244 %zero=0.0
+close_ema_55                   mean=92.7680 std=31.0097 min=43.8068 max=244.3447 %zero=0.0
+close_ema_89                   mean=92.7179 std=30.8370 min=44.1383 max=245.4088 %zero=0.0
+close_roc_13                   mean=1.5243 std=3.3918 min=-0.9514 max=13.5998 %zero=1.2
+close_roc_21                   mean=1.1574 std=3.0966 min=-0.9229 max=13.6485 %zero=2.1
+close_roc_34                   mean=2.0212 std=3.5759 min=-0.9516 max=14.3402 %zero=3.4
+close_roc_55                   mean=1.2016 std=2.6017 min=-0.9515 max=14.8775 %zero=5.5
+close_roc_89                   mean=1.3362 std=3.1841 min=-0.9377 max=19.5645 %zero=9.0
+close_rsi_13                   mean=49.3961 std=6.1904 min=0.0000 max=70.2134 %zero=1.1
+close_rsi_21                   mean=49.0073 std=7.1886 min=0.0000 max=66.3125 %zero=1.9
+close_rsi_34                   mean=48.3469 std=8.9744 min=0.0000 max=59.9050 %zero=3.3
+close_rsi_55                   mean=47.2836 std=11.3317 min=0.0000 max=57.6758 %zero=5.4
+close_rsi_89                   mean=45.5541 std=14.2225 min=0.0000 max=56.0408 %zero=8.9
+close_sma_13                   mean=92.8413 std=31.7141 min=43.2784 max=247.1300 %zero=0.0
+close_sma_21                   mean=92.8239 std=31.2597 min=44.6791 max=247.1300 %zero=0.0
+close_sma_34                   mean=92.7963 std=31.1764 min=44.6791 max=247.1300 %zero=0.0
+close_sma_55                   mean=92.7594 std=31.0078 min=44.6791 max=247.1300 %zero=0.0
+close_sma_89                   mean=92.7031 std=30.8674 min=44.6791 max=247.1300 %zero=0.0
+close_std_13                   mean=74.4729 std=38.4098 min=0.1989 max=216.6434 %zero=0.0
+close_std_21                   mean=73.4769 std=37.8443 min=0.1989 max=216.6434 %zero=0.0
+close_std_34                   mean=72.7820 std=37.4546 min=0.1989 max=216.6434 %zero=0.0
+close_std_55                   mean=72.3595 std=37.2088 min=0.1989 max=216.6434 %zero=0.0
+close_std_89                   mean=72.0300 std=37.0142 min=0.1989 max=216.6434 %zero=0.0
+high_ema_144                   mean=93.1225 std=30.7334 min=44.4821 max=247.2430 %zero=0.0
+high_ema_233                   mean=93.0143 std=30.3824 min=44.6077 max=247.6525 %zero=0.0
+high_ema_377                   mean=92.8812 std=29.9334 min=44.6854 max=247.9055 %zero=0.0
+high_roc_144                   mean=0.0253 std=0.4923 min=-0.9064 max=14.5637 %zero=14.8
+high_roc_233                   mean=1.1098 std=2.9390 min=-0.9411 max=14.9296 %zero=23.7
+high_roc_377                   mean=0.8964 std=2.6848 min=-0.9548 max=15.3202 %zero=38.3
+high_rsi_144                   mean=42.7431 std=17.5906 min=0.0000 max=52.4531 %zero=14.5
+high_rsi_233                   mean=38.2118 std=21.2108 min=0.0000 max=50.5011 %zero=23.6
+high_rsi_377                   mean=30.8770 std=24.2932 min=0.0000 max=50.2878 %zero=38.2
+high_sma_144                   mean=93.0977 std=30.7736 min=44.8115 max=248.3150 %zero=0.0
+high_sma_233                   mean=92.9851 std=30.4145 min=44.8115 max=248.3150 %zero=0.0
+high_sma_377                   mean=92.8004 std=29.8253 min=44.8115 max=248.3150 %zero=0.0
+high_std_144                   mean=72.0834 std=37.0110 min=0.7424 max=218.3192 %zero=0.0
+high_std_233                   mean=71.7558 std=36.7802 min=0.7424 max=218.3192 %zero=0.0
+high_std_377                   mean=71.3334 std=36.4473 min=0.7424 max=218.3192 %zero=0.0
+low_bb_bbh_2                   mean=224.6583 std=167.6526 min=23.2249 max=812.9387 %zero=0.0
+low_bb_bbh_3                   mean=255.7750 std=128.8387 min=97.7101 max=676.7540 %zero=0.0
+low_bb_bbh_5                   mean=248.3836 std=112.9613 min=99.2125 max=676.7540 %zero=0.0
+low_bb_bbh_8                   mean=244.6512 std=108.2227 min=100.8654 max=676.7540 %zero=0.0
+low_bb_bbl_2                   mean=-39.9916 std=86.6116 min=-314.0047 max=133.2301 %zero=0.0
+low_bb_bbl_3                   mean=-71.0967 std=62.6754 min=-242.1211 max=114.9221 %zero=0.0
+low_bb_bbl_5                   mean=-63.6957 std=53.8131 min=-207.1061 max=114.5225 %zero=0.0
+low_bb_bbl_8                   mean=-59.9878 std=50.7359 min=-207.1061 max=113.3246 %zero=0.0
+low_bb_bbm_2                   mean=92.3333 std=58.5109 min=13.3119 max=271.0050 %zero=0.0
+low_bb_bbm_3                   mean=92.3391 std=38.6882 min=34.0452 max=245.7300 %zero=0.0
+low_bb_bbm_5                   mean=92.3439 std=34.8823 min=38.0615 max=245.7300 %zero=0.0
+low_bb_bbm_8                   mean=92.3317 std=31.3688 min=44.1197 max=245.7300 %zero=0.0
+open_ema_144                   mean=92.6388 std=30.5963 min=44.1868 max=245.1348 %zero=0.0
+open_ema_233                   mean=92.5335 std=30.2478 min=44.3140 max=245.5398 %zero=0.0
+open_ema_377                   mean=92.4039 std=29.8015 min=44.3927 max=245.7900 %zero=0.0
+open_roc_144                   mean=0.0254 std=0.4933 min=-0.9065 max=14.5155 %zero=14.8
+open_roc_233                   mean=1.1099 std=2.9360 min=-0.9412 max=15.0328 %zero=23.7
+open_roc_377                   mean=0.8962 std=2.6812 min=-0.9575 max=15.3779 %zero=38.3
+open_rsi_144                   mean=42.7444 std=17.5905 min=0.0000 max=51.9155 %zero=14.5
+open_rsi_233                   mean=38.2122 std=21.2108 min=0.0000 max=50.5007 %zero=23.6
+open_rsi_377                   mean=30.8770 std=24.2932 min=0.0000 max=50.2885 %zero=38.2
+open_sma_144                   mean=92.6138 std=30.6371 min=44.5203 max=246.1950 %zero=0.0
+open_sma_233                   mean=92.5053 std=30.2807 min=44.5203 max=246.1950 %zero=0.0
+open_sma_377                   mean=92.3253 std=29.6952 min=44.5203 max=246.1950 %zero=0.0
+open_std_144                   mean=71.7226 std=36.8223 min=0.7091 max=215.9009 %zero=0.0
+open_std_233                   mean=71.4007 std=36.5940 min=0.7091 max=215.9009 %zero=0.0
+open_std_377                   mean=70.9852 std=36.2646 min=0.7091 max=215.9009 %zero=0.0
+volume_ema_2                   mean=21774712.0000 std=30711866.0000 min=129405.9141 max=722370880.0000 %zero=0.0
+volume_ema_3                   mean=21774190.0000 std=26183272.0000 min=164669.7344 max=579972032.0000 %zero=0.0
+volume_ema_5                   mean=21771886.0000 std=23032210.0000 min=225485.1406 max=449762624.0000 %zero=0.0
+volume_ema_8                   mean=21766628.0000 std=21571696.0000 min=258290.1875 max=364353760.0000 %zero=0.0
+volume_mfi_2                   mean=44.2102 std=41.9099 min=0.0000 max=100.0000 %zero=30.0
+volume_mfi_3                   mean=41.1500 std=27.7369 min=0.0000 max=100.0000 %zero=6.6
+volume_mfi_5                   mean=40.5984 std=24.7290 min=0.0000 max=100.0000 %zero=0.3
+volume_mfi_8                   mean=40.4480 std=23.3025 min=0.0000 max=100.0000 %zero=0.6
+volume_obv_2                   mean=-8233643008.0000 std=9502910464.0000 min=-68230602752.0000 max=2410622976.0000 %zero=0.0
+volume_obv_3                   mean=-8224903680.0000 std=9496951808.0000 min=-68183502848.0000 max=2409945856.0000 %zero=0.0
+volume_obv_5                   mean=-8207450112.0000 std=9485023232.0000 min=-68111265792.0000 max=2409046784.0000 %zero=0.0
+volume_obv_8                   mean=-8181335552.0000 std=9467088896.0000 min=-67999686656.0000 max=2406841088.0000 %zero=0.0
+volume_roc_2                   mean=607.8377 std=4927.4326 min=-1.0000 max=376411.1250 %zero=0.1
+volume_roc_3                   mean=2626.0071 std=22381.5742 min=-1.0000 max=1868474.7500 %zero=0.2
+volume_roc_5                   mean=186.9522 std=1479.3953 min=-1.0000 max=102780.8203 %zero=0.4
+volume_roc_8                   mean=1.2842 std=4.8758 min=-1.0000 max=198.6446 %zero=0.7
+volume_sma_2                   mean=21770716.0000 std=29801650.0000 min=120013.5000 max=535726592.0000 %zero=0.0
+volume_sma_3                   mean=21776648.0000 std=23346430.0000 min=140615.3281 max=373409312.0000 %zero=0.0
+volume_sma_5                   mean=21771170.0000 std=22578318.0000 min=219194.5938 max=353285344.0000 %zero=0.0
+volume_sma_8                   mean=21769356.0000 std=21264238.0000 min=234207.5000 max=302526912.0000 %zero=0.0
+volume_std_2                   mean=24315416.0000 std=38552352.0000 min=97.5807 max=739919360.0000 %zero=0.0
+volume_std_3                   mean=28666600.0000 std=35367008.0000 min=17053.1758 max=599386624.0000 %zero=0.0
+volume_std_5                   mean=28701676.0000 std=30772938.0000 min=58473.3711 max=470811936.0000 %zero=0.0
+volume_std_8                   mean=28471988.0000 std=29554650.0000 min=71581.3594 max=402118944.0000 %zero=0.0
+close_ema_144                  mean=92.6449 std=30.5996 min=44.3441 max=246.0662 %zero=0.0
+close_ema_233                  mean=92.5395 std=30.2513 min=44.4718 max=246.4725 %zero=0.0
+close_ema_377                  mean=92.4096 std=29.8055 min=44.5509 max=246.7237 %zero=0.0
+close_roc_144                  mean=0.0255 std=0.4941 min=-0.9062 max=14.5365 %zero=14.8
+close_roc_233                  mean=1.1102 std=2.9362 min=-0.9427 max=14.8933 %zero=23.7
+close_roc_377                  mean=0.8965 std=2.6813 min=-0.9558 max=15.2620 %zero=38.3
+close_rsi_144                  mean=42.7451 std=17.5908 min=0.0000 max=51.9546 %zero=14.5
+close_rsi_233                  mean=38.2122 std=21.2108 min=0.0000 max=50.4973 %zero=23.6
+close_rsi_377                  mean=30.8770 std=24.2932 min=0.0000 max=50.2860 %zero=38.2
+close_sma_144                  mean=92.6196 std=30.6406 min=44.6791 max=247.1300 %zero=0.0
+close_sma_233                  mean=92.5109 std=30.2840 min=44.6791 max=247.1300 %zero=0.0
+close_sma_377                  mean=92.3314 std=29.7004 min=44.6791 max=247.1300 %zero=0.0
+close_std_144                  mean=71.7314 std=36.8261 min=0.1989 max=216.6434 %zero=0.0
+close_std_233                  mean=71.4092 std=36.5980 min=0.1989 max=216.6434 %zero=0.0
+close_std_377                  mean=70.9942 std=36.2711 min=0.1989 max=216.6434 %zero=0.0
+high_bb_bbh_2                  mean=227.0898 std=169.4962 min=23.4757 max=818.1162 %zero=0.0
+high_bb_bbh_3                  mean=258.5111 std=130.2046 min=101.4639 max=684.9534 %zero=0.0
+high_bb_bbh_5                  mean=251.0513 std=114.1318 min=101.6174 max=684.9534 %zero=0.0
+high_bb_bbh_8                  mean=247.2779 std=109.3394 min=103.9523 max=684.9534 %zero=0.0
+high_bb_bbl_2                  mean=-40.4164 std=87.5436 min=-316.1962 max=144.2826 %zero=0.0
+high_bb_bbl_3                  mean=-71.8258 std=63.4182 min=-243.7713 max=116.0986 %zero=0.0
+high_bb_bbl_5                  mean=-64.3561 std=54.4738 min=-209.8510 max=115.8372 %zero=0.0
+high_bb_bbl_8                  mean=-60.6075 std=51.3739 min=-209.8510 max=115.4541 %zero=0.0
+high_bb_bbm_2                  mean=93.3367 std=59.0982 min=17.4813 max=272.9350 %zero=0.0
+high_bb_bbm_3                  mean=93.3427 std=39.0699 min=35.4468 max=248.3150 %zero=0.0
+high_bb_bbm_5                  mean=93.3476 std=35.2164 min=39.6303 max=248.3150 %zero=0.0
+high_bb_bbm_8                  mean=93.3352 std=31.6605 min=44.8115 max=248.3150 %zero=0.0
+low_bb_bbh_13                  mean=240.4324 std=106.2676 min=102.9722 max=676.7540 %zero=0.0
+low_bb_bbh_21                  mean=238.4355 std=104.9060 min=104.3892 max=676.7540 %zero=0.0
+low_bb_bbh_34                  mean=237.0279 std=104.0607 min=106.9064 max=676.7540 %zero=0.0
+low_bb_bbh_55                  mean=236.1561 std=103.4565 min=108.1444 max=676.7540 %zero=0.0
+low_bb_bbh_89                  mean=235.4507 std=102.9318 min=109.6428 max=676.7540 %zero=0.0
+low_bb_bbl_13                  mean=-55.7920 std=48.6490 min=-207.1061 max=110.1208 %zero=0.0
+low_bb_bbl_21                  mean=-53.8294 std=47.5034 min=-207.1061 max=109.7572 %zero=0.0
+low_bb_bbl_34                  mean=-52.4759 std=46.8077 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbl_55                  mean=-51.6752 std=46.3878 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbl_89                  mean=-51.0792 std=46.1508 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbm_13                  mean=92.3202 std=31.5600 min=42.4847 max=245.7300 %zero=0.0
+low_bb_bbm_21                  mean=92.3031 std=31.1083 min=43.9790 max=245.7300 %zero=0.0
+low_bb_bbm_34                  mean=92.2760 std=31.0253 min=44.3495 max=245.7300 %zero=0.0
+low_bb_bbm_55                  mean=92.2405 std=30.8594 min=44.3495 max=245.7300 %zero=0.0
+low_bb_bbm_89                  mean=92.1857 std=30.7218 min=44.3495 max=245.7300 %zero=0.0
+open_bb_bbh_2                  mean=225.9136 std=168.6070 min=23.3991 max=816.2386 %zero=0.0
+open_bb_bbh_3                  mean=257.1807 std=129.5481 min=100.4511 max=677.9968 %zero=0.0
+open_bb_bbh_5                  mean=249.7564 std=113.5655 min=101.6108 max=677.9968 %zero=0.0
+open_bb_bbh_8                  mean=246.0030 std=108.7989 min=103.2640 max=677.9968 %zero=0.0
+open_bb_bbl_2                  mean=-40.2183 std=87.0776 min=-315.3586 max=132.7368 %zero=0.0
+open_bb_bbl_3                  mean=-71.4738 std=63.0600 min=-243.5522 max=115.1803 %zero=0.0
+open_bb_bbl_5                  mean=-64.0398 std=54.1556 min=-207.4453 max=114.8641 %zero=0.0
+open_bb_bbl_8                  mean=-60.3110 std=51.0684 min=-207.4453 max=114.6069 %zero=0.0
+open_bb_bbm_2                  mean=92.8476 std=58.8131 min=17.2154 max=272.1050 %zero=0.0
+open_bb_bbm_3                  mean=92.8535 std=38.8848 min=34.5175 max=246.1950 %zero=0.0
+open_bb_bbm_5                  mean=92.8583 std=35.0535 min=38.6034 max=246.1950 %zero=0.0
+open_bb_bbm_8                  mean=92.8460 std=31.5179 min=44.5203 max=246.1950 %zero=0.0
+volume_ema_13                  mean=21756412.0000 std=20716246.0000 min=296314.1250 max=297731552.0000 %zero=0.0
+volume_ema_21                  mean=21740946.0000 std=20136352.0000 min=344366.0000 max=245141584.0000 %zero=0.0
+volume_ema_34                  mean=21718860.0000 std=19652750.0000 min=392631.7812 max=200650944.0000 %zero=0.0
+volume_ema_55                  mean=21684460.0000 std=19194952.0000 min=445667.8438 max=166885968.0000 %zero=0.0
+volume_ema_89                  mean=21625104.0000 std=18722552.0000 min=540546.3750 max=140974256.0000 %zero=0.0
+volume_mfi_13                  mean=40.2789 std=23.2847 min=0.0000 max=98.8144 %zero=1.1
+volume_mfi_21                  mean=39.9469 std=23.1736 min=0.0000 max=98.7211 %zero=1.9
+volume_mfi_34                  mean=39.4242 std=23.3330 min=0.0000 max=98.1688 %zero=3.3
+volume_mfi_55                  mean=38.5942 std=23.6754 min=0.0000 max=97.6854 %zero=5.4
+volume_mfi_89                  mean=37.2652 std=24.2846 min=0.0000 max=96.6005 %zero=8.9
+volume_obv_13                  mean=-8137993728.0000 std=9437110272.0000 min=-67780337664.0000 max=2400239872.0000 %zero=0.0
+volume_obv_21                  mean=-8069134336.0000 std=9388989440.0000 min=-67391442944.0000 max=2390511104.0000 %zero=0.0
+volume_obv_34                  mean=-7958531072.0000 std=9310309376.0000 min=-66782699520.0000 max=2376844288.0000 %zero=0.0
+volume_obv_55                  mean=-7783324160.0000 std=9181816832.0000 min=-65894359040.0000 max=2358216960.0000 %zero=0.0
+volume_obv_89                  mean=-7509025792.0000 std=8970716160.0000 min=-64309751808.0000 max=2333261056.0000 %zero=0.0
+volume_roc_13                  mean=186.4260 std=1450.7581 min=-1.0000 max=101983.8828 %zero=1.3
+volume_roc_21                  mean=189.2762 std=1637.5543 min=-1.0000 max=119127.0000 %zero=2.1
+volume_roc_34                  mean=651.8701 std=6217.2651 min=-1.0000 max=443535.6250 %zero=3.4
+volume_roc_55                  mean=2687.8240 std=25836.9336 min=-1.0000 max=2384923.2500 %zero=5.5
+volume_roc_89                  mean=208.1775 std=1957.2734 min=-1.0000 max=117282.8359 %zero=9.0
+volume_sma_13                  mean=21758150.0000 std=20781578.0000 min=287693.3125 max=273669504.0000 %zero=0.0
+volume_sma_21                  mean=21735640.0000 std=20227172.0000 min=331459.4688 max=209958832.0000 %zero=0.0
+volume_sma_34                  mean=21708196.0000 std=19796100.0000 min=393501.8750 max=185938544.0000 %zero=0.0
+volume_sma_55                  mean=21675310.0000 std=19337018.0000 min=424876.5000 max=153470448.0000 %zero=0.0
+volume_sma_89                  mean=21624762.0000 std=18862286.0000 min=456027.6250 max=147509792.0000 %zero=0.0
+volume_std_13                  mean=28115994.0000 std=28726224.0000 min=125142.3750 max=349182656.0000 %zero=0.0
+volume_std_21                  mean=28114506.0000 std=28186918.0000 min=161923.2812 max=299131424.0000 %zero=0.0
+volume_std_34                  mean=28228758.0000 std=27751016.0000 min=199121.2656 max=260538304.0000 %zero=0.0
+volume_std_55                  mean=28451074.0000 std=27434886.0000 min=199121.2656 max=226503056.0000 %zero=0.0
+volume_std_89                  mean=28699374.0000 std=27081206.0000 min=199121.2656 max=208158304.0000 %zero=0.0
+close_bb_bbh_2                 mean=225.9378 std=168.6314 min=23.3149 max=817.0734 %zero=0.0
+close_bb_bbh_3                 mean=257.2111 std=129.5641 min=100.5193 max=680.4167 %zero=0.0
+close_bb_bbh_5                 mean=249.7851 std=113.5797 min=100.9071 max=680.4167 %zero=0.0
+close_bb_bbh_8                 mean=246.0309 std=108.8120 min=102.5648 max=680.4167 %zero=0.0
+close_bb_bbl_2                 mean=-40.2291 std=87.0868 min=-315.6834 max=147.5969 %zero=0.0
+close_bb_bbl_3                 mean=-71.4905 std=63.0607 min=-243.3349 max=114.7455 %zero=0.0
+close_bb_bbl_5                 mean=-64.0547 std=54.1532 min=-208.1154 max=114.8959 %zero=0.0
+close_bb_bbl_8                 mean=-60.3252 std=51.0654 min=-208.1154 max=114.3994 %zero=0.0
+close_bb_bbm_2                 mean=92.8544 std=58.8196 min=17.2716 max=272.5000 %zero=0.0
+close_bb_bbm_3                 mean=92.8603 std=38.8886 min=34.6685 max=247.1300 %zero=0.0
+close_bb_bbm_5                 mean=92.8652 std=35.0575 min=38.9173 max=247.1300 %zero=0.0
+close_bb_bbm_8                 mean=92.8528 std=31.5213 min=44.6791 max=247.1300 %zero=0.0
+high_bb_bbh_13                 mean=243.0122 std=107.3641 min=104.6286 max=684.9534 %zero=0.0
+high_bb_bbh_21                 mean=240.9917 std=105.9863 min=107.3508 max=684.9534 %zero=0.0
+high_bb_bbh_34                 mean=239.5656 std=105.1292 min=108.8251 max=684.9534 %zero=0.0
+high_bb_bbh_55                 mean=238.6761 std=104.5092 min=110.3432 max=684.9534 %zero=0.0
+high_bb_bbh_89                 mean=237.9521 std=103.9694 min=111.6194 max=684.9534 %zero=0.0
+high_bb_bbl_13                 mean=-56.3650 std=49.2643 min=-209.8510 max=112.3165 %zero=0.0
+high_bb_bbl_21                 mean=-54.3800 std=48.1049 min=-209.8510 max=112.5323 %zero=0.0
+high_bb_bbl_34                 mean=-53.0102 std=47.3982 min=-209.8510 max=110.9999 %zero=0.0
+high_bb_bbl_55                 mean=-52.1963 std=46.9690 min=-209.8510 max=109.4796 %zero=0.0
+high_bb_bbl_89                 mean=-51.5875 std=46.7271 min=-209.8510 max=109.4796 %zero=0.0
+high_bb_bbm_13                 mean=93.3236 std=31.8549 min=44.1955 max=248.3150 %zero=0.0
+high_bb_bbm_21                 mean=93.3059 std=31.3981 min=44.8115 max=248.3150 %zero=0.0
+high_bb_bbm_34                 mean=93.2777 std=31.3139 min=44.8115 max=248.3150 %zero=0.0
+high_bb_bbm_55                 mean=93.2399 std=31.1436 min=44.8115 max=248.3150 %zero=0.0
+high_bb_bbm_89                 mean=93.1823 std=31.0012 min=44.8115 max=248.3150 %zero=0.0
+low_bb_bbh_144                 mean=234.7785 std=102.3091 min=109.6428 max=676.7540 %zero=0.0
+low_bb_bbh_233                 mean=234.0401 std=101.4548 min=109.6428 max=676.7540 %zero=0.0
+low_bb_bbh_377                 mean=233.0483 std=100.1713 min=109.6428 max=676.7540 %zero=0.0
+low_bb_bbl_144                 mean=-50.5709 std=46.0517 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbl_233                 mean=-50.0425 std=46.0469 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbl_377                 mean=-49.4009 std=46.0716 min=-207.1061 max=109.2009 %zero=0.0
+low_bb_bbm_144                 mean=92.1038 std=30.4969 min=44.3495 max=245.7300 %zero=0.0
+low_bb_bbm_233                 mean=91.9988 std=30.1436 min=44.3495 max=245.7300 %zero=0.0
+low_bb_bbm_377                 mean=91.8237 std=29.5644 min=44.3495 max=245.7300 %zero=0.0
+low_roll_max_2                 mean=139.1173 std=94.1476 min=19.2039 max=448.7800 %zero=0.0
+low_roll_max_3                 mean=176.2234 std=91.6899 min=72.0300 max=448.7800 %zero=0.0
+low_roll_max_5                 mean=191.4756 std=94.2159 min=72.9000 max=448.7800 %zero=0.0
+low_roll_max_8                 mean=191.9509 std=94.4217 min=74.1400 max=448.7800 %zero=0.0
+low_roll_min_2                 mean=45.5494 std=39.7306 min=4.7766 max=170.7800 %zero=0.0
+low_roll_min_3                 mean=23.9442 std=11.5340 min=4.7766 max=115.2188 %zero=0.0
+low_roll_min_5                 mean=22.7150 std=11.5306 min=4.7766 max=115.0156 %zero=0.0
+low_roll_min_8                 mean=22.6372 std=11.4711 min=4.7766 max=113.2188 %zero=0.0
+open_bb_bbh_13                 mean=241.7602 std=106.8331 min=104.4162 max=677.9968 %zero=0.0
+open_bb_bbh_21                 mean=239.7511 std=105.4627 min=106.2829 max=677.9968 %zero=0.0
+open_bb_bbh_34                 mean=238.3339 std=104.6107 min=108.5476 max=677.9968 %zero=0.0
+open_bb_bbh_55                 mean=237.4532 std=103.9985 min=109.3077 max=677.9968 %zero=0.0
+open_bb_bbh_89                 mean=236.7383 std=103.4653 min=110.9915 max=677.9968 %zero=0.0
+open_bb_bbl_13                 mean=-56.0911 std=48.9706 min=-207.4453 max=110.7098 %zero=0.0
+open_bb_bbl_21                 mean=-54.1168 std=47.8187 min=-207.4453 max=110.8621 %zero=0.0
+open_bb_bbl_34                 mean=-52.7549 std=47.1179 min=-207.4453 max=109.7184 %zero=0.0
+open_bb_bbl_55                 mean=-51.9473 std=46.6947 min=-207.4453 max=108.8083 %zero=0.0
+open_bb_bbl_89                 mean=-51.3447 std=46.4557 min=-207.4453 max=108.8083 %zero=0.0
+open_bb_bbm_13                 mean=92.8346 std=31.7107 min=43.3094 max=246.1950 %zero=0.0
+open_bb_bbm_21                 mean=92.8172 std=31.2562 min=44.5203 max=246.1950 %zero=0.0
+open_bb_bbm_34                 mean=92.7895 std=31.1722 min=44.5203 max=246.1950 %zero=0.0
+open_bb_bbm_55                 mean=92.7530 std=31.0040 min=44.5203 max=246.1950 %zero=0.0
+open_bb_bbm_89                 mean=92.6968 std=30.8637 min=44.5203 max=246.1950 %zero=0.0
+volume_ema_144                 mean=21526604.0000 std=18235366.0000 min=653407.0625 max=126721904.0000 %zero=0.0
+volume_ema_233                 mean=21384096.0000 std=17757474.0000 min=654339.5625 max=114625408.0000 %zero=0.0
+volume_ema_377                 mean=21214544.0000 std=17311408.0000 min=654913.8750 max=105837688.0000 %zero=0.0
+volume_mfi_144                 mean=35.0684 std=25.1106 min=0.0000 max=96.1185 %zero=14.5
+volume_mfi_233                 mean=31.4589 std=26.0525 min=0.0000 max=95.7773 %zero=23.6
+volume_mfi_377                 mean=25.5611 std=26.5132 min=0.0000 max=95.3654 %zero=38.2
+volume_obv_144                 mean=-7090305024.0000 std=8628626432.0000 min=-61424050176.0000 max=2297219328.0000 %zero=0.0
+volume_obv_233                 mean=-6476844544.0000 std=8076735488.0000 min=-57332244480.0000 max=2249226752.0000 %zero=0.0
+volume_obv_377                 mean=-5641300992.0000 std=7172726272.0000 min=-52376698880.0000 max=2121186560.0000 %zero=0.0
+volume_roc_144                 mean=26.6569 std=1136.2601 min=-1.0000 max=122213.2891 %zero=14.6
+volume_roc_233                 mean=234.9880 std=2738.9663 min=-1.0000 max=239859.9062 %zero=23.7
+volume_roc_377                 mean=240.8839 std=2968.6870 min=-1.0000 max=179959.1562 %zero=38.4
+volume_sma_144                 mean=21530396.0000 std=18253388.0000 min=557602.3125 max=120543192.0000 %zero=0.0
+volume_sma_233                 mean=21355162.0000 std=17663430.0000 min=655840.0000 max=114493592.0000 %zero=0.0
+volume_sma_377                 mean=21160112.0000 std=17325890.0000 min=655840.0000 max=103505992.0000 %zero=0.0
+volume_std_144                 mean=28915098.0000 std=26538412.0000 min=199121.2656 max=176227952.0000 %zero=0.0
+volume_std_233                 mean=28990662.0000 std=25988104.0000 min=199121.2656 max=166114656.0000 %zero=0.0
+volume_std_377                 mean=28976534.0000 std=25686250.0000 min=199121.2656 max=146652176.0000 %zero=0.0
+close_bb_bbh_13                mean=241.7871 std=106.8467 min=103.7479 max=680.4167 %zero=0.0
+close_bb_bbh_21                mean=239.7777 std=105.4773 min=106.3275 max=680.4167 %zero=0.0
+close_bb_bbh_34                mean=238.3602 std=104.6269 min=108.0640 max=680.4167 %zero=0.0
+close_bb_bbh_55                mean=237.4784 std=104.0135 min=109.4327 max=680.4167 %zero=0.0
+close_bb_bbh_89                mean=236.7631 std=103.4806 min=110.1784 max=680.4167 %zero=0.0
+close_bb_bbl_13                mean=-56.1045 std=48.9679 min=-208.1154 max=110.8270 %zero=0.0
+close_bb_bbl_21                mean=-54.1300 std=47.8162 min=-208.1154 max=110.5690 %zero=0.0
+close_bb_bbl_34                mean=-52.7676 std=47.1159 min=-208.1154 max=109.6318 %zero=0.0
+close_bb_bbl_55                mean=-51.9596 std=46.6913 min=-208.1154 max=109.3991 %zero=0.0
+close_bb_bbl_89                mean=-51.3568 std=46.4519 min=-208.1154 max=109.3991 %zero=0.0
+close_bb_bbm_13                mean=92.8413 std=31.7141 min=43.2784 max=247.1300 %zero=0.0
+close_bb_bbm_21                mean=92.8239 std=31.2597 min=44.6791 max=247.1300 %zero=0.0
+close_bb_bbm_34                mean=92.7963 std=31.1764 min=44.6791 max=247.1300 %zero=0.0
+close_bb_bbm_55                mean=92.7594 std=31.0078 min=44.6791 max=247.1300 %zero=0.0
+close_bb_bbm_89                mean=92.7031 std=30.8674 min=44.6791 max=247.1300 %zero=0.0
+high_bb_bbh_144                mean=237.2646 std=103.3383 min=111.6194 max=684.9534 %zero=0.0
+high_bb_bbh_233                mean=236.4967 std=102.4667 min=111.6194 max=684.9534 %zero=0.0
+high_bb_bbh_377                mean=235.4672 std=101.1515 min=111.6194 max=684.9534 %zero=0.0
+high_bb_bbl_144                mean=-51.0691 std=46.6233 min=-209.8510 max=109.4796 %zero=0.0
+high_bb_bbl_233                mean=-50.5265 std=46.6144 min=-209.8510 max=109.4796 %zero=0.0
+high_bb_bbl_377                mean=-49.8664 std=46.6338 min=-209.8510 max=109.4796 %zero=0.0
+high_bb_bbm_144                mean=93.0977 std=30.7736 min=44.8115 max=248.3150 %zero=0.0
+high_bb_bbm_233                mean=92.9851 std=30.4145 min=44.8115 max=248.3150 %zero=0.0
+high_bb_bbm_377                mean=92.8004 std=29.8253 min=44.8115 max=248.3150 %zero=0.0
+high_roll_max_2                mean=140.6256 std=95.1545 min=23.4300 max=451.5500 %zero=0.0
+high_roll_max_3                mean=178.1427 std=92.6482 min=74.7400 max=451.5500 %zero=0.0
+high_roll_max_5                mean=193.5542 std=95.1822 min=75.8000 max=451.5500 %zero=0.0
+high_roll_max_8                mean=193.9694 std=95.3637 min=76.6500 max=451.5500 %zero=0.0
+high_roll_min_2                mean=46.0479 std=40.0844 min=5.2396 max=179.7000 %zero=0.0
+high_roll_min_3                mean=24.2572 std=11.6877 min=5.2396 max=116.6250 %zero=0.0
+high_roll_min_5                mean=23.0282 std=11.6876 min=5.2396 max=116.1875 %zero=0.0
+high_roll_min_8                mean=22.9596 std=11.6379 min=5.2396 max=115.7969 %zero=0.0
+low_roll_max_13                mean=192.5162 std=94.6756 min=76.5400 max=448.7800 %zero=0.0
+low_roll_max_21                mean=193.1852 std=94.9821 min=77.2900 max=448.7800 %zero=0.0
+low_roll_max_34                mean=193.9606 std=95.3243 min=78.6200 max=448.7800 %zero=0.0
+low_roll_max_55                mean=194.8523 std=95.6819 min=79.8800 max=448.7800 %zero=0.0
+low_roll_max_89                mean=195.8603 std=96.0581 min=83.3000 max=448.7800 %zero=0.0
+low_roll_min_13                mean=22.5409 std=11.4082 min=4.7766 max=110.9375 %zero=0.0
+low_roll_min_21                mean=22.4188 std=11.3388 min=4.7766 max=110.4688 %zero=0.0
+low_roll_min_34                mean=22.2635 std=11.2619 min=4.7766 max=109.3438 %zero=0.0
+low_roll_min_55                mean=22.0615 std=11.1583 min=4.7766 max=109.3438 %zero=0.0
+low_roll_min_89                mean=21.7935 std=11.0706 min=4.7766 max=109.3438 %zero=0.0
+open_bb_bbh_144                mean=236.0590 std=102.8377 min=111.0494 max=677.9968 %zero=0.0
+open_bb_bbh_233                mean=235.3067 std=101.9740 min=111.0494 max=677.9968 %zero=0.0
+open_bb_bbh_377                mean=234.2956 std=100.6703 min=111.0494 max=677.9968 %zero=0.0
+open_bb_bbl_144                mean=-50.8314 std=46.3545 min=-207.4453 max=108.8083 %zero=0.0
+open_bb_bbl_233                mean=-50.2962 std=46.3480 min=-207.4453 max=108.8083 %zero=0.0
+open_bb_bbl_377                mean=-49.6451 std=46.3688 min=-207.4453 max=108.8083 %zero=0.0
+open_bb_bbm_144                mean=92.6138 std=30.6371 min=44.5203 max=246.1950 %zero=0.0
+open_bb_bbm_233                mean=92.5053 std=30.2807 min=44.5203 max=246.1950 %zero=0.0
+open_bb_bbm_377                mean=92.3253 std=29.6952 min=44.5203 max=246.1950 %zero=0.0
+open_roll_max_2                mean=139.8935 std=94.6697 min=23.2900 max=450.6100 %zero=0.0
+open_roll_max_3                mean=177.2182 std=92.1827 min=73.0000 max=450.6100 %zero=0.0
+open_roll_max_5                mean=192.5886 std=94.7245 min=74.0300 max=450.6100 %zero=0.0
+open_roll_max_8                mean=193.0805 std=94.9443 min=75.2900 max=450.6100 %zero=0.0
+open_roll_min_2                mean=45.8017 std=39.9028 min=4.9147 max=179.1000 %zero=0.0
+open_roll_min_3                mean=24.1058 std=11.6058 min=4.9147 max=116.0156 %zero=0.0
+open_roll_min_5                mean=22.8701 std=11.6020 min=4.9147 max=115.6250 %zero=0.0
+open_roll_min_8                mean=22.7885 std=11.5442 min=4.9147 max=115.1562 %zero=0.0
+volume_bb_bbh_2                mean=70401552.0000 std=106217616.0000 min=162118.8750 max=2007228928.0000 %zero=0.0
+volume_bb_bbh_3                mean=79109856.0000 std=93802464.0000 min=217943.5781 max=1557320448.0000 %zero=0.0
+volume_bb_bbh_5                mean=79174520.0000 std=83399152.0000 min=443476.5000 max=1291611264.0000 %zero=0.0
+volume_bb_bbh_8                mean=78713336.0000 std=79912352.0000 min=526921.0625 max=1104992768.0000 %zero=0.0
+volume_bb_bbl_2                mean=-26860116.0000 std=48829960.0000 min=-952448384.0000 max=89400792.0000 %zero=0.0
+volume_bb_bbl_3                mean=-35556556.0000 std=47935492.0000 min=-840226112.0000 max=8706900.0000 %zero=0.0
+volume_bb_bbl_5                mean=-35632176.0000 std=40496072.0000 min=-689496000.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_8                mean=-35174620.0000 std=38809412.0000 min=-557430272.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbm_2                mean=21770716.0000 std=29801650.0000 min=120013.5000 max=535726592.0000 %zero=0.0
+volume_bb_bbm_3                mean=21776648.0000 std=23346430.0000 min=140615.3281 max=373409312.0000 %zero=0.0
+volume_bb_bbm_5                mean=21771170.0000 std=22578318.0000 min=219194.5938 max=353285344.0000 %zero=0.0
+volume_bb_bbm_8                mean=21769356.0000 std=21264238.0000 min=234207.5000 max=302526912.0000 %zero=0.0
+close_bb_bbh_144               mean=236.0824 std=102.8527 min=110.1784 max=680.4167 %zero=0.0
+close_bb_bbh_233               mean=235.3294 std=101.9894 min=110.1784 max=680.4167 %zero=0.0
+close_bb_bbh_377               mean=234.3199 std=100.6930 min=110.1784 max=680.4167 %zero=0.0
+close_bb_bbl_144               mean=-50.8432 std=46.3502 min=-208.1154 max=109.3991 %zero=0.0
+close_bb_bbl_233               mean=-50.3076 std=46.3433 min=-208.1154 max=109.3991 %zero=0.0
+close_bb_bbl_377               mean=-49.6570 std=46.3668 min=-208.1154 max=109.3991 %zero=0.0
+close_bb_bbm_144               mean=92.6196 std=30.6406 min=44.6791 max=247.1300 %zero=0.0
+close_bb_bbm_233               mean=92.5109 std=30.2840 min=44.6791 max=247.1300 %zero=0.0
+close_bb_bbm_377               mean=92.3314 std=29.7004 min=44.6791 max=247.1300 %zero=0.0
+close_roll_max_2               mean=139.9064 std=94.6826 min=23.2600 max=450.9400 %zero=0.0
+close_roll_max_3               mean=177.2348 std=92.1979 min=73.1200 max=450.9400 %zero=0.0
+close_roll_max_5               mean=192.6076 std=94.7316 min=75.3900 max=450.9400 %zero=0.0
+close_roll_max_8               mean=193.1025 std=94.9481 min=75.4200 max=450.9400 %zero=0.0
+close_roll_min_2               mean=45.8022 std=39.9042 min=5.0203 max=171.5700 %zero=0.0
+close_roll_min_3               mean=24.1035 std=11.5987 min=5.0203 max=115.7188 %zero=0.0
+close_roll_min_5               mean=22.8693 std=11.5930 min=5.0203 max=115.4375 %zero=0.0
+close_roll_min_8               mean=22.7888 std=11.5363 min=5.0203 max=115.1406 %zero=0.0
+high_roll_max_13               mean=194.4588 std=95.5759 min=77.9000 max=451.5500 %zero=0.0
+high_roll_max_21               mean=195.0485 std=95.8295 min=79.9300 max=451.5500 %zero=0.0
+high_roll_max_34               mean=195.7531 std=96.1315 min=80.7200 max=451.5500 %zero=0.0
+high_roll_max_55               mean=196.5805 std=96.4597 min=81.6900 max=451.5500 %zero=0.0
+high_roll_max_89               mean=197.5157 std=96.7999 min=85.3600 max=451.5500 %zero=0.0
+high_roll_min_13               mean=22.8743 std=11.5773 min=5.2396 max=112.6562 %zero=0.0
+high_roll_min_21               mean=22.7677 std=11.5052 min=5.2396 max=112.3750 %zero=0.0
+high_roll_min_34               mean=22.6324 std=11.4143 min=5.2396 max=111.8750 %zero=0.0
+high_roll_min_55               mean=22.4589 std=11.2959 min=5.2396 max=110.5938 %zero=0.0
+high_roll_min_89               mean=22.2313 std=11.1891 min=5.2396 max=110.5938 %zero=0.0
+low_roll_max_144               mean=196.9171 std=96.3949 min=84.5800 max=448.7800 %zero=0.0
+low_roll_max_233               mean=197.8796 std=96.5716 min=87.5800 max=448.7800 %zero=0.0
+low_roll_max_377               mean=198.4725 std=96.5022 min=87.6600 max=448.7800 %zero=0.0
+low_roll_min_144               mean=21.4684 std=11.0539 min=4.7766 max=109.3438 %zero=0.0
+low_roll_min_233               mean=21.0742 std=11.0124 min=4.7766 max=109.3438 %zero=0.0
+low_roll_min_377               mean=20.5724 std=10.9357 min=4.7766 max=109.3438 %zero=0.0
+open_roll_max_13               mean=193.6249 std=95.1939 min=77.3300 max=450.6100 %zero=0.0
+open_roll_max_21               mean=194.2585 std=95.4761 min=78.8500 max=450.6100 %zero=0.0
+open_roll_max_34               mean=195.0047 std=95.7991 min=79.8200 max=450.6100 %zero=0.0
+open_roll_max_55               mean=195.8644 std=96.1445 min=80.5500 max=450.6100 %zero=0.0
+open_roll_max_89               mean=196.8369 std=96.5102 min=83.8200 max=450.6100 %zero=0.0
+open_roll_min_13               mean=22.6934 std=11.4771 min=4.9147 max=111.0625 %zero=0.0
+open_roll_min_21               mean=22.5771 std=11.4038 min=4.9147 max=111.0156 %zero=0.0
+open_roll_min_34               mean=22.4309 std=11.3147 min=4.9147 max=110.0000 %zero=0.0
+open_roll_min_55               mean=22.2456 std=11.1939 min=4.9147 max=109.8438 %zero=0.0
+open_roll_min_89               mean=22.0021 std=11.0829 min=4.9147 max=109.8438 %zero=0.0
+volume_bb_bbh_13               mean=77990136.0000 std=77818976.0000 min=624104.6875 max=972034816.0000 %zero=0.0
+volume_bb_bbh_21               mean=77964648.0000 std=76242944.0000 min=749326.6875 max=807398720.0000 %zero=0.0
+volume_bb_bbh_34               mean=78165712.0000 std=74948432.0000 min=938843.0625 max=703486336.0000 %zero=0.0
+volume_bb_bbh_55               mean=78577472.0000 std=73874048.0000 min=942142.8125 max=606476544.0000 %zero=0.0
+volume_bb_bbh_89               mean=79023512.0000 std=72700296.0000 min=1073942.5000 max=563378560.0000 %zero=0.0
+volume_bb_bbl_13               mean=-34473836.0000 std=37543596.0000 min=-464308800.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_21               mean=-34493372.0000 std=36895928.0000 min=-396577888.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_34               mean=-34749320.0000 std=36434252.0000 min=-343461888.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_55               mean=-35226836.0000 std=36219460.0000 min=-299535648.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_89               mean=-35773984.0000 std=35963464.0000 min=-271491488.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbm_13               mean=21758150.0000 std=20781578.0000 min=287693.3125 max=273669504.0000 %zero=0.0
+volume_bb_bbm_21               mean=21735640.0000 std=20227172.0000 min=331459.4688 max=209958832.0000 %zero=0.0
+volume_bb_bbm_34               mean=21708196.0000 std=19796100.0000 min=393501.8750 max=185938544.0000 %zero=0.0
+volume_bb_bbm_55               mean=21675310.0000 std=19337018.0000 min=424876.5000 max=153470448.0000 %zero=0.0
+volume_bb_bbm_89               mean=21624762.0000 std=18862286.0000 min=456027.6250 max=147509792.0000 %zero=0.0
+volume_rel_vol_2               mean=1.1418 std=0.7566 min=0.0000 max=2.0000 %zero=0.0
+volume_rel_vol_3               mean=1.0830 std=0.9744 min=0.0000 max=2.8787 %zero=0.0
+volume_rel_vol_5               mean=0.8458 std=0.8428 min=0.0000 max=3.8965 %zero=0.0
+volume_rel_vol_8               mean=0.9943 std=1.1569 min=0.0000 max=6.1025 %zero=0.0
+close_roll_max_13              mean=193.6514 std=95.1959 min=77.3800 max=450.9400 %zero=0.0
+close_roll_max_21              mean=194.2863 std=95.4683 min=78.9600 max=450.9400 %zero=0.0
+close_roll_max_34              mean=195.0281 std=95.7921 min=80.0000 max=450.9400 %zero=0.0
+close_roll_max_55              mean=195.8808 std=96.1415 min=80.8500 max=450.9400 %zero=0.0
+close_roll_max_89              mean=196.8646 std=96.5342 min=85.1300 max=450.9400 %zero=0.0
+close_roll_min_13              mean=22.6948 std=11.4699 min=5.0203 max=111.4375 %zero=0.0
+close_roll_min_21              mean=22.5795 std=11.3952 min=5.0203 max=110.4688 %zero=0.0
+close_roll_min_34              mean=22.4373 std=11.3146 min=5.0203 max=109.7656 %zero=0.0
+close_roll_min_55              mean=22.2555 std=11.2027 min=5.0203 max=109.6562 %zero=0.0
+close_roll_min_89              mean=22.0156 std=11.0964 min=5.0203 max=109.6562 %zero=0.0
+high_roll_max_144              mean=198.5193 std=97.1165 min=86.1900 max=451.5500 %zero=0.0
+high_roll_max_233              mean=199.4395 std=97.2918 min=87.8700 max=451.5500 %zero=0.0
+high_roll_max_377              mean=199.9896 std=97.2355 min=87.8700 max=451.5500 %zero=0.0
+high_roll_min_144              mean=21.9533 std=11.1473 min=5.2396 max=110.5938 %zero=0.0
+high_roll_min_233              mean=21.6138 std=11.0739 min=5.2396 max=110.5938 %zero=0.0
+high_roll_min_377              mean=21.1831 std=10.9469 min=5.2396 max=110.5938 %zero=0.0
+open_roll_max_144              mean=197.8729 std=96.8348 min=86.0000 max=450.6100 %zero=0.0
+open_roll_max_233              mean=198.8261 std=96.9953 min=87.8300 max=450.6100 %zero=0.0
+open_roll_max_377              mean=199.4047 std=96.9230 min=87.8300 max=450.6100 %zero=0.0
+open_roll_min_144              mean=21.7099 std=11.0415 min=4.9147 max=109.8438 %zero=0.0
+open_roll_min_233              mean=21.3635 std=10.9704 min=4.9147 max=109.8438 %zero=0.0
+open_roll_min_377              mean=20.9332 std=10.8472 min=4.9147 max=109.8438 %zero=0.0
+volume_bb_bbh_144              mean=79360592.0000 std=71015544.0000 min=1073942.5000 max=471870816.0000 %zero=0.0
+volume_bb_bbh_233              mean=79336488.0000 std=69344488.0000 min=1073942.5000 max=446246720.0000 %zero=0.0
+volume_bb_bbh_377              mean=79113176.0000 std=68428128.0000 min=1073942.5000 max=396755744.0000 %zero=0.0
+volume_bb_bbl_144              mean=-36299800.0000 std=35460724.0000 min=-236135440.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_233              mean=-36626156.0000 std=34905428.0000 min=-219060688.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbl_377              mean=-36792956.0000 std=34586600.0000 min=-191567248.0000 max=7510368.0000 %zero=0.0
+volume_bb_bbm_144              mean=21530396.0000 std=18253388.0000 min=557602.3125 max=120543192.0000 %zero=0.0
+volume_bb_bbm_233              mean=21355162.0000 std=17663430.0000 min=655840.0000 max=114493592.0000 %zero=0.0
+volume_bb_bbm_377              mean=21160112.0000 std=17325890.0000 min=655840.0000 max=103505992.0000 %zero=0.0
+volume_rel_vol_13              mean=0.9251 std=1.0374 min=0.0000 max=7.0218 %zero=0.0
+volume_rel_vol_21              mean=0.9634 std=1.1287 min=0.0000 max=9.7727 %zero=0.0
+volume_rel_vol_34              mean=0.9876 std=1.1940 min=0.0000 max=12.2904 %zero=0.0
+volume_rel_vol_55              mean=1.0059 std=1.2550 min=0.0000 max=15.3487 %zero=0.0
+volume_rel_vol_89              mean=1.0067 std=1.2796 min=0.0000 max=14.8338 %zero=0.0
+volume_roll_max_2              mean=38964312.0000 std=56605712.0000 min=134900.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_3              mean=53829276.0000 std=63986808.0000 min=181819.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_5              mean=66086780.0000 std=67778848.0000 min=357300.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_8              mean=72770160.0000 std=73591912.0000 min=471000.0000 max=1050592256.0000 %zero=0.0
+volume_roll_min_2              mean=4577119.0000 std=7638953.5000 min=0.0000 max=131353504.0000 %zero=0.1
+volume_roll_min_3              mean=1519613.7500 std=2295317.7500 min=0.0000 max=34173600.0000 %zero=0.1
+volume_roll_min_5              mean=625351.1250 std=1174018.6250 min=0.0000 max=34173600.0000 %zero=0.1
+volume_roll_min_8              mean=524597.8125 std=1011205.1875 min=0.0000 max=34173600.0000 %zero=0.1
+close_roll_max_144             mean=197.9074 std=96.8884 min=85.8100 max=450.9400 %zero=0.0
+close_roll_max_233             mean=198.8570 std=97.0714 min=87.8700 max=450.9400 %zero=0.0
+close_roll_max_377             mean=199.4353 std=97.0006 min=87.8700 max=450.9400 %zero=0.0
+close_roll_min_144             mean=21.7271 std=11.0566 min=5.0203 max=109.6562 %zero=0.0
+close_roll_min_233             mean=21.3826 std=10.9837 min=5.0203 max=109.6562 %zero=0.0
+close_roll_min_377             mean=20.9496 std=10.8568 min=5.0203 max=109.6562 %zero=0.0
+volume_rel_vol_144             mean=1.0232 std=1.3291 min=0.0000 max=16.1498 %zero=0.0
+volume_rel_vol_233             mean=1.0273 std=1.3409 min=0.0000 max=15.6448 %zero=0.0
+volume_rel_vol_377             mean=1.0441 std=1.3760 min=0.0000 max=17.0283 %zero=0.0
+volume_roll_max_13             mean=79859048.0000 std=80316424.0000 min=602900.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_21             mean=87680312.0000 std=87810328.0000 min=804400.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_34             mean=96613608.0000 std=96698256.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_55             mean=106815816.0000 std=107104040.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_89             mean=118326792.0000 std=118573952.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_min_13             mean=447988.4062 std=892519.9375 min=0.0000 max=34173600.0000 %zero=0.2
+volume_roll_min_21             mean=385919.5000 std=797978.7500 min=0.0000 max=34173600.0000 %zero=0.2
+volume_roll_min_34             mean=336462.3125 std=727459.3125 min=0.0000 max=34173600.0000 %zero=0.3
+volume_roll_min_55             mean=295233.7500 std=670530.5625 min=0.0000 max=34173600.0000 %zero=0.3
+volume_roll_min_89             mean=261053.9375 std=623311.6875 min=0.0000 max=34173600.0000 %zero=0.5
+volume_roll_max_144            mean=130867320.0000 std=130452608.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_233            mean=143345728.0000 std=143230672.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_max_377            mean=155873808.0000 std=159520048.0000 min=816500.0000 max=1050592256.0000 %zero=0.0
+volume_roll_min_144            mean=233456.8125 std=591103.5625 min=0.0000 max=34173600.0000 %zero=0.8
+volume_roll_min_233            mean=204969.2969 std=558438.0625 min=0.0000 max=34173600.0000 %zero=1.2
+volume_roll_min_377            mean=178409.4844 std=528955.0625 min=0.0000 max=34173600.0000 %zero=1.8
+---
+Training ETF autoencoder with bottleneck size 149 for 200 epochs...
+Epoch 1/200 - Loss: 2701613672689682432.000000
+Epoch 11/200 - Loss: 1503332068330179328.000000
+Epoch 21/200 - Loss: 1422443094134024960.000000
+Epoch 31/200 - Loss: 1285132844948986368.000000
+Epoch 41/200 - Loss: 1049327644099553280.000000
+Epoch 51/200 - Loss: 784360796305666176.000000
+Epoch 61/200 - Loss: 601295016282347264.000000
+Epoch 71/200 - Loss: 496413527003270272.000000
+Epoch 81/200 - Loss: 436440351184652928.000000
+Epoch 91/200 - Loss: 401498424740942656.000000
+Epoch 101/200 - Loss: 378996000164263424.000000
+Epoch 111/200 - Loss: 356734941787878784.000000
+Epoch 121/200 - Loss: 339111183129555776.000000
+Epoch 131/200 - Loss: 325610260439749760.000000
+Epoch 141/200 - Loss: 313018211334325824.000000
+Epoch 151/200 - Loss: 303899050039313408.000000
+Epoch 161/200 - Loss: 292681562510930880.000000
+Epoch 171/200 - Loss: 284047468819167456.000000
+Epoch 181/200 - Loss: 273573938787009984.000000
+Epoch 191/200 - Loss: 264732436375337440.000000
+Epoch 200/200 - Loss: 257846442098974208.000000
+Training complete.
+Example 1 input:   [ 4.32756004e+01  5.02705994e+01  5.58395996e+01  5.90418015e+01
+ -1.57999992e-02 -7.90700018e-01 -7.86099970e-01 -2.88999993e-02
+  3.32728004e+01  3.99462013e+01  4.43969994e+01  4.66305008e+01
+  6.43514023e+01  5.04151993e+01  5.58788986e+01  6.40084991e+01
+  5.96292000e+01  4.85847015e+01  4.59900017e+01  4.44351997e+01
+  4.41071014e+01  5.12346992e+01  5.69333000e+01  6.02051010e+01
+ -1.97000001e-02 -7.89699972e-01 -7.86400020e-01 -3.46000008e-02
+  3.32480011e+01  3.99267006e+01  4.43872986e+01  4.66264000e+01
+  6.54725037e+01  5.13656006e+01  5.69966011e+01  6.53068008e+01
+  6.04966011e+01  4.92638016e+01  4.66455002e+01  4.51817017e+01
+  6.11902008e+01  6.24364014e+01  6.30321999e+01  6.33867989e+01
+  6.40848999e+01 -7.97100008e-01 -7.95400023e-01  2.70000007e-02
+ -7.89799988e-01 -7.99600005e-01  4.79790001e+01  4.87701988e+01
+  4.92459984e+01  4.95186005e+01  4.96571999e+01  6.12546997e+01
+  6.29952011e+01  6.43966980e+01  6.24560013e+01  6.33511009e+01
+  4.33368988e+01  4.31116982e+01  4.24388008e+01  4.15527000e+01
+  4.16936989e+01  4.35699997e+01  5.06020012e+01  5.62489014e+01
+  5.95340004e+01 -2.31999997e-02 -7.88500011e-01 -7.86300004e-01
+ -2.63999999e-02  3.32290001e+01  3.99121017e+01  4.43783989e+01
+  4.66214981e+01  6.46579971e+01  5.07634010e+01  5.62575989e+01
+  6.46292038e+01  5.97038002e+01  4.85947990e+01  4.58660011e+01
+  4.46595001e+01  4.36677017e+01  5.07296982e+01  5.63717003e+01
+  5.96141014e+01 -7.89999962e-03 -7.90899992e-01 -7.87199974e-01
+ -3.64999995e-02  3.32971992e+01  3.99603004e+01  4.44034004e+01
+  4.66334000e+01  6.48768005e+01  5.07907982e+01  5.64353981e+01
+  6.45970993e+01  6.00130997e+01  4.89492989e+01  4.64443016e+01
+  4.48506012e+01  6.23759003e+01  6.36292992e+01  6.42400970e+01
+  6.46007004e+01  6.52808990e+01 -7.93799996e-01 -7.93500006e-01
+  2.99999993e-02 -7.87000000e-01 -7.98200011e-01  4.79767990e+01
+  4.87685013e+01  4.92448006e+01  4.95178986e+01  4.96567001e+01
+  6.24916992e+01  6.40647964e+01  6.56183014e+01  6.37683983e+01
+  6.45911026e+01  4.40951996e+01  4.37416000e+01  4.31016006e+01
+  4.22327995e+01  4.23370018e+01  6.62413025e+01  7.04462967e+01
+  7.53191986e+01  1.44999996e-02 -7.90799975e-01 -7.81899989e-01
+  4.97186012e+01  4.97430000e+01  4.97519989e+01  6.49078979e+01
+  6.87227020e+01  8.34921036e+01  4.26828003e+01  4.22997017e+01
+  3.82809982e+01  6.17416992e+01  6.30115013e+01  6.36170998e+01
+  6.39765015e+01  6.46689987e+01 -7.95799971e-01 -7.94399977e-01
+  2.08000001e-02 -7.88399994e-01 -8.00000012e-01  4.79748993e+01
+  4.87681999e+01  4.92449989e+01  4.95181007e+01  4.96568985e+01
+  6.19408989e+01  6.35889015e+01  6.49392014e+01  6.31012993e+01
+  6.39920006e+01  4.36963997e+01  4.34231987e+01  4.26861992e+01
+  4.18616982e+01  4.20213013e+01  6.17825012e+01  6.30466995e+01
+  6.36582985e+01  6.40119019e+01  6.46937027e+01 -7.95499980e-01
+ -7.94399977e-01  3.44999991e-02 -7.87899971e-01 -7.97900021e-01
+  4.79798012e+01  4.87700005e+01  4.92456017e+01  4.95181999e+01
+  4.96570015e+01  6.18250008e+01  6.35195999e+01  6.50582962e+01
+  6.31269989e+01  6.39440002e+01  4.37284012e+01  4.34514008e+01
+  4.28278008e+01  4.19185982e+01  4.19849014e+01  6.74322968e+01
+  7.16815033e+01  7.66234970e+01  8.50000046e-03 -7.90300012e-01
+ -7.80399978e-01  4.97178001e+01  4.97420006e+01  4.97505989e+01
+  6.59932022e+01  6.98041000e+01  8.49475021e+01  4.32150993e+01
+  4.28111992e+01  3.88535004e+01  1.83609802e+02  1.47584595e+02
+  1.47858994e+02  1.52878998e+02 -5.49068985e+01 -4.67542992e+01
+ -3.61011009e+01 -2.48619995e+01  6.43514023e+01  5.04151993e+01
+  5.58788986e+01  6.40084991e+01  6.68273010e+01  7.10635986e+01
+  7.59835968e+01  2.30999999e-02 -7.89200008e-01 -7.81000018e-01
+  4.97181015e+01  4.97422981e+01  4.97509003e+01  6.54343033e+01
+  6.92605972e+01  8.42459030e+01  4.29238014e+01  4.25559998e+01
+  3.85875015e+01  1.30823588e+06  1.61078525e+06  1.92323525e+06
+  2.02007762e+06  7.31135025e+01  3.42784996e+01  5.23787994e+01
+  7.49086990e+01  3.27495580e+07  3.27244180e+07  3.41691560e+07
+  3.57895760e+07 -7.59199977e-01 -3.98000002e-01 -6.33700013e-01
+  8.32799971e-01  8.64480438e+05  2.10222700e+06  2.60816625e+06
+  2.27155450e+06  3.36413844e+05  2.15699700e+06  1.99642825e+06
+  1.71430162e+06  6.68435974e+01  7.10681000e+01  7.59720001e+01
+ -2.79999990e-03 -7.92599976e-01 -7.80399978e-01  4.97186012e+01
+  4.97434006e+01  4.97528000e+01  6.54664001e+01  6.92714996e+01
+  8.42197037e+01  4.29485016e+01  4.25502014e+01  3.85564995e+01
+  1.86465607e+02  1.49893295e+02  1.50287598e+02  1.55670197e+02
+ -5.55205994e+01 -4.71621017e+01 -3.62943001e+01 -2.50566006e+01
+  6.54725037e+01  5.13656006e+01  5.69966011e+01  6.53068008e+01
+  1.47928497e+02  1.49218597e+02  1.49274307e+02  1.45561295e+02
+  1.46738495e+02 -2.54190998e+01 -2.32280998e+01 -2.04808998e+01
+ -2.06494007e+01 -2.00363007e+01  6.12546997e+01  6.29952011e+01
+  6.43966980e+01  6.24560013e+01  6.33511009e+01  1.84065598e+02
+  1.47953003e+02  1.47989700e+02  1.53948196e+02 -5.47495003e+01
+ -4.64261017e+01 -3.54744987e+01 -2.46898003e+01  6.46579971e+01
+  5.07634010e+01  5.62575989e+01  6.46292038e+01  1.95884825e+06
+  1.83429912e+06  1.69337175e+06  1.53338488e+06  1.35387112e+06
+  8.23513031e+01  8.69945984e+01  9.09844971e+01  8.85745010e+01
+  8.98820038e+01  3.52422160e+07  3.29685920e+07  2.71412800e+07
+  2.03312740e+07  1.50652860e+07 -3.04000005e-02 -6.76800013e-01
+  2.43099999e+00  9.85899985e-01  6.62699997e-01  1.91309925e+06
+  1.54612650e+06  1.65790912e+06  1.55178138e+06  1.25069012e+06
+  1.63139400e+06  1.43906688e+06  1.44286912e+06  1.34585825e+06
+  1.21860575e+06  1.84903107e+02  1.48689407e+02  1.49324005e+02
+  1.54298401e+02 -5.51495018e+01 -4.71077995e+01 -3.64533005e+01
+ -2.51042004e+01  6.48768005e+01  5.07907982e+01  5.64353981e+01
+  6.45970993e+01  1.50682205e+02  1.51547897e+02  1.51821503e+02
+  1.48233902e+02  1.49265106e+02 -2.56987991e+01 -2.34183006e+01
+ -2.05849991e+01 -2.06970997e+01 -2.00830002e+01  6.24916992e+01
+  6.40647964e+01  6.56183014e+01  6.37683983e+01  6.45911026e+01
+  1.50273499e+02  1.53322205e+02  1.60054001e+02 -2.04577007e+01
+ -1.58767004e+01  6.93020010e+00  6.49078979e+01  6.87227020e+01
+  8.34921036e+01  1.06515602e+02  1.06515602e+02  1.06515602e+02
+  1.06515602e+02  2.21872005e+01  2.21872005e+01  2.21492004e+01
+  2.21492004e+01  1.49333603e+02  1.50435303e+02  1.50311600e+02
+  1.46824707e+02  1.48034607e+02 -2.54519005e+01 -2.32576008e+01
+ -2.04333000e+01 -2.06221008e+01 -2.00506001e+01  6.19408989e+01
+  6.35889015e+01  6.49392014e+01  6.31012993e+01  6.39920006e+01
+  1.19801362e+06  1.10872838e+06  1.07506950e+06  8.90090027e+01
+  8.11287994e+01  6.51492004e+01  9.63086800e+06  1.55857650e+06
+ -1.59788750e+06  1.99899995e+00  5.28100014e-01 -8.70999992e-02
+  1.00950894e+06  8.53580375e+05  1.07479662e+06  1.09140238e+06
+  9.16048000e+05  1.04466762e+06  1.49281799e+02  1.50422501e+02
+  1.50713806e+02  1.46964203e+02  1.47913803e+02 -2.56317997e+01
+ -2.33833008e+01 -2.05972996e+01 -2.07101002e+01 -2.00256996e+01
+  6.18250008e+01  6.35195999e+01  6.50582962e+01  6.31269989e+01
+  6.39440002e+01  1.52423294e+02  1.55426605e+02  1.62654404e+02
+ -2.04368992e+01 -1.58184004e+01  7.24049997e+00  6.59932022e+01
+  6.98041000e+01  8.49475021e+01  1.08250000e+02  1.08250000e+02
+  1.08250000e+02  1.08250000e+02  2.26949997e+01  2.26949997e+01
+  2.26949997e+01  2.26949997e+01  1.08765602e+02  1.09343803e+02
+  1.09343803e+02  1.09343803e+02  1.09343803e+02  2.21492004e+01
+  2.21492004e+01  2.12859993e+01  2.02071991e+01  2.02071991e+01
+  1.51281799e+02  1.54372498e+02  1.61420807e+02 -2.04132996e+01
+ -1.58513002e+01  7.07089996e+00  6.54343033e+01  6.92605972e+01
+  8.42459030e+01  1.06875000e+02  1.06875000e+02  1.06875000e+02
+  1.07593803e+02  2.24410992e+01  2.24410992e+01  2.24410992e+01
+  2.24410992e+01  1.53730812e+06  6.41622100e+06  6.60102300e+06
+  5.70015800e+06  1.91652844e+05 -2.21176700e+06 -1.38469062e+06
+ -1.15704888e+06  8.64480438e+05  2.10222700e+06  2.60816625e+06
+  2.27155450e+06  1.51363495e+02  1.54371902e+02  1.61332794e+02
+ -2.04307003e+01 -1.58290005e+01  7.10669994e+00  6.54664001e+01
+  6.92714996e+01  8.42197037e+01  1.07312500e+02  1.07312500e+02
+  1.07312500e+02  1.07312500e+02  2.24410992e+01  2.24410992e+01
+  2.24410992e+01  2.24410992e+01  1.10218803e+02  1.10218803e+02
+  1.10218803e+02  1.10218803e+02  1.11000000e+02  2.26949997e+01
+  2.26949997e+01  2.23775997e+01  2.14890995e+01  2.14890995e+01
+  1.13031197e+02  1.13031197e+02  1.16125000e+02  2.02071991e+01
+  1.90139999e+01  1.90139999e+01  1.10093803e+02  1.10093803e+02
+  1.10093803e+02  1.10093803e+02  1.10781197e+02  2.24410992e+01
+  2.24410992e+01  2.18826008e+01  2.02071991e+01  2.02071991e+01
+  5.17588700e+06  4.42426050e+06  4.54364750e+06  4.24349800e+06
+  3.68790150e+06 -1.34968862e+06 -1.33200738e+06 -1.22782912e+06
+ -1.13993512e+06 -1.18652138e+06  1.91309925e+06  1.54612650e+06
+  1.65790912e+06  1.55178138e+06  1.25069012e+06  1.27520001e+00
+  5.24399996e-01  4.22699988e-01  4.85300004e-01  1.08765602e+02
+  1.10031197e+02  1.10031197e+02  1.10031197e+02  1.10031197e+02
+  2.24410992e+01  2.24410992e+01  2.16415005e+01  2.05625992e+01
+  2.05625992e+01  1.14093803e+02  1.14093803e+02  1.17500000e+02
+  2.14890995e+01  1.95851994e+01  1.95851994e+01  1.13031197e+02
+  1.13031197e+02  1.17468803e+02  2.02071991e+01  1.92933006e+01
+  1.92933006e+01  3.19231375e+06  2.68567625e+06  3.16413175e+06
+ -1.17329588e+06 -9.78515688e+05 -1.01453856e+06  1.00950894e+06
+  8.53580375e+05  1.07479662e+06  5.76200008e-01  7.13000000e-01
+  6.64900005e-01  7.10399985e-01  8.81399989e-01  1.10236100e+06
+  4.57772000e+06  4.90295000e+06  4.90295000e+06  6.26600000e+05
+  6.26600000e+05  6.26600000e+05  5.19605000e+05  1.13187500e+02
+  1.13187500e+02  1.17500000e+02  2.05625992e+01  1.92933006e+01
+  1.92933006e+01  1.09200001e+00  1.29149997e+00  1.02559996e+00
+  4.90295000e+06  4.90295000e+06  4.99340000e+06  4.99340000e+06
+  4.99340000e+06  1.66801000e+05  7.10290000e+04  7.10290000e+04
+  7.10290000e+04  7.10290000e+04  4.99340000e+06  4.99340000e+06
+  6.63560000e+06  6.62280000e+04  6.62280000e+04  6.62280000e+04]
+Example 1 recon:   [ 5.8056055e+03  3.9628601e+03  6.3474902e+03  4.3260542e+03
+  2.5061279e+03 -1.4759080e+03  3.6011597e+03  8.3045581e+02
+  6.8485052e+02 -1.7786642e+03  3.6603635e+03  2.2942790e+02
+  4.0182080e+03  3.2054299e+03  1.6170476e+03  6.0892949e+03
+  4.0794573e+03  9.4313361e+02 -2.5425474e+03 -4.2396270e+03
+  5.0601562e+03  5.6865083e+03  4.2516738e+03  3.9728496e+03
+ -3.0618500e+02  4.0969101e+02  1.4225378e+03 -4.2118719e+02
+  9.1439362e+02 -1.1664707e+03  6.0642200e+02  1.5273950e+02
+  3.5640300e+03  7.1026807e+03  3.6824360e+03  2.7873682e+03
+ -1.2167261e+03 -3.6024067e+03 -3.9053721e+03  1.7288100e+02
+  4.0040256e+03  2.5268855e+03  4.6583716e+03  5.7639116e+03
+  7.6580352e+03 -6.4870782e+02  5.5505957e+02 -2.9724646e+03
+ -8.3737610e+02  2.3923215e+03  2.1734419e+02 -7.1984200e+01
+  2.3431328e+03  9.5688499e+01 -1.3951294e+03  5.7208853e+03
+  3.4694968e+03  5.2842070e+03  2.2895613e+03  5.5534712e+03
+  6.9344800e+02 -1.3657528e+03 -1.9749493e+03 -4.9832690e+03
+ -3.5657295e+03  6.2358501e+03  3.6494236e+03  4.9704858e+03
+  1.2860454e+03  6.1632379e+02  2.7395278e+03  2.4383455e+03
+  3.8615381e+02 -3.4064404e+03  2.8241365e+03  1.3435220e+03
+ -4.1572601e+02  4.8105884e+03  1.6526638e+03  4.8245630e+03
+  3.1342771e+03 -1.6789324e+03  2.6605301e+01 -1.6619995e+03
+ -4.5511084e+03  5.9552129e+03  5.1647861e+03  6.5248965e+03
+  6.0048306e+03 -2.1219873e+03  7.3267938e+02  2.2671250e+03
+  9.1250262e+02  8.7735272e+02  4.1138519e+02 -1.1878643e+03
+  3.3096572e+03  4.0553779e+03  4.3834736e+03  2.7082283e+03
+  5.5224199e+03 -1.8695568e+03 -2.7195774e+03 -7.4910138e+02
+ -1.6055569e+02 -6.9280981e+02  5.1530708e+03  3.5440977e+03
+  3.2454980e+03  6.0560000e+03 -1.3371416e+03  2.6468318e+03
+  1.1548490e+03  4.2614799e+01  1.4234564e+03  4.4503760e+03
+  1.8425300e+03  1.3809835e+03 -1.7517535e+03 -3.5495779e+02
+  4.4986821e+03  5.7143496e+03  2.8737561e+03  7.3189585e+03
+  6.1607266e+03 -2.3279260e+03 -3.9650327e+03 -2.7809879e+02
+ -1.2019852e+03 -1.7898195e+03  1.3606919e+03  5.9755229e+03
+  4.1538770e+03  4.5029391e+02  2.5573892e+03 -3.4928928e+03
+ -3.0501628e+03 -4.5789106e+03 -3.2621333e+03  6.1809453e+03
+  5.6819346e+03  7.9777344e+03 -4.2948872e+03 -2.9544307e+03
+  1.3870569e+03  3.0762378e+03  6.9596377e+03  5.1529058e+03
+  4.1853438e+03  3.5926616e+03 -1.6179784e+04  1.0668126e+03
+  2.9977402e+03  1.6787625e+03 -2.3845776e+03 -1.9981506e+03
+ -2.2943700e+02  3.4210432e+03 -1.6552583e+03 -7.5452202e+01
+  9.2545303e+03  3.2542312e+03  4.6977310e+03  3.5208879e+03
+  4.8579531e+03 -3.2031836e+03 -3.0576855e+03  1.1868384e+03
+ -1.4164427e+03 -2.3498279e+03  3.4191155e+03  2.4044402e+03
+  6.3695303e+03  6.5557583e+03  1.9741108e+03 -9.8569958e+02
+ -2.4019380e+03  1.4138671e+03  7.0964081e+02 -6.9683600e+02
+ -9.4354529e+02  4.7199268e+03 -3.8567769e+03  5.1916772e+02
+  7.5408502e+02  4.3029971e+03  5.8115918e+03  4.0488960e+03
+  2.6164058e+03  3.0294048e+03 -2.6515791e+03 -1.7443848e+03
+ -2.5609241e+03 -1.5262251e+03 -4.6331948e+03  5.4608154e+03
+  5.6428408e+03  5.7070479e+03 -8.9734631e+02  2.4387029e+03
+  1.9223792e+03 -4.3582211e+02 -6.7967719e+02  1.4363708e+03
+  3.1746589e+03  5.2621431e+03  6.6630898e+03  4.6868640e+02
+  2.0520520e+03 -4.9698726e+03  3.3526262e+03  3.3283555e+03
+  4.1372324e+03  3.0239932e+03  3.4390845e+03  4.9322554e+03
+  5.8145220e+03  7.2869727e+03 -1.1962621e+03  2.9622725e+03
+  4.5737485e+03  5.1180088e+03  5.1203232e+03  5.2409692e+03
+  4.3030986e+03 -2.3011987e+03  4.8531699e+03 -3.6063816e+03
+ -8.0364020e+02  2.3983760e+02 -2.8250151e+03  4.5325503e+03
+  5.3637197e+03  3.1179590e+03  1.1215908e+03 -2.8101151e+02
+ -3.6086111e+03  1.4014793e+07  1.4183145e+07  1.4300026e+07
+  1.4343519e+07  3.0762820e+02  2.5613040e+02  4.3361179e+02
+ -1.3552782e+03 -1.1802460e+09 -1.1783072e+09 -1.1739599e+09
+ -1.1684614e+09  2.4701559e+02  1.2065299e+03  7.2687292e+02
+ -4.1005569e+02  1.4201920e+07  1.4460676e+07  1.4355500e+07
+  1.4416219e+07  1.4544460e+07  1.7796350e+07  1.8000590e+07
+  1.7889370e+07  3.8443325e+03  4.4215830e+03  5.6949282e+03
+  1.0582688e+03 -1.7682863e+03  1.4342340e+02 -5.1458599e+01
+  1.0071157e+03 -2.2273682e+03  3.2965593e+03 -1.5158701e+02
+  3.5170320e+03 -3.4548169e+03 -2.0878872e+03 -1.0295030e+02
+  4.3074590e+03  2.0725601e+03  5.0739697e+03 -1.2858492e+03
+  6.3112852e+03  3.5464385e+03  3.5362200e+03  5.2034277e+03
+  2.7007825e+03  7.9871328e+03  3.7141384e+03  5.0756602e+03
+  6.5676924e+03  4.2950140e+02  4.1758442e+03  2.4541045e+03
+  2.4723088e+03  6.8781470e+03  5.8746680e+03  7.4161943e+03
+  8.9272930e+03  3.4578884e+03  4.8850884e+03  5.4396240e+03
+  4.2480054e+03  6.2053560e+03  2.3182332e+03  5.0265701e+02
+  3.1233198e+03  2.5394861e+03  6.0529351e+03  5.6219961e+03
+  5.2475820e+03  5.2064141e+03  4.2354453e+03  5.2627974e+03
+  1.5021078e+03  2.9473350e+03  2.8784053e+03  1.4355266e+07
+  1.4349206e+07  1.4318640e+07  1.4291988e+07  1.4263429e+07
+ -7.9885980e+02  3.0415530e+02 -1.1296294e+03  1.5665560e+03
+ -1.1545668e+03 -1.1588232e+09 -1.1430077e+09 -1.1175461e+09
+ -1.0764166e+09 -1.0099673e+09 -1.3423125e+03 -1.7119154e+03
+ -1.5785800e+02  1.7936882e+03  2.6860918e+03  1.4354406e+07
+  1.4334693e+07  1.4262320e+07  1.4246163e+07  1.4241869e+07
+  1.7611004e+07  1.7575034e+07  1.7615000e+07  1.7734882e+07
+  1.7921456e+07  3.0480120e+03  1.8851044e+03  2.4414346e+03
+  2.4194661e+03  3.5376523e+03  8.1601650e+03  7.2997065e+03
+  6.3768452e+03 -3.5574130e+02  2.9554421e+03  5.1175259e+03
+  2.9192537e+03  2.3784956e+03  3.5354675e+03  2.4622471e+03
+  4.3365049e+03  2.2775449e+03  1.0745849e+04  5.9018481e+03
+  5.3378496e+03  5.4988882e+03  5.7367754e+03  3.5368071e+03
+  3.8548796e+03  4.2426396e+03  3.9854839e+03  6.9436602e+03
+  8.1394330e+02  4.1429438e+03  5.6228901e+03  7.6731025e+03
+  4.6478042e+03  8.0720786e+03  4.1401953e+03  8.8240596e+03
+  4.9151353e+03  5.3880098e+03  5.8779380e+03  4.3876533e+03
+  8.8238892e+02  2.7153308e+03  3.5269519e+03  5.4826689e+03
+  3.5396636e+03  1.8579200e+03  3.1672249e+03  3.1936101e+03
+  4.5451982e+03  1.9296530e+02  4.7222339e+03  7.4927544e+03
+  5.3091084e+03  6.4789717e+03  6.8820942e+03  3.1251611e+03
+  3.3345369e+03  1.3100504e+03  6.4371284e+03  5.5713750e+03
+  1.4224104e+07  1.4164750e+07  1.4086683e+07  7.6842778e+03
+ -5.0155527e+03 -1.0313755e+03 -9.0121216e+08 -7.6493517e+08
+ -6.9302272e+08 -4.3603574e+03  1.2646042e+03 -1.3306053e+03
+  1.4203290e+07  1.4186822e+07  1.4060179e+07  1.8083322e+07
+  1.8224248e+07  1.8175000e+07  2.2234133e+03  3.6425249e+03
+  1.9588929e+03  3.0408911e+03  2.0419432e+03  6.2923213e+03
+  6.8913975e+03  6.5988364e+03  4.6854634e+03  5.3132393e+03
+  3.0131626e+03  3.1453953e+03  6.4151040e+03  1.0016815e+03
+  5.2430654e+03  2.7885854e+03  2.8099087e+03  2.2516318e+03
+  7.1155479e+03  5.5928584e+03  6.0118960e+03  4.7088613e+03
+  5.3450928e+03  6.7709873e+03  7.7770569e+02  5.7587515e+03
+  3.4673792e+03  6.0750933e+03  3.7348391e+03  3.9623276e+03
+  5.1993013e+03  3.3516580e+03  2.2894028e+03  1.5882841e+03
+  2.4831921e+03  4.1356436e+03  3.6953696e+03  5.4821968e+03
+  4.6081323e+03  6.0772051e+03  5.7934575e+03  4.4622778e+03
+  1.3887924e+03  2.5449751e+03 -8.5188698e+01  5.0536631e+03
+  7.0588511e+03  3.9889951e+03  4.5817397e+03  5.0294961e+03
+  5.3635444e+03  3.1116213e+03  2.7787988e+03  5.9437554e+03
+  4.5091821e+03  3.1802859e+03  2.8267798e+03  4.0489209e+03
+  6.0982998e+03  4.3730468e+07  5.0514948e+07  5.0785736e+07
+  5.0701588e+07 -1.4998484e+07 -2.1160384e+07 -2.1693442e+07
+ -2.1413778e+07  1.4204461e+07  1.4457060e+07  1.4361736e+07
+  1.4421058e+07  3.7290537e+03  5.3371387e+03  3.2440510e+03
+  3.7313611e+03  7.6768809e+03  5.6476025e+03  2.9592979e+03
+  8.8119902e+03  7.7289502e+03  9.5038849e+02  3.6627061e+03
+  4.2772153e+03  3.1048279e+03  4.0177571e+03  2.7399656e+03
+  4.4222246e+03  2.8009922e+03  4.9392456e+03  3.3534414e+03
+  4.9066509e+03  4.0774460e+03  6.0643193e+03  3.0861467e+03
+  3.4810728e+03  6.3539941e+03  1.9514802e+03  8.9998057e+03
+  6.7280454e+03  2.8655283e+03  5.2798604e+03  5.5264062e+03
+  6.8313970e+03  6.4021333e+03  1.8744358e+03  2.7686013e+03
+  1.0703660e+03  3.9155120e+03  4.1881763e+03  4.0020095e+03
+  4.3108369e+03  3.9862029e+03  5.8869863e+03  4.4514531e+03
+  5.0065508e+07  5.0048080e+07  5.0073432e+07  5.0254276e+07
+  5.0533052e+07 -2.0913094e+07 -2.0851814e+07 -2.0965322e+07
+ -2.1221904e+07 -2.1584572e+07  1.4348509e+07  1.4332084e+07
+  1.4269422e+07  1.4241889e+07  1.4239315e+07 -4.8101120e+02
+ -1.7535686e+03  1.3384390e+03 -8.0057800e+02  5.6275112e+03
+  3.8180452e+03  1.2141179e+03  6.2728213e+03  4.7907104e+03
+  3.8620408e+03  4.0746743e+03  5.5523750e+03  8.1988711e+03
+  3.9317561e+03  6.6237021e+03  1.1974863e+03 -7.8265503e+01
+  5.3520566e+03  1.0246003e+03  6.0364907e+03  5.0453599e+03
+  4.0537981e+03  3.5938635e+03  4.7821797e+03  4.7774189e+03
+  3.3994077e+03  5.0873944e+07  5.1173548e+07  5.0988240e+07
+ -2.1955818e+07 -2.2257586e+07 -2.2294876e+07  1.4202216e+07
+  1.4185431e+07  1.4058925e+07 -1.0769307e+03  6.2304321e+02
+  1.1485922e+03 -5.3289302e+03  9.1833832e+02  2.4561032e+07
+  3.4213308e+07  4.2495724e+07  4.6666824e+07  3.7837680e+06
+  1.2229745e+06  5.2863906e+05  4.3531003e+05  5.8226470e+03
+  5.4288076e+03  5.4938813e+03  4.0656487e+03  6.7990024e+03
+  4.0535359e+03 -2.2708848e+03 -1.2099905e+03 -2.8427100e+02
+  5.1019812e+07  5.5803780e+07  6.0851152e+07  6.6256864e+07
+  7.2492840e+07  3.2497034e+05  2.5889792e+05  2.0551061e+05
+  1.7517019e+05  1.3974100e+05  7.8157848e+07  8.3103256e+07
+  8.4880096e+07  1.2393909e+05  9.7450328e+04  8.7699203e+04]
+Diff: [-5.76233008e+03 -3.91258911e+03 -6.29165088e+03 -4.26701221e+03
+ -2.50614380e+03  1.47511731e+03 -3.60194556e+03 -8.30484619e+02
+ -6.51577820e+02  1.81861035e+03 -3.61596680e+03 -1.82797394e+02
+ -3.95385669e+03 -3.15501465e+03 -1.56116870e+03 -6.02528662e+03
+ -4.01982788e+03 -8.94548889e+02  2.58853735e+03  4.28406201e+03
+ -5.01604932e+03 -5.63527344e+03 -4.19474072e+03 -3.91264429e+03
+  3.06165314e+02 -4.10480804e+02 -1.42332422e+03  4.21152710e+02
+ -8.81145630e+02  1.20639734e+03 -5.62034790e+02 -1.06113098e+02
+ -3.49855762e+03 -7.05131543e+03 -3.62543970e+03 -2.72206128e+03
+  1.27722266e+03  3.65167090e+03  3.95201709e+03 -1.27699203e+02
+ -3.94283569e+03 -2.46444897e+03 -4.59533936e+03 -5.70052490e+03
+ -7.59395020e+03  6.47910828e+02 -5.55854980e+02  2.97249170e+03
+  8.36586182e+02 -2.39312109e+03 -1.69365204e+02  1.20754501e+02
+ -2.29388672e+03 -4.61698990e+01  1.44478662e+03 -5.65963037e+03
+ -3.40650171e+03 -5.21981055e+03 -2.22710522e+03 -5.49012012e+03
+ -6.50111084e+02  1.40886450e+03  2.01738843e+03  5.02482178e+03
+  3.60742310e+03 -6.19228027e+03 -3.59882153e+03 -4.91423682e+03
+ -1.22651147e+03 -6.16346985e+02 -2.74031641e+03 -2.43913184e+03
+ -3.86180206e+02  3.43966968e+03 -2.78422437e+03 -1.29914355e+03
+  4.62347412e+02 -4.74593018e+03 -1.60190039e+03 -4.76830518e+03
+ -3.06964795e+03  1.73863623e+03  2.19895000e+01  1.70786560e+03
+  4.59576807e+03 -5.91154541e+03 -5.11405664e+03 -6.46852490e+03
+ -5.94521631e+03  2.12197949e+03 -7.33470398e+02 -2.26791211e+03
+ -9.12539124e+02 -8.44055481e+02 -3.71424896e+02  1.23226770e+03
+ -3.26302393e+03 -3.99050122e+03 -4.33268262e+03 -2.65179297e+03
+ -5.45782275e+03  1.92956995e+03  2.76852661e+03  7.95545715e+02
+  2.05406403e+02  7.55185608e+02 -5.08944141e+03 -3.47985718e+03
+ -3.18089746e+03 -5.99071924e+03  1.33634778e+03 -2.64762524e+03
+ -1.15481909e+03 -4.34017982e+01 -1.42425464e+03 -4.40239941e+03
+ -1.79376135e+03 -1.33173865e+03  1.80127136e+03  4.04614410e+02
+ -4.43619043e+03 -5.65028467e+03 -2.80813794e+03 -7.25518945e+03
+ -6.09613574e+03  2.37202124e+03  4.00877393e+03  3.21200409e+02
+  1.24421802e+03  1.83215637e+03 -1.29445056e+03 -5.90507666e+03
+ -4.07855762e+03 -4.50279388e+02 -2.55817993e+03  3.49211084e+03
+  3.09988135e+03  4.62865381e+03  3.31188525e+03 -6.11603760e+03
+ -5.61321191e+03 -7.89424219e+03  4.33756982e+03  2.99673047e+03
+ -1.34877588e+03 -3.01449609e+03 -6.89662549e+03 -5.08928857e+03
+ -4.12136719e+03 -3.52799292e+03  1.61789873e+04 -1.06760706e+03
+ -2.99771948e+03 -1.67955078e+03  2.38377759e+03  2.04612537e+03
+  2.78205200e+02 -3.37179834e+03  1.70477637e+03  1.25109100e+02
+ -9.19258984e+03 -3.19064233e+03 -4.63279199e+03 -3.45778687e+03
+ -4.79396094e+03  3.24687988e+03  3.10110889e+03 -1.14415210e+03
+  1.45830444e+03  2.39184912e+03 -3.35733325e+03 -2.34139355e+03
+ -6.30587207e+03 -6.49174658e+03 -1.90941724e+03  9.84904114e+02
+  2.40114355e+03 -1.41383252e+03 -7.10428589e+02  6.96038208e+02
+  9.91525024e+02 -4.67115674e+03  3.90602246e+03 -4.69649506e+02
+ -7.04427917e+02 -4.24117188e+03 -5.74807227e+03 -3.98383765e+03
+ -2.55327881e+03 -2.96546069e+03  2.69530737e+03  1.78783643e+03
+  2.60375195e+03  1.56814368e+03  4.67517969e+03 -5.39338330e+03
+ -5.57115918e+03 -5.63042432e+03  8.97354797e+02 -2.43949316e+03
+ -1.92315955e+03  4.85539886e+02  7.29419189e+02 -1.38662024e+03
+ -3.10866577e+03 -5.19233887e+03 -6.57814258e+03 -4.25471405e+02
+ -2.00924084e+03  5.00872607e+03 -3.16901636e+03 -3.18077075e+03
+ -3.98937354e+03 -2.87111426e+03 -3.49399170e+03 -4.97900977e+03
+ -5.85062305e+03 -7.31183447e+03  1.26061353e+03 -2.91185718e+03
+ -4.51786963e+03 -5.05400049e+03 -5.05349609e+03 -5.16990576e+03
+ -4.22711523e+03  2.30122192e+03 -4.85395898e+03  3.60560034e+03
+  8.53358215e+02 -1.90095306e+02  2.87476611e+03 -4.46711621e+03
+ -5.29445898e+03 -3.03371313e+03 -1.07866699e+03  3.23567505e+02
+  3.64719849e+03 -1.27065570e+07 -1.25723610e+07 -1.23767900e+07
+ -1.23234420e+07 -2.34514801e+02 -2.21851898e+02 -3.81233002e+02
+  1.43018689e+03  1.21299558e+09  1.21103168e+09  1.20812915e+09
+  1.20425101e+09 -2.47774704e+02 -1.20692798e+03 -7.27506592e+02
+  4.10888489e+02 -1.33374400e+07 -1.23584480e+07 -1.17473340e+07
+ -1.21446660e+07 -1.42080460e+07 -1.56393540e+07 -1.60041620e+07
+ -1.61750680e+07 -3.77748828e+03 -4.35051514e+03 -5.61895605e+03
+ -1.05827161e+03  1.76749365e+03 -1.44203796e+02  1.01177200e+02
+ -9.57372314e+02  2.27712109e+03 -3.23109302e+03  2.20858505e+02
+ -3.43281250e+03  3.49776514e+03  2.13043750e+03  1.41506805e+02
+ -4.12099316e+03 -1.92266675e+03 -4.92368213e+03  1.44151953e+03
+ -6.36680566e+03 -3.59360034e+03 -3.57251440e+03 -5.22848438e+03
+ -2.63531006e+03 -7.93576709e+03 -3.65714209e+03 -5.01035352e+03
+ -6.41976367e+03 -2.80282806e+02 -4.02657007e+03 -2.30854321e+03
+ -2.32557031e+03 -6.90356543e+03 -5.89789600e+03 -7.43667529e+03
+ -8.94794238e+03 -3.47792480e+03 -4.82383350e+03 -5.37662891e+03
+ -4.18360889e+03 -6.14289990e+03 -2.25488208e+03 -3.18591400e+02
+ -2.97536694e+03 -2.39149634e+03 -5.89898682e+03 -5.67674561e+03
+ -5.29400830e+03 -5.24188867e+03 -4.26013525e+03 -5.19813916e+03
+ -1.45134436e+03 -2.89107739e+03 -2.81377612e+03 -1.23964180e+07
+ -1.25149060e+07 -1.26252680e+07 -1.27586020e+07 -1.29095580e+07
+  8.81211121e+02 -2.17160797e+02  1.22061389e+03 -1.47798157e+03
+  1.24444873e+03  1.19406541e+09  1.17597632e+09  1.14468736e+09
+  1.09674790e+09  1.02503264e+09  1.34228210e+03  1.71123865e+03
+  1.60289001e+02 -1.79270239e+03 -2.68542920e+03 -1.24413060e+07
+ -1.27885660e+07 -1.26044100e+07 -1.26943820e+07 -1.29911790e+07
+ -1.59796100e+07 -1.61359680e+07 -1.61721300e+07 -1.63890230e+07
+ -1.67028510e+07 -2.86310889e+03 -1.73641504e+03 -2.29211060e+03
+ -2.26516772e+03 -3.59280151e+03 -8.20727246e+03 -7.33616016e+03
+ -6.40194922e+03  4.20618103e+02 -2.90465137e+03 -5.06109033e+03
+ -2.85465649e+03 -2.22781348e+03 -3.38391992e+03 -2.31042554e+03
+ -4.18827100e+03 -2.12827979e+03 -1.07715479e+04 -5.92526660e+03
+ -5.35843457e+03 -5.51958545e+03 -5.75685840e+03 -3.47431567e+03
+ -3.79081470e+03 -4.17702148e+03 -3.92171606e+03 -6.87906885e+03
+ -6.63669800e+02 -3.98962158e+03 -5.46283594e+03 -7.69355908e+03
+ -4.66368066e+03 -8.06514893e+03 -4.07528711e+03 -8.75533691e+03
+ -4.83164307e+03 -5.28149414e+03 -5.77142236e+03 -4.28113770e+03
+ -7.75873230e+02 -2.69314355e+03 -3.50476489e+03 -5.46052002e+03
+ -3.51751440e+03 -1.70858643e+03 -3.01678955e+03 -3.04329858e+03
+ -4.39837354e+03 -4.49306984e+01 -4.74768555e+03 -7.51601221e+03
+ -5.32954150e+03 -6.49959375e+03 -6.90214551e+03 -3.06322021e+03
+ -3.27094800e+03 -1.24511121e+03 -6.37402734e+03 -5.50738281e+03
+ -1.30260900e+07 -1.30560210e+07 -1.30116140e+07 -7.59526904e+03
+  5.09668164e+03  1.09652466e+03  9.10843008e+08  7.66493760e+08
+  6.91424832e+08  4.36235645e+03 -1.26407617e+03  1.33051831e+03
+ -1.31937810e+07 -1.33332420e+07 -1.29853810e+07 -1.69919200e+07
+ -1.73082000e+07 -1.71303320e+07 -2.07413159e+03 -3.49210205e+03
+ -1.80817920e+03 -2.89392700e+03 -1.89402942e+03 -6.31795312e+03
+ -6.91478076e+03 -6.61943359e+03 -4.70617334e+03 -5.33326514e+03
+ -2.95133765e+03 -3.08187573e+03 -6.35004590e+03 -9.38554504e+02
+ -5.17912158e+03 -2.63616211e+03 -2.65448218e+03 -2.08897754e+03
+ -7.13598486e+03 -5.60867676e+03 -6.00465527e+03 -4.64286816e+03
+ -5.27528857e+03 -6.68604004e+03 -6.69455688e+02 -5.65050146e+03
+ -3.35912915e+03 -5.96684326e+03 -3.71214429e+03 -3.93963232e+03
+ -5.17660645e+03 -3.32896289e+03 -2.18063721e+03 -1.47894031e+03
+ -2.37384839e+03 -4.02630005e+03 -3.58602588e+03 -5.46004785e+03
+ -4.58598340e+03 -6.05591895e+03 -5.77325049e+03 -4.44207080e+03
+ -1.23751050e+03 -2.39060254e+03  2.46609497e+02 -5.07407617e+03
+ -7.07470264e+03 -3.98192432e+03 -4.51630566e+03 -4.96023535e+03
+ -5.27929834e+03 -3.00474634e+03 -2.67192383e+03 -5.83688037e+03
+ -4.40158838e+03 -3.15784473e+03 -2.80433862e+03 -4.02647949e+03
+ -6.07585889e+03 -4.21931600e+07 -4.40987280e+07 -4.41847120e+07
+ -4.50014320e+07  1.51901370e+07  1.89486160e+07  2.03087520e+07
+  2.02567300e+07 -1.33399800e+07 -1.23548320e+07 -1.17535700e+07
+ -1.21495020e+07 -3.57768994e+03 -5.18276660e+03 -3.08271826e+03
+ -3.75179150e+03 -7.69270947e+03 -5.64049609e+03 -2.89383154e+03
+ -8.74271875e+03 -7.64473096e+03 -8.43075989e+02 -3.55539355e+03
+ -4.16990283e+03 -2.99751538e+03 -3.99531592e+03 -2.71752441e+03
+ -4.39978369e+03 -2.77855103e+03 -4.82902686e+03 -3.24322266e+03
+ -4.79643213e+03 -3.96722729e+03 -5.95331934e+03 -3.06345166e+03
+ -3.45837769e+03 -6.33161670e+03 -1.92999097e+03 -8.97831641e+03
+ -6.61501416e+03 -2.75249707e+03 -5.16373535e+03 -5.50619922e+03
+ -6.81238330e+03 -6.38311914e+03 -1.76434204e+03 -2.65850757e+03
+ -9.60272217e+02 -3.80541846e+03 -4.07739526e+03 -3.97956836e+03
+ -4.28839600e+03 -3.96432031e+03 -5.86677930e+03 -4.43124609e+03
+ -4.48896200e+07 -4.56238200e+07 -4.55297840e+07 -4.60107760e+07
+ -4.68451520e+07  1.95634060e+07  1.95198060e+07  1.97374920e+07
+  2.00819680e+07  2.03980500e+07 -1.24354110e+07 -1.27859580e+07
+ -1.26115130e+07 -1.26901070e+07 -1.29886240e+07  4.82286407e+02
+  1.75409302e+03 -1.33801636e+03  8.01063416e+02 -5.51874561e+03
+ -3.70801392e+03 -1.10408667e+03 -6.16279004e+03 -4.68067920e+03
+ -3.83959961e+03 -4.05223315e+03 -5.53073340e+03 -8.17830859e+03
+ -3.91119360e+03 -6.50960840e+03 -1.08339258e+03  1.95765503e+02
+ -5.33056738e+03 -1.00501508e+03 -6.01690576e+03 -4.93232861e+03
+ -3.94076685e+03 -3.47639478e+03 -4.76197266e+03 -4.75812549e+03
+ -3.38011450e+03 -4.76816320e+07 -4.84878720e+07 -4.78241080e+07
+  2.07825220e+07  2.12790700e+07  2.12803380e+07 -1.31927080e+07
+ -1.33318510e+07 -1.29841280e+07  1.07750684e+03 -6.22330200e+02
+ -1.14792725e+03  5.32964062e+03 -9.17456909e+02 -2.34586720e+07
+ -2.96355880e+07 -3.75927760e+07 -4.17638720e+07 -3.15716825e+06
+ -5.96374500e+05  9.79609375e+04  8.42949688e+04 -5.70945947e+03
+ -5.31562012e+03 -5.37638135e+03 -4.04508594e+03 -6.77970898e+03
+ -4.03424292e+03  2.27197681e+03  1.21128198e+03  2.85296600e+02
+ -4.61168640e+07 -5.09008320e+07 -5.58577560e+07 -6.12634640e+07
+ -6.74994400e+07 -1.58169344e+05 -1.87868922e+05 -1.34481609e+05
+ -1.04141188e+05 -6.87120000e+04 -7.31644480e+07 -7.81098560e+07
+ -7.82444960e+07 -5.77111055e+04 -3.12223301e+04 -2.14712031e+04]
+
+Example 2 input:   [ 7.13097000e+01  9.18402023e+01  1.07810699e+02  1.15532402e+02
+ -9.04600024e-01  2.66099989e-01 -6.97099984e-01 -1.59999996e-03
+  2.90475006e+01  3.75909004e+01  4.32029991e+01  4.59556007e+01
+  6.89749985e+01  1.58006699e+02  1.06307999e+02  1.24838799e+02
+  5.21916008e+01  1.58561996e+02  1.32620697e+02  1.34644196e+02
+  7.23339005e+01  9.31090012e+01  1.09209198e+02  1.16910896e+02
+ -9.04299974e-01  2.77599990e-01 -6.95999980e-01  3.10000009e-03
+  2.90590992e+01  3.76018982e+01  4.32118988e+01  4.59621010e+01
+  6.99850006e+01  1.60183304e+02  1.07744003e+02  1.26296204e+02
+  5.28987007e+01  1.60643600e+02  1.34408401e+02  1.36152405e+02
+  1.19664200e+02  1.21676804e+02  1.22470901e+02  1.22544403e+02
+  1.22420197e+02 -6.99000001e-01 -7.01399982e-01 -9.02700007e-01
+  2.67600000e-01 -6.94700003e-01  4.75862999e+01  4.85331001e+01
+  4.91043015e+01  4.94500999e+01  4.96615982e+01  1.17722298e+02
+  1.20288597e+02  1.21214699e+02  1.24943802e+02  1.20996498e+02
+  1.28564896e+02  1.27141197e+02  1.24408302e+02  1.25117699e+02
+  1.22270599e+02  7.17985992e+01  9.24173965e+01  1.08452797e+02
+  1.16189400e+02 -9.04200017e-01  2.74800003e-01 -6.98400021e-01
+  4.69999993e-03  2.90175991e+01  3.75758018e+01  4.31972008e+01
+  4.59537010e+01  6.96699982e+01  1.58803406e+02  1.06848000e+02
+  1.25660004e+02  5.28633003e+01  1.58844299e+02  1.32979202e+02
+  1.35358505e+02  7.19989014e+01  9.26956024e+01  1.08743401e+02
+  1.16425499e+02 -9.04299974e-01  2.80900002e-01 -6.95400000e-01
+  6.80000009e-03  2.91285000e+01  3.76417999e+01  4.32304001e+01
+  4.59715004e+01  6.93050003e+01  1.59660004e+02  1.07334000e+02
+  1.25687500e+02  5.19653015e+01  1.60755295e+02  1.34390396e+02
+  1.35667999e+02  1.20957298e+02  1.22890198e+02  1.23656898e+02
+  1.23777199e+02  1.23743599e+02 -6.97700024e-01 -6.99400008e-01
+ -9.02100027e-01  2.79199988e-01 -7.01399982e-01  4.75906982e+01
+  4.85358009e+01  4.91058006e+01  4.94510002e+01  4.96621017e+01
+  1.18866096e+02  1.21331001e+02  1.22318802e+02  1.26073196e+02
+  1.22406601e+02  1.29756607e+02  1.28195099e+02  1.25412903e+02
+  1.26156998e+02  1.23607399e+02  1.22470200e+02  1.22609901e+02
+  1.22549896e+02 -9.61000025e-02 -7.01499999e-01 -6.86900020e-01
+  4.97910995e+01  4.98689995e+01  4.99135017e+01  1.21927902e+02
+  1.22915199e+02  1.23436798e+02  1.22238098e+02  1.23277000e+02
+  1.23765999e+02  1.20292503e+02  1.22258797e+02  1.23027298e+02
+  1.23123596e+02  1.23056999e+02 -6.99999988e-01 -7.00399995e-01
+ -9.02000010e-01  2.67800003e-01 -7.01600015e-01  4.75862007e+01
+  4.85334015e+01  4.91044998e+01  4.94502983e+01  4.96617012e+01
+  1.18309998e+02  1.20795197e+02  1.21685898e+02  1.25438400e+02
+  1.21677002e+02  1.29057297e+02  1.27554703e+02  1.24824501e+02
+  1.25554001e+02  1.22884697e+02  1.20480797e+02  1.22436096e+02
+  1.23207603e+02  1.23287498e+02  1.23182198e+02 -6.95100009e-01
+ -6.99199975e-01 -9.02100027e-01  2.82700002e-01 -6.92300022e-01
+  4.75955009e+01  4.85385017e+01  4.91074982e+01  4.94519997e+01
+  4.96627998e+01  1.18389198e+02  1.20939003e+02  1.21915100e+02
+  1.25685097e+02  1.21828400e+02  1.29316696e+02  1.27917801e+02
+  1.25094803e+02  1.25877502e+02  1.23163803e+02  1.23880997e+02
+  1.24091797e+02  1.24094299e+02 -9.83000025e-02 -6.99400008e-01
+ -6.83499992e-01  4.97914009e+01  4.98690987e+01  4.99135017e+01
+  1.23429398e+02  1.24423798e+02  1.25016197e+02  1.23667000e+02
+  1.24766800e+02  1.25361900e+02  1.73358093e+02  4.75130615e+02
+  3.71549286e+02  3.94127197e+02 -3.54081001e+01 -1.59117203e+02
+ -1.58933304e+02 -1.44449707e+02  6.89749985e+01  1.58006699e+02
+  1.06307999e+02  1.24838799e+02  1.23165398e+02  1.23350197e+02
+  1.23323898e+02 -1.04999997e-01 -7.01300025e-01 -6.85299993e-01
+  4.97911987e+01  4.98689995e+01  4.99136009e+01  1.22709801e+02
+  1.23658302e+02  1.24255402e+02  1.22977798e+02  1.23989197e+02
+  1.24608597e+02  4.47548800e+07  3.76373240e+07  3.10438600e+07
+  2.67037360e+07  0.00000000e+00  1.95307999e+01  1.40465002e+01
+  2.02984009e+01 -1.51126682e+10 -1.50955500e+10 -1.50830715e+10
+ -1.50474619e+10  1.82542992e+01  6.75766309e+03  1.84739995e+00
+  8.60000029e-02  4.03148480e+07  2.78902020e+07  2.94650120e+07
+  2.14074040e+07  2.57888200e+07  2.82072220e+07  3.01443900e+07
+  2.60318740e+07  1.23254700e+02  1.23420799e+02  1.23388100e+02
+ -8.64000022e-02 -6.98400021e-01 -6.83600008e-01  4.97918015e+01
+  4.98693008e+01  4.99136009e+01  1.22711403e+02  1.23746803e+02
+  1.24301498e+02  1.23015503e+02  1.24142097e+02  1.24652496e+02
+  1.75782303e+02  4.81470398e+02  3.76560913e+02  3.98601105e+02
+ -3.58123016e+01 -1.61103806e+02 -1.61072906e+02 -1.46008606e+02
+  6.99850006e+01  1.60183304e+02  1.07744003e+02  1.26296204e+02
+  3.74852203e+02  3.74571014e+02  3.70031189e+02  3.75179199e+02
+  3.65537506e+02 -1.39407501e+02 -1.33993805e+02 -1.27601799e+02
+ -1.25291603e+02 -1.23544601e+02  1.17722298e+02  1.20288597e+02
+  1.21214699e+02  1.24943802e+02  1.20996498e+02  1.75396606e+02
+  4.76492004e+02  3.72806488e+02  3.96377014e+02 -3.60565987e+01
+ -1.58885300e+02 -1.59110504e+02 -1.45057007e+02  6.96699982e+01
+  1.58803406e+02  1.06848000e+02  1.25660004e+02  2.33731020e+07
+  2.11812600e+07  2.03586200e+07  2.10001620e+07  2.20229960e+07
+  1.89596004e+01  1.93848991e+01  1.84547997e+01  2.06555004e+01
+  1.91117001e+01 -1.50034043e+10 -1.49455186e+10 -1.48424243e+10
+ -1.46717153e+10 -1.42906778e+10  2.05990005e+00  1.54040003e+00
+  1.96359005e+01  2.38096133e+04  1.36800006e-01  2.07230300e+07
+  1.92803940e+07  1.89504560e+07  1.88321080e+07  2.66817880e+07
+  2.36515600e+07  2.21931080e+07  2.09210000e+07  2.16461760e+07
+  3.68287560e+07  1.73235596e+02  4.81170593e+02  3.76114807e+02
+  3.97023499e+02 -3.46255989e+01 -1.61850601e+02 -1.61446701e+02
+ -1.45648499e+02  6.93050003e+01  1.59660004e+02  1.07334000e+02
+  1.25687500e+02  3.78379303e+02  3.77721191e+02  3.73144592e+02
+  3.78387299e+02  3.69621307e+02 -1.40647003e+02 -1.35059296e+02
+ -1.28507095e+02 -1.26240799e+02 -1.24808098e+02  1.18866096e+02
+  1.21331001e+02  1.22318802e+02  1.26073196e+02  1.22406601e+02
+  3.66403992e+02  3.69469208e+02  3.70968811e+02 -1.22548203e+02
+ -1.23638603e+02 -1.24095200e+02  1.21927902e+02  1.22915199e+02
+  1.23436798e+02  1.05879997e+02  3.36070007e+02  3.36070007e+02
+  3.36070007e+02  3.20699997e+01  3.20699997e+01  2.53299999e+01
+  2.53299999e+01  3.76424713e+02  3.75904602e+02  3.71334991e+02
+  3.76546509e+02  3.67446503e+02 -1.39804703e+02 -1.34314194e+02
+ -1.27963203e+02 -1.25669601e+02 -1.24092400e+02  1.18309998e+02
+  1.20795197e+02  1.21685898e+02  1.25438400e+02  1.21677002e+02
+  2.21896060e+07  2.14317260e+07  2.03511540e+07  2.10855007e+01
+  2.30820007e+01  2.46138000e+01 -1.35418839e+10 -1.27238042e+10
+ -1.15781540e+10  6.07400000e-01  2.40510011e+00  5.17220020e+00
+  2.40570420e+07  2.04647280e+07  1.92690560e+07  3.40315200e+07
+  2.87221880e+07  2.54876120e+07  3.77022614e+02  3.76774597e+02
+  3.72104706e+02  3.77440186e+02  3.68156097e+02 -1.40244095e+02
+ -1.34896500e+02 -1.28274597e+02 -1.26070000e+02 -1.24499199e+02
+  1.18389198e+02  1.20939003e+02  1.21915100e+02  1.25685097e+02
+  1.21828400e+02  3.70763397e+02  3.73957397e+02  3.75739990e+02
+ -1.23904701e+02 -1.25110001e+02 -1.25707603e+02  1.23429398e+02
+  1.24423798e+02  1.25016197e+02  1.07389999e+02  3.40579987e+02
+  3.40579987e+02  3.40579987e+02  3.25800018e+01  3.25800018e+01
+  2.55000000e+01  2.54699001e+01  3.36070007e+02  3.36070007e+02
+  3.36070007e+02  3.36070007e+02  3.36070007e+02  2.52399998e+01
+  2.52399998e+01  2.52399998e+01  2.52099991e+01  2.51599998e+01
+  3.68665497e+02  3.71636688e+02  3.73472504e+02 -1.23245903e+02
+ -1.24320198e+02 -1.24961800e+02  1.22709801e+02  1.23658302e+02
+  1.24255402e+02  1.07050003e+02  3.37070007e+02  3.37070007e+02
+  3.38609985e+02  3.22900009e+01  3.22900009e+01  2.53299999e+01
+  2.53299999e+01  9.18924880e+07  8.43046480e+07  8.97538000e+07
+  7.34711520e+07 -1.12627910e+07 -2.85242460e+07 -3.08237720e+07
+ -3.06563440e+07  4.03148480e+07  2.78902020e+07  2.94650120e+07
+  2.14074040e+07  3.68742401e+02  3.72031006e+02  3.73606598e+02
+ -1.23319603e+02 -1.24537300e+02 -1.25003601e+02  1.22711403e+02
+  1.23746803e+02  1.24301498e+02  1.06050003e+02  3.40369995e+02
+  3.40369995e+02  3.40369995e+02  3.25600014e+01  3.25600014e+01
+  2.54200001e+01  2.53299999e+01  3.40579987e+02  3.40579987e+02
+  3.40579987e+02  3.40579987e+02  3.40579987e+02  2.53799992e+01
+  2.53799992e+01  2.53799992e+01  2.53700008e+01  2.52299995e+01
+  3.36070007e+02  3.38880005e+02  3.41690002e+02  2.43799992e+01
+  2.43799992e+01  2.36499996e+01  3.38609985e+02  3.38609985e+02
+  3.38609985e+02  3.38609985e+02  3.38609985e+02  2.53299999e+01
+  2.53299999e+01  2.52500000e+01  2.52500000e+01  2.51714993e+01
+  6.80261520e+07  6.36666040e+07  6.07924600e+07  6.21244560e+07
+  1.00339304e+08 -2.65800900e+07 -2.51058200e+07 -2.28915440e+07
+ -2.44602460e+07 -4.69757240e+07  2.07230300e+07  1.92803940e+07
+  1.89504560e+07  1.88321080e+07  2.66817880e+07  1.45229995e+00
+  2.09929991e+00  1.98710001e+00  2.73499990e+00  3.40369995e+02
+  3.40369995e+02  3.40369995e+02  3.40369995e+02  3.40369995e+02
+  2.52600002e+01  2.52600002e+01  2.52600002e+01  2.52210007e+01
+  2.52159004e+01  3.40579987e+02  3.43529999e+02  3.48220001e+02
+  2.50000000e+01  2.50000000e+01  2.46098995e+01  3.38609985e+02
+  3.41750000e+02  3.48179993e+02  2.49400005e+01  2.49400005e+01
+  2.43400002e+01  9.21200880e+07  7.79090960e+07  7.02442800e+07
+ -4.40060000e+07 -3.69796440e+07 -3.17061700e+07  2.40570420e+07
+  2.04647280e+07  1.92690560e+07  2.82540011e+00  3.03679991e+00
+  3.08969998e+00  3.10910010e+00  2.19440007e+00  5.85503000e+07
+  5.85503000e+07  6.36457960e+07  6.36457960e+07  2.20794000e+07
+  3.04090000e+06  8.66300000e+03  7.36400000e+03  3.40369995e+02
+  3.42549988e+02  3.46149994e+02  2.48896008e+01  2.48896008e+01
+  2.41835995e+01  2.43379998e+00  2.86100006e+00  3.03859997e+00
+  6.36457960e+07  6.36457960e+07  6.36457960e+07  7.66191040e+07
+  1.65965904e+08  7.36400000e+03  3.63100000e+03  3.63100000e+03
+  3.63100000e+03  1.11900000e+03  1.66569408e+08  1.66569408e+08
+  1.66569408e+08  6.69000000e+02  6.69000000e+02  6.04000000e+02]
+Example 2 recon:   [-4.85285586e+04 -2.14608730e+04 -4.44671914e+04 -6.13122188e+04
+ -5.70432129e+03 -1.82326562e+04  1.04809961e+05  2.65308320e+04
+ -1.76281836e+04  1.56348604e+04  1.53927422e+04  1.63708115e+04
+ -2.66353242e+04 -8.59257812e+04 -2.81978809e+04 -6.06006641e+04
+  1.43377598e+04 -7.87099981e+00  3.00598975e+03 -9.35219238e+03
+ -3.86760195e+04 -3.09552988e+04 -2.77077559e+04 -3.81958906e+04
+  2.47596558e+03 -9.97880273e+03  2.77163794e+03  1.78537024e+03
+ -3.38771836e+04 -1.07771436e+03 -1.37148297e+05 -2.45970947e+03
+ -3.29592109e+04 -3.06938691e+04 -1.83591934e+04 -3.21301113e+04
+ -1.49878740e+04  1.97393203e+04  4.53271055e+04 -4.17403281e+04
+ -5.51479414e+04 -3.38073867e+04 -4.82929727e+04 -7.75695078e+04
+ -4.17306875e+04  1.18897900e+03 -1.47565491e+03 -8.92038696e+02
+ -3.87909375e+04  9.91507227e+03 -2.64698212e+02  9.68327246e+03
+ -5.53354297e+03  9.72945023e+01 -4.24808008e+03 -3.82228164e+04
+ -6.25259023e+04 -6.89697188e+04 -3.95483242e+04 -8.89429980e+03
+  1.40205947e+04 -2.90669863e+04  7.29590967e+03  3.27447734e+04
+  1.47785742e+04 -6.32568242e+04 -3.01829219e+04 -6.72944922e+04
+ -5.26525430e+04 -6.96613135e+03  1.29809188e+05  1.36299219e+03
+ -4.32849756e+03 -1.40376147e+03 -5.94370557e+03  1.05532197e+04
+ -1.47862764e+04 -8.88677656e+04 -5.46053203e+04 -4.21217148e+04
+ -3.18323418e+04  7.75920801e+03  2.79668105e+04 -7.37533691e+03
+  1.45371602e+04 -4.91056797e+04 -7.93605938e+04 -1.20058457e+04
+ -1.42383779e+04 -8.96879883e+03  5.52687744e+03  6.64818311e+03
+  6.02503760e+03  5.24705127e+03  1.51279626e+03  4.34283398e+03
+  6.88329443e+03 -4.46029258e+04 -7.53352812e+04 -5.06151719e+04
+ -6.64622969e+04 -2.14500513e+03 -1.06309395e+04  2.89783594e+04
+ -6.93269336e+03 -7.20478906e+04 -4.27225742e+04 -2.72032539e+04
+ -2.00453750e+04 -4.06513203e+04  1.64676562e+04  1.08457461e+04
+ -1.00836064e+04 -2.68469512e+04  2.29845625e+04 -6.51228984e+04
+ -2.94509727e+04 -2.28453052e+03  1.88375840e+04  4.25376221e+03
+ -2.52496484e+04 -6.35435781e+04 -3.85065664e+04 -3.03068965e+04
+ -2.17142910e+04 -1.58409971e+04  1.38931455e+04  9.48810449e+03
+  1.33591562e+04  1.18872422e+04 -1.66844336e+04 -3.16234277e+04
+ -5.58179531e+04  1.33353125e+03  1.17310801e+04 -7.58243027e+01
+  1.58124844e+04 -8.37861133e+03  2.15910645e+04 -4.86663320e+04
+ -2.15927441e+04 -2.31279551e+04  6.93355518e+03 -1.75788125e+04
+ -1.51614834e+04 -9.38040234e+04 -3.83092383e+04 -6.66920625e+04
+ -8.36756953e+04 -6.11129844e+04 -1.40691766e+05 -1.41157236e+04
+ -2.96038555e+04  6.89292871e+03 -2.64535332e+04  3.48199561e+03
+  7.33060010e+03 -1.35122852e+04  6.91785303e+03 -8.21510742e+03
+ -4.52171250e+04 -5.41225220e+02 -4.47560664e+04 -3.02874824e+04
+ -5.44321719e+04 -3.34140234e+04 -4.92868633e+04 -7.61444336e+03
+ -1.58409395e+04 -4.15551514e+03 -4.07364102e+04 -3.22070488e+04
+ -2.31684375e+04 -2.75811895e+04 -5.59450508e+04 -2.65895840e+04
+ -2.16816602e+03 -1.06931641e+04 -5.16911621e+03  1.11922852e+03
+  7.31483057e+03 -4.14872461e+04  8.57945215e+03  1.06600703e+04
+  2.30345781e+04 -2.55659648e+04 -8.63845859e+04 -4.18865430e+04
+ -3.59005039e+04 -9.47800195e+03  2.19097852e+03  5.51608203e+03
+  3.92483750e+04 -1.23252480e+04 -3.04314209e+02 -1.11134359e+05
+ -4.04262891e+04 -2.40958809e+04 -1.27745508e+04 -5.90804053e+03
+  7.72970068e+03  5.57143213e+03  1.54507988e+04  1.79815312e+04
+ -6.63501484e+04 -1.88429258e+04 -5.30973086e+04 -8.71497363e+03
+ -1.26498711e+05  9.68856543e+03 -1.00661844e+05 -4.85816562e+04
+ -4.58620508e+04 -6.47573047e+04 -4.28153203e+04 -4.33592383e+04
+ -2.68483320e+04 -2.61276445e+04 -1.28596729e+04 -3.27580645e+04
+ -4.10571055e+04 -3.67505664e+04 -4.71324961e+04 -5.40409531e+04
+ -3.19346680e+04 -2.13827168e+04  1.22065188e+05 -7.65601416e+03
+  1.18745957e+04 -1.75641578e+05  1.21021855e+04 -3.78998164e+04
+ -6.33877383e+04 -4.54247188e+04 -2.84046328e+04  2.66510962e+03
+ -9.66228711e+03  2.63228500e+07  2.66099860e+07  2.64418300e+07
+  2.62651280e+07  7.10935938e+03 -9.84840430e+03 -2.16707935e+03
+ -9.37847363e+03 -9.98162944e+09 -9.97321216e+09 -9.95598438e+09
+ -9.93056051e+09  1.19990713e+04  1.84444395e+04 -2.96557637e+04
+  8.71478418e+03  2.66889040e+07  2.61851640e+07  2.67098960e+07
+  2.64414320e+07  2.76338400e+07  3.20955120e+07  3.22537920e+07
+  3.16546280e+07 -5.34752773e+04 -4.75663281e+04 -4.42260430e+04
+ -1.31064785e+04  7.25034863e+03  1.90492285e+03 -2.55452754e+04
+  1.92904102e+04  1.00686260e+04 -8.07790381e+03 -3.45137617e+04
+ -6.28386484e+04 -2.27753262e+04  2.24641973e+04  1.47989004e+04
+ -1.36293252e+04 -7.55038672e+04 -8.61137969e+04 -6.38680117e+04
+ -3.80312188e+04 -3.29832734e+04 -3.64981250e+04 -1.64676504e+04
+ -2.01255195e+04 -2.99211992e+04 -5.32463594e+04 -4.70154180e+04
+ -9.49497891e+04 -7.49606875e+04 -5.32365859e+04 -4.91040664e+04
+ -8.44829922e+04 -7.75520625e+04 -2.31000215e+04 -7.80091484e+04
+ -3.04215879e+04 -8.28177734e+04 -8.25701719e+04 -5.75405312e+04
+ -7.58952031e+04 -2.05501094e+04 -8.40148438e+04 -3.74890078e+04
+ -5.33841523e+04 -4.47832500e+04 -5.65077617e+04 -3.64020352e+04
+ -1.36795693e+04  2.74884297e+04 -2.96585371e+04 -4.69654492e+04
+ -3.92748203e+04 -2.23562285e+04 -3.53338555e+04  2.61148000e+07
+  2.60572340e+07  2.61175840e+07  2.61562620e+07  2.61467700e+07
+ -2.38100820e+04 -1.62649268e+04  3.06303320e+04 -8.32905664e+03
+ -4.86515723e+03 -9.88800512e+09 -9.81985485e+09 -9.70953216e+09
+ -9.53179341e+09 -9.24592947e+09  1.55842148e+04 -1.56371680e+04
+ -4.81958203e+04  6.86623828e+04 -2.79385879e+04  2.57195000e+07
+  2.57118220e+07  2.62487700e+07  2.60598120e+07  2.65744180e+07
+  3.12117600e+07  3.13193100e+07  3.20315880e+07  3.24027060e+07
+  3.34324820e+07 -5.46366445e+04 -1.03326430e+05 -4.53585547e+04
+ -7.82582891e+04 -1.08367021e+04 -2.37617896e+03 -2.48212441e+04
+ -5.06916602e+04 -2.34821133e+04 -2.85962617e+04 -5.45850508e+04
+ -2.66108750e+04 -4.65681523e+04 -3.62211211e+04 -5.88745547e+04
+ -6.04350664e+04 -8.29419219e+04 -7.04405371e+03 -2.87845566e+04
+ -2.78940000e+04 -8.67097031e+04 -1.86008613e+04 -2.48765762e+04
+ -5.19117969e+04 -1.08547445e+05 -6.13714492e+04 -1.98036719e+04
+ -4.21251875e+04 -3.78661484e+04 -8.14343281e+04 -2.15013340e+04
+ -1.29184258e+04 -3.26232188e+04 -4.59137031e+04 -4.29019258e+04
+ -2.16986914e+04 -3.13435449e+04 -6.15532656e+04 -5.15137305e+04
+ -1.16256625e+05 -6.61571953e+04  1.12384314e+03 -4.28916914e+04
+ -2.98475000e+04 -2.51230879e+04 -6.86795234e+04 -5.31073008e+04
+ -5.29125391e+04 -7.31525234e+04 -3.07828379e+04 -6.19646992e+04
+ -7.20534453e+04 -1.43879932e+04 -5.67553984e+04 -4.74298984e+04
+ -1.19401805e+05 -4.28884922e+04 -3.58474414e+04  2.80917539e+04
+  2.60652140e+07  2.56222360e+07  2.51528860e+07  4.08620234e+04
+  9.42171191e+03  3.08390566e+04 -8.79210598e+09 -8.09097114e+09
+ -7.04358554e+09 -1.08042773e+04  3.95476172e+04  5.78744688e+04
+  2.59133820e+07  2.56673140e+07  2.48536240e+07  3.32821340e+07
+  3.30694260e+07  3.25173780e+07 -7.10930078e+04 -8.86761094e+04
+ -3.67272891e+04 -1.01886289e+05 -5.97244102e+04 -3.16037852e+04
+ -2.27551855e+04 -9.70580469e+03 -3.08624609e+04 -9.59692285e+03
+ -1.21942422e+04 -4.55547969e+04 -3.42782930e+04 -3.78767617e+04
+ -5.73503125e+03 -8.02554766e+04 -5.42986094e+04 -5.22047227e+04
+ -3.95575938e+04 -4.69224102e+04 -9.42560391e+04 -3.55781016e+04
+ -2.05380000e+04 -2.85603496e+04 -5.74914766e+04 -8.14760703e+04
+ -3.71661094e+04 -5.74634375e+04 -1.19623115e+04 -1.63341299e+04
+ -3.06757285e+04 -5.73185078e+04 -1.86238145e+04 -1.32451729e+04
+ -9.02176328e+04 -4.35365547e+04 -3.13022441e+04 -2.88087461e+04
+ -2.82675684e+04 -1.78340469e+04 -1.09394600e+04 -3.17646309e+04
+ -8.37528750e+04 -1.31468062e+05 -4.48663320e+04 -3.77263984e+04
+  1.95565059e+04 -1.79815332e+04 -4.45216328e+04 -6.13485938e+04
+ -6.36340977e+04 -5.03888438e+04 -6.40331055e+04 -5.24125977e+04
+ -6.56149219e+04 -2.02420957e+04 -3.17431172e+04 -2.41376504e+04
+ -1.74869336e+04  7.26146160e+07  8.11844560e+07  8.11671280e+07
+  8.10963280e+07 -2.83766680e+07 -3.73147840e+07 -3.67931000e+07
+ -3.64871320e+07  2.67382980e+07  2.62249920e+07  2.66996000e+07
+  2.64377300e+07 -1.08237992e+05 -3.22265625e+04 -1.02010000e+05
+ -3.55009023e+04 -2.95701113e+04 -2.92142910e+04 -6.40143633e+04
+ -1.47012828e+05 -3.92299180e+04 -9.73971016e+04 -6.45368008e+04
+ -2.98089863e+04 -6.46263359e+04 -3.37534375e+04 -1.94102969e+04
+ -3.70428828e+04 -3.72114727e+04 -3.65905430e+04 -6.44720781e+04
+ -5.61436406e+04 -6.83982891e+04 -2.19308203e+04  5.82460010e+03
+ -1.19835781e+04 -2.57776172e+04 -1.76687656e+04 -1.70333887e+04
+ -7.68348281e+04 -4.88484102e+04 -2.54326152e+04 -1.84431426e+04
+ -2.50816270e+04 -3.57469922e+04 -3.98928750e+04 -1.14033039e+05
+ -7.58443984e+04  9.46966125e+02 -5.74736055e+04 -4.35307695e+04
+ -9.39540527e+03 -1.56362363e+04 -3.50748867e+04 -6.03071367e+04
+  8.09036720e+07  8.15728560e+07  8.28369440e+07  8.31649600e+07
+  8.35815600e+07 -3.59343200e+07 -3.61328760e+07 -3.73724120e+07
+ -3.82182000e+07 -3.92255040e+07  2.57235900e+07  2.57020940e+07
+  2.61619720e+07  2.60886180e+07  2.66176820e+07 -1.06981631e+04
+  2.52510234e+04 -1.00178965e+04 -3.07666016e+03 -7.44781016e+04
+ -3.92830273e+04 -9.41545938e+04 -8.40417031e+04 -2.24659160e+04
+ -1.43969922e+04 -6.18619385e+03 -2.17429668e+04 -3.28811406e+04
+ -4.87562617e+04 -2.72168711e+04 -3.43875742e+04 -3.49455781e+04
+ -1.67679883e+04 -1.08842461e+04 -1.45279375e+04 -5.14426523e+04
+ -5.94551953e+04 -7.78721641e+04 -2.58041621e+04 -1.23519238e+04
+ -1.98430332e+04  8.30394320e+07  8.33035760e+07  8.22770080e+07
+ -3.97714480e+07 -4.00405440e+07 -3.98322440e+07  2.59487420e+07
+  2.56527380e+07  2.49077720e+07 -5.99805713e+03 -6.16013965e+03
+ -5.26932178e+03 -6.12068477e+04 -1.07646924e+04  4.18976720e+07
+  5.61166560e+07  6.79256720e+07  7.50581520e+07  7.56816450e+06
+  3.53078400e+06  2.21225800e+06  1.85694150e+06 -7.16563828e+04
+ -7.21813516e+04 -5.27126641e+04 -5.50171631e+03 -1.08742910e+04
+ -2.32096992e+04  7.84151270e+03  2.46869805e+04 -6.43939600e+03
+  8.31588960e+07  9.26667280e+07  1.03303576e+08  1.13944144e+08
+  1.27568248e+08  1.86075325e+06  1.55407562e+06  1.54523238e+06
+  1.30250262e+06  1.26719100e+06  1.40900192e+08  1.56089248e+08
+  1.70718320e+08  1.24882888e+06  9.48478375e+05  8.62938938e+05]
+Diff: [ 4.85998672e+04  2.15527129e+04  4.45750039e+04  6.14277500e+04
+  5.70341650e+03  1.82329219e+04 -1.04810656e+05 -2.65308340e+04
+  1.76572305e+04 -1.55972705e+04 -1.53495410e+04 -1.63248564e+04
+  2.67042988e+04  8.60837891e+04  2.83041914e+04  6.07255117e+04
+ -1.42855693e+04  1.66432999e+02 -2.87336914e+03  9.48683691e+03
+  3.87483516e+04  3.10484102e+04  2.78169668e+04  3.83128008e+04
+ -2.47686987e+03  9.97908008e+03 -2.77233398e+03 -1.78536719e+03
+  3.39062422e+04  1.11531628e+03  1.37191516e+05  2.50567163e+03
+  3.30291953e+04  3.08540508e+04  1.84669375e+04  3.22564102e+04
+  1.50407715e+04 -1.95786758e+04 -4.51926953e+04  4.18764805e+04
+  5.52676016e+04  3.39290625e+04  4.84154453e+04  7.76920547e+04
+  4.18531094e+04 -1.18967810e+03  1.47495349e+03  8.91135986e+02
+  3.87912070e+04 -9.91576660e+03  3.12284485e+02 -9.63473926e+03
+  5.58264746e+03 -4.78443985e+01  4.29774170e+03  3.83405391e+04
+  6.26461875e+04  6.90909297e+04  3.96732695e+04  9.01529590e+03
+ -1.38920303e+04  2.91941250e+04 -7.17150146e+03 -3.26196582e+04
+ -1.46563037e+04  6.33286289e+04  3.02753398e+04  6.74029453e+04
+  5.27687305e+04  6.96522705e+03 -1.29808922e+05 -1.36369055e+03
+  4.32850244e+03  1.43277905e+03  5.98128125e+03 -1.05100225e+04
+  1.48322324e+04  8.89374375e+04  5.47641289e+04  4.22285625e+04
+  3.19580039e+04 -7.70634473e+03 -2.78079648e+04  7.50831689e+03
+ -1.44018018e+04  4.91776797e+04  7.94532891e+04  1.21145889e+04
+  1.43548027e+04  8.96789453e+03 -5.52659668e+03 -6.64887842e+03
+ -6.02503076e+03 -5.21792285e+03 -1.47515442e+03 -4.29960352e+03
+ -6.83732227e+03  4.46722305e+04  7.54949375e+04  5.07225078e+04
+  6.65879844e+04  2.19697046e+03  1.07916943e+04 -2.88439688e+04
+  7.06836182e+03  7.21688516e+04  4.28454648e+04  2.73269082e+04
+  2.01691523e+04  4.07750625e+04 -1.64683535e+04 -1.08464453e+04
+  1.00827041e+04  2.68472324e+04 -2.29852637e+04  6.51704883e+04
+  2.94995078e+04  2.33363623e+03 -1.87881328e+04 -4.20410010e+03
+  2.53685137e+04  6.36649102e+04  3.86288867e+04  3.04329688e+04
+  2.18366973e+04  1.59707539e+04 -1.37649502e+04 -9.36269141e+03
+ -1.32329990e+04 -1.17636348e+04  1.68069043e+04  3.17460352e+04
+  5.59405039e+04 -1.33362732e+03 -1.17317812e+04  7.51373978e+01
+ -1.57626943e+04  8.42848047e+03 -2.15411504e+04  4.87882617e+04
+  2.17156602e+04  2.32513926e+04 -6.81131689e+03  1.77020898e+04
+  1.52852500e+04  9.39243125e+04  3.84314961e+04  6.68150859e+04
+  8.37988203e+04  6.12360430e+04  1.40691062e+05  1.41150244e+04
+  2.96029531e+04 -6.89266064e+03  2.64528320e+04 -3.43440967e+03
+ -7.28206641e+03  1.35613887e+04 -6.86840332e+03  8.26476953e+03
+  4.53354336e+04  6.62020386e+02  4.48777539e+04  3.04129180e+04
+  5.45538477e+04  3.35430820e+04  4.94144180e+04  7.73926807e+03
+  1.59664932e+04  4.27839990e+03  4.08568906e+04  3.23294844e+04
+  2.32916445e+04  2.77044805e+04  5.60682305e+04  2.65888887e+04
+  2.16746680e+03  1.06922617e+04  5.16939893e+03 -1.11992090e+03
+ -7.26723438e+03  4.15357852e+04 -8.53034473e+03 -1.06106182e+04
+ -2.29849160e+04  2.56843535e+04  8.65055234e+04  4.20084570e+04
+  3.60261875e+04  9.59983008e+03 -2.06166187e+03 -5.38816406e+03
+ -3.91232812e+04  1.24511260e+04  4.27477997e+02  1.11258242e+05
+  4.05503828e+04  2.42199746e+04  1.27744521e+04  5.90734131e+03
+ -7.73038477e+03 -5.52164062e+03 -1.54009297e+04 -1.79316172e+04
+  6.64735781e+04  1.89673496e+04  5.32223242e+04  8.83864062e+03
+  1.26623484e+05 -9.56320312e+03  1.00835203e+05  4.90567852e+04
+  4.62336016e+04  6.51514375e+04  4.27799141e+04  4.32001211e+04
+  2.66894004e+04  2.59831953e+04  1.29286475e+04  3.29160703e+04
+  4.11634141e+04  3.68754062e+04  4.72556602e+04  5.41643086e+04
+  3.20579941e+04  2.13826113e+04 -1.22065891e+05  7.65532861e+03
+ -1.18248047e+04  1.75691453e+05 -1.20522715e+04  3.80225273e+04
+  6.35113984e+04  4.55489727e+04  2.85276133e+04 -2.54112036e+03
+  9.78689551e+03  1.84320300e+07  1.10273380e+07  4.60203000e+06
+  4.38607969e+05 -7.10935938e+03  9.86793555e+03  2.18112573e+03
+  9.39877246e+03 -5.13103872e+09 -5.12233779e+09 -5.12708608e+09
+ -5.11690035e+09 -1.19808174e+04 -1.16867764e+04  2.96576094e+04
+ -8.71469824e+03  1.36259440e+07  1.70503600e+06  2.75511600e+06
+ -5.03402800e+06 -1.84502000e+06 -3.88829025e+06 -2.10940000e+06
+ -5.62275600e+06  5.35985312e+04  4.76897500e+04  4.43494297e+04
+  1.31063926e+04 -7.25104736e+03 -1.90560645e+03  2.55950664e+04
+ -1.92405410e+04 -1.00187129e+04  8.20061523e+03  3.46375078e+04
+  6.29629492e+04  2.28983418e+04 -2.23400547e+04 -1.46742500e+04
+  1.38051074e+04  7.59853359e+04  8.64903594e+04  6.42666094e+04
+  3.79954062e+04  3.28221680e+04  3.63370508e+04  1.63216416e+04
+  2.01955039e+04  3.00813828e+04  5.33541016e+04  4.71417148e+04
+  9.53246406e+04  7.53352578e+04  5.36066172e+04  4.94792461e+04
+  8.48485312e+04  7.74126562e+04  2.29660273e+04  7.78815469e+04
+  3.02962949e+04  8.26942266e+04  8.26878906e+04  5.76608203e+04
+  7.60164141e+04  2.06750527e+04  8.41358438e+04  3.76644062e+04
+  5.38606445e+04  4.51560547e+04  5.69041406e+04  3.63659805e+04
+  1.35206846e+04 -2.76475391e+04  2.95134824e+04  4.70351211e+04
+  3.94336250e+04  2.24630762e+04  3.54595156e+04 -2.74169800e+06
+ -4.87597400e+06 -5.75896400e+06 -5.15610000e+06 -4.12377425e+06
+  2.38290410e+04  1.62843105e+04 -3.06118789e+04  8.34971191e+03
+  4.88426904e+03 -5.11540019e+09 -5.12566374e+09 -5.13289216e+09
+ -5.13992294e+09 -5.04474931e+09 -1.55821553e+04  1.56387090e+04
+  4.82154570e+04 -4.48527695e+04  2.79387227e+04 -4.99647000e+06
+ -6.43142800e+06 -7.29831400e+06 -7.22770400e+06  1.07370000e+05
+ -7.56019750e+06 -9.12620200e+06 -1.11105880e+07 -1.07565300e+07
+  3.39627400e+06  5.48098828e+04  1.03807602e+05  4.57346680e+04
+  7.86553125e+04  1.08020762e+04  2.21432837e+03  2.46597969e+04
+  5.05460117e+04  2.35514180e+04  2.87559238e+04  5.46923828e+04
+  2.67365625e+04  4.69465312e+04  3.65988438e+04  5.92476992e+04
+  6.08134453e+04  8.33115469e+04  6.90340625e+03  2.86494980e+04
+  2.77654902e+04  8.65834609e+04  1.84760527e+04  2.49954414e+04
+  5.20331289e+04  1.08669758e+05  6.14975234e+04  1.99260781e+04
+  4.24915898e+04  3.82356172e+04  8.18052969e+04  2.13787852e+04
+  1.27947871e+04  3.24991270e+04  4.60356328e+04  4.30248398e+04
+  2.18221289e+04  3.14494277e+04  6.18893359e+04  5.18498008e+04
+  1.16592703e+05  6.61892656e+04 -1.09177319e+03  4.29170195e+04
+  2.98728320e+04  2.54995117e+04  6.90554297e+04  5.34786367e+04
+  5.32890859e+04  7.35199688e+04  3.06430332e+04  6.18303867e+04
+  7.19254844e+04  1.42623252e+04  5.66313008e+04  4.75482070e+04
+  1.19522602e+05  4.30101797e+04  3.59728789e+04 -2.79700762e+04
+ -3.87560825e+06 -4.19051000e+06 -4.80173200e+06 -4.08409375e+04
+ -9.39862988e+03 -3.08144414e+04 -4.74977792e+09 -4.63283302e+09
+ -4.53456845e+09  1.08048848e+04 -3.95452109e+04 -5.78693008e+04
+ -1.85634000e+06 -5.20258600e+06 -5.58456800e+06  7.49388000e+05
+ -4.34724000e+06 -7.02976400e+06  7.14700312e+04  8.90528828e+04
+  3.70993945e+04  1.02263727e+05  6.00925703e+04  3.14635430e+04
+  2.26202891e+04  9.57753027e+03  3.07363906e+04  9.47242383e+03
+  1.23126318e+04  4.56757344e+04  3.44002070e+04  3.80024453e+04
+  5.85685986e+03  8.06262422e+04  5.46725703e+04  5.25804609e+04
+  3.94336875e+04  4.67973008e+04  9.41303281e+04  3.57015312e+04
+  2.06624238e+04  2.86853672e+04  5.75988672e+04  8.18166484e+04
+  3.75066875e+04  5.78040117e+04  1.19948916e+04  1.63667100e+04
+  3.07012285e+04  5.73439805e+04  1.89598848e+04  1.35812432e+04
+  9.05537031e+04  4.38726250e+04  3.16383145e+04  2.88339844e+04
+  2.82928066e+04  1.78592871e+04  1.09646699e+04  3.17897891e+04
+  8.41215391e+04  1.31839703e+05  4.52398047e+04  3.76031523e+04
+ -1.96808262e+04  1.78565723e+04  4.46443438e+04  6.14722578e+04
+  6.37583477e+04  5.04958945e+04  6.43701758e+04  5.27496680e+04
+  6.59535312e+04  2.02743848e+04  3.17754043e+04  2.41629805e+04
+  1.75122637e+04  1.92778720e+07  3.12019200e+06  8.58667200e+06
+ -7.62517600e+06  1.71138760e+07  8.79053800e+06  5.96932600e+06
+  5.83078600e+06  1.35765500e+07  1.66520800e+06  2.76541200e+06
+ -5.03032600e+06  1.08606734e+05  3.25985957e+04  1.02383609e+05
+  3.53775820e+04  2.94455742e+04  2.90892871e+04  6.41370742e+04
+  1.47136578e+05  3.93542188e+04  9.75031484e+04  6.48771641e+04
+  3.01493535e+04  6.49667070e+04  3.37859961e+04  1.94428574e+04
+  3.70683047e+04  3.72368008e+04  3.69311211e+04  6.48126523e+04
+  5.64842188e+04  6.87388672e+04  2.22714004e+04 -5.79922021e+03
+  1.20089580e+04  2.58029980e+04  1.76941348e+04  1.70586191e+04
+  7.71708984e+04  4.91872891e+04  2.57743047e+04  1.84675234e+04
+  2.51060078e+04  3.57706406e+04  4.02314844e+04  1.14371633e+05
+  7.61830078e+04 -6.08356201e+02  5.78122188e+04  4.35560977e+04
+  9.42073535e+03  1.56614883e+04  3.51001367e+04  6.03323086e+04
+ -1.28775200e+07 -1.79062480e+07 -2.20444880e+07 -2.10405000e+07
+  1.67577440e+07  9.35423000e+06  1.10270560e+07  1.44808670e+07
+  1.37579540e+07 -7.75022000e+06 -5.00056000e+06 -6.42170000e+06
+ -7.21151600e+06 -7.25650950e+06  6.41059961e+04  1.06996152e+04
+ -2.52489238e+04  1.00198838e+04  3.07939526e+03  7.48184688e+04
+  3.96233984e+04  9.44949609e+04  8.43820703e+04  2.28062852e+04
+  1.44222510e+04  6.21145361e+03  2.17682266e+04  3.29063633e+04
+  4.87814766e+04  2.75574492e+04  3.47311055e+04  3.52937969e+04
+  1.67929883e+04  1.09092461e+04  1.45525469e+04  5.17812617e+04
+  5.97969414e+04  7.82203438e+04  2.58291016e+04  1.23768643e+04
+  1.98673730e+04  9.08065600e+06 -5.39448000e+06 -1.20327280e+07
+ -4.23455200e+06  3.06090000e+06  8.12607400e+06 -1.89169988e+06
+ -5.18801000e+06 -5.63871600e+06  6.00088232e+03  6.16317627e+03
+  5.27241162e+03  6.12099570e+04  1.07668867e+04  1.66526290e+07
+  2.43364800e+06 -4.27987200e+06 -1.14123520e+07  1.45112370e+07
+ -4.89884000e+05 -2.20359500e+06 -1.84957750e+06  7.19967500e+04
+  7.25238984e+04  5.30588125e+04  5.52660596e+03  1.08991807e+04
+  2.32338828e+04 -7.83907910e+03 -2.46841191e+04  6.44243457e+03
+ -1.95130960e+07 -2.90209260e+07 -3.96577760e+07 -3.73250400e+07
+  3.83976560e+07 -1.85338925e+06 -1.55044462e+06 -1.54160138e+06
+ -1.29887162e+06 -1.26607200e+06  2.56692160e+07  1.04801600e+07
+ -4.14891225e+06 -1.24815988e+06 -9.47809250e+05 -8.62335000e+05]
+
+Example 3 input:   [ 1.3010570e+02  1.2154930e+02  1.1050980e+02  1.0280850e+02
+  4.1812000e+00  5.8769002e+00 -2.8020000e-01 -1.0600000e-02
+  5.5039501e+01  5.5958698e+01  5.4398899e+01  5.2964401e+01
+  1.5463499e+02  1.1140670e+02  9.6661499e+01  8.8296700e+01
+  3.5871498e+01  7.9053497e+01  7.1317596e+01  7.3591797e+01
+  1.3202950e+02  1.2317020e+02  1.1180640e+02  1.0388380e+02
+  4.2617998e+00  5.9375000e+00 -2.7169999e-01  1.6000000e-03
+  5.5540699e+01  5.6291599e+01  5.4593700e+01  5.3084000e+01
+  1.5653500e+02  1.1269670e+02  9.7675301e+01  8.9127899e+01
+  3.5192699e+01  7.9904099e+01  7.2060799e+01  7.4242500e+01
+  9.7383698e+01  9.3865799e+01  9.1529099e+01  8.9908600e+01
+  8.8620499e+01 -2.7540001e-01 -2.7340001e-01  4.1915998e+00
+  6.0883002e+00 -2.6150000e-01  5.1900902e+01  5.1208801e+01
+  5.0764599e+01  5.0486198e+01  5.0310501e+01  9.1532600e+01
+  9.0230698e+01  9.1778297e+01  8.8955299e+01  8.7810799e+01
+  6.9731903e+01  6.9304398e+01  6.9384003e+01  6.8747902e+01
+  6.7980499e+01  1.3137540e+02  1.2253200e+02  1.1123220e+02
+  1.0336680e+02  4.2526999e+00  5.9773998e+00 -2.7190000e-01
+ -1.3000000e-03  5.5698399e+01  5.6373299e+01  5.4628601e+01
+  5.3100899e+01  1.5558000e+02  1.1204330e+02  9.7201500e+01
+  8.8711403e+01  3.4535099e+01  7.9263199e+01  7.1625900e+01
+  7.3895401e+01  1.3041220e+02  1.2188000e+02  1.1086370e+02
+  1.0318400e+02  4.1845999e+00  5.8221002e+00 -2.8209999e-01
+ -1.4100000e-02  5.4916401e+01  5.5873901e+01  5.4346600e+01
+  5.2931801e+01  1.5510500e+02  1.1172670e+02  9.7011299e+01
+  8.8637199e+01  3.6267502e+01  7.9389603e+01  7.1576698e+01
+  7.3859901e+01  9.8299400e+01  9.4682198e+01  9.2290604e+01
+  9.0645699e+01  8.9359703e+01 -2.6510000e-01 -2.6460001e-01
+  4.2481999e+00  6.1581998e+00 -2.5180000e-01  5.1973000e+01
+  5.1252201e+01  5.0790798e+01  5.0501701e+01  5.0319401e+01
+  9.2330299e+01  9.0924004e+01  9.2514603e+01  8.9680496e+01
+  8.8511497e+01  7.0340401e+01  6.9789497e+01  6.9918999e+01
+  6.9298599e+01  6.8499603e+01  8.7435501e+01  8.6369400e+01
+  8.5551003e+01 -8.8000000e-03 -1.8500000e-01 -2.5819999e-01
+  5.0197601e+01  5.0125000e+01  5.0079300e+01  8.6515099e+01
+  8.5364799e+01  8.4573601e+01  6.7254601e+01  6.5785896e+01
+  6.5163803e+01  9.7823303e+01  9.4229698e+01  9.1853104e+01
+  9.0217499e+01  8.8931900e+01 -2.6719999e-01 -2.6310000e-01
+  4.2637000e+00  6.1791000e+00 -2.5170001e-01  5.1981499e+01
+  5.1257000e+01  5.0793598e+01  5.0503601e+01  5.0320801e+01
+  9.1862099e+01  9.0510201e+01  9.2064003e+01  8.9262901e+01
+  8.8109299e+01  6.9923599e+01  6.9489601e+01  6.9590500e+01
+  6.8970001e+01  6.8191704e+01  9.7775200e+01  9.4264900e+01
+  9.1931900e+01  9.0315498e+01  8.9037003e+01 -2.7550000e-01
+ -2.7640000e-01  4.1619000e+00  6.0829000e+00 -2.6310000e-01
+  5.1881100e+01  5.1196499e+01  5.0756901e+01  5.0481098e+01
+  5.0306900e+01  9.1975403e+01  9.0620697e+01  9.2176003e+01
+  8.9373001e+01  8.8211098e+01  7.0114998e+01  6.9581596e+01
+  6.9678200e+01  6.9072998e+01  6.8295197e+01  8.8204002e+01
+  8.7179802e+01  8.6396202e+01  3.7000000e-03 -1.8850000e-01
+ -2.5970000e-01  5.0202801e+01  5.0128101e+01  5.0081200e+01
+  8.7259903e+01  8.6222504e+01  8.5493103e+01  6.7810501e+01
+  6.6448196e+01  6.5895699e+01  2.2637801e+02  2.6951361e+02
+  2.3929680e+02  2.3548030e+02  8.2891998e+01 -4.6700298e+01
+ -4.5973701e+01 -5.8886799e+01  1.5463499e+02  1.1140670e+02
+  9.6661499e+01  8.8296700e+01  8.7766998e+01  8.6732300e+01
+  8.5944702e+01  5.2999998e-03 -1.8320000e-01 -2.6170000e-01
+  5.0203701e+01  5.0128700e+01  5.0081501e+01  8.6831703e+01
+  8.5745697e+01  8.5018898e+01  6.7473198e+01  6.6073402e+01
+  6.5519798e+01  9.3509500e+06  1.0143926e+07  1.1753953e+07
+  1.3051128e+07  2.5055901e+01  2.5145201e+01  1.3036300e+01
+  1.9683599e+01 -1.3388814e+10 -1.3387870e+10 -1.3375717e+10
+ -1.3356974e+10  1.1952960e+02 -8.0900002e-01  2.6498001e+00
+  1.4341000e+00  6.7748000e+06  4.5467355e+06  1.5204354e+07
+  1.6449284e+07  5.8631880e+06  5.6640360e+06  2.3800326e+07
+  2.3950422e+07  8.7870598e+01  8.6825500e+01  8.6021896e+01
+ -1.1600000e-02 -1.8730000e-01 -2.5950000e-01  5.0195202e+01
+  5.0123402e+01  5.0078201e+01  8.6945099e+01  8.5866302e+01
+  8.5077499e+01  6.7603699e+01  6.6199699e+01  6.5577003e+01
+  2.2692039e+02  2.7250479e+02  2.4179691e+02  2.3761301e+02
+  8.6149597e+01 -4.7111500e+01 -4.6446400e+01 -5.9357101e+01
+  1.5653500e+02  1.1269670e+02  9.7675301e+01  8.9127899e+01
+  2.3099640e+02  2.2883949e+02  2.3054640e+02  2.2645110e+02
+  2.2377180e+02 -4.7931198e+01 -4.8377998e+01 -4.6989700e+01
+ -4.8540401e+01 -4.8150299e+01  9.1532600e+01  9.0230698e+01
+  9.1778297e+01  8.8955299e+01  8.7810799e+01  2.2465021e+02
+  2.7056979e+02  2.4045329e+02  2.3650220e+02  8.6509804e+01
+ -4.6483101e+01 -4.6050201e+01 -5.9079498e+01  1.5558000e+02
+  1.1204330e+02  9.7201500e+01  8.8711403e+01  1.4038760e+07
+  1.4659129e+07  1.4959878e+07  1.5229583e+07  1.6008254e+07
+  1.8519699e+01  2.1389200e+01  2.6637899e+01  2.7948700e+01
+  2.7207800e+01 -1.3320288e+10 -1.3264118e+10 -1.3171893e+10
+ -1.3032572e+10 -1.2822182e+10  1.8739001e+00  1.0223000e+00
+  1.6850739e+03 -7.2659999e-01  1.1363000e+00  1.5264770e+07
+  1.6185103e+07  1.5271112e+07  1.4712260e+07  1.4909986e+07
+  2.2577610e+07  2.3779762e+07  2.2383378e+07  2.1235756e+07
+  2.0582424e+07  2.2764000e+02  2.7050580e+02  2.4016479e+02
+  2.3635699e+02  8.2570000e+01 -4.7052502e+01 -4.6142200e+01
+ -5.9082699e+01  1.5510500e+02  1.1172670e+02  9.7011299e+01
+  8.8637199e+01  2.3301109e+02  2.3050301e+02  2.3235271e+02
+  2.2827780e+02  2.2551070e+02 -4.8350399e+01 -4.8655102e+01
+ -4.7323399e+01 -4.8916698e+01 -4.8487801e+01  9.2330299e+01
+  9.0924004e+01  9.2514603e+01  8.9680496e+01  8.8511497e+01
+  2.2102431e+02  2.1693660e+02  2.1490131e+02 -4.7994099e+01
+ -4.6207001e+01 -4.5754101e+01  8.6515099e+01  8.5364799e+01
+  8.4573601e+01  1.8000000e+02  1.8000000e+02  1.8000000e+02
+  1.8000000e+02  1.2927000e+02  2.4950001e+01  1.8797701e+01
+  1.8497200e+01  2.3170930e+02  2.2948950e+02  2.3124510e+02
+  2.2720290e+02  2.2449271e+02 -4.7985100e+01 -4.8469002e+01
+ -4.7117001e+01 -4.8677101e+01 -4.8274101e+01  9.1862099e+01
+  9.0510201e+01  9.2064003e+01  8.9262901e+01  8.8109299e+01
+  1.7477996e+07  1.8972458e+07  1.9719992e+07  2.4487499e+01
+  2.6454100e+01  3.1899700e+01 -1.2406651e+10 -1.1513902e+10
+ -1.0010967e+10  3.6230001e-01  7.8900002e-02  5.5890000e-01
+  1.7605190e+07  2.1984664e+07  2.2010792e+07  2.5915114e+07
+  3.3728420e+07  3.2624464e+07  2.3220540e+02  2.2978391e+02
+  2.3153239e+02  2.2751891e+02  2.2480141e+02 -4.8254601e+01
+ -4.8542500e+01 -4.7180302e+01 -4.8772999e+01 -4.8379299e+01
+  9.1975403e+01  9.0620697e+01  9.2176003e+01  8.9373001e+01
+  8.8211098e+01  2.2288091e+02  2.1911890e+02  2.1728450e+02
+ -4.8361000e+01 -4.6674000e+01 -4.6298302e+01  8.7259903e+01
+  8.6222504e+01  8.5493103e+01  1.8142000e+02  1.8142000e+02
+  1.8142000e+02  1.8142000e+02  1.3164999e+02  2.5020000e+01
+  1.8976400e+01  1.8757099e+01  1.8000000e+02  1.8000000e+02
+  1.8000000e+02  1.8000000e+02  1.8000000e+02  1.8497200e+01
+  1.8383400e+01  1.7879801e+01  1.7749800e+01  1.7749800e+01
+  2.2177820e+02  2.1789240e+02  2.1605840e+02 -4.8114799e+01
+ -4.6401001e+01 -4.6020599e+01  8.6831703e+01  8.5745697e+01
+  8.5018898e+01  1.8000000e+02  1.8000000e+02  1.8000000e+02
+  1.8014000e+02  1.3116000e+02  2.4969999e+01  1.8797701e+01
+  1.8513399e+01  1.8501176e+07  1.5874807e+07  6.2805012e+07
+  6.4350128e+07 -4.9515760e+06 -6.7813365e+06 -3.2396300e+07
+ -3.1451562e+07  6.7748000e+06  4.5467355e+06  1.5204354e+07
+  1.6449284e+07  2.2215260e+02  2.1826570e+02  2.1623140e+02
+ -4.8262299e+01 -4.6533199e+01 -4.6076500e+01  8.6945099e+01
+  8.5866302e+01  8.5077499e+01  1.8075000e+02  1.8075000e+02
+  1.8075000e+02  1.8075000e+02  1.2946001e+02  2.4969999e+01
+  1.8976400e+01  1.8740900e+01  1.8142000e+02  1.8142000e+02
+  1.8142000e+02  1.8142000e+02  1.8142000e+02  1.8740900e+01
+  1.8643400e+01  1.8091000e+01  1.8074699e+01  1.8074699e+01
+  1.8000000e+02  1.8000000e+02  1.8000000e+02  1.7124300e+01
+  1.5865200e+01  1.5865200e+01  1.8014000e+02  1.8014000e+02
+  1.8014000e+02  1.8014000e+02  1.8014000e+02  1.8513399e+01
+  1.8399700e+01  1.7969101e+01  1.7969101e+01  1.7969101e+01
+  6.0419992e+07  6.3744624e+07  6.0037872e+07  5.7183772e+07
+  5.6074828e+07 -2.9890448e+07 -3.1374420e+07 -2.9495644e+07
+ -2.7759250e+07 -2.6254864e+07  1.5264770e+07  1.6185103e+07
+  1.5271112e+07  1.4712260e+07  1.4909986e+07  1.6120000e+00
+  2.4019001e+00  7.1829998e-01  6.6390002e-01  1.8075000e+02
+  1.8075000e+02  1.8075000e+02  1.8075000e+02  1.8075000e+02
+  1.8602800e+01  1.8602800e+01  1.7912300e+01  1.7847300e+01
+  1.7847300e+01  1.8142000e+02  1.8142000e+02  1.8142000e+02
+  1.7392401e+01  1.6149500e+01  1.6149500e+01  1.8014000e+02
+  1.8014000e+02  1.8014000e+02  1.7254299e+01  1.6035700e+01
+  1.6035700e+01  6.9435416e+07  8.9441504e+07  8.7259720e+07
+ -3.4225040e+07 -4.5472176e+07 -4.3238132e+07  1.7605190e+07
+  2.1984664e+07  2.2010792e+07  7.1539998e-01  6.7470002e-01
+  7.1509999e-01  7.4229997e-01  7.3240000e-01  1.0920700e+07
+  1.0920700e+07  5.7169368e+07  5.7169368e+07  2.6289000e+06
+  9.0606000e+04  9.0606000e+04  9.0606000e+04  1.8075000e+02
+  1.8075000e+02  1.8075000e+02  1.7132401e+01  1.5970800e+01
+  1.5970800e+01  6.2029999e-01  4.9669999e-01  4.9620000e-01
+  5.7169368e+07  6.9649488e+07  6.9649488e+07  6.9649488e+07
+  6.9649488e+07  5.4539000e+04  1.4896000e+04  9.1370000e+03
+  4.3660000e+03  4.3660000e+03  1.0022494e+08  1.6892422e+08
+  1.6892422e+08  4.3660000e+03  3.3480000e+03  1.9000000e+03]
+Example 3 recon:   [-4.47978008e+04 -2.13415469e+04 -3.77048516e+04 -6.08878203e+04
+ -6.88220703e+03 -1.27993037e+04  1.40932516e+05  2.55916523e+04
+ -1.67080078e+04  1.32296260e+04  1.63473867e+04  1.78629062e+04
+ -2.61713496e+04 -9.02161328e+04 -2.44319961e+04 -6.70848750e+04
+  1.83668125e+04 -1.29794531e+03  4.10803711e+03 -7.91172559e+03
+ -3.24551641e+04 -2.65801387e+04 -2.66059551e+04 -3.08231113e+04
+  4.01845410e+03 -1.26977100e+04  2.39338647e+03  6.46877319e+02
+ -3.50932695e+04 -2.67289014e+03 -1.85539922e+05 -1.38065930e+03
+ -2.59632988e+04 -2.99694043e+04 -1.58543301e+04 -3.20923457e+04
+ -9.28543750e+03  2.10184629e+04  5.03293750e+04 -4.52275352e+04
+ -5.05000195e+04 -2.61652285e+04 -4.34112656e+04 -8.38521406e+04
+ -4.38423281e+04  2.95181226e+03  5.74350014e+01  4.72364410e+02
+ -3.71915508e+04  7.30141748e+03  5.49832825e+02  1.09211299e+04
+ -3.73862793e+03 -2.17957715e+03 -1.99557202e+03 -3.82059180e+04
+ -6.87318594e+04 -7.11693672e+04 -3.84816094e+04 -6.35453760e+03
+  1.50852256e+04 -2.40689395e+04  7.52042090e+03  3.63828008e+04
+  1.58842158e+04 -6.40712383e+04 -2.60254355e+04 -6.50830898e+04
+ -5.18052070e+04 -7.43468311e+03  1.64894203e+05  1.06257483e+03
+ -5.01749951e+03 -2.07963745e+03 -5.59214453e+03  9.75656738e+03
+ -1.32045771e+04 -9.45405000e+04 -5.38639375e+04 -4.05066094e+04
+ -2.59966738e+04  6.75588867e+03  2.94126426e+04 -5.78414355e+03
+  1.69314414e+04 -4.80180938e+04 -8.05922812e+04 -7.68501416e+03
+ -1.32602549e+04 -7.31273926e+03  3.39966968e+03  4.69501904e+03
+  7.14474219e+03  6.58610205e+03  2.58201196e+03  3.30107373e+03
+  7.26022217e+03 -4.35667266e+04 -8.20142031e+04 -5.14547461e+04
+ -6.74512578e+04 -7.14519226e+02 -9.96630762e+03  2.84900996e+04
+ -6.19224512e+03 -6.94282891e+04 -4.49094023e+04 -2.41380312e+04
+ -1.26042490e+04 -3.82467891e+04  1.73412070e+04  8.85088770e+03
+ -9.86537305e+03 -2.71114551e+04  3.64169414e+04 -6.80644297e+04
+ -2.92748281e+04  9.10104919e+02  1.83213730e+04  3.17416235e+03
+ -2.51099355e+04 -6.26100664e+04 -4.06869062e+04 -2.50993320e+04
+ -1.83630527e+04 -1.51352725e+04  1.57251572e+04  1.50462900e+04
+  1.17155771e+04  1.44699922e+04 -1.49509951e+04 -2.53643320e+04
+ -5.67476094e+04  6.86947205e+02  1.33128945e+04  1.45266187e+03
+  1.38259170e+04 -9.16607031e+03  2.05549727e+04 -6.15910078e+04
+ -1.86790469e+04 -2.06609551e+04  6.53853662e+03 -1.46443555e+04
+ -1.46185459e+04 -9.68191562e+04 -3.88901680e+04 -7.01160078e+04
+ -9.75283750e+04 -6.23396680e+04 -1.74775906e+05 -1.50436943e+04
+ -2.90709082e+04  2.92217188e+03 -3.04506523e+04  4.76950635e+03
+  9.57503809e+03 -1.22755938e+04  7.23203369e+03 -6.48141553e+03
+ -4.69330938e+04  3.65170312e+03 -4.22195625e+04 -2.52891016e+04
+ -5.46933633e+04 -4.96009922e+04 -5.08689180e+04 -4.98629541e+03
+ -1.49584805e+04 -2.89575146e+03 -3.96948594e+04 -3.16490938e+04
+ -1.89824023e+04 -2.34464043e+04 -5.58788086e+04 -2.49381953e+04
+ -8.50880676e+02 -1.13146113e+04 -2.02634436e+03  2.64870459e+03
+  8.64649805e+03 -4.25130859e+04  7.75579199e+03  9.91456348e+03
+  1.90489258e+04 -2.48390801e+04 -9.14127969e+04 -4.73050234e+04
+ -2.65767168e+04 -8.17938818e+03  2.70143359e+03  4.25280469e+03
+  3.99862344e+04 -1.23890322e+04  1.31285107e+03 -1.21198273e+05
+ -4.41601484e+04 -2.12175664e+04 -1.15450791e+04 -6.41192578e+03
+  7.22264258e+03  3.47724487e+03  1.13514648e+04  1.42388271e+04
+ -6.68996016e+04 -1.69792617e+04 -5.37535859e+04 -6.67772852e+03
+ -1.65534484e+05  9.86179883e+03 -1.03786562e+05 -4.73080430e+04
+ -3.80998867e+04 -6.15905391e+04 -4.46889844e+04 -3.35752383e+04
+ -2.67347324e+04 -2.27676426e+04 -1.05290088e+04 -2.63691406e+04
+ -3.39476992e+04 -2.94031777e+04 -4.94087930e+04 -5.21907188e+04
+ -3.14559902e+04 -2.04763809e+04  1.44677203e+05 -6.68177100e+03
+  9.92036816e+03 -2.31521875e+05  1.39514443e+04 -3.63986445e+04
+ -6.29530000e+04 -4.59561914e+04 -3.04217305e+04  4.85763721e+03
+ -9.76562500e+03  2.62897340e+07  2.65454540e+07  2.62595120e+07
+  2.59811300e+07  6.44659766e+03 -7.84616699e+03 -1.00483597e+02
+ -8.38122168e+03 -1.27131300e+10 -1.27024957e+10 -1.26808709e+10
+ -1.26486641e+10  1.20310244e+04  2.16061777e+04 -2.64022148e+04
+  8.82561230e+03  2.67886100e+07  2.56433240e+07  2.67002280e+07
+  2.61427780e+07  2.68604920e+07  3.08485460e+07  3.25342260e+07
+  3.18620800e+07 -5.72101641e+04 -4.61552461e+04 -4.59740820e+04
+ -1.17720264e+04  8.34122754e+03 -2.49056006e+03 -2.91866680e+04
+  1.69630078e+04  9.94970312e+03 -8.02398389e+03 -3.64046211e+04
+ -6.42042422e+04 -3.31455586e+04  2.07910703e+04  1.50817373e+04
+ -6.71256299e+03 -7.65793750e+04 -9.13183203e+04 -6.54353008e+04
+ -3.93556289e+04 -2.98670684e+04 -3.72713945e+04 -1.26425166e+04
+ -2.28763164e+04 -2.97232695e+04 -5.46538359e+04 -4.77514688e+04
+ -9.28188516e+04 -7.50145938e+04 -4.26316562e+04 -4.70860703e+04
+ -8.79621719e+04 -8.09187422e+04 -2.27564023e+04 -8.57036875e+04
+ -2.98976133e+04 -8.83488047e+04 -8.98239297e+04 -5.77070859e+04
+ -7.75309922e+04 -2.02324316e+04 -8.46930859e+04 -2.95596230e+04
+ -5.08806836e+04 -4.49027930e+04 -4.89672930e+04 -3.61371875e+04
+ -1.24401465e+04  3.65144141e+04 -2.92988672e+04 -4.48527891e+04
+ -3.59653438e+04 -1.91137715e+04 -2.75586172e+04  2.57557080e+07
+  2.56462060e+07  2.56907540e+07  2.57612000e+07  2.58227040e+07
+ -2.12350566e+04 -1.41079873e+04  3.34281328e+04 -6.82730420e+03
+ -4.45043750e+03 -1.25950034e+10 -1.25090601e+10 -1.23700019e+10
+ -1.21464494e+10 -1.17877115e+10  1.38569971e+04 -1.48550332e+04
+ -4.46032695e+04  7.29783984e+04 -2.67756270e+04  2.52466280e+07
+  2.51890000e+07  2.57996140e+07  2.56261220e+07  2.62965660e+07
+  3.12386720e+07  3.13901840e+07  3.23379620e+07  3.27307040e+07
+  3.38399880e+07 -5.22999141e+04 -1.03498758e+05 -4.36687227e+04
+ -7.44030625e+04 -1.05381807e+04 -2.87840454e+03 -2.38969961e+04
+ -5.34880078e+04 -2.30677012e+04 -2.25462285e+04 -5.66108594e+04
+ -1.89863926e+04 -4.50244180e+04 -3.84297500e+04 -5.39441289e+04
+ -5.86338047e+04 -8.77552500e+04 -9.24192383e+02 -2.89542109e+04
+ -2.51816562e+04 -8.58218750e+04 -1.70801406e+04 -3.23637559e+04
+ -5.39177227e+04 -1.09957414e+05 -6.62408203e+04 -1.67007363e+04
+ -3.28503008e+04 -2.86953086e+04 -8.36719688e+04 -1.80004570e+04
+ -1.19397891e+04 -2.93379141e+04 -4.83230391e+04 -3.65248633e+04
+ -1.87134492e+04 -2.94123516e+04 -5.70643086e+04 -4.89341445e+04
+ -1.26112961e+05 -7.14355156e+04 -4.34142792e+02 -4.53463164e+04
+ -2.21309688e+04 -2.47396523e+04 -7.17500703e+04 -4.48784648e+04
+ -5.48383945e+04 -7.55127891e+04 -3.15326426e+04 -6.45899531e+04
+ -7.43623594e+04 -1.22910615e+04 -5.72696211e+04 -4.26480430e+04
+ -1.29734094e+05 -3.33695273e+04 -3.57257344e+04  4.31404102e+04
+  2.58062340e+07  2.54625880e+07  2.50989480e+07  5.28198125e+04
+  8.16413525e+03  3.08443750e+04 -1.12206213e+10 -1.03380767e+10
+ -8.98725888e+09 -1.09535088e+04  4.53968359e+04  7.06202344e+04
+  2.57500360e+07  2.56722720e+07  2.45999040e+07  3.38311960e+07
+  3.37675480e+07  3.28856020e+07 -7.22026719e+04 -9.21563203e+04
+ -2.99392676e+04 -1.01834195e+05 -5.91388984e+04 -2.60094395e+04
+ -1.88652090e+04 -9.96484570e+03 -2.82273477e+04 -6.79591455e+03
+ -8.72225195e+03 -4.21060000e+04 -2.86360957e+04 -3.02025352e+04
+ -5.56612256e+03 -8.46127656e+04 -5.32927930e+04 -4.51530156e+04
+ -3.87097227e+04 -4.82805078e+04 -1.00398359e+05 -2.68193535e+04
+ -1.46000078e+04 -2.82549082e+04 -5.53606641e+04 -8.38524297e+04
+ -2.88367109e+04 -6.07912656e+04 -9.52828613e+03 -1.51067500e+04
+ -3.39524609e+04 -6.44734648e+04 -1.15132051e+04 -9.85402930e+03
+ -9.37841016e+04 -4.01952109e+04 -2.34460469e+04 -3.25915586e+04
+ -2.79164316e+04 -1.56618877e+04 -1.04130293e+04 -3.28981055e+04
+ -8.74799453e+04 -1.41530656e+05 -3.55787070e+04 -3.71317773e+04
+  3.33860547e+04 -1.45814883e+04 -3.92938633e+04 -5.59765430e+04
+ -6.23326914e+04 -5.11751523e+04 -5.48600977e+04 -5.07644062e+04
+ -6.59684453e+04 -1.80984590e+04 -2.58187441e+04 -2.00176895e+04
+ -1.41891826e+04  7.09928320e+07  7.81082000e+07  8.16679840e+07
+  8.17502560e+07 -2.69758100e+07 -3.52315240e+07 -3.73869080e+07
+ -3.73279080e+07  2.68296040e+07  2.56738620e+07  2.66924240e+07
+  2.61372820e+07 -1.13223156e+05 -2.43348848e+04 -1.09129820e+05
+ -3.23771230e+04 -2.39051777e+04 -2.70463750e+04 -6.90429688e+04
+ -1.83469500e+05 -4.07380156e+04 -1.14632016e+05 -6.75003047e+04
+ -2.83532227e+04 -6.20989648e+04 -3.49983203e+04 -1.92113398e+04
+ -3.48258516e+04 -3.73745664e+04 -3.45031406e+04 -6.76350938e+04
+ -5.36496875e+04 -6.86259062e+04 -2.15412383e+04  6.12861523e+03
+ -1.10040410e+04 -2.40946270e+04 -1.45076748e+04 -1.29958301e+04
+ -8.22477891e+04 -4.59107773e+04 -1.74018281e+04 -1.80444551e+04
+ -2.51507812e+04 -3.75390352e+04 -3.83214297e+04 -1.21239383e+05
+ -7.51739531e+04  1.41493887e+04 -5.76120430e+04 -4.09451367e+04
+ -7.05746631e+03 -1.25267715e+04 -3.50550117e+04 -6.68025547e+04
+  8.15926880e+07  8.23886960e+07  8.39936960e+07  8.43400720e+07
+  8.48359760e+07 -3.66577200e+07 -3.68698400e+07 -3.84332520e+07
+ -3.92923360e+07 -4.03175440e+07  2.52490080e+07  2.51763620e+07
+  2.57261140e+07  2.56500680e+07  2.63293460e+07 -8.62787988e+03
+  2.57465684e+04 -7.88936865e+03  8.13859802e+02 -7.82204375e+04
+ -2.96875703e+04 -1.01461172e+05 -8.57763984e+04 -1.78243125e+04
+ -1.30871748e+04 -6.24093701e+03 -2.05025859e+04 -2.55601387e+04
+ -4.77389297e+04 -2.28385488e+04 -3.15281816e+04 -3.41652695e+04
+ -1.45087773e+04 -8.38947852e+03 -1.17689814e+04 -4.97920898e+04
+ -5.62340977e+04 -7.97352109e+04 -2.47351699e+04 -1.14074414e+04
+ -2.06233770e+04  8.46768400e+07  8.55329360e+07  8.38198080e+07
+ -4.10418720e+07 -4.13981360e+07 -4.08046120e+07  2.57811120e+07
+  2.56598160e+07  2.46449200e+07 -4.15144580e+03 -6.62646777e+03
+ -3.93345630e+03 -8.24245703e+04 -1.19665938e+04  4.11444680e+07
+  5.36844840e+07  6.91924880e+07  7.69622000e+07  7.41303900e+06
+  3.32860975e+06  1.65952725e+06  1.46578775e+06 -6.97903984e+04
+ -6.73410781e+04 -5.56098359e+04 -5.92397314e+03 -9.57167480e+03
+ -1.86315156e+04  8.39748145e+03  2.62401875e+04 -6.82675537e+03
+  8.56493520e+07  9.60088720e+07  1.07562928e+08  1.18829616e+08
+  1.32852984e+08  1.54591238e+06  1.30678950e+06  1.30292675e+06
+  1.15064200e+06  1.09992375e+06  1.46360656e+08  1.61354864e+08
+  1.68871488e+08  1.10652575e+06  8.23304750e+05  7.02918500e+05]
+Diff: [ 4.49279062e+04  2.14630957e+04  3.78153633e+04  6.09906289e+04
+  6.88638867e+03  1.28051807e+04 -1.40932797e+05 -2.55916621e+04
+  1.67630469e+04 -1.31736670e+04 -1.62929893e+04 -1.78099414e+04
+  2.63259844e+04  9.03275391e+04  2.45286582e+04  6.71731719e+04
+ -1.83309414e+04  1.37699878e+03 -4.03671948e+03  7.98531738e+03
+  3.25871973e+04  2.67033086e+04  2.67177617e+04  3.09269961e+04
+ -4.01419238e+03  1.27036475e+04 -2.39365820e+03 -6.46875793e+02
+  3.51488086e+04  2.72918164e+03  1.85594516e+05  1.43374329e+03
+  2.61198340e+04  3.00821016e+04  1.59520049e+04  3.21814746e+04
+  9.32062988e+03 -2.09385586e+04 -5.02573125e+04  4.53017773e+04
+  5.05974023e+04  2.62590938e+04  4.35027930e+04  8.39420469e+04
+  4.39309492e+04 -2.95208765e+03 -5.77084007e+01 -4.68172791e+02
+  3.71976406e+04 -7.30167920e+03 -4.97931793e+02 -1.08699209e+04
+  3.78939282e+03  2.23006348e+03  2.04588257e+03  3.82974492e+04
+  6.88220938e+04  7.12611484e+04  3.85705664e+04  6.44234814e+03
+ -1.50154941e+04  2.41382441e+04 -7.45103662e+03 -3.63140547e+04
+ -1.58162363e+04  6.42026094e+04  2.61479668e+04  6.51943242e+04
+  5.19085742e+04  7.43893604e+03 -1.64888219e+05 -1.06284668e+03
+  5.01749805e+03  2.13533594e+03  5.64851758e+03 -9.70193848e+03
+  1.32576777e+04  9.46960781e+04  5.39759805e+04  4.06038125e+04
+  2.60853848e+04 -6.72135352e+03 -2.93333828e+04  5.85576953e+03
+ -1.68575469e+04  4.81485078e+04  8.07141641e+04  7.79587842e+03
+  1.33634385e+04  7.31692383e+03 -3.39384766e+03 -4.69530127e+03
+ -7.14475586e+03 -6.53118555e+03 -2.52613818e+03 -3.24672705e+03
+ -7.20729053e+03  4.37218320e+04  8.21259297e+04  5.15517578e+04
+  6.75398984e+04  7.50786682e+02  1.00456973e+04 -2.84185254e+04
+  6.26610498e+03  6.95265859e+04  4.50040859e+04  2.42303223e+04
+  1.26948945e+04  3.83361484e+04 -1.73414727e+04 -8.85115234e+03
+  9.86962109e+03  2.71176152e+04 -3.64171914e+04  6.81164062e+04
+  2.93260801e+04 -8.59314087e+02 -1.82708711e+04 -3.12384302e+03
+  2.52022656e+04  6.27010000e+04  4.07794219e+04  2.51890117e+04
+  1.84515645e+04  1.52056133e+04 -1.56553682e+04 -1.49763691e+04
+ -1.16462783e+04 -1.44014932e+04  1.50384307e+04  2.54507012e+04
+  5.68331602e+04 -6.86955994e+02 -1.33130791e+04 -1.45292004e+03
+ -1.37757197e+04  9.21619531e+03 -2.05048926e+04  6.16775234e+04
+  1.87644121e+04  2.07455293e+04 -6.47128223e+03  1.47101406e+04
+  1.46837090e+04  9.69169766e+04  3.89843984e+04  7.02078594e+04
+  9.76185938e+04  6.24285938e+04  1.74775641e+05  1.50434316e+04
+  2.90751719e+04 -2.91599268e+03  3.04504004e+04 -4.71752490e+03
+ -9.52378125e+03  1.23263877e+04 -7.18152979e+03  6.53173633e+03
+  4.70249570e+04 -3.56119312e+03  4.23116250e+04  2.53783652e+04
+  5.47814727e+04  4.96709141e+04  5.09384062e+04  5.05588574e+03
+  1.50274492e+04  2.96394312e+03  3.97926328e+04  3.17433594e+04
+  1.90743340e+04  2.35367207e+04  5.59678477e+04  2.49379199e+04
+  8.50604187e+02  1.13187734e+04  2.03242737e+03 -2.64896777e+03
+ -8.59461719e+03  4.25642812e+04 -7.70503516e+03 -9.86408203e+03
+ -1.89986191e+04  2.49310547e+04  9.15034141e+04  4.73971992e+04
+  2.66660898e+04  8.26759863e+03 -2.63131860e+03 -4.18322314e+03
+ -3.99165547e+04  1.24581055e+04 -1.24455591e+03  1.21286477e+05
+  4.42473281e+04  2.13039629e+04  1.15450830e+04  6.41173730e+03
+ -7.22290137e+03 -3.42704199e+03 -1.13013369e+04 -1.41887451e+04
+  6.69868594e+04  1.70654844e+04  5.38390781e+04  6.74553906e+03
+  1.65600938e+05 -9.79590332e+03  1.04012938e+05  4.75775547e+04
+  3.83391836e+04  6.18260234e+04  4.47718750e+04  3.35285391e+04
+  2.66887578e+04  2.27087559e+04  1.06836436e+04  2.64805469e+04
+  3.40443594e+04  2.94914746e+04  4.94965586e+04  5.22774492e+04
+  3.15419355e+04  2.04763867e+04 -1.44677391e+05  6.68150928e+03
+ -9.87016406e+03  2.31572000e+05 -1.39013633e+04  3.64854766e+04
+  6.30387461e+04  4.60412109e+04  3.04892070e+04 -4.79156396e+03
+  9.83114453e+03 -1.69387840e+07 -1.64015280e+07 -1.45055600e+07
+ -1.29300020e+07 -6.42154199e+03  7.87131201e+03  1.13519798e+02
+  8.40090527e+03 -6.75684352e+08 -6.85374464e+08 -6.94846464e+08
+ -7.08310016e+08 -1.19114951e+04 -2.16069863e+04  2.64048652e+04
+ -8.82417871e+03 -2.00138100e+07 -2.10965880e+07 -1.14958740e+07
+ -9.69349500e+06 -2.09973040e+07 -2.51845100e+07 -8.73390000e+06
+ -7.91165850e+06  5.72980273e+04  4.62420703e+04  4.60601055e+04
+  1.17720146e+04 -8.34141504e+03  2.49030054e+03  2.92368633e+04
+ -1.69128848e+04 -9.89962500e+03  8.11092871e+03  3.64904883e+04
+  6.42893203e+04  3.32131641e+04 -2.07248711e+04 -1.50161611e+04
+  6.93948340e+03  7.68518828e+04  9.15601172e+04  6.56729141e+04
+  3.94417773e+04  2.98199590e+04  3.72249492e+04  1.25831592e+04
+  2.30328516e+04  2.98359688e+04  5.47515117e+04  4.78405977e+04
+  9.30498516e+04  7.52434297e+04  4.28622031e+04  4.73125195e+04
+  8.81859453e+04  8.08708125e+04  2.27080234e+04  8.56566953e+04
+  2.98490684e+04  8.83006562e+04  8.99154609e+04  5.77973125e+04
+  7.76227734e+04  2.03213867e+04  8.47808984e+04  2.97842715e+04
+  5.11512539e+04  4.51432461e+04  4.92037969e+04  3.62236992e+04
+  1.23936631e+04 -3.65604648e+04  2.92397852e+04  4.50083672e+04
+  3.60773867e+04  1.92109727e+04  2.76473320e+04 -1.17169480e+07
+ -1.09870770e+07 -1.07308760e+07 -1.05316160e+07 -9.81444900e+06
+  2.12535762e+04  1.41293779e+04 -3.34014961e+04  6.85525293e+03
+  4.47764551e+03 -7.25284864e+08 -7.55057664e+08 -8.01891328e+08
+ -8.86122560e+08 -1.03447046e+09 -1.38551221e+04  1.48560557e+04
+  4.62883438e+04 -7.29791250e+04  2.67767637e+04 -9.98185900e+06
+ -9.00389700e+06 -1.05285020e+07 -1.09138620e+07 -1.13865810e+07
+ -8.66106200e+06 -7.61042200e+06 -9.95458400e+06 -1.14949460e+07
+ -1.32575640e+07  5.25275547e+04  1.03769266e+05  4.39088867e+04
+  7.46394219e+04  1.06207510e+04  2.83135205e+03  2.38508535e+04
+  5.34289258e+04  2.32228066e+04  2.26579551e+04  5.67078711e+04
+  1.90750293e+04  4.52574297e+04  3.86602539e+04  5.41764805e+04
+  5.88620781e+04  8.79807578e+04  8.75841980e+02  2.89055547e+04
+  2.51343320e+04  8.57729609e+04  1.70316523e+04  3.24560859e+04
+  5.40086445e+04  1.10049930e+05  6.63305000e+04  1.67892480e+04
+  3.30713242e+04  2.89122461e+04  8.38868672e+04  1.79524629e+04
+  1.18935820e+04  2.92921602e+04  4.84095547e+04  3.66102266e+04
+  1.87980234e+04  2.95923516e+04  5.72443086e+04  4.91141445e+04
+  1.26292969e+05  7.15647891e+04  4.59092804e+02  4.53651133e+04
+  2.21494668e+04  2.49713613e+04  7.19795625e+04  4.51097109e+04
+  5.50655938e+04  7.57372812e+04  3.14846602e+04  6.45414844e+04
+  7.43152422e+04  1.22423848e+04  5.72213516e+04  4.27399062e+04
+  1.29824602e+05  3.34615898e+04  3.58149961e+04 -4.30523008e+04
+ -8.32823800e+06 -6.49013000e+06 -5.37895600e+06 -5.27953242e+04
+ -8.13768066e+03 -3.08124727e+04 -1.18602957e+09 -1.17582541e+09
+ -1.02370816e+09  1.09538711e+04 -4.53967578e+04 -7.06196719e+04
+ -8.14484600e+06 -3.68760800e+06 -2.58911200e+06 -7.91608200e+06
+ -3.91280000e+04 -2.61138000e+05  7.24348750e+04  9.23861016e+04
+  3.01708008e+04  1.02061711e+05  5.93636992e+04  2.59611855e+04
+  1.88166660e+04  9.91766504e+03  2.81785723e+04  6.74753418e+03
+  8.81422754e+03  4.21966211e+04  2.87282715e+04  3.02919062e+04
+  5.65433350e+03  8.48356484e+04  5.35119102e+04  4.53703008e+04
+  3.86613633e+04  4.82338320e+04  1.00352062e+05  2.69066152e+04
+  1.46862305e+04  2.83404023e+04  5.55420938e+04  8.40338516e+04
+  2.90181289e+04  6.09726836e+04  9.65993652e+03  1.51317715e+04
+  3.39714375e+04  6.44922227e+04  1.16932051e+04  1.00340293e+04
+  9.39641016e+04  4.03752109e+04  2.36260469e+04  3.26100566e+04
+  2.79348164e+04  1.56797676e+04  1.04307793e+04  3.29158555e+04
+  8.77017266e+04  1.41748547e+05  3.57947656e+04  3.70836641e+04
+ -3.34324570e+04  1.45354668e+04  3.93806953e+04  5.60622930e+04
+  6.24177070e+04  5.13551523e+04  5.50400977e+04  5.09444062e+04
+  6.61485859e+04  1.82296191e+04  2.58437148e+04  2.00364863e+04
+  1.42076963e+04 -5.24916560e+07 -6.22333920e+07 -1.88629760e+07
+ -1.74001280e+07  2.20242340e+07  2.84501860e+07  4.99060800e+06
+  5.87634600e+06 -2.00548040e+07 -2.11271260e+07 -1.14880700e+07
+ -9.68799900e+06  1.13445312e+05  2.45531504e+04  1.09346047e+05
+  3.23288613e+04  2.38586445e+04  2.70002969e+04  6.91299141e+04
+  1.83555359e+05  4.08230938e+04  1.14812758e+05  6.76810547e+04
+  2.85339707e+04  6.22797109e+04  3.51277812e+04  1.92363105e+04
+  3.48448281e+04  3.73933086e+04  3.46845625e+04  6.78165156e+04
+  5.38311094e+04  6.88073281e+04  2.17226582e+04 -6.10987451e+03
+  1.10226846e+04  2.41127188e+04  1.45257500e+04  1.30139053e+04
+  8.24277891e+04  4.60907773e+04  1.75818281e+04  1.80615801e+04
+  2.51666465e+04  3.75548984e+04  3.85015703e+04  1.21419523e+05
+  7.53540938e+04 -1.39692500e+04  5.77921875e+04  4.09636484e+04
+  7.07586621e+03  1.25447402e+04  3.50729805e+04  6.68205234e+04
+ -2.11727000e+07 -1.86440680e+07 -2.39558280e+07 -2.71563000e+07
+ -2.87611460e+07  6.76727000e+06  5.49542000e+06  8.93761000e+06
+  1.15330860e+07  1.40626800e+07 -9.98423900e+06 -8.99125900e+06
+ -1.04550020e+07 -1.09378080e+07 -1.14193610e+07  8.62949219e+03
+ -2.57441660e+04  7.89008740e+03 -8.13195801e+02  7.84011875e+04
+  2.98683223e+04  1.01641922e+05  8.59571484e+04  1.80050625e+04
+  1.31057773e+04  6.25953955e+03  2.05204980e+04  2.55779863e+04
+  4.77567773e+04  2.30199688e+04  3.17095996e+04  3.43466914e+04
+  1.45261699e+04  8.40562793e+03  1.17851309e+04  4.99722305e+04
+  5.64142383e+04  7.99153516e+04  2.47524238e+04  1.14234775e+04
+  2.06394121e+04 -1.52414240e+07  3.90856775e+06  3.43991225e+06
+  6.81683200e+06 -4.07404000e+06 -2.43352000e+06 -8.17592250e+06
+ -3.67515200e+06 -2.63412800e+06  4.15216113e+03  6.62714258e+03
+  3.93417114e+03  8.24253125e+04  1.19673262e+04 -3.02237680e+07
+ -4.27637840e+07 -1.20231240e+07 -1.97928360e+07 -4.78413950e+06
+ -3.23800375e+06 -1.56892125e+06 -1.37518175e+06  6.99711484e+04
+  6.75218281e+04  5.57905938e+04  5.94110547e+03  9.58764551e+03
+  1.86474863e+04 -8.39686133e+03 -2.62396914e+04  6.82725098e+03
+ -2.84799900e+07 -2.63593840e+07 -3.79134400e+07 -4.91801200e+07
+ -6.32034960e+07 -1.49137338e+06 -1.29189350e+06 -1.29378975e+06
+ -1.14627600e+06 -1.09555775e+06 -4.61357120e+07  7.56935950e+06
+  5.27360000e+04 -1.10215975e+06 -8.19956750e+05 -7.01018500e+05]
+
+Model saved as autoencoder_etf.pt and feature list as autoencoder_etf_features.txt

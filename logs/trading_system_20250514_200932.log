@@ -1,0 +1,224 @@
+[2025-05-14 20:09:32] Starting trading cycle with account size $1000.0 and risk 5.0%
+[2025-05-14 20:09:32] Market regime detection: Enabled
+[2025-05-14 20:09:32] Adaptive position sizing: Enabled
+[2025-05-14 20:09:32] ETF data refresh: Enabled
+[2025-05-14 20:09:32] Refreshing ETF data from yfinance
+[2025-05-14 20:09:32] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py --period 1y --generate-features
+[2025-05-14 20:09:34] Command errors:
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py", line 18, in <module>
+    from rl.data.generate_etf_features import generate_features
+  File "/Users/kingjames/clojure-trader/rl/data/generate_etf_features.py", line 6, in <module>
+    import pandas_ta as ta # Using pandas_ta for a wide range of features
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/__init__.py", line 116, in <module>
+    from pandas_ta.core import *
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/core.py", line 18, in <module>
+    from pandas_ta.momentum import *
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/momentum/__init__.py", line 34, in <module>
+    from .squeeze_pro import squeeze_pro
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/momentum/squeeze_pro.py", line 2, in <module>
+    from numpy import NaN as npNaN
+ImportError: cannot import name 'NaN' from 'numpy' (/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/numpy/__init__.py)
+
+[2025-05-14 20:09:34] Command failed with exit code 1
+[2025-05-14 20:09:34] Warning: Failed to refresh ETF data. Continuing with existing data.
+[2025-05-14 20:09:34] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/generate_signals.py --account-size 1000.0 --risk-percent 5.0 --model-path models/rl_trader.pt --use-regime-detection --adapt-position-sizing
+[2025-05-14 20:09:47] Command output:
+Autoencoder not loaded, using raw features: 'n_features'
+Initializing networks with bottleneck_dim=1084
+Initializing networks with input dimension: 1084
+Successfully loaded model from models/rl_trader.pt
+
+[2025-05-14 20:09:47] Command errors:
+2025-05-14 20:09:36,154 - oandapyV20.oandapyV20 - INFO - setting up API-client for environment practice
+2025-05-14 20:09:36,154 - oanda_api - INFO - OANDA API client initialized in practice mode
+2025-05-14 20:09:38,782 - generate_signals - INFO - Starting trading signal generation
+/Users/kingjames/clojure-trader/rl/policy_network.py:213: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model_info = torch.load(model_path, map_location=self.device)
+2025-05-14 20:09:38,792 - generate_signals - INFO - Loading trained model from models/rl_trader.pt
+/Users/kingjames/clojure-trader/rl/policy_network.py:725: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=self.device)
+2025-05-14 20:09:39,704 - generate_signals - INFO - Model loaded successfully
+2025-05-14 20:09:39,704 - generate_signals - INFO - Fetching latest market data and calculating features
+2025-05-14 20:09:39,704 - data_fetcher - INFO - Fetching price data for EUR_USD
+2025-05-14 20:09:39,704 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_USD/candles
+2025-05-14 20:09:40,812 - data_fetcher - INFO - Fetched 285 candles for EUR_USD
+2025-05-14 20:09:40,812 - data_fetcher - INFO - Calculating features for EUR_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:40,836 - data_fetcher - INFO - Calculated 89 features for EUR_USD
+2025-05-14 20:09:40,836 - data_fetcher - INFO - Fetching price data for USD_JPY
+2025-05-14 20:09:40,836 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles
+2025-05-14 20:09:41,198 - data_fetcher - INFO - Fetched 285 candles for USD_JPY
+2025-05-14 20:09:41,198 - data_fetcher - INFO - Calculating features for USD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:41,218 - data_fetcher - INFO - Calculated 89 features for USD_JPY
+2025-05-14 20:09:41,218 - data_fetcher - INFO - Fetching price data for GBP_USD
+2025-05-14 20:09:41,219 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_USD/candles
+2025-05-14 20:09:41,521 - data_fetcher - INFO - Fetched 285 candles for GBP_USD
+2025-05-14 20:09:41,521 - data_fetcher - INFO - Calculating features for GBP_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:41,542 - data_fetcher - INFO - Calculated 89 features for GBP_USD
+2025-05-14 20:09:41,542 - data_fetcher - INFO - Fetching price data for AUD_USD
+2025-05-14 20:09:41,542 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_USD/candles
+2025-05-14 20:09:41,882 - data_fetcher - INFO - Fetched 285 candles for AUD_USD
+2025-05-14 20:09:41,882 - data_fetcher - INFO - Calculating features for AUD_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:41,901 - data_fetcher - INFO - Calculated 89 features for AUD_USD
+2025-05-14 20:09:41,901 - data_fetcher - INFO - Fetching price data for USD_CHF
+2025-05-14 20:09:41,901 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_CHF/candles
+2025-05-14 20:09:42,176 - data_fetcher - INFO - Fetched 285 candles for USD_CHF
+2025-05-14 20:09:42,176 - data_fetcher - INFO - Calculating features for USD_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:42,194 - data_fetcher - INFO - Calculated 89 features for USD_CHF
+2025-05-14 20:09:42,194 - data_fetcher - INFO - Fetching price data for USD_CAD
+2025-05-14 20:09:42,195 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_CAD/candles
+2025-05-14 20:09:42,447 - data_fetcher - INFO - Fetched 285 candles for USD_CAD
+2025-05-14 20:09:42,447 - data_fetcher - INFO - Calculating features for USD_CAD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:42,467 - data_fetcher - INFO - Calculated 89 features for USD_CAD
+2025-05-14 20:09:42,467 - data_fetcher - INFO - Fetching price data for NZD_USD
+2025-05-14 20:09:42,468 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/NZD_USD/candles
+2025-05-14 20:09:42,714 - data_fetcher - INFO - Fetched 285 candles for NZD_USD
+2025-05-14 20:09:42,714 - data_fetcher - INFO - Calculating features for NZD_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:42,734 - data_fetcher - INFO - Calculated 89 features for NZD_USD
+2025-05-14 20:09:42,734 - data_fetcher - INFO - Fetching price data for EUR_JPY
+2025-05-14 20:09:42,734 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_JPY/candles
+2025-05-14 20:09:43,056 - data_fetcher - INFO - Fetched 285 candles for EUR_JPY
+2025-05-14 20:09:43,056 - data_fetcher - INFO - Calculating features for EUR_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:43,075 - data_fetcher - INFO - Calculated 89 features for EUR_JPY
+2025-05-14 20:09:43,075 - data_fetcher - INFO - Fetching price data for GBP_JPY
+2025-05-14 20:09:43,075 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_JPY/candles
+2025-05-14 20:09:43,611 - data_fetcher - INFO - Fetched 285 candles for GBP_JPY
+2025-05-14 20:09:43,611 - data_fetcher - INFO - Calculating features for GBP_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:43,630 - data_fetcher - INFO - Calculated 89 features for GBP_JPY
+2025-05-14 20:09:43,630 - data_fetcher - INFO - Fetching price data for EUR_GBP
+2025-05-14 20:09:43,631 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_GBP/candles
+2025-05-14 20:09:43,985 - data_fetcher - INFO - Fetched 285 candles for EUR_GBP
+2025-05-14 20:09:43,985 - data_fetcher - INFO - Calculating features for EUR_GBP
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:44,004 - data_fetcher - INFO - Calculated 89 features for EUR_GBP
+2025-05-14 20:09:44,004 - data_fetcher - INFO - Fetching price data for EUR_CHF
+2025-05-14 20:09:44,004 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_CHF/candles
+2025-05-14 20:09:44,308 - data_fetcher - INFO - Fetched 285 candles for EUR_CHF
+2025-05-14 20:09:44,309 - data_fetcher - INFO - Calculating features for EUR_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:44,340 - data_fetcher - INFO - Calculated 89 features for EUR_CHF
+2025-05-14 20:09:44,340 - data_fetcher - INFO - Fetching price data for EUR_AUD
+2025-05-14 20:09:44,341 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_AUD/candles
+2025-05-14 20:09:44,552 - data_fetcher - INFO - Fetched 285 candles for EUR_AUD
+2025-05-14 20:09:44,552 - data_fetcher - INFO - Calculating features for EUR_AUD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:44,571 - data_fetcher - INFO - Calculated 89 features for EUR_AUD
+2025-05-14 20:09:44,571 - data_fetcher - INFO - Fetching price data for EUR_CAD
+2025-05-14 20:09:44,572 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_CAD/candles
+2025-05-14 20:09:45,139 - data_fetcher - INFO - Fetched 285 candles for EUR_CAD
+2025-05-14 20:09:45,139 - data_fetcher - INFO - Calculating features for EUR_CAD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:45,158 - data_fetcher - INFO - Calculated 89 features for EUR_CAD
+2025-05-14 20:09:45,158 - data_fetcher - INFO - Fetching price data for GBP_CHF
+2025-05-14 20:09:45,158 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_CHF/candles
+2025-05-14 20:09:45,479 - data_fetcher - INFO - Fetched 285 candles for GBP_CHF
+2025-05-14 20:09:45,479 - data_fetcher - INFO - Calculating features for GBP_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:45,499 - data_fetcher - INFO - Calculated 89 features for GBP_CHF
+2025-05-14 20:09:45,499 - data_fetcher - INFO - Fetching price data for AUD_JPY
+2025-05-14 20:09:45,499 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_JPY/candles
+2025-05-14 20:09:45,750 - data_fetcher - INFO - Fetched 285 candles for AUD_JPY
+2025-05-14 20:09:45,750 - data_fetcher - INFO - Calculating features for AUD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:45,769 - data_fetcher - INFO - Calculated 89 features for AUD_JPY
+2025-05-14 20:09:45,769 - data_fetcher - INFO - Fetching price data for AUD_CHF
+2025-05-14 20:09:45,769 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_CHF/candles
+2025-05-14 20:09:46,023 - data_fetcher - INFO - Fetched 285 candles for AUD_CHF
+2025-05-14 20:09:46,023 - data_fetcher - INFO - Calculating features for AUD_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:46,043 - data_fetcher - INFO - Calculated 89 features for AUD_CHF
+2025-05-14 20:09:46,043 - data_fetcher - INFO - Fetching price data for CAD_JPY
+2025-05-14 20:09:46,043 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/CAD_JPY/candles
+2025-05-14 20:09:46,452 - data_fetcher - INFO - Fetched 285 candles for CAD_JPY
+2025-05-14 20:09:46,452 - data_fetcher - INFO - Calculating features for CAD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:46,471 - data_fetcher - INFO - Calculated 89 features for CAD_JPY
+2025-05-14 20:09:46,472 - data_fetcher - INFO - Fetching price data for NZD_JPY
+2025-05-14 20:09:46,472 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/NZD_JPY/candles
+2025-05-14 20:09:46,771 - data_fetcher - INFO - Fetched 285 candles for NZD_JPY
+2025-05-14 20:09:46,772 - data_fetcher - INFO - Calculating features for NZD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:46,791 - data_fetcher - INFO - Calculated 89 features for NZD_JPY
+2025-05-14 20:09:46,791 - data_fetcher - INFO - Fetching price data for GBP_AUD
+2025-05-14 20:09:46,791 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_AUD/candles
+2025-05-14 20:09:47,099 - data_fetcher - INFO - Fetched 285 candles for GBP_AUD
+2025-05-14 20:09:47,100 - data_fetcher - INFO - Calculating features for GBP_AUD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:47,119 - data_fetcher - INFO - Calculated 89 features for GBP_AUD
+2025-05-14 20:09:47,119 - data_fetcher - INFO - Fetching price data for AUD_NZD
+2025-05-14 20:09:47,119 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_NZD/candles
+2025-05-14 20:09:47,313 - data_fetcher - INFO - Fetched 285 candles for AUD_NZD
+2025-05-14 20:09:47,313 - data_fetcher - INFO - Calculating features for AUD_NZD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:468: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 20:09:47,333 - data_fetcher - INFO - Calculated 89 features for AUD_NZD
+2025-05-14 20:09:47,336 - generate_signals - INFO - Generating trading signals with RL model
+2025-05-14 20:09:47,346 - generate_signals - ERROR - Error generating trading signals: mat1 and mat2 shapes cannot be multiplied (1x1780 and 1084x256)
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/generate_signals.py", line 79, in generate_trading_signals
+    action, _ = trader.get_action(feature_tensor, training=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/policy_network.py", line 613, in get_action
+    means = self.actor(state)
+            ^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/policy_network.py", line 119, in forward
+    x = self.hidden_layers(x)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 117, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (1x1780 and 1084x256)
+
+[2025-05-14 20:09:47] Command completed successfully
+[2025-05-14 20:09:47] No position size files found
+[2025-05-14 20:09:47] No position data available - aborting cycle

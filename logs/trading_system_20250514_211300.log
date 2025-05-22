@@ -1,0 +1,293 @@
+[2025-05-14 21:13:00] Starting trading cycle with account size $1000.0 and risk 5.0%
+[2025-05-14 21:13:00] Market regime detection: Disabled
+[2025-05-14 21:13:00] Adaptive position sizing: Disabled
+[2025-05-14 21:13:00] ETF data refresh: Enabled
+[2025-05-14 21:13:00] Refreshing ETF data from yfinance
+[2025-05-14 21:13:00] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py --period 1y --generate-features
+[2025-05-14 21:13:01] Command errors:
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/data/etf_data_ingestion.py", line 18, in <module>
+    from rl.data.generate_etf_features import generate_features
+  File "/Users/kingjames/clojure-trader/rl/data/generate_etf_features.py", line 6, in <module>
+    import pandas_ta as ta # Using pandas_ta for a wide range of features
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/__init__.py", line 116, in <module>
+    from pandas_ta.core import *
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/core.py", line 18, in <module>
+    from pandas_ta.momentum import *
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/momentum/__init__.py", line 34, in <module>
+    from .squeeze_pro import squeeze_pro
+  File "/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/pandas_ta/momentum/squeeze_pro.py", line 2, in <module>
+    from numpy import NaN as npNaN
+ImportError: cannot import name 'NaN' from 'numpy' (/Users/kingjames/.pyenv/versions/3.11.9/lib/python3.11/site-packages/numpy/__init__.py)
+
+[2025-05-14 21:13:01] Command failed with exit code 1
+[2025-05-14 21:13:01] Warning: Failed to refresh ETF data. Continuing with existing data.
+[2025-05-14 21:13:01] Running command: /Users/kingjames/.pyenv/versions/3.11.9/bin/python /Users/kingjames/clojure-trader/rl/generate_signals.py --account-size 1000.0 --risk-percent 5.0 --model-path models/rl_trader.pt
+[2025-05-14 21:13:11] Command output:
+Autoencoder not loaded, using raw features: 'n_features'
+Initializing networks with bottleneck_dim=1084
+Initializing networks with input dimension: 1084
+Successfully loaded model from models/rl_trader.pt
+
+[2025-05-14 21:13:11] Command errors:
+2025-05-14 21:13:02,460 - oandapyV20.oandapyV20 - INFO - setting up API-client for environment practice
+2025-05-14 21:13:02,460 - oanda_api - INFO - OANDA API client initialized in practice mode
+2025-05-14 21:13:04,075 - generate_signals - INFO - Starting trading signal generation
+/Users/kingjames/clojure-trader/rl/policy_network.py:213: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model_info = torch.load(model_path, map_location=self.device)
+2025-05-14 21:13:04,081 - generate_signals - INFO - Loading trained model from models/rl_trader.pt
+/Users/kingjames/clojure-trader/rl/policy_network.py:725: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(path, map_location=self.device)
+2025-05-14 21:13:05,014 - generate_signals - INFO - Model loaded successfully
+2025-05-14 21:13:05,014 - generate_signals - INFO - Fetching latest market data and calculating features
+2025-05-14 21:13:05,014 - data_fetcher - INFO - Fetching price data for EUR_USD
+2025-05-14 21:13:05,015 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_USD/candles
+2025-05-14 21:13:05,354 - data_fetcher - INFO - Fetched 286 candles for EUR_USD
+2025-05-14 21:13:05,354 - data_fetcher - INFO - Calculating features for EUR_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:05,391 - data_fetcher - INFO - Calculated 89 features for EUR_USD
+2025-05-14 21:13:05,391 - data_fetcher - INFO - Fetching price data for USD_JPY
+2025-05-14 21:13:05,391 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_JPY/candles
+2025-05-14 21:13:05,573 - data_fetcher - INFO - Fetched 286 candles for USD_JPY
+2025-05-14 21:13:05,573 - data_fetcher - INFO - Calculating features for USD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:05,597 - data_fetcher - INFO - Calculated 89 features for USD_JPY
+2025-05-14 21:13:05,597 - data_fetcher - INFO - Fetching price data for GBP_USD
+2025-05-14 21:13:05,597 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_USD/candles
+2025-05-14 21:13:05,769 - data_fetcher - INFO - Fetched 286 candles for GBP_USD
+2025-05-14 21:13:05,769 - data_fetcher - INFO - Calculating features for GBP_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:05,792 - data_fetcher - INFO - Calculated 89 features for GBP_USD
+2025-05-14 21:13:05,792 - data_fetcher - INFO - Fetching price data for AUD_USD
+2025-05-14 21:13:05,792 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_USD/candles
+2025-05-14 21:13:05,947 - data_fetcher - INFO - Fetched 286 candles for AUD_USD
+2025-05-14 21:13:05,947 - data_fetcher - INFO - Calculating features for AUD_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:05,968 - data_fetcher - INFO - Calculated 89 features for AUD_USD
+2025-05-14 21:13:05,968 - data_fetcher - INFO - Fetching price data for USD_CHF
+2025-05-14 21:13:05,968 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_CHF/candles
+2025-05-14 21:13:06,125 - data_fetcher - INFO - Fetched 286 candles for USD_CHF
+2025-05-14 21:13:06,125 - data_fetcher - INFO - Calculating features for USD_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:06,144 - data_fetcher - INFO - Calculated 89 features for USD_CHF
+2025-05-14 21:13:06,144 - data_fetcher - INFO - Fetching price data for USD_CAD
+2025-05-14 21:13:06,144 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/USD_CAD/candles
+2025-05-14 21:13:06,426 - data_fetcher - INFO - Fetched 286 candles for USD_CAD
+2025-05-14 21:13:06,426 - data_fetcher - INFO - Calculating features for USD_CAD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:06,445 - data_fetcher - INFO - Calculated 89 features for USD_CAD
+2025-05-14 21:13:06,445 - data_fetcher - INFO - Fetching price data for NZD_USD
+2025-05-14 21:13:06,445 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/NZD_USD/candles
+2025-05-14 21:13:06,585 - data_fetcher - INFO - Fetched 286 candles for NZD_USD
+2025-05-14 21:13:06,585 - data_fetcher - INFO - Calculating features for NZD_USD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:06,603 - data_fetcher - INFO - Calculated 89 features for NZD_USD
+2025-05-14 21:13:06,603 - data_fetcher - INFO - Fetching price data for EUR_JPY
+2025-05-14 21:13:06,603 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_JPY/candles
+2025-05-14 21:13:06,740 - data_fetcher - INFO - Fetched 286 candles for EUR_JPY
+2025-05-14 21:13:06,740 - data_fetcher - INFO - Calculating features for EUR_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:06,758 - data_fetcher - INFO - Calculated 89 features for EUR_JPY
+2025-05-14 21:13:06,758 - data_fetcher - INFO - Fetching price data for GBP_JPY
+2025-05-14 21:13:06,758 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_JPY/candles
+2025-05-14 21:13:06,920 - data_fetcher - INFO - Fetched 286 candles for GBP_JPY
+2025-05-14 21:13:06,920 - data_fetcher - INFO - Calculating features for GBP_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:06,938 - data_fetcher - INFO - Calculated 89 features for GBP_JPY
+2025-05-14 21:13:06,938 - data_fetcher - INFO - Fetching price data for EUR_GBP
+2025-05-14 21:13:06,938 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_GBP/candles
+2025-05-14 21:13:07,149 - data_fetcher - INFO - Fetched 286 candles for EUR_GBP
+2025-05-14 21:13:07,149 - data_fetcher - INFO - Calculating features for EUR_GBP
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:07,167 - data_fetcher - INFO - Calculated 89 features for EUR_GBP
+2025-05-14 21:13:07,167 - data_fetcher - INFO - Fetching price data for EUR_CHF
+2025-05-14 21:13:07,168 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_CHF/candles
+2025-05-14 21:13:07,300 - data_fetcher - INFO - Fetched 286 candles for EUR_CHF
+2025-05-14 21:13:07,300 - data_fetcher - INFO - Calculating features for EUR_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:07,319 - data_fetcher - INFO - Calculated 89 features for EUR_CHF
+2025-05-14 21:13:07,319 - data_fetcher - INFO - Fetching price data for EUR_AUD
+2025-05-14 21:13:07,319 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_AUD/candles
+2025-05-14 21:13:07,480 - data_fetcher - INFO - Fetched 286 candles for EUR_AUD
+2025-05-14 21:13:07,480 - data_fetcher - INFO - Calculating features for EUR_AUD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:07,499 - data_fetcher - INFO - Calculated 89 features for EUR_AUD
+2025-05-14 21:13:07,499 - data_fetcher - INFO - Fetching price data for EUR_CAD
+2025-05-14 21:13:07,499 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/EUR_CAD/candles
+2025-05-14 21:13:07,679 - data_fetcher - INFO - Fetched 286 candles for EUR_CAD
+2025-05-14 21:13:07,679 - data_fetcher - INFO - Calculating features for EUR_CAD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:07,698 - data_fetcher - INFO - Calculated 89 features for EUR_CAD
+2025-05-14 21:13:07,698 - data_fetcher - INFO - Fetching price data for GBP_CHF
+2025-05-14 21:13:07,698 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_CHF/candles
+2025-05-14 21:13:07,877 - data_fetcher - INFO - Fetched 286 candles for GBP_CHF
+2025-05-14 21:13:07,878 - data_fetcher - INFO - Calculating features for GBP_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:07,897 - data_fetcher - INFO - Calculated 89 features for GBP_CHF
+2025-05-14 21:13:07,897 - data_fetcher - INFO - Fetching price data for AUD_JPY
+2025-05-14 21:13:07,897 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_JPY/candles
+2025-05-14 21:13:08,067 - data_fetcher - INFO - Fetched 286 candles for AUD_JPY
+2025-05-14 21:13:08,067 - data_fetcher - INFO - Calculating features for AUD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:08,086 - data_fetcher - INFO - Calculated 89 features for AUD_JPY
+2025-05-14 21:13:08,086 - data_fetcher - INFO - Fetching price data for AUD_CHF
+2025-05-14 21:13:08,086 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_CHF/candles
+2025-05-14 21:13:08,274 - data_fetcher - INFO - Fetched 286 candles for AUD_CHF
+2025-05-14 21:13:08,274 - data_fetcher - INFO - Calculating features for AUD_CHF
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:08,293 - data_fetcher - INFO - Calculated 89 features for AUD_CHF
+2025-05-14 21:13:08,293 - data_fetcher - INFO - Fetching price data for CAD_JPY
+2025-05-14 21:13:08,293 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/CAD_JPY/candles
+2025-05-14 21:13:08,511 - data_fetcher - INFO - Fetched 286 candles for CAD_JPY
+2025-05-14 21:13:08,511 - data_fetcher - INFO - Calculating features for CAD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:08,530 - data_fetcher - INFO - Calculated 89 features for CAD_JPY
+2025-05-14 21:13:08,530 - data_fetcher - INFO - Fetching price data for NZD_JPY
+2025-05-14 21:13:08,530 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/NZD_JPY/candles
+2025-05-14 21:13:08,683 - data_fetcher - INFO - Fetched 286 candles for NZD_JPY
+2025-05-14 21:13:08,683 - data_fetcher - INFO - Calculating features for NZD_JPY
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:08,701 - data_fetcher - INFO - Calculated 89 features for NZD_JPY
+2025-05-14 21:13:08,702 - data_fetcher - INFO - Fetching price data for GBP_AUD
+2025-05-14 21:13:08,702 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/GBP_AUD/candles
+2025-05-14 21:13:08,857 - data_fetcher - INFO - Fetched 286 candles for GBP_AUD
+2025-05-14 21:13:08,857 - data_fetcher - INFO - Calculating features for GBP_AUD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:08,875 - data_fetcher - INFO - Calculated 89 features for GBP_AUD
+2025-05-14 21:13:08,876 - data_fetcher - INFO - Fetching price data for AUD_NZD
+2025-05-14 21:13:08,876 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/instruments/AUD_NZD/candles
+2025-05-14 21:13:09,042 - data_fetcher - INFO - Fetched 286 candles for AUD_NZD
+2025-05-14 21:13:09,042 - data_fetcher - INFO - Calculating features for AUD_NZD
+/Users/kingjames/clojure-trader/rl/data_fetcher.py:489: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  features_df = features_df.fillna(method='bfill').fillna(0)
+2025-05-14 21:13:09,060 - data_fetcher - INFO - Calculated 89 features for AUD_NZD
+2025-05-14 21:13:09,061 - data_fetcher - WARNING - Feature vector length mismatch: got 1780, expected 1084
+2025-05-14 21:13:09,061 - data_fetcher - INFO - Truncating feature vector from 1780 to 1084
+2025-05-14 21:13:09,061 - data_fetcher - INFO - Final feature vector shape: (1084,)
+2025-05-14 21:13:09,061 - generate_signals - INFO - Generating trading signals with RL model
+2025-05-14 21:13:09,073 - generate_signals - INFO - 
+===== TRADING SIGNALS =====
+2025-05-14 21:13:09,073 - generate_signals - INFO - Generated at: 2025-05-14 21:13:09
+2025-05-14 21:13:09,073 - generate_signals - INFO - Instrument   |   Direction   |   Raw Signal
+2025-05-14 21:13:09,073 - generate_signals - INFO - ------------------------------------------
+2025-05-14 21:13:09,073 - generate_signals - INFO - EUR_USD      | SHORT        | 0.4683
+2025-05-14 21:13:09,073 - generate_signals - INFO - USD_JPY      | NEUTRAL      | 0.0270
+2025-05-14 21:13:09,073 - generate_signals - INFO - GBP_USD      | LONG         | 0.1315
+2025-05-14 21:13:09,073 - generate_signals - INFO - AUD_USD      | SHORT        | 0.1228
+2025-05-14 21:13:09,073 - generate_signals - INFO - USD_CHF      | SHORT        | 1.5896
+2025-05-14 21:13:09,073 - generate_signals - INFO - USD_CAD      | SHORT        | 0.4128
+2025-05-14 21:13:09,073 - generate_signals - INFO - NZD_USD      | NEUTRAL      | 0.0821
+2025-05-14 21:13:09,073 - generate_signals - INFO - EUR_JPY      | SHORT        | 0.3346
+2025-05-14 21:13:09,073 - generate_signals - INFO - GBP_JPY      | SHORT        | 0.6938
+2025-05-14 21:13:09,073 - generate_signals - INFO - EUR_GBP      | LONG         | 0.2020
+2025-05-14 21:13:09,073 - generate_signals - INFO - EUR_CHF      | LONG         | 0.2075
+2025-05-14 21:13:09,074 - generate_signals - INFO - EUR_AUD      | SHORT        | 0.1615
+2025-05-14 21:13:09,074 - generate_signals - INFO - EUR_CAD      | SHORT        | 0.2700
+2025-05-14 21:13:09,074 - generate_signals - INFO - GBP_CHF      | SHORT        | 2.0163
+2025-05-14 21:13:09,074 - generate_signals - INFO - AUD_JPY      | SHORT        | 0.9663
+2025-05-14 21:13:09,074 - generate_signals - INFO - AUD_CHF      | SHORT        | 1.4796
+2025-05-14 21:13:09,074 - generate_signals - INFO - CAD_JPY      | NEUTRAL      | 0.0813
+2025-05-14 21:13:09,074 - generate_signals - INFO - NZD_JPY      | NEUTRAL      | 0.0663
+2025-05-14 21:13:09,074 - generate_signals - INFO - GBP_AUD      | LONG         | 0.6485
+2025-05-14 21:13:09,074 - generate_signals - INFO - AUD_NZD      | LONG         | 0.3485
+2025-05-14 21:13:09,074 - generate_signals - INFO - 
+Calculating position sizes...
+2025-05-14 21:13:09,074 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,156 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,156 - oanda_api - ERROR - OANDA API error for EUR_USD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,156 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,231 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,231 - oanda_api - ERROR - OANDA API error for USD_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,231 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,314 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,314 - oanda_api - ERROR - OANDA API error for GBP_USD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,315 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,395 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,395 - oanda_api - ERROR - OANDA API error for AUD_USD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,395 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,477 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,477 - oanda_api - ERROR - OANDA API error for USD_CHF: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,477 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,562 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,563 - oanda_api - ERROR - OANDA API error for USD_CAD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,563 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,646 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,646 - oanda_api - ERROR - OANDA API error for NZD_USD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,646 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,722 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,723 - oanda_api - ERROR - OANDA API error for EUR_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,723 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,818 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,818 - oanda_api - ERROR - OANDA API error for GBP_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,818 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,894 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,894 - oanda_api - ERROR - OANDA API error for EUR_GBP: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,894 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:09,982 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:09,982 - oanda_api - ERROR - OANDA API error for EUR_CHF: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:09,982 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,063 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,063 - oanda_api - ERROR - OANDA API error for EUR_AUD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,063 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,155 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,155 - oanda_api - ERROR - OANDA API error for EUR_CAD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,155 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,235 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,235 - oanda_api - ERROR - OANDA API error for GBP_CHF: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,235 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,309 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,309 - oanda_api - ERROR - OANDA API error for AUD_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,309 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,388 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,388 - oanda_api - ERROR - OANDA API error for AUD_CHF: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,388 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,478 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,479 - oanda_api - ERROR - OANDA API error for CAD_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,479 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,553 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,554 - oanda_api - ERROR - OANDA API error for NZD_JPY: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,554 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,639 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,639 - oanda_api - ERROR - OANDA API error for GBP_AUD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,639 - oandapyV20.oandapyV20 - INFO - performing request https://api-fxpractice.oanda.com/v3/accounts/None/pricing
+2025-05-14 21:13:10,715 - oandapyV20.oandapyV20 - ERROR - request https://api-fxpractice.oanda.com/v3/accounts/None/pricing failed [400,{"errorMessage":"Invalid value specified for 'accountID'"}]
+2025-05-14 21:13:10,715 - oanda_api - ERROR - OANDA API error for AUD_NZD: {"errorMessage":"Invalid value specified for 'accountID'"}
+2025-05-14 21:13:10,715 - generate_signals - ERROR - Error generating trading signals: float division by zero
+Traceback (most recent call last):
+  File "/Users/kingjames/clojure-trader/rl/generate_signals.py", line 198, in generate_trading_signals
+    position_sizes = position_sizer.convert_signals_to_positions(signals)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/position_sizing.py", line 230, in convert_signals_to_positions
+    target_scores = self.get_target_scores(self.max_risk_amount, instrument_scores)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/position_sizing.py", line 189, in get_target_scores
+    target_position = self.get_target_position_amount(instrument, latest_price, usd_buy_sell_amount)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kingjames/clojure-trader/rl/position_sizing.py", line 89, in get_target_position_amount
+    return usd_amount / latest_price
+           ~~~~~~~~~~~^~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+
+[2025-05-14 21:13:11] Command completed successfully
+[2025-05-14 21:13:11] No position size files found
+[2025-05-14 21:13:11] No position data available - aborting cycle

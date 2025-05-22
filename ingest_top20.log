@@ -1,0 +1,340 @@
+Pre-ingest NaN for EUR_USD: 0.0089
+First 3 rows for EUR_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-20 21:00:00+00:00  1.17550  ...              1.008234             NaN
+1 2017-08-21 21:00:00+00:00  1.18157  ...              1.006726         0.00002
+2 2017-08-22 21:00:00+00:00  1.17613  ...              1.007070        -0.00002
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.13881  ...              1.007294        -0.00052
+1998 2025-04-30 21:00:00+00:00  1.13293  ...              1.006684         0.00038
+1999 2025-05-01 21:00:00+00:00  1.12900  ...              1.009482         0.00003
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_USD (D), 377 rows dropped.
+Ingested 2000 rows for EUR_USD.
+Pre-ingest NaN for USD_JPY: 0.0089
+First 3 rows for USD_JPY:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-09-12 21:00:00+00:00  110.164  ...              1.007161             NaN
+1 2017-09-13 21:00:00+00:00  110.481  ...              1.008881           0.025
+2 2017-09-14 21:00:00+00:00  110.250  ...              1.016243           0.000
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  142.282  ...              1.007228          -0.004
+1998 2025-04-30 21:00:00+00:00  143.000  ...              1.019989          -0.013
+1999 2025-05-01 21:00:00+00:00  145.450  ...              1.015282           0.056
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_JPY (D), 377 rows dropped.
+Ingested 2000 rows for USD_JPY.
+Pre-ingest NaN for GBP_USD: 0.0089
+First 3 rows for GBP_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-24 21:00:00+00:00  1.28039  ...              1.007464             NaN
+1 2017-08-27 21:00:00+00:00  1.29322  ...              1.005387        -0.00059
+2 2017-08-28 21:00:00+00:00  1.29310  ...              1.004924         0.00003
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.34048  ...              1.008070         0.00003
+1998 2025-04-30 21:00:00+00:00  1.33285  ...              1.006436         0.00000
+1999 2025-05-01 21:00:00+00:00  1.32784  ...              1.005173         0.00083
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_USD (D), 377 rows dropped.
+Ingested 2000 rows for GBP_USD.
+Pre-ingest NaN for AUD_USD: 0.0089
+First 3 rows for AUD_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-17 21:00:00+00:00  0.78844  ...              1.009466             NaN
+1 2017-08-20 21:00:00+00:00  0.79279  ...              1.004968        -0.00036
+2 2017-08-21 21:00:00+00:00  0.79372  ...              1.006711         0.00001
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.63848  ...              1.009731        -0.00001
+1998 2025-04-30 21:00:00+00:00  0.64000  ...              1.009685         0.00009
+1999 2025-05-01 21:00:00+00:00  0.63763  ...              1.015101         0.00050
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_USD (D), 377 rows dropped.
+Ingested 2000 rows for AUD_USD.
+Pre-ingest NaN for USD_CHF: 0.0089
+First 3 rows for USD_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-30 21:00:00+00:00  0.96374  ...              1.010101             NaN
+1 2017-08-31 21:00:00+00:00  0.95880  ...              1.011266    8.100000e-04
+2 2017-09-03 21:00:00+00:00  0.95945  ...              1.006889    1.110223e-16
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.82434  ...              1.007165         0.00000
+1998 2025-04-30 21:00:00+00:00  0.82630  ...              1.009663         0.00025
+1999 2025-05-01 21:00:00+00:00  0.83043  ...              1.013746         0.00013
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_CHF (D), 377 rows dropped.
+Ingested 2000 rows for USD_CHF.
+Pre-ingest NaN for USD_CAD: 0.0089
+First 3 rows for USD_CAD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-09-24 21:00:00+00:00  1.23349  ...              1.005892             NaN
+1 2017-09-25 21:00:00+00:00  1.23730  ...              1.006736        -0.00007
+2 2017-09-26 21:00:00+00:00  1.23488  ...              1.011897        -0.00019
+
+[3 rows x 2462 columns]
+Last 3 rows for USD_CAD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.38334  ...              1.006224         0.00001
+1998 2025-04-30 21:00:00+00:00  1.37972  ...              1.005666         0.00000
+1999 2025-05-01 21:00:00+00:00  1.38551  ...              1.007046         0.00084
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for USD_CAD (D), 377 rows dropped.
+Ingested 2000 rows for USD_CAD.
+Pre-ingest NaN for NZD_USD: 0.0089
+First 3 rows for NZD_USD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-09-10 21:00:00+00:00  0.72608  ...              1.009619             NaN
+1 2017-09-11 21:00:00+00:00  0.72554  ...              1.014467         0.00026
+2 2017-09-12 21:00:00+00:00  0.72862  ...              1.011592         0.00000
+
+[3 rows x 2462 columns]
+Last 3 rows for NZD_USD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.59373  ...              1.008791        -0.00005
+1998 2025-04-30 21:00:00+00:00  0.59357  ...              1.009781         0.00004
+1999 2025-05-01 21:00:00+00:00  0.59080  ...              1.013015         0.00062
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for NZD_USD (D), 377 rows dropped.
+Ingested 2000 rows for NZD_USD.
+Pre-ingest NaN for EUR_JPY: 0.0089
+First 3 rows for EUR_JPY:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-21 21:00:00+00:00  128.756  ...              1.006655             NaN
+1 2017-08-22 21:00:00+00:00  128.886  ...              1.004973           0.051
+2 2017-08-23 21:00:00+00:00  128.753  ...              1.006324          -0.050
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  162.008  ...              1.005866          -0.023
+1998 2025-04-30 21:00:00+00:00  162.028  ...              1.016358           0.023
+1999 2025-05-01 21:00:00+00:00  164.190  ...              1.007240           0.019
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_JPY (D), 377 rows dropped.
+Ingested 2000 rows for EUR_JPY.
+Pre-ingest NaN for GBP_JPY: 0.0089
+First 3 rows for GBP_JPY:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-27 21:00:00+00:00  141.203  ...              1.006942             NaN
+1 2017-08-28 21:00:00+00:00  141.302  ...              1.014253           0.073
+2 2017-08-29 21:00:00+00:00  141.664  ...              1.008597          -0.093
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  190.676  ...              1.006729           0.008
+1998 2025-04-30 21:00:00+00:00  190.590  ...              1.016386           0.032
+1999 2025-05-01 21:00:00+00:00  193.076  ...              1.011955           0.032
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_JPY (D), 377 rows dropped.
+Ingested 2000 rows for GBP_JPY.
+Pre-ingest NaN for EUR_GBP: 0.0089
+First 3 rows for EUR_GBP:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-22 21:00:00+00:00  0.91708  ...              1.008264             NaN
+1 2017-08-23 21:00:00+00:00  0.92263  ...              1.004908         0.00001
+2 2017-08-24 21:00:00+00:00  0.92110  ...              1.008113         0.00063
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_GBP:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.84913  ...              1.006916        -0.00012
+1998 2025-04-30 21:00:00+00:00  0.85004  ...              1.003785        -0.00003
+1999 2025-05-01 21:00:00+00:00  0.84980  ...              1.006031         0.00036
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_GBP (D), 377 rows dropped.
+Ingested 2000 rows for EUR_GBP.
+Pre-ingest NaN for EUR_CHF: 0.0089
+First 3 rows for EUR_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-21 21:00:00+00:00  1.13648  ...              1.004139             NaN
+1 2017-08-22 21:00:00+00:00  1.13858  ...              1.004122         0.00048
+2 2017-08-23 21:00:00+00:00  1.13946  ...              1.004777        -0.00069
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.93860  ...              1.007112        -0.00019
+1998 2025-04-30 21:00:00+00:00  0.93530  ...              1.005560         0.00028
+1999 2025-05-01 21:00:00+00:00  0.93719  ...              1.007818         0.00003
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_CHF (D), 377 rows dropped.
+Ingested 2000 rows for EUR_CHF.
+Pre-ingest NaN for EUR_AUD: 0.0089
+First 3 rows for EUR_AUD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-21 21:00:00+00:00  1.48831  ...              1.004285             NaN
+1 2017-08-22 21:00:00+00:00  1.48667  ...              1.007194        -0.00024
+2 2017-08-23 21:00:00+00:00  1.49368  ...              1.004406         0.00001
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_AUD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.78354  ...              1.012090        -0.00058
+1998 2025-04-30 21:00:00+00:00  1.76992  ...              1.008745         0.00058
+1999 2025-05-01 21:00:00+00:00  1.76866  ...              1.011160         0.00000
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_AUD (D), 377 rows dropped.
+Ingested 2000 rows for EUR_AUD.
+Pre-ingest NaN for EUR_CAD: 0.0089
+First 3 rows for EUR_CAD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-20 21:00:00+00:00  1.47778  ...              1.006921             NaN
+1 2017-08-21 21:00:00+00:00  1.48412  ...              1.007992         0.00043
+2 2017-08-22 21:00:00+00:00  1.47764  ...              1.006373        -0.00012
+
+[3 rows x 2462 columns]
+Last 3 rows for EUR_CAD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.57538  ...              1.010263        -0.00035
+1998 2025-04-30 21:00:00+00:00  1.56300  ...              1.005338         0.00035
+1999 2025-05-01 21:00:00+00:00  1.56382  ...              1.006162         0.00008
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for EUR_CAD (D), 377 rows dropped.
+Ingested 2000 rows for EUR_CAD.
+Pre-ingest NaN for GBP_CHF: 0.0089
+First 3 rows for GBP_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-27 21:00:00+00:00  1.23479  ...              1.006119             NaN
+1 2017-08-28 21:00:00+00:00  1.23544  ...              1.011460         0.00041
+2 2017-08-29 21:00:00+00:00  1.23454  ...              1.011049        -0.00050
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.10472  ...              1.009866        -0.00032
+1998 2025-04-30 21:00:00+00:00  1.10138  ...              1.007797         0.00032
+1999 2025-05-01 21:00:00+00:00  1.10097  ...              1.011125         0.00016
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_CHF (D), 377 rows dropped.
+Ingested 2000 rows for GBP_CHF.
+Pre-ingest NaN for AUD_JPY: 0.0089
+First 3 rows for AUD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-28 21:00:00+00:00  87.065  ...              1.019666             NaN
+1 2017-08-29 21:00:00+00:00  87.331  ...              1.009932          -0.011
+2 2017-08-30 21:00:00+00:00  87.144  ...              1.005107          -0.029
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_JPY:
+                      timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  90.842  ...              1.011551           0.002
+1998 2025-04-30 21:00:00+00:00  91.541  ...              1.017000           0.019
+1999 2025-05-01 21:00:00+00:00  92.818  ...              1.009598           0.189
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_JPY (D), 377 rows dropped.
+Ingested 2000 rows for AUD_JPY.
+Pre-ingest NaN for AUD_CHF: 0.0089
+First 3 rows for AUD_CHF:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-17 21:00:00+00:00  0.75960  ...              1.013597             NaN
+1 2017-08-20 21:00:00+00:00  0.76548  ...              1.006334        -0.00068
+2 2017-08-21 21:00:00+00:00  0.76339  ...              1.006143        -0.00020
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_CHF:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  0.52600  ...              1.013353        -0.00007
+1998 2025-04-30 21:00:00+00:00  0.52899  ...              1.008533         0.00038
+1999 2025-05-01 21:00:00+00:00  0.52937  ...              1.010736         0.00063
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_CHF (D), 377 rows dropped.
+Ingested 2000 rows for AUD_CHF.
+Pre-ingest NaN for CAD_JPY: 0.0089
+First 3 rows for CAD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-21 21:00:00+00:00  86.760  ...              1.008204             NaN
+1 2017-08-22 21:00:00+00:00  87.214  ...              1.009120          -0.006
+2 2017-08-23 21:00:00+00:00  86.884  ...              1.009349          -0.013
+
+[3 rows x 2462 columns]
+Last 3 rows for CAD_JPY:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  102.834  ...              1.010461           0.006
+1998 2025-04-30 21:00:00+00:00  103.672  ...              1.016324           0.013
+1999 2025-05-01 21:00:00+00:00  104.975  ...              1.011030           0.014
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for CAD_JPY (D), 377 rows dropped.
+Ingested 2000 rows for CAD_JPY.
+Pre-ingest NaN for NZD_JPY: 0.0089
+First 3 rows for NZD_JPY:
+                   timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-09-14 21:00:00+00:00  79.578  ...              1.022662             NaN
+1 2017-09-17 21:00:00+00:00  80.864  ...              1.010701          -0.053
+2 2017-09-18 21:00:00+00:00  80.990  ...              1.011139          -0.067
+
+[3 rows x 2462 columns]
+Last 3 rows for NZD_JPY:
+                      timestamp    open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  84.429  ...              1.009078           0.028
+1998 2025-04-30 21:00:00+00:00  84.844  ...              1.015445          -0.015
+1999 2025-05-01 21:00:00+00:00  85.876  ...              1.007894           0.027
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for NZD_JPY (D), 377 rows dropped.
+Ingested 2000 rows for NZD_JPY.
+Pre-ingest NaN for GBP_AUD: 0.0089
+First 3 rows for GBP_AUD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-17 21:00:00+00:00  1.63238  ...              1.010045             NaN
+1 2017-08-20 21:00:00+00:00  1.62177  ...              1.004270        -0.00108
+2 2017-08-21 21:00:00+00:00  1.62498  ...              1.005377        -0.00023
+
+[3 rows x 2462 columns]
+Last 3 rows for GBP_AUD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  2.10044  ...              1.010587        -0.00005
+1998 2025-04-30 21:00:00+00:00  2.08212  ...              1.008458         0.00012
+1999 2025-05-01 21:00:00+00:00  2.08012  ...              1.012286         0.00049
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for GBP_AUD (D), 377 rows dropped.
+Ingested 2000 rows for GBP_AUD.
+Pre-ingest NaN for AUD_NZD: 0.0089
+First 3 rows for AUD_NZD:
+                   timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+0 2017-08-22 21:00:00+00:00  1.08692  ...              1.009009             NaN
+1 2017-08-23 21:00:00+00:00  1.09427  ...              1.004051        -0.00034
+2 2017-08-24 21:00:00+00:00  1.09624  ...              1.003259         0.00225
+
+[3 rows x 2462 columns]
+Last 3 rows for AUD_NZD:
+                      timestamp     open  ...  mid_high_div_mid_low  bid_ask_bounce
+1997 2025-04-29 21:00:00+00:00  1.07632  ...              1.005903        -0.00012
+1998 2025-04-30 21:00:00+00:00  1.07897  ...              1.003886         0.00015
+1999 2025-05-01 21:00:00+00:00  1.08050  ...              1.004672         0.00033
+
+[3 rows x 2462 columns]
+Dropping first 377 rows for AUD_NZD (D), 377 rows dropped.
+Ingested 2000 rows for AUD_NZD.

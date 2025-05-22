@@ -1,0 +1,126 @@
+{
+  "account_size": 1000.0,
+  "risk_amount": 50.0,
+  "positions": [
+    {
+      "instrument": "EUR_USD",
+      "direction": "SHORT",
+      "position_size": 6.896073,
+      "usd_amount": 0.31
+    },
+    {
+      "instrument": "USD_JPY",
+      "direction": "LONG",
+      "position_size": 15.530363,
+      "usd_amount": 0.43
+    },
+    {
+      "instrument": "GBP_USD",
+      "direction": "SHORT",
+      "position_size": 31.892446,
+      "usd_amount": 1.69
+    },
+    {
+      "instrument": "AUD_USD",
+      "direction": "SHORT",
+      "position_size": 5.810788,
+      "usd_amount": 0.15
+    },
+    {
+      "instrument": "USD_CHF",
+      "direction": "SHORT",
+      "position_size": 161.129704,
+      "usd_amount": 7.7
+    },
+    {
+      "instrument": "USD_CAD",
+      "direction": "SHORT",
+      "position_size": 164.208389,
+      "usd_amount": 4.7
+    },
+    {
+      "instrument": "NZD_USD",
+      "direction": "LONG",
+      "position_size": 31.659876,
+      "usd_amount": 0.75
+    },
+    {
+      "instrument": "EUR_JPY",
+      "direction": "SHORT",
+      "position_size": 46.723941,
+      "usd_amount": 1.67
+    },
+    {
+      "instrument": "GBP_JPY",
+      "direction": "SHORT",
+      "position_size": 83.755735,
+      "usd_amount": 2.52
+    },
+    {
+      "instrument": "EUR_GBP",
+      "direction": "LONG",
+      "position_size": 69.947045,
+      "usd_amount": 2.5
+    },
+    {
+      "instrument": "EUR_CHF",
+      "direction": "LONG",
+      "position_size": 84.886707,
+      "usd_amount": 3.03
+    },
+    {
+      "instrument": "EUR_AUD",
+      "direction": "LONG",
+      "position_size": 10.932068,
+      "usd_amount": 0.39
+    },
+    {
+      "instrument": "EUR_CAD",
+      "direction": "LONG",
+      "position_size": 44.346064,
+      "usd_amount": 1.58
+    },
+    {
+      "instrument": "GBP_CHF",
+      "direction": "SHORT",
+      "position_size": 192.469962,
+      "usd_amount": 5.79
+    },
+    {
+      "instrument": "AUD_JPY",
+      "direction": "SHORT",
+      "position_size": 35.148946,
+      "usd_amount": 2.19
+    },
+    {
+      "instrument": "AUD_CHF",
+      "direction": "SHORT",
+      "position_size": 98.043865,
+      "usd_amount": 6.11
+    },
+    {
+      "instrument": "CAD_JPY",
+      "direction": "LONG",
+      "position_size": 62.559518,
+      "usd_amount": 3.5
+    },
+    {
+      "instrument": "NZD_JPY",
+      "direction": "SHORT",
+      "position_size": 13.615224,
+      "usd_amount": 0.92
+    },
+    {
+      "instrument": "GBP_AUD",
+      "direction": "SHORT",
+      "position_size": 51.943106,
+      "usd_amount": 1.56
+    },
+    {
+      "instrument": "AUD_NZD",
+      "direction": "LONG",
+      "position_size": 40.172846,
+      "usd_amount": 2.5
+    }
+  ]
+}

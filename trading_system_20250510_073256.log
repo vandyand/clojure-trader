@@ -1,0 +1,5 @@
+2025-05-10 07:32:56,611 - TradingSystem - INFO - Trading system initialized with 20 instruments
+2025-05-10 07:32:56,611 - TradingSystem - INFO - Evaluating policy network over 100 days...
+2025-05-10 07:32:57,144 - TradingSystem - INFO - Total Return: -0.0003
+2025-05-10 07:32:57,144 - TradingSystem - INFO - Sharpe Ratio: -0.4246
+2025-05-10 07:32:57,144 - TradingSystem - INFO - Max Drawdown: -0.0008

@@ -2,6 +2,7 @@
   (:require [nean.arena :as arena]
             [api.oanda_api :as oanda_api]
             [stats :as stats]
+            [util :as util]
             [constants :as constants]))
 
 (def instrument-scores-cache (atom {}))
@@ -128,7 +129,7 @@
                                       :num-children 33}
                          :ga-config {:num-generations 7
                                      :stream-count 3333
-                                     :back-pct 0.77}}]
+                                     :back-pct 0.9}}]
     (arena/run-and-save-backtest backtest-params)))
 
 #_(shoot-money-x-from-backtest-y 25 "994fe90")
@@ -152,3 +153,6 @@
 #_(oanda_api/get-account-nav)
 
 #_(oanda_api/get-binance-account-usd-amount)
+
+(defn -main [& args]
+  (shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda)))
