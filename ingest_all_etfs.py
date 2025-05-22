@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from rl.data.ingest import ingest_etf_candles
 
-ETF_DIR = 'python-robinhood-wrapper'  # Updated to correct ETF CSV directory
+ETF_DIR = 'etf_data'  # Updated to correct ETF CSV directory
 REQUIRED_COLS = ['open', 'high', 'low', 'close', 'volume']
 
 def main():

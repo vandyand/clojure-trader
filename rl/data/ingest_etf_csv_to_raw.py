@@ -24,7 +24,7 @@ DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_PORT = os.getenv('DB_PORT', '5432')
 
 # The directory where the CSV files are located, relative to workspace root
-CSV_DIR = "python-robinhood-wrapper"
+CSV_DIR = "etf_data"
 
 def get_conn():
     return psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
