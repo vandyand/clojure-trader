@@ -119,9 +119,9 @@
 (defn run-backtest [instruments]
   ;; Run backtests on instruments to get "buy sell scores"
   (let [backtest-params {:instruments instruments
-                         :granularity "H1"
-                         :num-backtests-per-instrument 3
-                         :xindy-config {:num-shifts 10
+                         :granularity "D"
+                         :num-backtests-per-instrument 7
+                         :xindy-config {:num-shifts 14
                                         :max-shift 77}
                          :pop-config {:pop-size 77
                                       :num-parents 44
@@ -131,21 +131,8 @@
                                      :back-pct 0.77}}]
     (arena/run-and-save-backtest backtest-params)))
 
-(defn try-shoot-money [amount backtest-id]
-  (try
-    (let [inscs (get-instrument-scores backtest-id)
-          tscs (get-target-scores amount inscs)
-          bscs (get-balanced-scores tscs)]
-      (arena/post-target-positions bscs))
-    (catch Exception e
-      (println "Error shooting money:" (.getMessage e)))))
-
-;; Add try-catch to handle potential errors with the wrifts directory
-(try
-  (shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
-  (catch Exception e
-    (println "Failed to run backtest and shoot money:" (.getMessage e))))
-
+#_(shoot-money-x-from-backtest-y 25 "994fe90")
+(shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda))
 #_(shoot-money-x-from-backtest-y 100 (run-backtest constants/pairs-by-liquidity-crypto))
 #_(shoot-money-x-from-backtest-y 120 (run-backtest constants/pairs-by-liquidity))
 
