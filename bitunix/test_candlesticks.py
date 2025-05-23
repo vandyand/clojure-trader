@@ -1,4 +1,10 @@
-from client import BitUnixClient, Candlestick
+import sys
+import os
+# Add parent directory to path to allow imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from bitunix.client import BitUnixClient
+from bitunix.models import Candlestick
 from typing import List
 import time # For potential timestamp conversions or logging
 
@@ -49,6 +55,29 @@ def main():
         # If there was an HTTPError, the response text might be in e.response.text
         if hasattr(e, 'response') and e.response is not None:
             print(f"Response content: {e.response.text}")
+
+    # Test with specific time range
+    print("\nTesting with specific time range...")
+    # Get klines from 24 hours ago to now
+    end_time = int(time.time() * 1000)  # Current time in ms
+    start_time = end_time - (24 * 60 * 60 * 1000)  # 24 hours ago
+
+    try:
+        klines_range: List[Candlestick] = client.get_historical_klines(
+            symbol=symbol,
+            interval="15m",  # 15-minute intervals
+            start_time=start_time,
+            end_time=end_time,
+            limit=10
+        )
+        if klines_range:
+            print(f"Successfully fetched {len(klines_range)} kline(s) for the past 24 hours (15m intervals):")
+            print(f"  First kline time: {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(klines_range[0].open_time/1000))} UTC")
+            print(f"  Last kline time: {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(klines_range[-1].open_time/1000))} UTC")
+        else:
+            print("No klines returned for the specified time range.")
+    except Exception as e:
+        print(f"Error fetching klines with time range: {e}")
 
 if __name__ == "__main__":
     # Create a .env file in the root of the 'trader' workspace (or ensure vars are set)

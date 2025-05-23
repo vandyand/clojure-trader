@@ -33,11 +33,28 @@ This document outlines the development tasks required to implement the Bitunix A
   - [x] Identify and implement Bitunix API endpoints for fetching account balances.
   - [x] Identify and implement Bitunix API endpoints for fetching current open positions.
   - [x] Define data structures/classes for account balance and position information.
-- [ ] **Data Parsing & Validation:**
+- [x] **Data Parsing & Validation:**
   - [x] Parse API responses into usable formats.
-  - [ ] Validate the received data.
-- [ ] **Testing:**
-  - [ ] Write unit tests for account information retrieval.
+  - [x] Validate the received data.
+- [x] **Testing:**
+  - [x] Write unit tests for account information retrieval.
+
+## Phase 3.5: Account Statistics & Total Value
+
+- [x] **Account Summary Implementation:**
+  - [x] Create AccountSummary data structure for total account values
+  - [x] Implement get_account_summary method to calculate total equity
+  - [x] Support multi-coin account summaries
+- [x] **Total Value Calculations:**
+  - [x] Calculate total balance (available + frozen + margin)
+  - [x] Calculate total unrealized PNL (cross + isolation)
+  - [x] Calculate total equity (balance + unrealized PNL)
+- [x] **Position Sizing Support:**
+  - [x] Provide total equity for percentage-based position sizing
+  - [x] Create example showing position size calculations
+- [x] **Testing:**
+  - [x] Create test script for account summary functionality
+  - [x] Update example usage to demonstrate new features
 
 ## Phase 4: Order Management
 
@@ -56,6 +73,9 @@ This document outlines the development tasks required to implement the Bitunix A
 
 ## Phase 5: Integration & Refinement
 
+- [x] **Code Organization:**
+  - [x] Split code into modular structure (auth, models, endpoints)
+  - [x] Create separate endpoint modules for market, account, and position data
 - [ ] **Example Usage Scripts:**
   - [ ] Create example scripts demonstrating how to use each feature of the API client.
 - [ ] **Documentation:**
