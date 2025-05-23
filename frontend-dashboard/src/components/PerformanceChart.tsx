@@ -51,8 +51,11 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
   // Custom days input
   const [customDays, setCustomDays] = useState("");
 
-  // Granularity selection
-  const [granularity, setGranularity] = useState<GranularityType>("daily");
+  // Granularity selection - Changed default to "hourly"
+  const [granularity, setGranularity] = useState<GranularityType>("hourly");
+
+  // Dots visibility toggle - Default to hidden
+  const [showDots, setShowDots] = useState(false);
 
   // Calculate days based on selected time range type
   const getDaysForQuery = () => {
@@ -269,6 +272,21 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
             </button>
           </div>
         </div>
+
+        <div className="control-section">
+          <div className="section-header">Chart Display</div>
+          <div className="display-options">
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                checked={showDots}
+                onChange={(e) => setShowDots(e.target.checked)}
+              />
+              <span className="toggle-slider"></span>
+              <span className="toggle-label">Show Data Points</span>
+            </label>
+          </div>
+        </div>
       </div>
     );
   }
@@ -322,6 +340,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
               dataKey="nav"
               stroke="#2451B7"
               activeDot={{ r: 8 }}
+              dot={showDots ? { r: 3, fill: "#2451B7" } : false}
               name="NAV"
             />
           </LineChart>
