@@ -8,7 +8,7 @@ from typing import Optional, Dict, Any
 import json
 
 from .auth import BitunixAuth, DEBUG_SIGNATURE
-from .endpoints import MarketEndpoints, AccountEndpoints, PositionEndpoints
+from .endpoints import MarketEndpoints, AccountEndpoints, PositionEndpoints, OrderEndpoints
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -34,6 +34,7 @@ class BitUnixClient:
         self.market = MarketEndpoints(self)
         self.account = AccountEndpoints(self)
         self.position = PositionEndpoints(self)
+        self.order = OrderEndpoints(self)
     
     def _request(
         self,
@@ -126,11 +127,12 @@ class BitUnixClient:
             print(f"JSON decode error for {method} {url}: {json_err}. Response text: {response.text if 'response' in locals() else 'Response object not available'}")
             raise
     
-    # Convenience methods that delegate to endpoint handlers
+    # Market data convenience methods
     def get_historical_klines(self, *args, **kwargs):
         """Fetch historical kline data. See MarketEndpoints.get_historical_klines for details."""
         return self.market.get_historical_klines(*args, **kwargs)
     
+    # Account convenience methods
     def get_account_balance(self, *args, **kwargs):
         """Fetch account balance. See AccountEndpoints.get_account_balance for details."""
         return self.account.get_account_balance(*args, **kwargs)
@@ -139,9 +141,39 @@ class BitUnixClient:
         """Fetch account summary with total values. See AccountEndpoints.get_account_summary for details."""
         return self.account.get_account_summary(*args, **kwargs)
     
+    # Position convenience methods
     def get_open_positions(self, *args, **kwargs):
         """Fetch open positions. See PositionEndpoints.get_open_positions for details."""
         return self.position.get_open_positions(*args, **kwargs)
+    
+    # Order management convenience methods
+    def place_order(self, *args, **kwargs):
+        """Place a new order. See OrderEndpoints.place_order for details."""
+        return self.order.place_order(*args, **kwargs)
+    
+    def cancel_order(self, *args, **kwargs):
+        """Cancel a single order. See OrderEndpoints.cancel_order for details."""
+        return self.order.cancel_order(*args, **kwargs)
+    
+    def cancel_orders(self, *args, **kwargs):
+        """Cancel multiple orders. See OrderEndpoints.cancel_orders for details."""
+        return self.order.cancel_orders(*args, **kwargs)
+    
+    def modify_order(self, *args, **kwargs):
+        """Modify an existing order. See OrderEndpoints.modify_order for details."""
+        return self.order.modify_order(*args, **kwargs)
+    
+    def get_pending_orders(self, *args, **kwargs):
+        """Get pending/open orders. See OrderEndpoints.get_pending_orders for details."""
+        return self.order.get_pending_orders(*args, **kwargs)
+    
+    def get_order_history(self, *args, **kwargs):
+        """Get order history. See OrderEndpoints.get_order_history for details."""
+        return self.order.get_order_history(*args, **kwargs)
+    
+    def get_order_detail(self, *args, **kwargs):
+        """Get detailed order information. See OrderEndpoints.get_order_detail for details."""
+        return self.order.get_order_detail(*args, **kwargs)
 
     # Remove placeholder example methods
     # def get_example_endpoint(self, params=None):
