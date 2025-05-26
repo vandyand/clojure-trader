@@ -154,5 +154,5 @@
 
 #_(oanda_api/get-binance-account-usd-amount)
 
-(defn -main [& args]
-  (shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda)))
+#_(defn -main [& args]
+    (shoot-money-x-from-backtest-y 25 (run-backtest constants/pairs-by-liquidity-oanda)))

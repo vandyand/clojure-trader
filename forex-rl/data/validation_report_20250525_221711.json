@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-05-25 22:17:11.098243",
+  "instruments": {
+    "EUR_USD": {
+      "is_valid": false,
+      "issues": [
+        "EUR_USD: Only 99 data points, minimum 100 required"
+      ],
+      "data_points": 99,
+      "date_range": {
+        "start": "2025-01-06 22:00:00+00:00",
+        "end": "2025-05-22 21:00:00+00:00"
+      },
+      "missing_values": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0
+      },
+      "price_ranges": {
+        "open": {
+          "min": 1.02404,
+          "max": 1.15135
+        },
+        "high": {
+          "min": 1.02501,
+          "max": 1.15734
+        },
+        "low": {
+          "min": 1.01779,
+          "max": 1.14175
+        },
+        "close": {
+          "min": 1.02434,
+          "max": 1.15126
+        }
+      }
+    },
+    "USD_JPY": {
+      "is_valid": false,
+      "issues": [
+        "USD_JPY: Only 99 data points, minimum 100 required"
+      ],
+      "data_points": 99,
+      "date_range": {
+        "start": "2025-01-06 22:00:00+00:00",
+        "end": "2025-05-22 21:00:00+00:00"
+      },
+      "missing_values": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0
+      },
+      "price_ranges": {
+        "open": {
+          "min": 140.856,
+          "max": 158.316
+        },
+        "high": {
+          "min": 141.67,
+          "max": 158.88
+        },
+        "low": {
+          "min": 139.889,
+          "max": 157.903
+        },
+        "close": {
+          "min": 140.856,
+          "max": 158.354
+        }
+      }
+    },
+    "GBP_USD": {
+      "is_valid": false,
+      "issues": [
+        "GBP_USD: Only 99 data points, minimum 100 required"
+      ],
+      "data_points": 99,
+      "date_range": {
+        "start": "2025-01-06 22:00:00+00:00",
+        "end": "2025-05-22 21:00:00+00:00"
+      },
+      "missing_values": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0
+      },
+      "price_ranges": {
+        "open": {
+          "min": 1.21788,
+          "max": 1.34376
+        },
+        "high": {
+          "min": 1.22112,
+          "max": 1.35432
+        },
+        "low": {
+          "min": 1.20997,
+          "max": 1.34145
+        },
+        "close": {
+          "min": 1.21685,
+          "max": 1.35393
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_instruments": 3,
+    "valid_instruments": 0,
+    "invalid_instruments": 3,
+    "total_issues": 3,
+    "validation_success_rate": 0.0
+  },
+  "features": {}
+}
