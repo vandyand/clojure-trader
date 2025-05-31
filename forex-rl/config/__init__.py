@@ -1,3 +1,1 @@
-# config/__init__.py
-from .settings import *
-from .forex_pairs import * 
+# This file marks the config directory as a Python package

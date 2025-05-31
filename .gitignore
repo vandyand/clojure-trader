@@ -72,3 +72,6 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+forex-rl-old/*
+forex-rl/checkpoints/*
+forex-rl/tensorboard/*

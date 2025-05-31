@@ -1,0 +1,260 @@
+2025-05-26 16:02:02,441 - INFO - Fetching data for BTCUSDT
+2025-05-26 16:02:02,442 - INFO - Fetching BTCUSDT data from 2018-07-22 16:02:02.441000
+2025-05-26 16:02:04,109 - INFO - Fetching BTCUSDT data from 2024-11-07 19:00:00
+2025-05-26 16:02:05,683 - INFO - Fetching BTCUSDT data from 2024-11-08 19:00:00
+2025-05-26 16:02:07,321 - INFO - Fetching BTCUSDT data from 2024-11-09 19:00:00
+2025-05-26 16:02:08,806 - INFO - Fetching BTCUSDT data from 2024-11-10 19:00:00
+2025-05-26 16:02:11,144 - INFO - Fetching BTCUSDT data from 2024-11-11 19:00:00
+2025-05-26 16:02:12,954 - INFO - Fetching BTCUSDT data from 2024-11-12 19:00:00
+2025-05-26 16:02:14,711 - INFO - Fetching BTCUSDT data from 2024-11-13 19:00:00
+2025-05-26 16:03:29,144 - INFO - Processing BTCUSDT
+2025-05-26 16:03:29,144 - INFO - Fetching BTCUSDT data from 2025-05-25 20:00:00 to 2025-05-26 16:03:29.144000
+2025-05-26 16:03:29,974 - INFO - Completed data collection for BTCUSDT
+2025-05-26 16:03:29,974 - INFO - Processing ETHUSDT
+2025-05-26 16:03:29,974 - INFO - Fetching ETHUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:30,914 - INFO - Completed data collection for ETHUSDT
+2025-05-26 16:03:30,914 - INFO - Processing SOLUSDT
+2025-05-26 16:03:30,915 - INFO - Fetching SOLUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:31,417 - INFO - Completed data collection for SOLUSDT
+2025-05-26 16:03:31,418 - INFO - Processing DOGEUSDT
+2025-05-26 16:03:31,418 - INFO - Fetching DOGEUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:31,920 - INFO - Completed data collection for DOGEUSDT
+2025-05-26 16:03:31,920 - INFO - Processing USDCUSDT
+2025-05-26 16:03:31,920 - INFO - Fetching USDCUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:33,048 - INFO - Completed data collection for USDCUSDT
+2025-05-26 16:03:33,048 - INFO - Processing FDUSDUSDT
+2025-05-26 16:03:33,048 - INFO - Fetching FDUSDUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:33,620 - INFO - Completed data collection for FDUSDUSDT
+2025-05-26 16:03:33,621 - INFO - Processing XRPUSDT
+2025-05-26 16:03:33,622 - INFO - Fetching XRPUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:34,164 - INFO - Completed data collection for XRPUSDT
+2025-05-26 16:03:34,165 - INFO - Processing MNTUSDT
+2025-05-26 16:03:34,165 - INFO - Fetching MNTUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:34,686 - INFO - Completed data collection for MNTUSDT
+2025-05-26 16:03:34,686 - INFO - Processing PEPEUSDT
+2025-05-26 16:03:34,687 - INFO - Fetching PEPEUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:35,278 - INFO - Completed data collection for PEPEUSDT
+2025-05-26 16:03:35,278 - INFO - Processing TRUMPUSDT
+2025-05-26 16:03:35,279 - INFO - Fetching TRUMPUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:35,790 - INFO - Completed data collection for TRUMPUSDT
+2025-05-26 16:03:35,790 - INFO - Processing SUIUSDT
+2025-05-26 16:03:35,791 - INFO - Fetching SUIUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:36,279 - INFO - Completed data collection for SUIUSDT
+2025-05-26 16:03:36,280 - INFO - Processing NEXPACEUSDT
+2025-05-26 16:03:36,280 - INFO - Fetching NEXPACEUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:37,184 - INFO - Completed data collection for NEXPACEUSDT
+2025-05-26 16:03:37,184 - INFO - Processing BNBUSDT
+2025-05-26 16:03:37,184 - INFO - Fetching BNBUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:37,655 - INFO - Completed data collection for BNBUSDT
+2025-05-26 16:03:37,656 - INFO - Processing TRXUSDT
+2025-05-26 16:03:37,656 - INFO - Fetching TRXUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:38,269 - INFO - Completed data collection for TRXUSDT
+2025-05-26 16:03:38,269 - INFO - Processing AAVEUSDT
+2025-05-26 16:03:38,269 - INFO - Fetching AAVEUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:38,783 - INFO - Completed data collection for AAVEUSDT
+2025-05-26 16:03:38,783 - INFO - Processing WLDUSDT
+2025-05-26 16:03:38,784 - INFO - Fetching WLDUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:39,817 - INFO - Completed data collection for WLDUSDT
+2025-05-26 16:03:39,817 - INFO - Processing WIFUSDT
+2025-05-26 16:03:39,817 - INFO - Fetching WIFUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:40,520 - INFO - Completed data collection for WIFUSDT
+2025-05-26 16:03:40,521 - INFO - Processing ZBCUSDT
+2025-05-26 16:03:40,521 - INFO - Fetching ZBCUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:41,239 - INFO - Completed data collection for ZBCUSDT
+2025-05-26 16:03:41,239 - INFO - Processing ADAUSDT
+2025-05-26 16:03:41,239 - INFO - Fetching ADAUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:41,785 - INFO - Completed data collection for ADAUSDT
+2025-05-26 16:03:41,785 - INFO - Processing VIRTUALUSDT
+2025-05-26 16:03:41,786 - INFO - Fetching VIRTUALUSDT data from 2018-07-22 16:03:29.143000 to 2019-02-07 15:03:29.143000
+2025-05-26 16:03:42,468 - INFO - Completed data collection for VIRTUALUSDT
+2025-05-26 16:03:42,469 - INFO - Data collection completed for all symbols
+2025-05-26 16:05:00,385 - INFO - Processing BTCUSDT
+2025-05-26 16:05:00,386 - INFO - Fetching BTCUSDT data from 2025-05-25 20:00:00 to 2025-05-26 16:05:00.385000
+2025-05-26 16:05:00,870 - WARNING - No data returned for BTCUSDT between 2025-05-25 20:00:00 and 2025-05-26 16:05:00.385000
+2025-05-26 16:05:00,871 - INFO - Completed data collection for BTCUSDT
+2025-05-26 16:05:00,871 - INFO - Processing ETHUSDT
+2025-05-26 16:05:00,872 - INFO - Fetching ETHUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:01,520 - WARNING - No data returned for ETHUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:01,521 - INFO - Completed data collection for ETHUSDT
+2025-05-26 16:05:01,521 - INFO - Processing SOLUSDT
+2025-05-26 16:05:01,521 - INFO - Fetching SOLUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:02,063 - WARNING - No data returned for SOLUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:02,063 - INFO - Completed data collection for SOLUSDT
+2025-05-26 16:05:02,063 - INFO - Processing DOGEUSDT
+2025-05-26 16:05:02,063 - INFO - Fetching DOGEUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:02,639 - WARNING - No data returned for DOGEUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:02,639 - INFO - Completed data collection for DOGEUSDT
+2025-05-26 16:05:02,639 - INFO - Processing USDCUSDT
+2025-05-26 16:05:02,640 - INFO - Fetching USDCUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:03,465 - WARNING - No data returned for USDCUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:03,465 - INFO - Completed data collection for USDCUSDT
+2025-05-26 16:05:03,466 - INFO - Processing FDUSDUSDT
+2025-05-26 16:05:03,466 - INFO - Fetching FDUSDUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:04,081 - WARNING - No data returned for FDUSDUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:04,081 - INFO - Completed data collection for FDUSDUSDT
+2025-05-26 16:05:04,081 - INFO - Processing XRPUSDT
+2025-05-26 16:05:04,082 - INFO - Fetching XRPUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:04,899 - WARNING - No data returned for XRPUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:04,900 - INFO - Completed data collection for XRPUSDT
+2025-05-26 16:05:04,900 - INFO - Processing MNTUSDT
+2025-05-26 16:05:04,900 - INFO - Fetching MNTUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:05,514 - WARNING - No data returned for MNTUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:05,514 - INFO - Completed data collection for MNTUSDT
+2025-05-26 16:05:05,514 - INFO - Processing PEPEUSDT
+2025-05-26 16:05:05,515 - INFO - Fetching PEPEUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:05,969 - WARNING - No data returned for PEPEUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:05,969 - INFO - Completed data collection for PEPEUSDT
+2025-05-26 16:05:05,969 - INFO - Processing TRUMPUSDT
+2025-05-26 16:05:05,970 - INFO - Fetching TRUMPUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:06,639 - WARNING - No data returned for TRUMPUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:06,639 - INFO - Completed data collection for TRUMPUSDT
+2025-05-26 16:05:06,639 - INFO - Processing SUIUSDT
+2025-05-26 16:05:06,639 - INFO - Fetching SUIUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:07,459 - WARNING - No data returned for SUIUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:07,459 - INFO - Completed data collection for SUIUSDT
+2025-05-26 16:05:07,459 - INFO - Processing NEXPACEUSDT
+2025-05-26 16:05:07,460 - INFO - Fetching NEXPACEUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:07,971 - WARNING - No data returned for NEXPACEUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:07,972 - INFO - Completed data collection for NEXPACEUSDT
+2025-05-26 16:05:07,972 - INFO - Processing BNBUSDT
+2025-05-26 16:05:07,972 - INFO - Fetching BNBUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:08,585 - WARNING - No data returned for BNBUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:08,585 - INFO - Completed data collection for BNBUSDT
+2025-05-26 16:05:08,586 - INFO - Processing TRXUSDT
+2025-05-26 16:05:08,586 - INFO - Fetching TRXUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:09,405 - WARNING - No data returned for TRXUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:09,405 - INFO - Completed data collection for TRXUSDT
+2025-05-26 16:05:09,405 - INFO - Processing AAVEUSDT
+2025-05-26 16:05:09,405 - INFO - Fetching AAVEUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:09,917 - WARNING - No data returned for AAVEUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:09,917 - INFO - Completed data collection for AAVEUSDT
+2025-05-26 16:05:09,917 - INFO - Processing WLDUSDT
+2025-05-26 16:05:09,918 - INFO - Fetching WLDUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:10,530 - WARNING - No data returned for WLDUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:10,530 - INFO - Completed data collection for WLDUSDT
+2025-05-26 16:05:10,530 - INFO - Processing WIFUSDT
+2025-05-26 16:05:10,530 - INFO - Fetching WIFUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:10,972 - WARNING - No data returned for WIFUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:10,972 - INFO - Completed data collection for WIFUSDT
+2025-05-26 16:05:10,972 - INFO - Processing ZBCUSDT
+2025-05-26 16:05:10,972 - INFO - Fetching ZBCUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:11,553 - WARNING - No data returned for ZBCUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:11,553 - INFO - Completed data collection for ZBCUSDT
+2025-05-26 16:05:11,553 - INFO - Processing ADAUSDT
+2025-05-26 16:05:11,553 - INFO - Fetching ADAUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:12,163 - WARNING - No data returned for ADAUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:12,163 - INFO - Completed data collection for ADAUSDT
+2025-05-26 16:05:12,163 - INFO - Processing VIRTUALUSDT
+2025-05-26 16:05:12,163 - INFO - Fetching VIRTUALUSDT data from 2018-07-22 16:05:00.385000 to 2019-02-07 15:05:00.385000
+2025-05-26 16:05:12,886 - WARNING - No data returned for VIRTUALUSDT between 2018-07-22 16:05:00.385000 and 2019-02-07 15:05:00.385000
+2025-05-26 16:05:12,887 - INFO - Completed data collection for VIRTUALUSDT
+2025-05-26 16:05:12,888 - INFO - 
+Data Collection Summary:
+2025-05-26 16:05:12,888 - INFO - =======================
+2025-05-26 16:05:12,888 - INFO - BTCUSDT: 200 candles from 2024-11-07 00:00:00 to 2025-05-25 00:00:00
+2025-05-26 16:05:12,889 - INFO - Data collection completed for all symbols
+2025-05-26 16:05:31,891 - INFO - Processing BTCUSDT
+2025-05-26 16:05:31,892 - INFO - Fetching BTCUSDT data from 2025-05-25 20:00:00 to 2025-05-26 16:05:31.892000
+2025-05-26 16:05:32,477 - ERROR - Error fetching data for BTCUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=BTCUSDT&interval=1d&startTime=1748217600000&endTime=1748289931892&limit=200
+2025-05-26 16:05:32,478 - WARNING - No data returned for BTCUSDT between 2025-05-25 20:00:00 and 2025-05-26 16:05:31.892000
+2025-05-26 16:05:32,478 - INFO - Completed data collection for BTCUSDT
+2025-05-26 16:05:32,478 - INFO - Processing ETHUSDT
+2025-05-26 16:05:32,478 - INFO - Fetching ETHUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:32,957 - ERROR - Error fetching data for ETHUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=ETHUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:32,957 - WARNING - No data returned for ETHUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:32,958 - INFO - Completed data collection for ETHUSDT
+2025-05-26 16:05:32,958 - INFO - Processing SOLUSDT
+2025-05-26 16:05:32,958 - INFO - Fetching SOLUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:33,470 - ERROR - Error fetching data for SOLUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=SOLUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:33,470 - WARNING - No data returned for SOLUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:33,471 - INFO - Completed data collection for SOLUSDT
+2025-05-26 16:05:33,471 - INFO - Processing DOGEUSDT
+2025-05-26 16:05:33,471 - INFO - Fetching DOGEUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:33,940 - ERROR - Error fetching data for DOGEUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=DOGEUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:33,941 - WARNING - No data returned for DOGEUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:33,941 - INFO - Completed data collection for DOGEUSDT
+2025-05-26 16:05:33,942 - INFO - Processing USDCUSDT
+2025-05-26 16:05:33,942 - INFO - Fetching USDCUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:34,491 - ERROR - Error fetching data for USDCUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=USDCUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:34,492 - WARNING - No data returned for USDCUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:34,492 - INFO - Completed data collection for USDCUSDT
+2025-05-26 16:05:34,492 - INFO - Processing FDUSDUSDT
+2025-05-26 16:05:34,492 - INFO - Fetching FDUSDUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:35,016 - ERROR - Error fetching data for FDUSDUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=FDUSDUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:35,016 - WARNING - No data returned for FDUSDUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:35,016 - INFO - Completed data collection for FDUSDUSDT
+2025-05-26 16:05:35,016 - INFO - Processing XRPUSDT
+2025-05-26 16:05:35,017 - INFO - Fetching XRPUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:35,621 - ERROR - Error fetching data for XRPUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=XRPUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:35,622 - WARNING - No data returned for XRPUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:35,622 - INFO - Completed data collection for XRPUSDT
+2025-05-26 16:05:35,622 - INFO - Processing MNTUSDT
+2025-05-26 16:05:35,622 - INFO - Fetching MNTUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:36,178 - ERROR - Error fetching data for MNTUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=MNTUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:36,179 - WARNING - No data returned for MNTUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:36,179 - INFO - Completed data collection for MNTUSDT
+2025-05-26 16:05:36,179 - INFO - Processing PEPEUSDT
+2025-05-26 16:05:36,179 - INFO - Fetching PEPEUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:36,849 - ERROR - Error fetching data for PEPEUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=PEPEUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:36,849 - WARNING - No data returned for PEPEUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:36,849 - INFO - Completed data collection for PEPEUSDT
+2025-05-26 16:05:36,849 - INFO - Processing TRUMPUSDT
+2025-05-26 16:05:36,850 - INFO - Fetching TRUMPUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:37,359 - ERROR - Error fetching data for TRUMPUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=TRUMPUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:37,360 - WARNING - No data returned for TRUMPUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:37,360 - INFO - Completed data collection for TRUMPUSDT
+2025-05-26 16:05:37,360 - INFO - Processing SUIUSDT
+2025-05-26 16:05:37,361 - INFO - Fetching SUIUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:38,691 - ERROR - Error fetching data for SUIUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=SUIUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:38,691 - WARNING - No data returned for SUIUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:38,692 - INFO - Completed data collection for SUIUSDT
+2025-05-26 16:05:38,692 - INFO - Processing NEXPACEUSDT
+2025-05-26 16:05:38,692 - INFO - Fetching NEXPACEUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:39,306 - ERROR - Error fetching data for NEXPACEUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=NEXPACEUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:39,307 - WARNING - No data returned for NEXPACEUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:39,307 - INFO - Completed data collection for NEXPACEUSDT
+2025-05-26 16:05:39,307 - INFO - Processing BNBUSDT
+2025-05-26 16:05:39,308 - INFO - Fetching BNBUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:39,921 - ERROR - Error fetching data for BNBUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=BNBUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:39,921 - WARNING - No data returned for BNBUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:39,922 - INFO - Completed data collection for BNBUSDT
+2025-05-26 16:05:39,922 - INFO - Processing TRXUSDT
+2025-05-26 16:05:39,922 - INFO - Fetching TRXUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:40,535 - ERROR - Error fetching data for TRXUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=TRXUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:40,536 - WARNING - No data returned for TRXUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:40,536 - INFO - Completed data collection for TRXUSDT
+2025-05-26 16:05:40,536 - INFO - Processing AAVEUSDT
+2025-05-26 16:05:40,537 - INFO - Fetching AAVEUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:41,252 - ERROR - Error fetching data for AAVEUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=AAVEUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:41,253 - WARNING - No data returned for AAVEUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:41,253 - INFO - Completed data collection for AAVEUSDT
+2025-05-26 16:05:41,253 - INFO - Processing WLDUSDT
+2025-05-26 16:05:41,253 - INFO - Fetching WLDUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:41,762 - ERROR - Error fetching data for WLDUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=WLDUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:41,762 - WARNING - No data returned for WLDUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:41,762 - INFO - Completed data collection for WLDUSDT
+2025-05-26 16:05:41,763 - INFO - Processing WIFUSDT
+2025-05-26 16:05:41,763 - INFO - Fetching WIFUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:42,378 - ERROR - Error fetching data for WIFUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=WIFUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:42,378 - WARNING - No data returned for WIFUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:42,378 - INFO - Completed data collection for WIFUSDT
+2025-05-26 16:05:42,378 - INFO - Processing ZBCUSDT
+2025-05-26 16:05:42,378 - INFO - Fetching ZBCUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:42,993 - ERROR - Error fetching data for ZBCUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=ZBCUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:42,994 - WARNING - No data returned for ZBCUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:42,994 - INFO - Completed data collection for ZBCUSDT
+2025-05-26 16:05:42,994 - INFO - Processing ADAUSDT
+2025-05-26 16:05:42,995 - INFO - Fetching ADAUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:43,606 - ERROR - Error fetching data for ADAUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=ADAUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:43,607 - WARNING - No data returned for ADAUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:43,607 - INFO - Completed data collection for ADAUSDT
+2025-05-26 16:05:43,607 - INFO - Processing VIRTUALUSDT
+2025-05-26 16:05:43,607 - INFO - Fetching VIRTUALUSDT data from 2018-07-22 16:05:31.891000 to 2019-02-07 15:05:31.891000
+2025-05-26 16:05:44,179 - ERROR - Error fetching data for VIRTUALUSDT: 404 Client Error: Not Found for url: https://fapi.bitunix.com/fapi/v1/klines?symbol=VIRTUALUSDT&interval=1d&startTime=1532289931891&endTime=1549569931891&limit=200
+2025-05-26 16:05:44,180 - WARNING - No data returned for VIRTUALUSDT between 2018-07-22 16:05:31.891000 and 2019-02-07 15:05:31.891000
+2025-05-26 16:05:44,180 - INFO - Completed data collection for VIRTUALUSDT
+2025-05-26 16:05:44,181 - INFO - 
+Data Collection Summary:
+2025-05-26 16:05:44,181 - INFO - =======================
+2025-05-26 16:05:44,181 - INFO - BTCUSDT: 200 candles from 2024-11-07 00:00:00 to 2025-05-25 00:00:00
+2025-05-26 16:05:44,182 - INFO - Data collection completed for all symbols

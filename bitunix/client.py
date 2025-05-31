@@ -4,7 +4,7 @@ Main client for Bitunix API integration.
 import os
 import requests
 from dotenv import load_dotenv
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import json
 
 from .auth import BitunixAuth, DEBUG_SIGNATURE
@@ -57,7 +57,11 @@ class BitUnixClient:
         Returns:
             Parsed response data
         """
-        url = f"{self.BASE_URL}{endpoint}"
+        # Use spot base URL for spot endpoints
+        if endpoint.startswith("/api/spot/"):
+            url = f"https://openapi.bitunix.com{endpoint}"
+        else:
+            url = f"{self.BASE_URL}{endpoint}"
         
         headers: Dict[str, str]
         body_str = ""
@@ -106,8 +110,9 @@ class BitUnixClient:
             
             response.raise_for_status()
             response_data = response.json()
-            
-            if response_data.get("code") == 0:
+            code = response_data.get("code")
+            # Accept both int 0 and str '0' as success
+            if code == 0 or code == "0":
                 return response_data.get("data")
             else:
                 error_message = response_data.get("msg", "Unknown API error")
@@ -131,6 +136,10 @@ class BitUnixClient:
     def get_historical_klines(self, *args, **kwargs):
         """Fetch historical kline data. See MarketEndpoints.get_historical_klines for details."""
         return self.market.get_historical_klines(*args, **kwargs)
+    
+    def get_spot_historical_klines(self, *args, **kwargs):
+        """Fetch spot historical kline data. See MarketEndpoints.get_spot_historical_klines for details."""
+        return self.market.get_spot_historical_klines(*args, **kwargs)
     
     # Account convenience methods
     def get_account_balance(self, *args, **kwargs):
