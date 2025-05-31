@@ -102,18 +102,21 @@ class ForexTradingEnv(gym.Env):
     def load_data(self):
         conn = sqlite3.connect(self.db_path)
         
-        # Load aligned features with consistent timeline
-        print("🔍 Loading aligned features...")
-        features_query = "SELECT * FROM aligned_features"
+        # Load ONLY Fibonacci features (15 per instrument)
+        print("🔍 Loading Fibonacci features...")
+        fib_features = [f'feat_{p}' for p in [1,2,3,5,8,13,21,34,55,89,144,233,377,610,987]]
+        features_query = f"SELECT time, instrument, {','.join(fib_features)} FROM aligned_features"
         features_df = pd.read_sql_query(features_query, conn)
         
         # Transform to time-indexed, instrument-sorted format
         instruments_sorted = sorted(features_df['instrument'].unique())
         features_df = features_df.sort_values(['time', 'instrument'])
-        feature_values = features_df.drop(['time', 'instrument'], axis=1).values
+        feature_values = features_df[fib_features].values
+        
+        # Reshape to (timesteps, instruments * features)
         features = feature_values.reshape(
             features_df['time'].nunique(),
-            len(instruments_sorted) * 15
+            len(instruments_sorted) * len(fib_features)
         )
         
         # Load returns using aligned candles
