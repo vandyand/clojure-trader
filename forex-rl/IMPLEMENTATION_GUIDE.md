@@ -165,7 +165,7 @@ from datetime import datetime, timedelta
 import time
 import logging
 from typing import Dict, List, Optional
-from config.settings import config
+from forex_config.settings import config
 
 logger = logging.getLogger(__name__)
 
@@ -328,7 +328,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple
 import logging
-from config.settings import config
+from forex_config.settings import config
 from config.forex_pairs import FOREX_PAIRS, FIBONACCI_PERIODS
 
 logger = logging.getLogger(__name__)

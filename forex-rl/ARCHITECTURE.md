@@ -426,27 +426,27 @@ training/
 ├── environment.py
 │   ├── models.reward
 │   ├── data.feature_engineer
-│   └── config.settings
+│   └── forex_config.settings
 └── utils.py
-    └── config.settings
+    └── forex_config.settings
 
 models/
 ├── agent.py
 │   ├── models.network
 │   ├── models.reward
-│   └── config.settings
+│   └── forex_config.settings
 ├── network.py
-│   └── config.settings
+│   └── forex_config.settings
 └── reward.py
-    └── config.settings
+    └── forex_config.settings
 
 data/
 ├── oanda_client.py
-│   └── config.settings
+│   └── forex_config.settings
 ├── feature_engineer.py
-│   └── config.settings
+│   └── forex_config.settings
 └── data_validator.py
-    └── config.settings
+    └── forex_config.settings
 ```
 
 ### Circular Dependency Prevention

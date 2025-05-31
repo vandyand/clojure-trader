@@ -26,7 +26,7 @@ sys.path.insert(0, project_root)
 print(f"Project root: {project_root}")
 print(f"Python path: {sys.path}")
 
-from config.settings import config
+from forex_config.settings import config
 from config.forex_pairs import FOREX_PAIRS
 from data.oanda_client import OandaDataClient
 from data.data_validator import DataValidator
