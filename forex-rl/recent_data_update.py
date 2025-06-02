@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Update recent forex data and store in aligned_candles table
+Update recent forex data and store directly into the 'aligned_candles' table.
+
+Note: This script directly updates 'aligned_candles'. If 'aligned_features'
+needs to be updated based on these new candles, 'align_data.py' or a similar
+feature calculation script should be run afterwards.
 """
 
 import sqlite3
@@ -12,6 +16,7 @@ from data.oanda_client import OandaDataClient
 from config.settings import config
 from config.forex_pairs import FOREX_PAIRS
 import argparse
+import os
 
 # Set up logging
 logging.basicConfig(
@@ -21,17 +26,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def update_recent_data(days=10):
-    """Update recent candles for all forex pairs"""
-    logger.info(f"Updating recent {days} days of data")
+    """Update recent candles for all forex pairs directly in the 'aligned_candles' table."""
+    logger.info(f"Updating recent {days} days of data directly in the 'aligned_candles' table.")
     
     # Initialize OANDA client
     client = OandaDataClient()
     
     # Connect to SQLite database
-    conn = sqlite3.connect(config.data_dir + '/forex_candles.sqlite3')
+    db_path = os.path.join(config.data_dir, 'forex_candles.sqlite3')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
-    # Create aligned_candles table if it doesn't exist
+    # Ensure the 'aligned_candles' table exists
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS aligned_candles (
         instrument TEXT NOT NULL,
@@ -48,22 +54,25 @@ def update_recent_data(days=10):
     
     # Fetch and update data for each instrument
     for instrument in FOREX_PAIRS:
-        logger.info(f"Updating {instrument}")
+        logger.info(f"Fetching recent data for {instrument} from OANDA...")
         
-        # Fetch recent data from OANDA (with timezone UTC)
-        df = client.fetch_recent_data(instrument, days=days)
+        # Fetch recent data from OANDA.
+        # Fetching 'days + 1' to ensure we get enough data to cover the requested period
+        # and potentially align with previous day's data if needed for continuity.
+        df = client.fetch_historical_data(instrument, granularity="D", count=days + 1)
         
         if df.empty:
-            logger.warning(f"No data returned for {instrument}")
+            logger.warning(f"No data returned for {instrument}. Skipping.")
             continue
             
-        logger.info(f"Retrieved {len(df)} records for {instrument}")
+        logger.info(f"Retrieved {len(df)} records for {instrument}.")
         
-        # Convert datetime index to string
+        # Convert datetime index to string and normalize to date only (midnight UTC)
+        # This is crucial for consistency with how 'align_data.py' handles time.
         data_to_upsert = []
-        for time, row in df.iterrows():
-            # Convert time to string with UTC timezone
-            time_str = time.strftime('%Y-%m-%d %H:%M:%S')
+        for time_idx, row in df.iterrows():
+            # Normalize time to YYYY-MM-DD format for daily data
+            time_str = time_idx.strftime('%Y-%m-%d') 
             data_to_upsert.append((
                 instrument,
                 time_str,
@@ -74,7 +83,7 @@ def update_recent_data(days=10):
                 row['volume']
             ))
             
-        # Upsert into database
+        # Upsert into 'aligned_candles' table
         query = """
         INSERT INTO aligned_candles (instrument, time, open, high, low, close, volume)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -88,17 +97,18 @@ def update_recent_data(days=10):
         try:
             cursor.executemany(query, data_to_upsert)
             conn.commit()
-            logger.info(f"Upserted {len(data_to_upsert)} records for {instrument}")
+            logger.info(f"Upserted {len(data_to_upsert)} records for {instrument} into 'aligned_candles' table.")
         except Exception as e:
-            logger.error(f"Database error for {instrument}: {e}")
+            logger.error(f"Database error for {instrument}: {e}. Rolling back changes for this instrument.")
             conn.rollback()
             
     conn.close()
-    logger.info("Recent data update complete")
+    logger.info("Recent data update to 'aligned_candles' table complete.")
+    logger.info("Consider running 'python align_data.py <db_path>' if you need to ensure full time-series alignment (e.g., forward-filling missing dates) or to update 'aligned_features'.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Update recent forex data')
-    parser.add_argument('--days', type=int, default=10, help='Number of days to fetch')
+    parser = argparse.ArgumentParser(description='Update recent forex data directly in the aligned_candles table.')
+    parser.add_argument('--days', type=int, default=10, help='Number of recent days to fetch and update.')
     args = parser.parse_args()
     
     update_recent_data(days=args.days)
