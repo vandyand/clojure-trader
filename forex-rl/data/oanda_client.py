@@ -59,6 +59,12 @@ class OandaDataClient:
             time.sleep(self.rate_limit_delay)
 
             response = self.api.request(request)
+            
+            # Check for API error message
+            if "errorMessage" in response:
+                logger.error(f"OANDA API error: {response['errorMessage']} for {instrument}")
+                return pd.DataFrame()
+                
             candles = response.get('candles', [])
 
             if not candles:
@@ -87,7 +93,7 @@ class OandaDataClient:
             return df
 
         except Exception as e:
-            logger.error(f"Error fetching data for {instrument}: {e}")
+            logger.exception(f"Error fetching data for {instrument}: {str(e)}")
             return pd.DataFrame()
 
     def fetch_recent_data(self, instrument: str, days=10) -> pd.DataFrame:
