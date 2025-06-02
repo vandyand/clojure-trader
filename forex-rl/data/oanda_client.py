@@ -28,7 +28,8 @@ class OandaDataClient:
     def fetch_historical_data(self,
                             instrument: str,
                             granularity: str = "D",
-                            count: int = 5000) -> pd.DataFrame:
+                            count: int = 5000,
+                            to: datetime = None) -> pd.DataFrame:
         """
         Fetch historical candlestick data for an instrument
 
@@ -36,6 +37,7 @@ class OandaDataClient:
             instrument: Forex pair (e.g., "EUR_USD")
             granularity: Timeframe ("D" for daily)
             count: Number of candles to fetch
+            to: Optional time to fetch candles before
 
         Returns:
             DataFrame with OHLCV data
@@ -45,7 +47,9 @@ class OandaDataClient:
                 "granularity": granularity,
                 "count": count
             }
-
+            if to:
+                params["to"] = to.isoformat() + 'Z'
+                
             request = instruments.InstrumentsCandles(
                 instrument=instrument,
                 params=params
@@ -85,6 +89,13 @@ class OandaDataClient:
         except Exception as e:
             logger.error(f"Error fetching data for {instrument}: {e}")
             return pd.DataFrame()
+
+    def fetch_recent_data(self, instrument: str, days=10) -> pd.DataFrame:
+        """
+        Fetch the most recent candles for an instrument
+        """
+        end_time = datetime.utcnow()
+        return self.fetch_historical_data(instrument, "D", days, end_time)
 
     def fetch_multiple_instruments(self,
                                  instruments: List[str],
