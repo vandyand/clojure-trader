@@ -1,7 +1,0 @@
-stable-baselines3==2.1.0
-torch==2.5.1
-gym==0.26.2
-pandas==2.1.4
-numpy==1.26.0
-sqlalchemy==2.0.23
-shimmy>=0.2.1

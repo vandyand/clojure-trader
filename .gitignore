@@ -75,3 +75,4 @@ Thumbs.db
 forex-rl-old/*
 forex-rl/checkpoints/*
 forex-rl/tensorboard/*
+.aider*

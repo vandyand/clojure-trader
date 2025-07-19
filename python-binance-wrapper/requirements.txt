@@ -1,5 +1,0 @@
-flask
-ccxt
-pandas
-requests
-python-dotenv
