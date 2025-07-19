@@ -472,8 +472,8 @@ class RewardCalculator:
         # 3. Calculate portfolio return
         R_t = self.portfolio_return(final_positions, price_changes)
         
-        # 4. Calculate DSR
-        dsr = self.calculate_dsr(torch.tensor(price_changes))
+        # 4. Calculate DSR (should be on portfolio returns, not raw price changes)
+        dsr = self.calculate_dsr(torch.tensor([R_t]))
         
         # 5. Calculate confidence-weighted reward
         reward, confidence = self.confidence_weighted_reward(dsr, total_exposure)
