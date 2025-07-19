@@ -1,0 +1,525 @@
+{
+  "database_connection": {
+    "status": "SUCCESS",
+    "forex_table_exists": true,
+    "etf_table_exists": true,
+    "selected_features_table_exists": true,
+    "forex_instrument_count": 20,
+    "etf_instrument_count": 34
+  },
+  "feature_engineering": {
+    "status": "SUCCESS",
+    "total_instruments": 54,
+    "forex_pairs_with_features": [
+      [
+        "EUR_USD",
+        23
+      ],
+      [
+        "USD_JPY",
+        23
+      ],
+      [
+        "GBP_USD",
+        23
+      ],
+      [
+        "AUD_USD",
+        23
+      ],
+      [
+        "USD_CHF",
+        23
+      ],
+      [
+        "USD_CAD",
+        23
+      ],
+      [
+        "NZD_USD",
+        23
+      ],
+      [
+        "EUR_JPY",
+        23
+      ],
+      [
+        "GBP_JPY",
+        23
+      ],
+      [
+        "EUR_GBP",
+        23
+      ],
+      [
+        "EUR_CHF",
+        23
+      ],
+      [
+        "EUR_AUD",
+        23
+      ],
+      [
+        "EUR_CAD",
+        23
+      ],
+      [
+        "GBP_CHF",
+        23
+      ],
+      [
+        "AUD_JPY",
+        23
+      ],
+      [
+        "AUD_CHF",
+        23
+      ],
+      [
+        "CAD_JPY",
+        23
+      ],
+      [
+        "NZD_JPY",
+        23
+      ],
+      [
+        "GBP_AUD",
+        23
+      ],
+      [
+        "AUD_NZD",
+        23
+      ]
+    ],
+    "etf_symbols_with_features": [
+      [
+        "ASHR",
+        23
+      ],
+      [
+        "BND",
+        23
+      ],
+      [
+        "BTC-USD",
+        23
+      ],
+      [
+        "BWX",
+        23
+      ],
+      [
+        "CEW",
+        23
+      ],
+      [
+        "CYB",
+        23
+      ],
+      [
+        "DBA",
+        23
+      ],
+      [
+        "DBC",
+        23
+      ],
+      [
+        "DIA",
+        23
+      ],
+      [
+        "EEM",
+        23
+      ],
+      [
+        "EFA",
+        23
+      ],
+      [
+        "EMB",
+        23
+      ],
+      [
+        "EWJ",
+        23
+      ],
+      [
+        "EWZ",
+        23
+      ],
+      [
+        "EZU",
+        23
+      ],
+      [
+        "FXB",
+        23
+      ],
+      [
+        "FXE",
+        23
+      ],
+      [
+        "FXF",
+        23
+      ],
+      [
+        "FXY",
+        23
+      ],
+      [
+        "GLD",
+        23
+      ],
+      [
+        "IEF",
+        23
+      ],
+      [
+        "QQQ",
+        23
+      ],
+      [
+        "SHY",
+        23
+      ],
+      [
+        "SLV",
+        23
+      ],
+      [
+        "SPY",
+        23
+      ],
+      [
+        "TLT",
+        23
+      ],
+      [
+        "UNG",
+        23
+      ],
+      [
+        "USO",
+        23
+      ],
+      [
+        "UUP",
+        23
+      ],
+      [
+        "VIXY",
+        23
+      ],
+      [
+        "VNQ",
+        23
+      ],
+      [
+        "XLE",
+        23
+      ],
+      [
+        "XLF",
+        23
+      ],
+      [
+        "XLI",
+        23
+      ]
+    ],
+    "expected_forex_pairs": 20,
+    "expected_etf_symbols": 34
+  },
+  "feature_pruning": {
+    "status": "SUCCESS",
+    "forex_instruments_in_db": 20,
+    "etf_instruments_in_db": 34,
+    "pruned_instruments": [
+      [
+        "EUR_CHF",
+        23
+      ],
+      [
+        "SHY",
+        23
+      ],
+      [
+        "EUR_CAD",
+        23
+      ],
+      [
+        "CEW",
+        23
+      ],
+      [
+        "XLI",
+        23
+      ],
+      [
+        "DIA",
+        23
+      ],
+      [
+        "USD_CHF",
+        23
+      ],
+      [
+        "SLV",
+        23
+      ],
+      [
+        "FXB",
+        23
+      ],
+      [
+        "AUD_JPY",
+        23
+      ],
+      [
+        "XLF",
+        23
+      ],
+      [
+        "EFA",
+        23
+      ],
+      [
+        "NZD_USD",
+        23
+      ],
+      [
+        "EUR_USD",
+        23
+      ],
+      [
+        "USD_JPY",
+        23
+      ],
+      [
+        "VNQ",
+        23
+      ],
+      [
+        "UUP",
+        23
+      ],
+      [
+        "GLD",
+        23
+      ],
+      [
+        "DBC",
+        23
+      ],
+      [
+        "FXY",
+        23
+      ],
+      [
+        "IEF",
+        23
+      ],
+      [
+        "EWZ",
+        23
+      ],
+      [
+        "GBP_AUD",
+        23
+      ],
+      [
+        "TLT",
+        23
+      ],
+      [
+        "EUR_AUD",
+        23
+      ],
+      [
+        "BTC-USD",
+        23
+      ],
+      [
+        "EUR_GBP",
+        23
+      ],
+      [
+        "CAD_JPY",
+        23
+      ],
+      [
+        "EUR_JPY",
+        23
+      ],
+      [
+        "AUD_CHF",
+        23
+      ],
+      [
+        "EZU",
+        23
+      ],
+      [
+        "ASHR",
+        23
+      ],
+      [
+        "GBP_JPY",
+        23
+      ],
+      [
+        "EMB",
+        23
+      ],
+      [
+        "BND",
+        23
+      ],
+      [
+        "CYB",
+        23
+      ],
+      [
+        "USD_CAD",
+        23
+      ],
+      [
+        "NZD_JPY",
+        23
+      ],
+      [
+        "USO",
+        23
+      ],
+      [
+        "AUD_USD",
+        23
+      ],
+      [
+        "GBP_CHF",
+        23
+      ],
+      [
+        "UNG",
+        23
+      ],
+      [
+        "AUD_NZD",
+        23
+      ],
+      [
+        "DBA",
+        23
+      ],
+      [
+        "BWX",
+        23
+      ],
+      [
+        "GBP_USD",
+        23
+      ],
+      [
+        "VIXY",
+        23
+      ],
+      [
+        "EWJ",
+        23
+      ],
+      [
+        "EEM",
+        23
+      ],
+      [
+        "SPY",
+        23
+      ],
+      [
+        "QQQ",
+        23
+      ],
+      [
+        "FXF",
+        23
+      ],
+      [
+        "XLE",
+        23
+      ],
+      [
+        "FXE",
+        23
+      ]
+    ],
+    "pruned_count": 54
+  },
+  "autoencoder": {
+    "status": "FAILED",
+    "existing_models": {
+      "fusion_autoencoder.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/fusion_autoencoder.pt",
+        "exists": false
+      },
+      "autoencoder_fx.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/autoencoder_fx.pt",
+        "exists": false
+      },
+      "autoencoder_etf.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/autoencoder_etf.pt",
+        "exists": false
+      },
+      "autoencoder_unified.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/autoencoder_unified.pt",
+        "exists": false
+      }
+    },
+    "fusion_autoencoder_loaded": false,
+    "bottleneck_dim": null,
+    "error": "Error(s) in loading state_dict for AutoencoderModel:\n\tUnexpected key(s) in state_dict: \"encoder.6.weight\", \"encoder.6.bias\", \"encoder.8.weight\", \"encoder.8.bias\", \"encoder.8.running_mean\", \"encoder.8.running_var\", \"encoder.8.num_batches_tracked\", \"decoder.5.weight\", \"decoder.5.bias\", \"decoder.5.running_mean\", \"decoder.5.running_var\", \"decoder.5.num_batches_tracked\", \"decoder.6.weight\", \"decoder.6.bias\". \n\tsize mismatch for encoder.0.weight: copying a param with shape torch.Size([621, 1242]) from checkpoint, the shape in current model is torch.Size([128, 1242]).\n\tsize mismatch for encoder.0.bias: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for encoder.2.weight: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for encoder.2.bias: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for encoder.2.running_mean: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for encoder.2.running_var: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for encoder.3.weight: copying a param with shape torch.Size([310, 621]) from checkpoint, the shape in current model is torch.Size([64, 128]).\n\tsize mismatch for encoder.3.bias: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([64]).\n\tsize mismatch for encoder.5.weight: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([64]).\n\tsize mismatch for encoder.5.bias: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([64]).\n\tsize mismatch for encoder.5.running_mean: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([64]).\n\tsize mismatch for encoder.5.running_var: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([64]).\n\tsize mismatch for decoder.0.weight: copying a param with shape torch.Size([310, 64]) from checkpoint, the shape in current model is torch.Size([128, 64]).\n\tsize mismatch for decoder.0.bias: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for decoder.2.weight: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for decoder.2.bias: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for decoder.2.running_mean: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for decoder.2.running_var: copying a param with shape torch.Size([310]) from checkpoint, the shape in current model is torch.Size([128]).\n\tsize mismatch for decoder.3.weight: copying a param with shape torch.Size([621, 310]) from checkpoint, the shape in current model is torch.Size([1242, 128]).\n\tsize mismatch for decoder.3.bias: copying a param with shape torch.Size([621]) from checkpoint, the shape in current model is torch.Size([1242])."
+  },
+  "policy_network": {
+    "status": "SUCCESS",
+    "trader_initialized": true,
+    "n_instruments": 20,
+    "state_dim": null,
+    "existing_policies": {
+      "rl_trader.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/rl_trader.pt",
+        "exists": false
+      },
+      "best_policy.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/best_policy.pt",
+        "exists": false
+      },
+      "rl_policy.pt": {
+        "path": "/Users/kingjames/trader/trading_systems/rl/../models/rl_policy.pt",
+        "exists": false
+      }
+    },
+    "error": null
+  },
+  "reward_function": {
+    "status": "FAILED",
+    "error": "'reward'"
+  },
+  "data_loading": {
+    "status": "SUCCESS",
+    "forex_data_loaded": true,
+    "forex_data_shape": [
+      1000,
+      115
+    ],
+    "forex_error": null,
+    "etf_data_loaded": true,
+    "etf_data_shape": [
+      1000,
+      115
+    ],
+    "etf_error": null
+  },
+  "overall_status": "MOSTLY_OPERATIONAL"
+}

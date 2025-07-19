@@ -10,9 +10,9 @@ from pathlib import Path
 from rl.constants import PAIRS_BY_LIQUIDITY_OANDA
 
 # Path to saved models
-MODELS_DIR = Path(os.path.join(os.path.dirname(__file__), "..", "models"))
+MODELS_DIR = Path(os.path.join(os.path.dirname(__file__), "models"))
 # FUSION_AUTOENCODER_PATH = MODELS_DIR / "fusion_autoencoder.pt" # Old path
-FUSION_AUTOENCODER_PATH = Path(os.path.join(os.path.dirname(__file__), "..", "models", "fusion_autoencoder.pt")) # New path to workspace root/models
+FUSION_AUTOENCODER_PATH = Path(os.path.join(os.path.dirname(__file__), "models", "fusion_autoencoder.pt")) # New path to rl/models
 
 # Import ScaledTanhInput for autoencoder
 class ScaledTanhInput(nn.Module):
@@ -26,32 +26,38 @@ class ScaledTanhInput(nn.Module):
 
 # Autoencoder model definition for loading
 class AutoencoderModel(nn.Module):
-    def __init__(self, n_features, bottleneck_dim=149):
+    def __init__(self, n_features, bottleneck_dim=64):
         super().__init__()
-        # Define layer sizes with progressive compression
+        # Define layer sizes with progressive compression to match trained model
         self.bottleneck_dim = bottleneck_dim
-        hidden_dim = bottleneck_dim * 2
+        hidden_dim1 = n_features // 2
+        hidden_dim2 = n_features // 4
         
         # Input scaling layer
         self.input_layer = ScaledTanhInput(n_features)
         
-        # Encoder layers with tanh activation
+        # Encoder layers with LeakyReLU activation (matching trained model)
         self.encoder = nn.Sequential(
-            nn.Linear(n_features, hidden_dim),
-            nn.Tanh(),
-            nn.BatchNorm1d(hidden_dim),
-            nn.Linear(hidden_dim, bottleneck_dim),
-            nn.Tanh(),
+            nn.Linear(n_features, hidden_dim1),
+            nn.LeakyReLU(0.2),
+            nn.BatchNorm1d(hidden_dim1),
+            nn.Linear(hidden_dim1, hidden_dim2),
+            nn.LeakyReLU(0.2),
+            nn.BatchNorm1d(hidden_dim2),
+            nn.Linear(hidden_dim2, bottleneck_dim),
+            nn.Tanh(),  # Keep tanh in bottleneck for bounded representation
             nn.BatchNorm1d(bottleneck_dim)
         )
         
-        # Decoder layers with tanh activation
+        # Decoder layers with LeakyReLU activation (matching trained model)
         self.decoder = nn.Sequential(
-            nn.Linear(bottleneck_dim, hidden_dim),
-            nn.Tanh(),
-            nn.BatchNorm1d(hidden_dim),
-            nn.Linear(hidden_dim, n_features),
-            nn.Tanh()  # Final tanh for bounded output
+            nn.Linear(bottleneck_dim, hidden_dim2),
+            nn.LeakyReLU(0.2),
+            nn.BatchNorm1d(hidden_dim2),
+            nn.Linear(hidden_dim2, hidden_dim1),
+            nn.LeakyReLU(0.2),
+            nn.BatchNorm1d(hidden_dim1),
+            nn.Linear(hidden_dim1, n_features)
         )
     
     def forward(self, x):
@@ -71,7 +77,7 @@ class PolicyNetwork(nn.Module):
     RL policy network (Actor) that takes fusion autoencoder's bottleneck as input
     and outputs parameters for action distributions (means) for 20 currency pairs.
     """
-    def __init__(self, bottleneck_dim: int = 149, n_instruments: int = 20, hidden_dims: List[int] = [256, 128]):
+    def __init__(self, bottleneck_dim: int = 64, n_instruments: int = 20, hidden_dims: List[int] = [256, 128]):
         super().__init__()
         self.bottleneck_dim = bottleneck_dim
         self.n_instruments = n_instruments
@@ -167,7 +173,7 @@ class ValueNetwork(nn.Module):
     Input is the fusion autoencoder's bottleneck representation.
     Output is a single scalar value.
     """
-    def __init__(self, bottleneck_dim: int = 149, hidden_dims: List[int] = [256, 128]):
+    def __init__(self, bottleneck_dim: int = 64, hidden_dims: List[int] = [256, 128]):
         super().__init__()
         self.bottleneck_dim = bottleneck_dim
         

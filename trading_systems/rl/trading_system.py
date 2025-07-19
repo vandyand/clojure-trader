@@ -384,17 +384,27 @@ class TradingSystem:
     
     def _load_market_data(self):
         """Load market data from database."""
-        print("Loading market data from database...")
+        logger.info("Loading market data from database...")
         
         # Load forex data
-        print("Loading forex data...")
-        forex_data = self.load_forex_data()
+        logger.info("Loading forex data...")
+        try:
+            forex_data = self.load_forex_data()
+            logger.info(f"Forex data loaded: {forex_data.shape if forex_data is not None else 'None'}")
+        except Exception as e:
+            logger.error(f"Error loading forex data: {e}")
+            raise
         if forex_data is None or forex_data.empty:
             raise ValueError("Failed to load forex data")
             
         # Load ETF data
-        print("Loading ETF data...")
-        etf_data = self.load_etf_data()
+        logger.info("Loading ETF data...")
+        try:
+            etf_data = self.load_etf_data()
+            logger.info(f"ETF data loaded: {etf_data.shape if etf_data is not None else 'None'}")
+        except Exception as e:
+            logger.error(f"Error loading ETF data: {e}")
+            raise
         if etf_data is None or etf_data.empty:
             raise ValueError("Failed to load ETF data")
             
@@ -599,23 +609,35 @@ class TradingSystem:
 
     def load_forex_data(self):
         """Load forex data from database."""
-        forex_data, _ = load_instrument_data(
-            target_instruments=PAIRS_BY_LIQUIDITY_OANDA,
-            instrument_feature_map=get_selected_features_per_instrument(),
-            table_name='forex_features',
-            n_rows=50000
-        )
-        return forex_data
+        logger.info("Starting forex data load from database...")
+        try:
+            forex_data, _ = load_instrument_data(
+                target_instruments=PAIRS_BY_LIQUIDITY_OANDA,
+                instrument_feature_map=get_selected_features_per_instrument(),
+                table_name='forex_features',
+                n_rows=50000
+            )
+            logger.info(f"Forex data load completed: {forex_data.shape if forex_data is not None else 'None'}")
+            return forex_data
+        except Exception as e:
+            logger.error(f"Error in load_forex_data: {e}")
+            raise
 
     def load_etf_data(self):
         """Load ETF data from database."""
-        etf_data, _ = load_instrument_data(
-            target_instruments=ETF_SYMBOLS,
-            instrument_feature_map=get_selected_features_per_instrument(),
-            table_name='etf_features',
-            n_rows=50000
+        logger.info("Starting ETF data load from database...")
+        try:
+            etf_data, _ = load_instrument_data(
+                target_instruments=ETF_SYMBOLS,
+                instrument_feature_map=get_selected_features_per_instrument(),
+                table_name='etf_features',
+                n_rows=50000
         )
-        return etf_data
+            logger.info(f"ETF data load completed: {etf_data.shape if etf_data is not None else 'None'}")
+            return etf_data
+        except Exception as e:
+            logger.error(f"Error in load_etf_data: {e}")
+            raise
 
     def calculate_reward(self, 
                         current_positions: torch.Tensor,
@@ -679,8 +701,13 @@ def main():
     """Main entry point"""
     args = parse_args()
     
+    logger.info("Starting Trading System")
+    logger.info(f"Arguments: {args}")
+    
     # Create trading system
+    logger.info("Creating TradingSystem instance...")
     system = TradingSystem(train_on_startup=False)
+    logger.info("TradingSystem created successfully")
     
     # Train if requested
     if args.train:
@@ -696,8 +723,11 @@ def main():
     
     # Run simulation if requested
     if args.sim:
+        logger.info(f"Starting simulation for {args.sim_days} days...")
         # Load market data for simulation
+        logger.info("Loading market data...")
         market_data = system._load_market_data()
+        logger.info("Market data loaded successfully")
         sim_results = system.generate_trading_signals(
             features=market_data['features'],
             price_changes=market_data['price_changes'],
@@ -712,7 +742,10 @@ def main():
     
     # If no action specified, generate current signals
     if not (args.train or args.eval or args.sim):
+        logger.info("No specific action requested, generating current signals...")
+        logger.info("Loading market data...")
         market_data = system._load_market_data()
+        logger.info("Market data loaded successfully")
         signals = system.generate_trading_signals(
             features=market_data['features'],
             price_changes=market_data['price_changes'],

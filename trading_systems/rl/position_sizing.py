@@ -340,6 +340,50 @@ def convert_target_positions_to_oanda_format(target_positions):
     }
 
 # Testing function
+class PositionSizer:
+    """
+    Simple position sizer that converts trading signals to position sizes
+    """
+    def __init__(self, account_size=1000.0, risk_percent=5.0):
+        self.account_size = account_size
+        self.risk_percent = risk_percent
+        self.max_risk_amount = account_size * (risk_percent / 100.0)
+    
+    def convert_signals_to_positions(self, signals):
+        """
+        Convert trading signals to position sizes
+        
+        Args:
+            signals: List of signal dictionaries with 'instrument', 'position', 'direction', 'strength'
+            
+        Returns:
+            Dictionary with 'positions' and metadata
+        """
+        positions = {}
+        total_allocation = 0
+        
+        for signal in signals:
+            instrument = signal['instrument']
+            position_strength = abs(signal['position'])
+            
+            # Calculate position size based on signal strength and risk
+            if position_strength > 0.1:  # Only take positions above threshold
+                # Allocate based on signal strength
+                allocation = self.max_risk_amount * position_strength
+                positions[instrument] = {
+                    'size': allocation,
+                    'direction': signal['direction'],
+                    'strength': position_strength
+                }
+                total_allocation += allocation
+        
+        return {
+            'positions': positions,
+            'total_allocation': total_allocation,
+            'account_size': self.account_size,
+            'risk_percent': self.risk_percent
+        }
+
 def test_position_sizing():
     """Test position sizing calculations"""
     # Initialize API

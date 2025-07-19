@@ -223,7 +223,7 @@ def generate_trading_signals(account_size=1000.0, risk_percent=5.0, model_path='
         # Display position sizes
         logger.info("\n===== POSITION SIZES =====")
         logger.info(f"Account size: ${position_sizes['account_size']:.2f}")
-        logger.info(f"Risk amount: ${position_sizes['risk_amount']:.2f}")
+        logger.info(f"Risk amount: ${position_sizes['total_allocation']:.2f}")
         
         if use_regime_detection and adapt_position_sizing:
             logger.info(f"Adaptive sizing: Yes (Risk {position_sizes['risk_percent']:.2f}%)")
@@ -231,13 +231,8 @@ def generate_trading_signals(account_size=1000.0, risk_percent=5.0, model_path='
         logger.info("\nInstrument   |   Direction   |   Position Size   |   USD Amount")
         logger.info("--------------------------------------------------------------")
         
-        for pos in position_sizes["positions"]:
-            instrument_info = f"{pos['instrument']:<12} | {pos['direction']:<12} | {pos['position_size']:<16.6f} | ${pos['usd_amount']:<8.2f}"
-            
-            # Add regime info if available
-            if use_regime_detection and 'regime' in pos:
-                instrument_info += f" | {pos['regime']}"
-                
+        for instrument, pos in position_sizes["positions"].items():
+            instrument_info = f"{instrument:<12} | {pos['direction']:<12} | {pos['size']:<16.6f} | ${pos['size']:<8.2f}"
             logger.info(instrument_info)
         
         return position_sizes

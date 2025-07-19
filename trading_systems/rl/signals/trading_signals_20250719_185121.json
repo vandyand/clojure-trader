@@ -1,0 +1,125 @@
+{
+  "timestamp": "2025-07-19T18:51:21.082242",
+  "signals": [
+    {
+      "instrument": "EUR_USD",
+      "position": 0.15297554433345795,
+      "direction": "LONG",
+      "strength": 0.15297554433345795
+    },
+    {
+      "instrument": "USD_JPY",
+      "position": -1.2621731758117676,
+      "direction": "SHORT",
+      "strength": 1.2621731758117676
+    },
+    {
+      "instrument": "GBP_USD",
+      "position": 0.12772823870182037,
+      "direction": "LONG",
+      "strength": 0.12772823870182037
+    },
+    {
+      "instrument": "AUD_USD",
+      "position": 1.065730094909668,
+      "direction": "LONG",
+      "strength": 1.065730094909668
+    },
+    {
+      "instrument": "USD_CHF",
+      "position": 0.33178818225860596,
+      "direction": "LONG",
+      "strength": 0.33178818225860596
+    },
+    {
+      "instrument": "USD_CAD",
+      "position": 0.24327832460403442,
+      "direction": "LONG",
+      "strength": 0.24327832460403442
+    },
+    {
+      "instrument": "NZD_USD",
+      "position": -0.905869722366333,
+      "direction": "SHORT",
+      "strength": 0.905869722366333
+    },
+    {
+      "instrument": "EUR_JPY",
+      "position": 0.3803989589214325,
+      "direction": "LONG",
+      "strength": 0.3803989589214325
+    },
+    {
+      "instrument": "GBP_JPY",
+      "position": 0.26632657647132874,
+      "direction": "LONG",
+      "strength": 0.26632657647132874
+    },
+    {
+      "instrument": "EUR_GBP",
+      "position": -0.28336653113365173,
+      "direction": "SHORT",
+      "strength": 0.28336653113365173
+    },
+    {
+      "instrument": "EUR_CHF",
+      "position": 0.3746996819972992,
+      "direction": "LONG",
+      "strength": 0.3746996819972992
+    },
+    {
+      "instrument": "EUR_AUD",
+      "position": 0.9800633192062378,
+      "direction": "LONG",
+      "strength": 0.9800633192062378
+    },
+    {
+      "instrument": "EUR_CAD",
+      "position": 0.07371336966753006,
+      "direction": "NEUTRAL",
+      "strength": 0.07371336966753006
+    },
+    {
+      "instrument": "GBP_CHF",
+      "position": 0.9330275058746338,
+      "direction": "LONG",
+      "strength": 0.9330275058746338
+    },
+    {
+      "instrument": "AUD_JPY",
+      "position": 0.012569203972816467,
+      "direction": "NEUTRAL",
+      "strength": 0.012569203972816467
+    },
+    {
+      "instrument": "AUD_CHF",
+      "position": 0.5314598083496094,
+      "direction": "LONG",
+      "strength": 0.5314598083496094
+    },
+    {
+      "instrument": "CAD_JPY",
+      "position": 0.04753644019365311,
+      "direction": "NEUTRAL",
+      "strength": 0.04753644019365311
+    },
+    {
+      "instrument": "NZD_JPY",
+      "position": 0.860175609588623,
+      "direction": "LONG",
+      "strength": 0.860175609588623
+    },
+    {
+      "instrument": "GBP_AUD",
+      "position": -0.5325681567192078,
+      "direction": "SHORT",
+      "strength": 0.5325681567192078
+    },
+    {
+      "instrument": "AUD_NZD",
+      "position": -0.10644694417715073,
+      "direction": "SHORT",
+      "strength": 0.10644694417715073
+    }
+  ]
+}

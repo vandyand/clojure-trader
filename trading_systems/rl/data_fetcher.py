@@ -12,8 +12,10 @@ from typing import List, Dict, Any, Tuple, Optional
 # Add parent directory to path to ensure imports work
 sys.path.append(str(Path(__file__).parent.parent))
 
-from rl.constants import PAIRS_BY_LIQUIDITY_OANDA
-from api.oanda_api import get_candles, get_latest_price
+from rl.constants import PAIRS_BY_LIQUIDITY_OANDA, ETF_SYMBOLS
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from api_clients.oanda.api.oanda_api import get_candles, get_latest_price
 from rl.feature_engineering import calculate_features
 from rl.data.fetch_etf_data import fetch_historical_etf_data, fetch_latest_etf_price
 
@@ -51,7 +53,7 @@ class MarketDataFetcher:
             etf_symbols: Additional ETF symbols to include
         """
         self.forex_instruments = PAIRS_BY_LIQUIDITY_OANDA
-        self.etf_symbols = etf_symbols or []
+        self.etf_symbols = etf_symbols or ETF_SYMBOLS
         
         # Combine all instruments
         self.instruments = instruments or (self.forex_instruments + self.etf_symbols)
@@ -363,8 +365,8 @@ class MarketDataFetcher:
             # Convert to numpy array
             feature_vector = np.array(feature_vector)
             
-            # Check if feature vector has the correct length for the model (1084)
-            expected_length = 1084  # The expected number of features for the model
+            # Check if feature vector has the correct length for the model (1242)
+            expected_length = 1242  # The expected number of features for the model (forex + ETF)
             actual_length = len(feature_vector)
             
             if actual_length != expected_length:
