@@ -1,0 +1,187 @@
+{
+  "timestamp": "2025-07-19T20:55:41.820105",
+  "regimes": {
+    "EUR_USD": {
+      "instrument": "EUR_USD",
+      "timestamp": "2025-07-19T20:55:41.162061",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 1.0
+    },
+    "USD_JPY": {
+      "instrument": "USD_JPY",
+      "timestamp": "2025-07-19T20:55:41.241683",
+      "method": "ensemble",
+      "regime_code": 2,
+      "regime_name": "BEAR",
+      "confidence": 0.358974358974359
+    },
+    "GBP_USD": {
+      "instrument": "GBP_USD",
+      "timestamp": "2025-07-19T20:55:41.267609",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6410256410256411
+    },
+    "AUD_USD": {
+      "instrument": "AUD_USD",
+      "timestamp": "2025-07-19T20:55:41.289336",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 1.0
+    },
+    "USD_CHF": {
+      "instrument": "USD_CHF",
+      "timestamp": "2025-07-19T20:55:41.330324",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6923076923076924
+    },
+    "USD_CAD": {
+      "instrument": "USD_CAD",
+      "timestamp": "2025-07-19T20:55:41.356307",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6410256410256411
+    },
+    "NZD_USD": {
+      "instrument": "NZD_USD",
+      "timestamp": "2025-07-19T20:55:41.384184",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 1.0
+    },
+    "EUR_JPY": {
+      "instrument": "EUR_JPY",
+      "timestamp": "2025-07-19T20:55:41.424362",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6923076923076924
+    },
+    "GBP_JPY": {
+      "instrument": "GBP_JPY",
+      "timestamp": "2025-07-19T20:55:41.472411",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6923076923076924
+    },
+    "EUR_GBP": {
+      "instrument": "EUR_GBP",
+      "timestamp": "2025-07-19T20:55:41.514190",
+      "method": "ensemble",
+      "regime_code": 5,
+      "regime_name": "STRONG_BULL",
+      "confidence": 0.33333333333333337
+    },
+    "EUR_CHF": {
+      "instrument": "EUR_CHF",
+      "timestamp": "2025-07-19T20:55:41.535046",
+      "method": "ensemble",
+      "regime_code": 2,
+      "regime_name": "BEAR",
+      "confidence": 0.6666666666666666
+    },
+    "EUR_AUD": {
+      "instrument": "EUR_AUD",
+      "timestamp": "2025-07-19T20:55:41.559909",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 1.0
+    },
+    "EUR_CAD": {
+      "instrument": "EUR_CAD",
+      "timestamp": "2025-07-19T20:55:41.621592",
+      "method": "ensemble",
+      "regime_code": 2,
+      "regime_name": "BEAR",
+      "confidence": 0.358974358974359
+    },
+    "GBP_CHF": {
+      "instrument": "GBP_CHF",
+      "timestamp": "2025-07-19T20:55:41.643614",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6923076923076924
+    },
+    "AUD_JPY": {
+      "instrument": "AUD_JPY",
+      "timestamp": "2025-07-19T20:55:41.700636",
+      "method": "ensemble",
+      "regime_code": 4,
+      "regime_name": "BULL",
+      "confidence": 0.6410256410256411
+    },
+    "AUD_CHF": {
+      "instrument": "AUD_CHF",
+      "timestamp": "2025-07-19T20:55:41.717485",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.6923076923076924
+    },
+    "CAD_JPY": {
+      "instrument": "CAD_JPY",
+      "timestamp": "2025-07-19T20:55:41.737920",
+      "method": "ensemble",
+      "regime_code": 3,
+      "regime_name": "NEUTRAL",
+      "confidence": 0.358974358974359
+    },
+    "NZD_JPY": {
+      "instrument": "NZD_JPY",
+      "timestamp": "2025-07-19T20:55:41.756706",
+      "method": "ensemble",
+      "regime_code": 4,
+      "regime_name": "BULL",
+      "confidence": 1.0
+    },
+    "GBP_AUD": {
+      "instrument": "GBP_AUD",
+      "timestamp": "2025-07-19T20:55:41.774533",
+      "method": "ensemble",
+      "regime_code": 2,
+      "regime_name": "BEAR",
+      "confidence": 0.6666666666666666
+    },
+    "AUD_NZD": {
+      "instrument": "AUD_NZD",
+      "timestamp": "2025-07-19T20:55:41.792915",
+      "method": "ensemble",
+      "regime_code": 4,
+      "regime_name": "BULL",
+      "confidence": 0.6923076923076924
+    }
+  },
+  "volatilities": {
+    "EUR_USD": 0.05266699183809622,
+    "USD_JPY": 0.08349128374098254,
+    "GBP_USD": 0.05900261023828126,
+    "AUD_USD": 0.07427563749887062,
+    "USD_CHF": 0.06415400654972035,
+    "USD_CAD": 0.04996188663602697,
+    "NZD_USD": 0.06947202615782512,
+    "EUR_JPY": 0.05768655544137343,
+    "GBP_JPY": 0.06904640722933353,
+    "EUR_GBP": 0.051612695259358826,
+    "EUR_CHF": 0.03277117865768377,
+    "EUR_AUD": 0.05197020626238336,
+    "EUR_CAD": 0.04777371863374824,
+    "GBP_CHF": 0.05716338128349442,
+    "AUD_JPY": 0.06802161562155118,
+    "AUD_CHF": 0.05957499498452657,
+    "CAD_JPY": 0.07043106074557155,
+    "NZD_JPY": 0.06351203005715371,
+    "GBP_AUD": 0.06907434487365,
+    "AUD_NZD": 0.030315200560640604
+  }
+}

@@ -12,11 +12,11 @@ import logging
 # Add parent directory to path to ensure imports work
 sys.path.append(str(Path(__file__).parent.parent))
 
-from rl.policy_network import RLTrader
-from rl.constants import PAIRS_BY_LIQUIDITY_OANDA
-from rl.data_fetcher import MarketDataFetcher
-from rl.position_sizing import PositionSizer
-from rl.market_regime import MarketRegimeDetector, AdaptivePositionSizer, calculate_volatilities
+from policy_network import RLTrader
+from constants import PAIRS_BY_LIQUIDITY_OANDA
+from data_fetcher import MarketDataFetcher
+from position_sizing import PositionSizer
+from market_regime import MarketRegimeDetector, AdaptivePositionSizer, calculate_volatilities
 
 # Setup logging
 logging.basicConfig(
@@ -179,15 +179,35 @@ def generate_trading_signals(account_size=1000.0, risk_percent=5.0, model_path='
             if 'positions' in position_sizes and regime_infos:
                 logger.info("Applying adaptive position sizing based on market regimes")
                 
+                # Convert positions dict to list format expected by adaptive_sizer
+                positions_list = []
+                for instrument, pos in position_sizes['positions'].items():
+                    positions_list.append({
+                        'instrument': instrument,
+                        'position_size': pos['size'],
+                        'direction': pos['direction'],
+                        'usd_amount': pos['size']  # Using size as USD amount for simplicity
+                    })
+                
                 # Adapt positions
                 adapted_positions = adaptive_sizer.adjust_position_sizes(
-                    position_sizes['positions'], 
+                    positions_list, 
                     regime_infos,
                     volatilities
                 )
                 
+                # Convert back to dict format
+                adapted_positions_dict = {}
+                for pos in adapted_positions:
+                    instrument = pos['instrument']
+                    adapted_positions_dict[instrument] = {
+                        'size': pos['position_size'],
+                        'direction': pos['direction'],
+                        'strength': pos.get('adjustment_factor', 1.0)
+                    }
+                
                 # Replace with adapted positions
-                position_sizes['positions'] = adapted_positions
+                position_sizes['positions'] = adapted_positions_dict
                 position_sizes['adaptive_sizing'] = True
                 position_sizes['risk_percent'] = adaptive_sizer.current_risk_percent
                 

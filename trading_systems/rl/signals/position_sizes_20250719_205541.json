@@ -1,0 +1,98 @@
+{
+  "positions": {
+    "EUR_USD": {
+      "size": 294.60516321670326,
+      "direction": "LONG",
+      "strength": 0.9499680409412927
+    },
+    "USD_JPY": {
+      "size": 195.69328867270002,
+      "direction": "LONG",
+      "strength": 0.9045927345268536
+    },
+    "GBP_USD": {
+      "size": 27.53941398050489,
+      "direction": "LONG",
+      "strength": 0.9442847357807689
+    },
+    "USD_CHF": {
+      "size": 195.91886435981004,
+      "direction": "LONG",
+      "strength": 0.9397136070955319
+    },
+    "USD_CAD": {
+      "size": 232.91300211582845,
+      "direction": "LONG",
+      "strength": 0.9524155235804798
+    },
+    "NZD_USD": {
+      "size": 188.84268628778563,
+      "direction": "LONG",
+      "strength": 0.935040819714182
+    },
+    "GBP_JPY": {
+      "size": 143.87001074038795,
+      "direction": "LONG",
+      "strength": 0.9354130870630001
+    },
+    "EUR_GBP": {
+      "size": 53.05184112162303,
+      "direction": "LONG",
+      "strength": 1.220347889597154
+    },
+    "EUR_CHF": {
+      "size": 111.49251069159867,
+      "direction": "LONG",
+      "strength": 0.92953794590563
+    },
+    "EUR_AUD": {
+      "size": 249.5049249835033,
+      "direction": "LONG",
+      "strength": 0.9505972641116597
+    },
+    "EUR_CAD": {
+      "size": 27.1836678050666,
+      "direction": "LONG",
+      "strength": 0.9354294021358909
+    },
+    "GBP_CHF": {
+      "size": 427.28051380333443,
+      "direction": "LONG",
+      "strength": 0.9459275810196028
+    },
+    "AUD_JPY": {
+      "size": 121.03838407065535,
+      "direction": "LONG",
+      "strength": 1.1879325792909776
+    },
+    "AUD_CHF": {
+      "size": 93.66787208046904,
+      "direction": "LONG",
+      "strength": 0.9437746310864984
+    },
+    "CAD_JPY": {
+      "size": 135.9030436852092,
+      "direction": "LONG",
+      "strength": 0.9342030857208915
+    },
+    "NZD_JPY": {
+      "size": 188.54335513040382,
+      "direction": "LONG",
+      "strength": 1.3446016214063428
+    },
+    "GBP_AUD": {
+      "size": 147.77048141951735,
+      "direction": "LONG",
+      "strength": 0.8979730966357246
+    },
+    "AUD_NZD": {
+      "size": 201.7823460279216,
+      "direction": "LONG",
+      "strength": 1.2533075067176276
+    }
+  },
+  "total_allocation": 3083.470955491066,
+  "account_size": 10000.0,
+  "risk_percent": 2.053846153846154,
+  "adaptive_sizing": true
+}
