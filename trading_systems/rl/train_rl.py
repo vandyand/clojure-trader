@@ -8,8 +8,8 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 from tqdm import tqdm
 
-from rl.policy_network import RLTrader, FusionAutoencoder
-from rl.constants import PAIRS_BY_LIQUIDITY_OANDA
+from policy_network import RLTrader, FusionAutoencoder
+from constants import PAIRS_BY_LIQUIDITY_OANDA
 
 def load_market_data(n_features=1084, start_date=None, end_date=None, sample_size=None):
     """
@@ -300,7 +300,7 @@ def calculate_max_drawdown(returns):
 
 if __name__ == "__main__":
     # Create and train the RL trader
-    trader = RLTrader(learning_rate=1e-4, gamma=0.99, entropy_weight=0.01)
+    trader = RLTrader(actor_lr=1e-4, critic_lr=1e-3, gamma=0.99, entropy_weight=0.01)
     
     # Train the policy
     trader = train_policy(trader, batch_size=64, n_epochs=50, save_interval=5)

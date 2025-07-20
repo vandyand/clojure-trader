@@ -7,7 +7,7 @@ import sys
 from typing import Dict, List, Tuple, Optional
 from pathlib import Path
 
-from rl.constants import PAIRS_BY_LIQUIDITY_OANDA
+from constants import PAIRS_BY_LIQUIDITY_OANDA
 
 # Path to saved models
 MODELS_DIR = Path(os.path.join(os.path.dirname(__file__), "models"))
@@ -372,7 +372,7 @@ class RewardCalculator:
     def apply_entropy_penalty(self, positions: np.ndarray, normalized_entropy: float) -> Tuple[np.ndarray, float]:
         """
         Apply entropy-based scaling to positions while preserving signs.
-        Modified to have reduced entropy penalty.
+        Uses the exact formula from reward-info.md.
         
         Args:
             positions: Position sizes [n_instruments] (can be positive or negative)
@@ -382,10 +382,8 @@ class RewardCalculator:
             scaled_positions: Scaled positions [n_instruments]
             scaling_factor: Applied scaling factor
         """
-        # Reduce the entropy penalty by 50%
-        # Original: scaling_factor = 1.0 - normalized_entropy
-        # New: 1.0 - (normalized_entropy * 0.5) = 1.0 - normalized_entropy/2
-        scaling_factor = 1.0 - (normalized_entropy * 0.5)
+        # Use the exact formula from reward-info.md: Scaling Factor = 1 - Normalized Entropy
+        scaling_factor = 1.0 - normalized_entropy
         return positions * scaling_factor, scaling_factor
     
     def portfolio_return(self, final_positions: np.ndarray, price_changes: np.ndarray) -> float:
@@ -435,13 +433,13 @@ class RewardCalculator:
         # Calculate DSR
         dsr = numerator / denominator
         
-        # Update tracking variables for next iteration
-        self.mu_prev = self.mu_prev + self.beta * delta
-        self.sigma_sq_prev = self.sigma_sq_prev + self.beta * (R_t ** 2 - self.sigma_sq_prev)
-        
         # Handle NaN/Inf
         if np.isnan(dsr) or np.isinf(dsr):
             return 0.0
+            
+        # Update tracking variables for next iteration (after DSR calculation)
+        self.mu_prev = self.mu_prev + self.beta * delta
+        self.sigma_sq_prev = self.sigma_sq_prev + self.beta * (R_t ** 2 - self.sigma_sq_prev)
             
         return float(dsr)
     
