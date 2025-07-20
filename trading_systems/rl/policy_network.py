@@ -316,30 +316,41 @@ class RewardCalculator:
     def __init__(self, n_instruments: int = 20, beta: float = 0.95):
         self.n_instruments = n_instruments
         self.beta = beta
+        # Initialize DSR tracking variables
+        self.mu_prev = 0.0  # Previous mean return
+        self.sigma_sq_prev = 0.0001  # Previous variance (0.01^2)
         
         # Initialize tracking variables for Differential Sharpe Ratio
         self.mu = 0.0  # Mean return
         self.sigma_sq = 0.0001  # Initial variance (0.01²)
         
-    def normalize_positions(self, raw_outputs: np.ndarray) -> np.ndarray:
+    def normalize_positions(self, raw_outputs: np.ndarray) -> Tuple[np.ndarray, float]:
         """
-        Normalize positions to control total exposure while preserving sign.
-        Modified to be less aggressive with normalization.
+        Normalize positions using Dirichlet-inspired approach as in reward-info.md.
         
         Args:
             raw_outputs: Raw model outputs [n_instruments]
             
         Returns:
-            Normalized positions [n_instruments] (can be positive or negative)
+            normalized_positions: Normalized positions [n_instruments]
+            alpha_0: Total concentration parameter
         """
-        # Sum of absolute values for normalization
-        total_exposure = np.sum(np.abs(raw_outputs)) + 1e-8
+        # Calculate alpha values (position confidence)
+        long_positions = np.maximum(raw_outputs, 0)
+        short_positions = np.maximum(-raw_outputs, 0)
+        alpha = long_positions + short_positions
         
-        # Apply less aggressive normalization - allow for larger positions
-        # Original: return raw_outputs / total_exposure
-        # Using a higher divisor allows for larger effective positions
-        scaling_factor = 0.5  # Make positions 2x larger than original normalization
-        return raw_outputs / (total_exposure * scaling_factor)
+        # Calculate total concentration parameter
+        alpha_0 = np.sum(alpha) + 1e-8
+        
+        # Normalize positions by alpha_0
+        normalized_positions = alpha / alpha_0
+        
+        # Restore signs (long positions positive, short positions negative)
+        signs = np.sign(raw_outputs)
+        normalized_positions = normalized_positions * signs
+        
+        return normalized_positions, alpha_0
     
     def position_entropy(self, positions: np.ndarray) -> Tuple[float, float]:
         """
@@ -391,60 +402,64 @@ class RewardCalculator:
         """
         return np.sum(final_positions * price_changes)
     
-    def calculate_dsr(self, returns: torch.Tensor) -> float:
+    def calculate_dsr(self, R_t: float) -> float:
         """
-        Calculate Downside Sharpe Ratio with robust handling of NaN values.
+        Calculate Differential Sharpe Ratio (DSR) as defined in reward-info.md.
+        
+        Formula: ΔS_t = [β(R_t - μ_{t-1}) - 0.5β²σ²_{t-1}] / (σ²_{t-1} + β(R_t - μ_{t-1})²)^(3/2)
         
         Args:
-            returns: Portfolio returns [batch_size]
+            R_t: Current portfolio return (single value)
             
         Returns:
             DSR value
         """
-        # Validate inputs
-        if torch.isnan(returns).any() or torch.isinf(returns).any():
-            print("Warning: NaN/Inf detected in returns. Replacing with zeros.")
-            returns = torch.nan_to_num(returns, nan=0.0, posinf=0.0, neginf=0.0)
+        # Validate input
+        if np.isnan(R_t) or np.isinf(R_t):
+            print("Warning: NaN/Inf detected in return. Replacing with zero.")
+            R_t = 0.0
         
-        # Calculate mean return
-        mean_return = returns.mean()
+        # Calculate DSR using the correct formula
+        delta = R_t - self.mu_prev
         
-        # Calculate downside returns
-        downside_returns = returns[returns < 0]
+        # Numerator: β(R_t - μ_{t-1}) - 0.5β²σ²_{t-1}
+        numerator = self.beta * delta - 0.5 * (self.beta ** 2) * self.sigma_sq_prev
         
-        # If no downside returns, return 0
-        if len(downside_returns) == 0:
-            return 0.0
-        
-        # Calculate downside deviation
-        downside_deviation = torch.sqrt(torch.mean(downside_returns ** 2))
+        # Denominator: (σ²_{t-1} + β(R_t - μ_{t-1})²)^(3/2)
+        denominator = (self.sigma_sq_prev + self.beta * (delta ** 2)) ** 1.5
         
         # Avoid division by zero
-        if downside_deviation == 0:
+        if abs(denominator) < 1e-12:
             return 0.0
         
         # Calculate DSR
-        dsr = mean_return / downside_deviation
+        dsr = numerator / denominator
+        
+        # Update tracking variables for next iteration
+        self.mu_prev = self.mu_prev + self.beta * delta
+        self.sigma_sq_prev = self.sigma_sq_prev + self.beta * (R_t ** 2 - self.sigma_sq_prev)
         
         # Handle NaN/Inf
-        if torch.isnan(dsr) or torch.isinf(dsr):
+        if np.isnan(dsr) or np.isinf(dsr):
             return 0.0
             
-        return dsr.item()
+        return float(dsr)
     
-    def confidence_weighted_reward(self, dsr: float, total_exposure: float) -> Tuple[float, float]:
+    def confidence_weighted_reward(self, dsr: float, alpha_0: float) -> Tuple[float, float]:
         """
-        Apply confidence weighting based on total position exposure.
+        Apply confidence weighting based on Dirichlet concentration parameter α₀.
+        
+        Formula: Weight = 1 - 1/(α₀ + 1)
         
         Args:
             dsr: Differential Sharpe ratio
-            total_exposure: Sum of absolute position values
+            alpha_0: Total concentration parameter (sum of all α values)
             
         Returns:
             weighted_reward: Confidence-weighted reward
             confidence: Confidence value
         """
-        confidence = 1.0 - 1.0 / (total_exposure + 1.0)
+        confidence = 1.0 - 1.0 / (alpha_0 + 1.0)
         return dsr * confidence, confidence
     
     def calculate_reward(self, 
@@ -461,9 +476,8 @@ class RewardCalculator:
         Returns:
             Dictionary containing all intermediate calculations and final reward
         """
-        # 1. Normalize positions (preserving signs)
-        positions = self.normalize_positions(raw_outputs)
-        total_exposure = np.sum(np.abs(positions))
+        # 1. Normalize positions using Dirichlet-inspired approach
+        positions, alpha_0 = self.normalize_positions(raw_outputs)
         
         # 2. Calculate entropy penalty
         entropy, norm_entropy = self.position_entropy(positions)
@@ -472,11 +486,11 @@ class RewardCalculator:
         # 3. Calculate portfolio return
         R_t = self.portfolio_return(final_positions, price_changes)
         
-        # 4. Calculate DSR (should be on portfolio returns, not raw price changes)
-        dsr = self.calculate_dsr(torch.tensor([R_t]))
+        # 4. Calculate DSR using the correct Differential Sharpe Ratio formula
+        dsr = self.calculate_dsr(R_t)
         
-        # 5. Calculate confidence-weighted reward
-        reward, confidence = self.confidence_weighted_reward(dsr, total_exposure)
+        # 5. Calculate confidence-weighted reward using alpha_0
+        reward, confidence = self.confidence_weighted_reward(dsr, alpha_0)
         
         # 6. Clip reward to prevent extreme values
         clipped_reward = np.clip(reward, -10.0, 10.0)
@@ -484,7 +498,7 @@ class RewardCalculator:
         return {
             'raw_outputs': raw_outputs,
             'positions': positions,
-            'total_exposure': total_exposure,
+            'alpha_0': alpha_0,
             'position_entropy': entropy,
             'normalized_entropy': norm_entropy,
             'scaling_factor': scaling,
