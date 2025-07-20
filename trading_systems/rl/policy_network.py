@@ -464,8 +464,7 @@ class RewardCalculator:
                         raw_outputs: np.ndarray, 
                         price_changes: np.ndarray) -> Dict:
         """
-        Complete pipeline from raw model outputs to reward calculation.
-        Now supports both long and short positions.
+        Simplified reward calculation focusing on direction prediction.
         
         Args:
             raw_outputs: Model outputs for position sizing [n_instruments]
@@ -490,22 +489,8 @@ class RewardCalculator:
         # 5. Calculate confidence-weighted reward using alpha_0
         reward, confidence = self.confidence_weighted_reward(dsr, alpha_0)
         
-        # 6. Add bias penalty to discourage systematic long/short bias
-        # Calculate the proportion of positive positions
-        positive_proportion = np.sum(final_positions > 0) / len(final_positions)
-        
-        # Penalize if too many positions are in the same direction
-        bias_penalty = 0.0
-        if positive_proportion > 0.8:  # More than 80% long
-            bias_penalty = -0.5 * (positive_proportion - 0.8) * 10  # Penalty up to -1.0
-        elif positive_proportion < 0.2:  # More than 80% short
-            bias_penalty = -0.5 * (0.2 - positive_proportion) * 10  # Penalty up to -1.0
-        
-        # Apply bias penalty
-        reward_with_bias_penalty = reward + bias_penalty
-        
-        # 7. Clip reward to prevent extreme values
-        clipped_reward = np.clip(reward_with_bias_penalty, -10.0, 10.0)
+        # 6. Clip reward to prevent extreme values
+        clipped_reward = np.clip(reward, -10.0, 10.0)
         
         return {
             'raw_outputs': raw_outputs,

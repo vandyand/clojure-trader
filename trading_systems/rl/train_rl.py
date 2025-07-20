@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Dict, List, Tuple
 from tqdm import tqdm
+import argparse
 
 from policy_network import RLTrader, FusionAutoencoder
 from constants import PAIRS_BY_LIQUIDITY_OANDA
@@ -310,13 +311,29 @@ def calculate_max_drawdown(returns):
     return np.min(drawdown)
 
 if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Train RL trading model')
+    parser.add_argument('--epochs', type=int, default=50, help='Number of training epochs')
+    parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
+    parser.add_argument('--save_interval', type=int, default=5, help='Save model every N epochs')
+    parser.add_argument('--eval_days', type=int, default=100, help='Number of days for evaluation')
+    
+    args = parser.parse_args()
+    
+    print(f"Training configuration:")
+    print(f"  Epochs: {args.epochs}")
+    print(f"  Batch size: {args.batch_size}")
+    print(f"  Save interval: {args.save_interval}")
+    print(f"  Evaluation days: {args.eval_days}")
+    print()
+    
     # Create and train the RL trader
     trader = RLTrader(actor_lr=1e-4, critic_lr=1e-3, gamma=0.99, entropy_weight=0.01)
     
     # Train the policy
-    trader = train_policy(trader, batch_size=64, n_epochs=50, save_interval=5)
+    trader = train_policy(trader, batch_size=args.batch_size, n_epochs=args.epochs, save_interval=args.save_interval)
     
     # Evaluate the policy
-    eval_results = evaluate_policy(trader, n_days=100)
+    eval_results = evaluate_policy(trader, n_days=args.eval_days)
     
     print("\nTraining and evaluation complete!") 
