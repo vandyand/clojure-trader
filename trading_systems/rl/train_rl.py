@@ -34,11 +34,22 @@ def load_market_data(n_features=1084, start_date=None, end_date=None, sample_siz
     returns = {}
     
     for instrument in PAIRS_BY_LIQUIDITY_OANDA:
-        # Generate random walk for prices
-        prices = np.cumprod(1 + np.random.randn(n_days) * 0.005)
+        # Generate balanced random walk for prices (no systematic drift)
+        # Use mean-reverting process to avoid long-term drift
+        returns_raw = np.random.randn(n_days) * 0.005
+        
+        # Add some mean reversion to prevent drift
+        for i in range(1, n_days):
+            returns_raw[i] += -0.1 * returns_raw[i-1]  # Mean reversion factor
+        
+        # Generate prices from returns
+        prices = np.exp(np.cumsum(returns_raw))
         
         # Calculate daily returns
         daily_returns = np.diff(prices) / prices[:-1]
+        
+        # Ensure returns are balanced (approximately zero mean)
+        daily_returns = daily_returns - np.mean(daily_returns)
         
         # Generate synthetic features 
         daily_features = np.random.randn(n_days-1, n_features) * 0.1
