@@ -67,16 +67,19 @@ def train_crypto_rl_system(
     logger.info("Plotting training progress...")
     system.plot_training_progress()
     
-    # Evaluate the trained model
-    logger.info("Evaluating trained model...")
+    # Evaluate the trained model on out-of-sample data
+    logger.info("Evaluating trained model on out-of-sample data...")
+    logger.info("This evaluation uses different data than training to test generalization.")
+    logger.info("The results may differ from training metrics due to overfitting.")
     eval_results = system.evaluate(n_episodes=50, episode_length=500)
     
     logger.info("Training completed!")
-    logger.info(f"Final Evaluation Results:")
-    logger.info(f"  Total Return: {eval_results['total_return']:.4f}")
+    logger.info(f"Final Evaluation Results (Out-of-Sample):")
+    logger.info(f"  Total Return: {eval_results['total_return']:.6f}")
     logger.info(f"  Sharpe Ratio: {eval_results['sharpe_ratio']:.4f}")
     logger.info(f"  Max Drawdown: {eval_results['max_drawdown']:.4f}")
     logger.info(f"  Win Rate: {eval_results['win_rate']:.4f}")
+    logger.info(f"  Average Return per Episode: {eval_results['avg_return']:.6f}")
     
     return system, eval_results
 

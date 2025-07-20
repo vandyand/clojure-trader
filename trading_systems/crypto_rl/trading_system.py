@@ -112,8 +112,14 @@ class CryptoTradingSystem:
             print(f"\nEpoch {epoch + 1}/{epochs}")
             print(f"Average Reward: {epoch_metrics['reward']:.4f}")
             print(f"Average Loss: {epoch_metrics['loss']:.4f}")
-            print(f"Portfolio Return: {epoch_metrics['return']:.4f}")
+            print(f"Portfolio Return: {epoch_metrics['return']:.8f}")  # More precision for small returns
             print(f"DSR: {epoch_metrics['dsr']:.4f}")
+            if 'entropy' in epoch_metrics:
+                print(f"Policy Entropy: {epoch_metrics['entropy']:.4f}")
+            if 'avg_position_size' in epoch_metrics:
+                print(f"Avg Position Size: {epoch_metrics['avg_position_size']:.4f}")
+            if 'position_diversity' in epoch_metrics:
+                print(f"Position Diversity: {epoch_metrics['position_diversity']:.4f}")
         
         self.is_training = False
         self.save_checkpoint(epochs)
@@ -224,6 +230,7 @@ class CryptoTradingSystem:
             'max_drawdown': np.mean(episode_drawdowns),
             'win_rate': np.mean(episode_win_rates),
             'avg_trade_return': np.mean(episode_avg_trade_returns),
+            'avg_return': np.mean(episode_returns),  # Alias for consistency
             'positions': np.array(all_positions)
         }
     
@@ -452,11 +459,17 @@ class CryptoTradingSystem:
             epoch_dsr.extend(dsr_values)
             epoch_losses.append(metrics['actor_loss'])
         
+        # Calculate additional metrics
+        avg_position_size = np.mean([np.mean(np.abs(action.detach().numpy())) for action in actions]) if actions else 0
+        position_diversity = np.mean([np.std(action.detach().numpy()) for action in actions]) if actions else 0
+        
         return {
             'reward': np.mean(epoch_rewards),
             'return': np.mean(epoch_returns),
             'dsr': np.mean(epoch_dsr),
-            'loss': np.mean(epoch_losses)
+            'loss': np.mean(epoch_losses),
+            'avg_position_size': avg_position_size,
+            'position_diversity': position_diversity
         }
     
     def _calculate_max_drawdown(self, returns: np.ndarray) -> float:
